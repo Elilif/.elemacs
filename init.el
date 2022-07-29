@@ -44,9 +44,13 @@
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
+
 (require 'init-benchmarking)
 (require 'init-package)
 (require 'init-ui)
+(require 'init-minibuffer)
+(require 'init-corfu)
+(require 'init-org)
 
 (defun eli/open-init-file()
   (interactive)

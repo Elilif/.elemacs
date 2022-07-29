@@ -3,3 +3,7 @@ eln-cache/
 package-quickstart.el
 package-quickstart.elc
 recentf
+.cache/
+history
+org-roam.db
+bookmarks
