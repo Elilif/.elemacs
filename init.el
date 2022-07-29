@@ -47,6 +47,7 @@
 
 (require 'init-benchmarking)
 (require 'init-package)
+(require 'init-incremental-loading)
 (require 'init-ui)
 (require 'init-minibuffer)
 (require 'init-corfu)
