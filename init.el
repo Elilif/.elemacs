@@ -1,4 +1,4 @@
-;; init.el --- Initialize init configurations.	-*- lexical-binding: t -*-
+;; init.el -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2019-2021 by Eli
 
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 ;;
-;; Calendar configuration.
+;;
 ;;
 
 ;;; Code:
@@ -40,30 +40,18 @@
                       (delete-dups (append file-name-handler-alist
                                            old-file-name-handler-alist)))))))
 
-(setq inhibit-startup-screen t
-      inhibit-startup-echo-area-message user-login-name
-      inhibit-default-init t)
-
-(unless (daemonp)
-  (advice-add #'display-startup-echo-area-message :override #'ignore))
-
 (setq user-emacs-directory "~/.elemacs/")
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
-(require 'init-elpa)
 (require 'init-benchmarking)
+(require 'init-package)
 (require 'init-ui)
-
-
-
 
 (defun eli/open-init-file()
   (interactive)
   (find-file "~/.elemacs/init.el"))
 (global-set-key (kbd "<f5>") 'eli/open-init-file)
-
-
 
 ;; Variables configured via the interactive 'customize' interface
 (when (file-exists-p custom-file)

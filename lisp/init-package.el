@@ -1,4 +1,4 @@
-;; init-elpa.el<.elemacs> --- Initialize elpa.el< configurations.	-*- lexical-binding: t -*-
+;; init-package.el --- Initialize package configurations.	-*- lexical-binding: t -*-
 
 ;; Copyright (C) 2019-2021 by Eli
 
@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'package)
+
 (setq package-archives
       '(("gnu"   . "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")
@@ -39,7 +41,7 @@
 
 (defun elemacs-require-package (package)
   (unless (package-installed-p package)
-      (package-install package)))
+    (package-install package)))
 
-(provide 'init-elpa)
-;;; init-elpa.el ends here.
+(provide 'init-package)
+;;; init-package.el ends here.

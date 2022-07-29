@@ -30,21 +30,30 @@
 
 ;;; Code:
 
+;;; themes.
 (elemacs-require-package 'doom-themes)
-(elemacs-require-package 'doom-modeline)
-
-
-
 (load-theme 'doom-one-light t)
 (setq doom-one-light-brighter-comments t)
 (setq doom-one-light-brighter-modeline t)
 (setq doom-one-light-padded-modeline nil)
 
 
+;;; modeline.
+(elemacs-require-package 'doom-modeline)
 (add-hook 'after-init-hook 'doom-modeline-mode)
 (setq doom-modeline-buffer-encoding t)
 (column-number-mode 1)
 
+
+;;; programing.
+(elemacs-require-package 'rainbow-delimiters)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(setq inhibit-startup-screen t
+      inhibit-startup-echo-area-message user-login-name
+      inhibit-default-init t)
+(unless (daemonp)
+  (advice-add #'display-startup-echo-area-message :override #'ignore))
 
 (defun eli/set-font ()
   (progn
