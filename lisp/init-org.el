@@ -675,5 +675,22 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
       org-roam-ui-open-on-start t)
 
 
+;; clock
+(elemacs-require-package 'org-mru-clock)
+(with-eval-after-load 'embark
+  (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
+(setq org-mru-clock-capture-if-no-match '((".*" . "c"))
+      org-mru-clock-how-many 50
+      org-mru-clock-files #'org-agenda-files
+      org-capture-templates-contexts '(("c" (org-mru-clock-capturing))))
+
+(elemacs-require-package 'org-clock-convenience)
+(setq org-clock-convenience-clocked-agenda-re "^ +\\([^:]+\\):[[:space:]]*\\(\\([ 	012][0-9]\\):\\([0-5][0-9]\\)\\)-\\(\\([ 012]*[0-9]\\):\\([0-5][0-9]\\)\\|.*\\)?[[:space:]]+Clocked:[[:space:]]+\\(([0-9]+:[0-5][0-9])\\|(-)\\)")
+(with-eval-after-load 'org-agenda
+  (keymap-set org-agenda-mode-map "M-<up>" #'org-clock-convenience-timestamp-up)
+  (keymap-set org-agenda-mode-map "M-<down>" #'org-clock-convenience-timestamp-down)
+  (keymap-set org-agenda-mode-map "<f6>" #'org-clock-convenience-fill-gap)
+  (keymap-set org-agenda-mode-map "<f7>" #'org-clock-convenience-fill-gap-both))
+
 (provide 'init-org)
 ;;; init-org.el ends here.
