@@ -7,3 +7,7 @@ recentf
 history
 org-roam.db
 bookmarks
+.org-id-locations
+places
+site-lisp/
+transient/

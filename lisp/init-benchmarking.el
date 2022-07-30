@@ -73,6 +73,10 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 (add-hook 'after-init-hook 'sanityinc/show-init-time)
 
+(elemacs-require-package 'benchmark-init)
+(require 'benchmark-init)
+(add-hook 'after-init-hook 'benchmark-init/deactivate)
+
 
 (provide 'init-benchmarking)
 ;;; init-benchmarking.el ends here

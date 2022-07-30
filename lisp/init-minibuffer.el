@@ -31,7 +31,7 @@
 ;;; Code:
 
 (elemacs-require-package 'vertico)
-(add-hook 'after-init-hook 'vertico-mode)
+(add-hook 'elemacs-first-input-hook 'vertico-mode)
 (with-eval-after-load 'vertico
   (setq vertico-cycle t))
 

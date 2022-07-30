@@ -109,8 +109,8 @@
               (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
               (sequence "WAITING(w@/!)" "NEXT(n!/!)" "SOMEDAY(S)" "|" "CANCELLED(c@/!)"))))
 
-(with-eval-after-load 'org
-  (server-start))
+;; (with-eval-after-load 'org
+;;   (server-start))
 
 ;;; habits
 (with-eval-after-load 'org
@@ -338,7 +338,7 @@ This list represents a \"habit\" for the rest of this module."
 (setq org-agenda-file-journal (expand-file-name "journal.org" org-agenda-dir))
 (setq org-agenda-file-te (expand-file-name "words.org" org-agenda-dir))
 (setq org-agenda-file-lists (expand-file-name "lists.org" org-agenda-dir))
-(setq org-agenda-files (list org-agenda-dir))
+(setq org-agenda-files '("~/Dropbox/org/journal.org" "/home/eli/Dropbox/org/古文.org" "/home/eli/Dropbox/org/Français.org" "/home/eli/Dropbox/org/daily.org" "/home/eli/Dropbox/org/lists.org" "/home/eli/Dropbox/org/inbox.org" "/home/eli/Dropbox/org/words.org" "/home/eli/Dropbox/org/projects.org"))
 (defun eli/capture-report-date-file ()
   (let ((name (read-string "Name: ")))
     (expand-file-name (format "%s-%s.org"
@@ -479,7 +479,7 @@ This list represents a \"habit\" for the rest of this module."
 
 (with-eval-after-load 'org-agenda
   ;; 每小时同步一次appt,并且现在就开始同步
-  (run-at-time 10 3600 'org-agenda-to-appt t)
+  (run-at-time 30 3600 'org-agenda-to-appt t)
   ;; 提前半小时提醒
   (setq appt-message-warning-time 30)
   (setq appt-display-interval 5)
@@ -585,7 +585,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
       rime-inline-ascii-trigger 'shift-l)
 (keymap-global-set "C-s-k" #'rime-inline-ascii)
 (keymap-global-set "C-s-j" #'+rime-convert-string-at-point)
-(add-hook 'org-mode-hook 'toggle-input-method)
+;; (add-hook 'org-mode-hook 'toggle-input-method)
 
 (elemacs-require-package 'org-superstar)
 (setq org-superstar-headline-bullets-list '("☰" "○" "✸" "✤" "◆" "✜" "▶"))
@@ -626,9 +626,8 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 				    :if-new
 				    (file+head "references/%<%Y%m%d%H%M%S>.org" "#+title: ${title}\n")
 				    :unnarrowed t)))
-
-(with-eval-after-load 'org
-  (org-roam-db-autosync-mode))
+(run-at-time 20 nil
+  #'org-roam-db-autosync-mode)
 (with-eval-after-load 'org-roam
   ;; Codes blow are used to general a hierachy for title nodes that under a file
   (cl-defmethod org-roam-node-doom-filetitle ((node org-roam-node))
@@ -691,6 +690,12 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
   (keymap-set org-agenda-mode-map "M-<down>" #'org-clock-convenience-timestamp-down)
   (keymap-set org-agenda-mode-map "<f6>" #'org-clock-convenience-fill-gap)
   (keymap-set org-agenda-mode-map "<f7>" #'org-clock-convenience-fill-gap-both))
+
+;; fix M-j
+(defun eli-org-fill-prefix ()
+  "Set `fill-prefix' to the empty string."
+  (setq fill-prefix ""))
+(add-hook 'org-mode-hook #'eli-org-fill-prefix)
 
 (provide 'init-org)
 ;;; init-org.el ends here.

@@ -41,7 +41,6 @@
 ;;; modeline.
 (elemacs-require-package 'doom-modeline)
 (add-hook 'after-init-hook 'doom-modeline-mode)
-(setq doom-modeline-buffer-encoding t)
 (column-number-mode 1)
 
 
@@ -65,8 +64,22 @@
 			(font-spec :family "Sarasa Mono SC Nerd" :size 20)))
     (set-fontset-font "fontset-default" 'unicode "AR PL New Kai" nil 'prepend)
     (set-fontset-font "fontset-default" 'unicode "Noto Color Emoji" nil 'prepend)))
-(if window-system
-    (eli/set-font))
+
+;; (with-eval-after-load 'org
+;;   (if window-system
+;;       (eli/set-font)))
+(add-hook 'after-init-hook #'eli/set-font)
+
+
+(setq use-dialog-box nil)
+(when (bound-and-true-p tooltip-mode)
+  (tooltip-mode -1))
+(setq x-gtk-use-system-tooltips nil)
+
+;; Favor vertical splits over horizontal ones, since monitors are trending
+;; toward wide rather than tall.
+(setq split-width-threshold 160
+      split-height-threshold nil)
 
 (provide 'init-ui)
 ;;; init-ui.el ends here.

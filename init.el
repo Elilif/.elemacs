@@ -45,13 +45,16 @@
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
-(require 'init-benchmarking)
 (require 'init-package)
+(require 'init-benchmarking)
 (require 'init-incremental-loading)
+(require 'init-better-defaults)
 (require 'init-ui)
 (require 'init-minibuffer)
 (require 'init-corfu)
 (require 'init-org)
+(require 'init-vc)
+(require 'init-lang)
 
 (defun eli/open-init-file()
   (interactive)
@@ -61,7 +64,6 @@
 ;; Variables configured via the interactive 'customize' interface
 (when (file-exists-p custom-file)
   (load custom-file))
-
 
 (provide 'init)
 ;;; init.el ends here.
