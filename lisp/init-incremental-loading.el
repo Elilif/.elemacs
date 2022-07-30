@@ -112,5 +112,88 @@ If this is a daemon session, load them all immediately instead."
 	    org-footnote org-macro ob org org-clock org-agenda
 	    org-capture))
 
+
+(defvar elemacs-first-input-hook nil
+  "Transient hooks run before the first user input.")
+(put 'elemacs-first-input-hook 'permanent-local t)
+
+(defvar elemacs-first-buffer-hook nil
+  "Transient hooks run before the first interactively opened file.")
+(put 'elemacs-first-file-hook 'permanent-local t)
+
+(defvar elemacs-first-buffer-hook nil
+  "Transient hooks run before the first interactively opened buffer.")
+(put 'elemacs-first-buffer-hook 'permanent-local t)
+
+(defvar elemacs-switch-buffer-hook nil
+  "A list of hooks run after changing the current buffer.")
+
+(define-error 'elemacs-error "Error in  Elemacs")
+(define-error 'elemacs-hook-error "Error in a Elemacs startup hook" 'elemacs-error)
+
+(defun elemacs-run-hook (hook)
+  "Run HOOK (a hook function) with better error handling.
+Meant to be used with `run-hook-wrapped'."
+  (condition-case-unless-debug e
+      (funcall hook)
+    (error
+     (signal 'elemacs-hook-error (list hook e))))
+  ;; return nil so `run-hook-wrapped' won't short circuit
+  nil)
+
+(defun elemacs-run-hooks (&rest hooks)
+  "Run HOOKS (a list of hook variable symbols) with better error handling.
+Is used as advice to replace `run-hooks'."
+  (dolist (hook hooks)
+    (condition-case-unless-debug e
+        (run-hook-wrapped hook #'elemacs-run-hook)
+      (elemacs-hook-error
+       (unless debug-on-error
+         (lwarn hook :error "Error running hook %S because: %s"
+                (if (symbolp (cadr e))
+                    (symbol-name (cadr e))
+                  (cadr e))
+                (caddr e)))
+       (signal 'elemacs-hook-error (cons hook (cdr e)))))))
+
+(defun elemacs-run-hook-on (hook-var trigger-hooks)
+  "Configure HOOK-VAR to be invoked exactly once when any of the TRIGGER-HOOKS
+are invoked *after* Emacs has initialized (to reduce false positives). Once
+HOOK-VAR is triggered, it is reset to nil.
+
+HOOK-VAR is a quoted hook.
+TRIGGER-HOOK is a list of quoted hooks and/or sharp-quoted functions."
+  (dolist (hook trigger-hooks)
+    (let ((fn (intern (format "%s-init-on-%s-h" hook-var hook))))
+      (fset
+       fn (lambda (&rest _)
+            ;; Only trigger this after Emacs has initialized.
+            (when (and after-init-time
+                       (or (daemonp)
+                           ;; In some cases, hooks may be lexically unset to
+                           ;; inhibit them during expensive batch operations on
+                           ;; buffers (such as when processing buffers
+                           ;; internally). In these cases we should assume this
+                           ;; hook wasn't invoked interactively.
+                           (and (boundp hook)
+                                (symbol-value hook))))
+              (elemacs-run-hooks hook-var)
+              (set hook-var nil))))
+      (cond ((daemonp)
+             ;; In a daemon session we don't need all these lazy loading
+             ;; shenanigans. Just load everything immediately.
+             (add-hook 'after-init-hook fn 'append))
+            ((eq hook 'find-file-hook)
+             ;; Advise `after-find-file' instead of using `find-file-hook'
+             ;; because the latter is triggered too late (after the file has
+             ;; opened and modes are all set up).
+             (advice-add 'after-find-file :before fn '((depth . -101))))
+            ((add-hook hook fn -101)))
+      fn)))
+
+(elemacs-run-hook-on 'elemacs-first-buffer-hook '(find-file-hook elemacs-switch-buffer-hook))
+(elemacs-run-hook-on 'elemacs-first-file-hook   '(find-file-hook dired-initial-position-hook))
+(elemacs-run-hook-on 'elemacs-first-input-hook  '(pre-command-hook))
+
 (provide 'init-incremental-loading)
 ;;; init-incremental-loading.el ends here.
