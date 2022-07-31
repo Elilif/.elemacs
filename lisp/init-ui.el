@@ -31,7 +31,7 @@
 ;;; Code:
 
 ;;; themes.
-(setq custom-theme-directory "~/.elemacs/themes/")
+(setq custom-theme-directory "~/.emacs.d/themes/")
 (load-theme 'mindre t)
 
 ;;; posframe

@@ -50,7 +50,7 @@
   (keymap-set flyspell-mode-map "C-;" #'flyspell-correct-wrapper)
   (keymap-set flyspell-mode-map "C-." nil))
 
-(add-to-list 'load-path "~/.elemacs/site-lisp/goldendict/")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/goldendict/")
 (keymap-global-set "C-c h" #'goldendict-dwim)
 
 (elemacs-require-package 'youdao-dictionary)

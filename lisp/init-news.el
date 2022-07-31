@@ -98,7 +98,7 @@ for confirmation when needed."
   (elfeed-org)
   (setq  rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org")))
 
-(add-to-list 'load-path "~/.elemacs/site-lisp/elfeed-goodies/")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/elfeed-goodies/")
 (with-eval-after-load 'elfeed
   (require 'elfeed-goodies)
   (setq elfeed-goodies/date-format "%Y-%m-%d")

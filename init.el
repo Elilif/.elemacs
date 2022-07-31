@@ -40,7 +40,7 @@
                       (delete-dups (append file-name-handler-alist
                                            old-file-name-handler-alist)))))))
 
-(setq user-emacs-directory "~/.elemacs/")
+(setq user-emacs-directory "~/.emacs.d/")
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
@@ -73,7 +73,7 @@
 
 (defun eli/open-init-file()
   (interactive)
-  (find-file "~/.elemacs/init.el"))
+  (find-file "~/.emacs.d/init.el"))
 (global-set-key (kbd "<f5>") 'eli/open-init-file)
 
 ;; Variables configured via the interactive 'customize' interface

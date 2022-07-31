@@ -165,8 +165,8 @@
 (keymap-global-set "C-'" #'avy-goto-char)
 (keymap-global-set "C-\"" #'avy-goto-char-near-point)
 
-(add-to-list 'load-path "~/.elemacs/site-lisp/pinyinlib/")
-(add-to-list 'load-path "~/.elemacs/site-lisp/ace-pinyin/")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/pinyinlib/")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/ace-pinyin/")
 (add-hook 'elemacs-first-file-hook #'(lambda ()
 				       (require 'ace-pinyin)
 				       (ace-pinyin-global-mode)))
@@ -181,7 +181,7 @@
 (setq which-key-idle-delay 0.3)
 
 
-(add-to-list 'load-path "~/.elemacs/site-lisp/auto-save/")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/auto-save/")
 (add-hook 'elemacs-first-input-hook #' (lambda ()
 					(require 'auto-save)
 					(auto-save-enable)))
