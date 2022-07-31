@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: csl-gb87
+# key: gb87
+# --
+#+cite_export: csl chinese-gb7714-1987-numeric.csl

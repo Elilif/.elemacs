@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: biblatex_gb
+# key: blgb
+# --
+#+cite_export: biblatex gb7714-2015 gb7714-2015

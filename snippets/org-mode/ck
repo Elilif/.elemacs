@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ck
+# key: ck
+# --
+CLOCK: `(org-time-stamp-inactive)`--`(org-time-stamp-inactive)`

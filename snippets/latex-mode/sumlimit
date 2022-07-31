@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: sumlimit
+# key: sl
+# group: math
+# condition: (and (texmathp) (quote auto))
+# --
+\sum\limits_{${1:n=0}}^{${2:\infty}}$0

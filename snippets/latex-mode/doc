@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# contributor: Mads D. Kristensen <madsdk@gmail.com>
+# key: doc
+# name: \documentclass
+# --
+\documentclass[$2]{${1:$$(yas-completing-read "Document type: " '("article" "report" "book" "letter" "ctexart"))}}
+
+$0
+
+\begin{document}
+
+\end{document}
+

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: pdf-search
+# condition: (quote auto)
+# key: ps
+# --
+$1(.|\n)*?$0

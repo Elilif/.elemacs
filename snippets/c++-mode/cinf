@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: cinf
+# key: cinf
+# --
+`(progn (goto-char (point-min)) (unless (re-search-forward
+"^\s*using\\s-+namespace std;" nil 'no-error) "std::"))
+`cin$0

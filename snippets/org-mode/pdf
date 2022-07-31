@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: tex
+# key: tex
+# --
+#+LATEX_HEADER: \usepackage{xeCJK}

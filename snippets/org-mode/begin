@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: be
+# key: be
+# --
+#+BEGIN: $1
+#+END:

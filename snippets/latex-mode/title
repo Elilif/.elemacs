@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: title
+# key: tt
+# --
+\title{$1}$0

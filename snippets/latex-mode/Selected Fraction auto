@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Selected Fraction auto
+# binding : C-~
+# condition: (texmathp)
+# group: math
+# --
+\\frac{`(if (region-active-p) (let ((temp (yas-selected-text))) (if (string-match "^(\\(.*\\))$" temp) (match-string 1 temp) (yas-selected-text))))`$1}{$0}

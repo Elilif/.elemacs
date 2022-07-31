@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# key: dm
+# name: Display Math
+# condition: (and (not (texmathp)) (quote auto))
+# group: math
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+\[
+  `(save-excursion (previous-line)(make-string (current-indentation) ?\s))`$0 .
+\]

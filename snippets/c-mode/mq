@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: mq
+# key: mq
+# --
+($1 *) malloc(sizeof($2));$0

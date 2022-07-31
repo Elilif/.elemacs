@@ -4,11 +4,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(popper which-key vterm vertico rime rainbow-delimiters quickrun popwin org-superstar org-roam-ui org-reverse-datetree org-mru-clock org-clock-convenience org-appear orderless multiple-cursors marginalia magit-todos kind-icon hungry-delete helpful grab-x-link expand-region embark doom-themes doom-modeline corfu consult benchmark-init avy auto-yasnippet all-the-icons-dired)))
+   '(mu4e-maildirs-extension mu4e-alert which-key vterm vertico smartparens shackle saveplace-pdf-view rime rainbow-delimiters quickrun powerline popwin popper org-superstar org-roam-ui org-reverse-datetree org-pdftools org-mru-clock org-download org-clock-convenience org-appear orderless multiple-cursors mpv mood-line modern-cpp-font-lock marginalia magit-todos lsp-ui link-hint ledger-mode kind-icon hungry-delete helpful grab-x-link flycheck-posframe expand-region ess-smart-equals elfeed-score elfeed-org corfu consult citar-embark ccls calibredb cal-china-x bibtex-completion benchmark-init auto-yasnippet all-the-icons-dired)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(popper-echo-area ((t nil)))
- '(popper-echo-dispatch-hint ((t nil))))
+ )

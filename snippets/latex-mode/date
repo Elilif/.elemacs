@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: date
+# key: dt
+# --
+\date{${1:\today}}$0

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: theoremstyle
+# key: ts
+# --
+\theoremstyle{definition}

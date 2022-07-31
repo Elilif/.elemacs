@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: #+cite_export
+# key: #+cite
+# --
+#+cite_export: 

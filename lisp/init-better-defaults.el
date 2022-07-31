@@ -182,24 +182,39 @@
 
 
 (add-to-list 'load-path "~/.elemacs/site-lisp/auto-save/")
-(setq auto-save-silent t)   ; quietly save
-(setq auto-save-delete-trailing-whitespace t)
-(setq auto-save-idle 2)
-(add-hook 'elemacs-first-file-hook #' (lambda ()
+(add-hook 'elemacs-first-input-hook #' (lambda ()
 					(require 'auto-save)
 					(auto-save-enable)))
+(with-eval-after-load 'auto-save
+  (setq auto-save-silent t)   ; quietly save
+  (setq auto-save-delete-trailing-whitespace t)
+  (setq auto-save-idle 2))
 
 ;;; dired
-(add-hook 'elemacs-first-input-hook #'(lambda () (require 'dired-x)))
 (with-eval-after-load 'dired-x
-    (keymap-set dired-mode-map "q" #'kill-this-buffer))
-(setq dired-listing-switches "-alh")
-(setq dired-recursive-copies 'always)
-(setq dired-recursive-deletes 'always)
-(setq dired-guess-shell-alist-user '(("\\.doc\\'" "wps")
-                                     ("\\.docx\\'" "wps")))
-(put 'dired-find-alternate-file 'disabled nil)
-(with-eval-after-load 'dired
+  (keymap-set dired-mode-map "q" #'kill-this-buffer)
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+  (setq dired-listing-switches "-alh")
+  (setq dired-recursive-copies 'always)
+  (setq dired-recursive-deletes 'always)
+  (setq dired-dwim-target t)
+  (setq dired-guess-shell-alist-user '(("\\.doc\\'" "wps")
+                                       ("\\.docx\\'" "wps")))
+  (put 'dired-find-alternate-file 'disabled nil)
+  ;; 切换buffer后，立即刷新
+  (defadvice switch-to-buffer (after revert-buffer-now activate)
+    (if (eq major-mode 'dired-mode)
+	(revert-buffer)))
+
+  ;; 执行shell-command后，立即刷新
+  (defadvice shell-command (after revert-buffer-now activate)
+    (if (eq major-mode 'dired-mode)
+	(revert-buffer)))
+
+  ;; 在Bookmark中进入dired buffer时自动刷新
+  (setq dired-auto-revert-buffer t))
+
+(with-eval-after-load 'dired-x
   ;; don't remove `other-window', the caller expects it to be there
   (defun dired-up-directory (&optional other-window)
     "Run Dired on parent directory of current directory."
@@ -216,26 +231,13 @@
      	     (dired up)
      	     (dired-goto-file dir))))))
 ;; or (setq dired-kill-when-opening-new-dired-buffer t)
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
-(setq dired-dwim-target t)
-;; 切换buffer后，立即刷新
-(defadvice switch-to-buffer (after revert-buffer-now activate)
-  (if (eq major-mode 'dired-mode)
-      (revert-buffer)))
 
-;; 执行shell-command后，立即刷新
-(defadvice shell-command (after revert-buffer-now activate)
-  (if (eq major-mode 'dired-mode)
-      (revert-buffer)))
-
-;; 在Bookmark中进入dired buffer时自动刷新
-(setq dired-auto-revert-buffer t)
 
 (elemacs-require-package 'all-the-icons)
 (elemacs-require-package 'all-the-icons-dired)
 (add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
-(setq all-the-icons-dired-monochrome nil)
+(with-eval-after-load 'dired-x
+    (setq all-the-icons-dired-monochrome nil))
 
 
 (elemacs-require-package 'hungry-delete)
@@ -243,28 +245,31 @@
 (setq hungry-delete-join-reluctantly t)
 
 (add-hook 'elemacs-first-input-hook #'recentf-mode)
-(setq recentf-auto-cleanup 'never)
-(setq  recentf-exclude
-       '("/home/eli/.emacs.d/.cache/treemacs-persist-at-last-error"
-	 "/home/eli/.emacs.d/.cache/treemacs-persist"
-	 "\\.txt"
-	 "/home/eli/.emacs.d/elpa/*"
-	 "/home/eli/.elfeed/index"
-	 "/home/eli/.mail/*"
-	 ))
-(setq recentf-max-menu-items 50)
-(setq recentf-max-saved-items 50)
+(with-eval-after-load 'recentf
+    (setq recentf-auto-cleanup 'never)
+    (setq  recentf-exclude
+	   '("/home/eli/.emacs.d/.cache/treemacs-persist-at-last-error"
+	     "/home/eli/.emacs.d/.cache/treemacs-persist"
+	     "\\.txt"
+	     "/home/eli/.emacs.d/elpa/*"
+	     "/home/eli/.elfeed/index"
+	     "/home/eli/.mail/*"
+	     ))
+    (setq recentf-max-menu-items 50)
+    (setq recentf-max-saved-items 50))
 
 (add-hook 'elemacs-first-file-hook #'save-place-mode)
 
 (elemacs-require-package 'popwin)
 (add-hook 'elemacs-first-buffer-hook #'popwin-mode)
-(setq popwin:popup-window-position 'right)
-(setq popwin:popup-window-width 80)
+(with-eval-after-load 'popwin
+  (setq popwin:popup-window-position 'right)
+  (setq popwin:popup-window-width 80))
 
 (elemacs-require-package 'multiple-cursors)
-(setq mc/always-run-for-all nil)
-(setq mc/insert-numbers-default 1)
+(with-eval-after-load 'multiple-cursors
+  (setq mc/always-run-for-all nil)
+  (setq mc/insert-numbers-default 1))
 
 (keymap-global-set "C-x C-b"  #'ibuffer)
 (setq ibuffer-saved-filter-groups
@@ -293,17 +298,17 @@
 (keymap-global-set "C-h f" #'helpful-callable)
 (keymap-global-set "C-h v" #'helpful-variable)
 (keymap-global-set "C-h k" #'helpful-key)
-(setq helpful-max-buffers 2)
-;; from: https://d12frosted.io/posts/2019-06-26-emacs-helpful.html
-(setq helpful-switch-buffer-function #'+helpful-switch-to-buffer)
-(defun +helpful-switch-to-buffer (buffer-or-name)
-  "Switch to helpful BUFFER-OR-NAME. The logic is simple, if we are
+(with-eval-after-load 'helpful
+  (setq helpful-max-buffers 2)
+  ;; from: https://d12frosted.io/posts/2019-06-26-emacs-helpful.html
+  (setq helpful-switch-buffer-function #'+helpful-switch-to-buffer)
+  (defun +helpful-switch-to-buffer (buffer-or-name)
+    "Switch to helpful BUFFER-OR-NAME. The logic is simple, if we are
 currently in the helpful buffer, reuse it's window, otherwise
 create new one."
-  (if (eq major-mode 'helpful-mode)
-      (switch-to-buffer buffer-or-name)
-    (pop-to-buffer buffer-or-name)))
-(with-eval-after-load 'helpful
+    (if (eq major-mode 'helpful-mode)
+	(switch-to-buffer buffer-or-name)
+      (pop-to-buffer buffer-or-name)))
   (keymap-set helpful-mode-map "q" #'kill-buffer-and-window))
 
 (defun my-search-with-chrome ()
@@ -319,42 +324,81 @@ create new one."
 (setq bookmark-set-fringe-mark nil)
 
 (elemacs-require-package 'popper)
+(add-hook 'elemacs-first-buffer-hook #'popper-mode)
+(add-hook 'elemacs-first-buffer-hook #'popper-echo-mode)
+(keymap-global-set "C-`" #'popper-toggle-latest)
+(keymap-global-set "M-`" #'popper-cycle)
+(keymap-global-set "C-M-`" #'popper-toggle-type)
 (with-eval-after-load 'popper
-  (keymap-global-set "C-`" #'popper-toggle-latest)
-  (keymap-global-set "M-`" #'popper-cycle)
-  (keymap-global-set "C-M-`" #'popper-toggle-type))
-(setq popper-reference-buffers
-      '("\\*Messages\\*"
-	"\\*scratch\\*"
-	"Output\\*$"
-	"\\*Async Shell Command\\*"
-	"\\*Xenops-Doctor\\*"
-	"\\*Emms\\*.*"
-	"\\*Org LATEX Export\\*"
-	emms-browser-mode
-	org-agenda-mode
-	helpful-mode
-	compilation-mode))
-(setq popper-mode-line t)
-(setq popper-echo-dispatch-keys '("1" "2" "3" "4" "5" "6" "7" "8" "9"))
-(setq popper-display-control nil)
+  (setq popper-reference-buffers
+	'("\\*Messages\\*"
+	  "\\*scratch\\*"
+	  "Output\\*$"
+	  "\\*Async Shell Command\\*"
+	  "\\*Xenops-Doctor\\*"
+	  "\\*Emms\\*.*"
+	  "\\*Org LATEX Export\\*"
+	  emms-browser-mode
+	  org-agenda-mode
+	  helpful-mode
+	  compilation-mode))
+  (setq popper-mode-line t)
+  (setq popper-echo-dispatch-keys '("1" "2" "3" "4" "5" "6" "7" "8" "9"))
+  (setq popper-display-control nil))
 (add-hook 'elemacs-first-buffer-hook #'popper-mode)
 (add-hook 'elemacs-first-buffer-hook #'popper-echo-mode)
 
 (elemacs-require-package 'shackle)
-(setq shackle-rules '(("*Messages*" :align below :size 0.3 :select t)
-		      ("*scratch*" :select t :align right)
-		      (helpful-mode :select t :align right)
-		      (elfeed-show-mode :select t :align right :size 0.75)
-		      ("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
-		      ("*WordNut*" :select t :align right :size 0.4)
-		      ("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
-		      (emms-browser-mode :select t :align right :size 0.5)
-		      (org-agenda-mode :select t :align right :size 0.35)
-		      ("*Org Select*" :select t :align right :size 0.3)
-		      ))
+(with-eval-after-load 'popper
+  (setq shackle-rules '(("*Messages*" :align below :size 0.3 :select t)
+			("*scratch*" :select t :align right)
+			(helpful-mode :select t :align right)
+			(elfeed-show-mode :select t :align right :size 0.75)
+			("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
+			("*WordNut*" :select t :align right :size 0.4)
+			("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
+			(emms-browser-mode :select t :align right :size 0.5)
+			(org-agenda-mode :select t :align right :size 0.35)
+			("*Org Select*" :select t :align right :size 0.3)
+			)))
 (add-hook 'elemacs-first-buffer-hook #'shackle-mode)
 
+
+;; Chinese calendar
+;; `pC' can show lunar details
+(elemacs-require-package 'cal-china-x)
+(with-eval-after-load 'calendar
+  (require 'cal-china-x)
+  (cal-china-x-setup)
+  ;; Holidays
+  (setq calendar-mark-holidays-flag t
+        cal-china-x-important-holidays cal-china-x-chinese-holidays
+        cal-china-x-general-holidays '((holiday-lunar 1 15 "元宵节")
+                                       (holiday-lunar 7 7 "七夕节")
+                                       (holiday-fixed 3 8 "妇女节")
+                                       (holiday-fixed 3 12 "植树节")
+                                       (holiday-fixed 5 4 "青年节")
+                                       (holiday-fixed 6 1 "儿童节")
+                                       (holiday-fixed 9 10 "教师节"))
+        holiday-other-holidays '((holiday-fixed 2 14 "情人节")
+                                 (holiday-fixed 4 1 "愚人节")
+                                 (holiday-fixed 12 25 "圣诞节")
+                                 (holiday-float 5 0 2 "母亲节")
+                                 (holiday-float 6 0 3 "父亲节")
+                                 (holiday-float 11 4 4 "感恩节"))
+        calendar-holidays (append cal-china-x-important-holidays
+                                  cal-china-x-general-holidays
+                                  holiday-other-holidays)))
+
+
+(elemacs-require-package 'ledger-mode)
+(with-eval-after-load 'ledger
+  (setq ledger-reconcile-default-commodity "¥"
+	ledger-post-amount-alignment-column 80
+	ledger-report-auto-refresh-sticky-cursor t
+	ledger-report-auto-refresh t
+	ledger-copy-transaction-insert-blank-line-after t)
+  (setq-default ledger-occur-use-face-shown nil))
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: renewcommand
+# key: rc
+# --
+\\renewcommand{$1}{$2}

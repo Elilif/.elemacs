@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# contributor : Mads D. Kristensen <madsdk@gmail.com>
+# key : gf
+# name : \includegraphics
+# --
+\includegraphics[width=${1:\linewidth}]{${2:$$(unless yas-modified-p (completing-read "File: " 'read-file-name-internal))}}

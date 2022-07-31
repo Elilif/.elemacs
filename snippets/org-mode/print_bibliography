@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: print_bibliography
+# key: pb
+# --
+#+print_bibliography:

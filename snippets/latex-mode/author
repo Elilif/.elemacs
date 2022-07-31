@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: author
+# key: ah
+# --
+\author{${1:Eli}}$0

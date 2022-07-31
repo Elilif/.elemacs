@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: dtemp
+# key: dtemp
+# --
+#include <iostream>
+
+int main(int argc, char *argv[])
+{
+    $0
+    
+    return 0;
+}

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: string
+# key: string
+# --
+`(progn (goto-char (point-min)) (unless (re-search-forward
+"^using\\s-+namespace std;" nil 'no-errer) "std::"))
+`string 

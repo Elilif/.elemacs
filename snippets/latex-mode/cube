@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: cube
+# key: cb
+# condition: (and (texmathp) 'auto)
+# group: math
+# --
+`(backward-delete-char 1)`^3

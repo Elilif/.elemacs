@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: newtheorem
+# key: nt
+# --
+\newtheorem*{$1}{$0}

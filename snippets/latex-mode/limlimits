@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: limitlimits
+# key: ll
+# condition: (and (texmathp) (quote auto))
+# group: math
+# --
+\\lim\\limits_{${1:n} \\to ${2:\\infty}} $0

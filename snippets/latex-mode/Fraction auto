@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: //
+# name: Fraction auto
+# expand-env: ((numerator (quote t)))
+# condition: (and (texmathp) (quote auto))
+# group: math
+# --
+`(condition-case nil (save-excursion (let ((ip (point)) (void (backward-sexp)) (cp (point)) (bp (re-search-backward "\s"))) (if (= (1- cp) bp) (progn (forward-char) (kill-region cp ip)) (kill-region (1+ bp) ip)))) (error (setq numerator 'nil)))`\\frac{`(if numerator (let ((temp (string-clean-whitespace (current-kill 0)))) (if (string-match "^(\\(.*\\))$" temp) (match-string 1 temp) temp)))`}{$1}

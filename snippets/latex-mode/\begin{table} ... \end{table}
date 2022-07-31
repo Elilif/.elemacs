@@ -1,0 +1,11 @@
+# key: table
+# name: \begin{table} ... \end{table}
+# --
+\begin{table}[htbp]
+  \centering
+  \caption{${1:caption}}  
+  \begin{tabular}{${3:format}}
+    $0
+  \end{tabular}
+  \label{${2:"waiting for reftex-label call..."$(unless yas/modified-p (reftex-label nil 'dont-insert))}}
+\end{table}

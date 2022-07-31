@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: timereportw
+# key: timereportw
+# --
+#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 5 :block $0 :fileskip0 t :indent t  :formula % :sort (3 . ?T)
+#+END:

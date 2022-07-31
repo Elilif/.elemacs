@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: fields
+# key: fields
+# --
+title,authors,formats,isbn,pubdate,publisher,tags,languages

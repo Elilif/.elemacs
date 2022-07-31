@@ -31,18 +31,16 @@
 ;;; Code:
 
 ;;; themes.
-(elemacs-require-package 'doom-themes)
-(load-theme 'doom-one-light t)
-(setq doom-one-light-brighter-comments t)
-(setq doom-one-light-brighter-modeline t)
-(setq doom-one-light-padded-modeline nil)
+(setq custom-theme-directory "~/.elemacs/themes/")
+(load-theme 'mindre t)
 
+;;; posframe
+(elemacs-require-package 'posframe)
 
 ;;; modeline.
-(elemacs-require-package 'doom-modeline)
-(add-hook 'after-init-hook 'doom-modeline-mode)
+(elemacs-require-package 'mood-line)
+(add-hook 'after-init-hook 'mood-line-mode)
 (column-number-mode 1)
-
 
 ;;; programing.
 (elemacs-require-package 'rainbow-delimiters)

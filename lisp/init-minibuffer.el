@@ -102,9 +102,10 @@
   (marginalia-mode))
 
 (elemacs-require-package 'consult)
+(keymap-global-set "C-s" #'consult-line)
+(keymap-global-set "C-x C-r" #'consult-recent-file)
 (with-eval-after-load 'vertico
   (require 'consult)
-  (keymap-global-set "C-s" #'consult-line)
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 

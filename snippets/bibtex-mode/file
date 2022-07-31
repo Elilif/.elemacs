@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: filepath
+# key: fp
+# --
+formats = "pdf",
+file = {${1:$$(unless yas-modified-p  (find-file-read-args "Find file: " (confirm-nonexistent-file-or-buffer)))}},$0

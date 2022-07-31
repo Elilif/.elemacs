@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: digit
+# key: [d
+# --
+[[:digit:]]

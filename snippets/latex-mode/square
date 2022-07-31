@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: square
+# key: squ
+# group: math
+# condition: (and (texmathp) (quote auto))
+# --
+`(backward-delete-char 1)`^2
