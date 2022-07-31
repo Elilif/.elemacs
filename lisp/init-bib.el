@@ -58,13 +58,11 @@
                       (car citar-notes-paths)))
            (buffer (find-file filepath)))
       (with-current-buffer buffer
-	(setq eli-tes note-meta)
 	;; This just overrides other template insertion.
 	(erase-buffer)
 	(citar-org-roam-make-preamble key)
 	(insert "#+title: ")
-	(when template (insert (replace-regexp-in-string ":/home.*:PDF" (car (citar-get-files key)) note-meta)))
-	)))
+	(when template (insert (replace-regexp-in-string ":/home.*:PDF" (car (gethash key (citar-get-files key))) note-meta))))))
 
   (setq citar-templates
 	'((main . "${author:30}     ${date year issued:4}     ${title:48}")
