@@ -31,7 +31,8 @@
 ;;; Code:
 
 (elemacs-require-package 'mpv)
-(setq eli/bibliography '("/home/eli/Documents/Books/catalog.bib"))
+(setq eli/bibliography '("/home/eli/Documents/Books/catalog.bib"
+                         "/home/eli/Documents/Theses/references.bib"))
 
 (with-eval-after-load 'org
   (require 'oc-csl)
