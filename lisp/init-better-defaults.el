@@ -29,6 +29,20 @@
 ;;
 
 ;;; Code:
+;; No scroll bars
+(if (fboundp 'scroll-bar-mode) (set-scroll-bar-mode nil))
+
+;; No toolbar
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
+;; No menu bar
+(menu-bar-mode -1)
+
+;; No tabs
+(setq-default indent-tabs-mode nil)
+
+;; Tab.space equivalence
+(setq-default tab-width 4)
 
 ;; pdf cache setting
 (setq image-cache-eviction-delay 60)
