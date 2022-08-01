@@ -48,5 +48,9 @@
 	kind-icon-blend-frac 0.08)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
+
+(elemacs-require-package 'cape)
+(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+(add-to-list 'completion-at-point-functions #'cape-file)
 (provide 'init-corfu)
 ;;; init-corfu.el ends here.
