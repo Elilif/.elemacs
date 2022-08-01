@@ -44,7 +44,7 @@
 (elemacs-require-package 'embark)
 (with-eval-after-load 'vertico
   (keymap-global-set "C-." #'embark-act)
-  (keymap-global-set "M-." #'embark-dwin)
+  (keymap-global-set "M-." #'embark-dwim)
   (keymap-global-set "C-h B" #'embark-bindings)
 
   (setq prefix-help-command #'embark-prefix-help-command))
@@ -104,6 +104,9 @@
 (elemacs-require-package 'consult)
 (keymap-global-set "C-s" #'consult-line)
 (keymap-global-set "C-x C-r" #'consult-recent-file)
+(keymap-global-set "C-c \\" #'consult-register)
+(keymap-global-set "C-c -" #'consult-register-load)
+(keymap-global-set "C-c =" #'consult-register-store)
 (with-eval-after-load 'vertico
   (require 'consult)
   (setq xref-show-xrefs-function #'consult-xref
