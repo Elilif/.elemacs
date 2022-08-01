@@ -50,8 +50,8 @@
     '(;; Basic
       (bg-main . "#F5F5F5")
       (fg-main . "#2e3338")
-      (bg-active . "#edeff0")
-      (bg-inactive . "#e3e5e8")
+      (bg-active . "#f2f3f5")
+      (bg-inactive . "#ebeced")
       (black . "#000000")
       (black-alt . "#171A1C")
       (gray . "#CFD8DC")
@@ -59,7 +59,7 @@
       (gray-silver . "#B0BEC5")
       ;; (purple . "#5c3e99")
       (purple . "#980abf")
-      (green . "#16524F")
+      (green . "#249674")
       (green-faint . "#537469")
       ;; (yellow-dark . "#54433a")
       (yellow-dark . "#a15a35")
@@ -175,6 +175,16 @@
   "Face used to dim parentheses."
   :group nil)
 
+;; set org-checkbox-done-text face
+(defface org-checkbox-done-text nil
+  "Face for the text part of a checked org-mode checkbox."
+  :group nil)
+
+(font-lock-add-keywords 'org-mode
+                        '(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
+                           1 'org-checkbox-done-text prepend))
+                        'append)
+
 (defun mindre--font-lock-add-paren ()
   "Make Lisp parentheses faded."
   (font-lock-add-keywords nil '(("(\\|)" . 'mindre-paren-face))))
@@ -271,7 +281,7 @@ Takes care of adding or removing hooks when the
     `(mindre-critical-i ((t (:foreground ,red))))
 
     `(mindre-heading-1 ((t (:inherit mindre-strong :height ,mindre-heading-1-height))))
-    `(mindre-block ((t (:background ,bg-active :foreground ,fg-main :extend t))))
+    `(mindre-block ((t (:background ,bg-inactive :foreground ,fg-main :extend t))))
 
     `(mindre-border ((t (:foreground ,gray-light :box (:color ,gray-silver :line-width 1)))))
 
@@ -297,7 +307,7 @@ Takes care of adding or removing hooks when the
     '(region ((t (:inherit highlight))))
     '(fringe ((t (:inherit mindre-faded))))
     '(hl-line ((t (:inherit mindre-subtle))))
-    '(link ((t (:inherit mindre-keyword :underline t))))
+    `(link ((t (:foreground ,black :underline t))))
 
     ;; --- Semantic -----------------------------------------------------
     '(shadow ((t (:inherit mindre-faded))))
@@ -600,7 +610,7 @@ Takes care of adding or removing hooks when the
     ;; --- Org agenda ---------------------------------------------------
     '(org-agenda-calendar-event ((t (:inherit mindre-default))))
     '(org-agenda-calendar-sexp ((t (:inherit mindre-keyword))))
-    '(org-agenda-clocking ((t (:inherit mindre-faded))))
+    '(org-agenda-clocking ((t (:inherit mindre-verbatim))))
     '(org-agenda-column-dateline ((t (:inherit mindre-faded))))
     '(org-agenda-current-time ((t (:inherit mindre-strong))))
     '(org-agenda-date ((t (:inherit mindre-keyword))))
@@ -639,6 +649,7 @@ Takes care of adding or removing hooks when the
     ;; 				       :extend t))))
 
     '(org-checkbox ((t (:inherit (mindre-default)))))
+    '(org-checkbox-done-text ((t (:inherit (mindre-faded)))))
     '(org-checkbox-statistics-done ((t (:inherit (mindre-faded)))))
     '(org-checkbox-statistics-todo ((t (:inherit (mindre-default)))))
     '(org-clock-overlay ((t (:inherit mindre-faded))))
@@ -651,7 +662,7 @@ Takes care of adding or removing hooks when the
     '(org-default ((t (:inherit mindre-faded))))
     '(org-document-info ((t (:inherit mindre-faded))))
     '(org-document-info-keyword ((t (:inherit (mindre-faded fixed-pitch)))))
-    '(org-document-title ((t (:inherit mindre-strong :height 1.8 :weight semibold))))
+    '(org-document-title ((t (:inherit mindre-strong :weight semibold))))
     '(org-done ((t (:inherit mindre-faded))))
     '(org-drawer ((t (:inherit (mindre-faded fixed-pitch)))))
     '(org-ellipsis ((t (:inherit mindre-faded))))
@@ -671,7 +682,7 @@ Takes care of adding or removing hooks when the
     `(org-level-7 ((t (:inherit mindre-strong))))
     `(org-level-8 ((t (:inherit mindre-strong))))
     `(org-link ((t (:inherit link))))
-    '(org-list-dt ((t (:inherit mindre-faded))))
+    '(org-list-dt ((t (:inherit mindre-keyword))))
     '(org-macro ((t (:inherit mindre-faded))))
     '(org-meta-line ((t (:inherit (mindre-faded fixed-pitch) :height 0.9))))
     '(org-mode-line-clock ((t (:inherit mindre-faded))))
@@ -907,6 +918,9 @@ Takes care of adding or removing hooks when the
     `(geiser-font-lock-autodoc-identifier ((t :inherit mindre-keyword)))
 
     ;; ---powierline--------------------------------------------------
+    '(powerline-active1 ((t (:inherit mode-line))))
+    '(powerline-active2 ((t (:inherit mode-line))))
+
     ;; --- Racket ----------------------------------------------------
     `(racket-keyword-argument-face ((t (:inherit mindre-keyword)))))))
 
