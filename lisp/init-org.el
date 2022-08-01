@@ -125,6 +125,7 @@
   )
 
 (with-eval-after-load 'org
+  (require 'org-protocol)
   (server-start))
 
 ;;; habits
@@ -701,8 +702,8 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 (elemacs-require-package 'org-mru-clock)
 (with-eval-after-load 'embark
   (add-hook 'minibuffer-setup-hook #'(lambda ()
-				       (require 'org-mru-clock)
-				       (org-mru-clock-embark-minibuffer-hook))))
+				                       (require 'org-mru-clock)
+				                       (org-mru-clock-embark-minibuffer-hook))))
 (with-eval-after-load 'org
   (setq org-mru-clock-capture-if-no-match '((".*" . "c"))
 	org-mru-clock-how-many 50
