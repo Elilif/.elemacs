@@ -112,6 +112,9 @@
 (keymap-global-set "C-c =" #'consult-register-store)
 (with-eval-after-load 'vertico
   (require 'consult)
+  (defun my/consult-org-file (&optional match)
+    (interactive)
+    (consult-org-heading match '(list org-agenda-file-inbox org-agenda-file-habit org-agenda-file-projects)))
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
