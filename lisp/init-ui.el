@@ -30,6 +30,12 @@
 
 ;;; Code:
 
+
+;;; layout
+(setq default-frame-alist
+      '((internal-border-width . 25)
+        (line-spacing . 5)))
+
 ;;; themes.
 (setq custom-theme-directory "~/.emacs.d/themes/")
 (load-theme 'mindre t)
