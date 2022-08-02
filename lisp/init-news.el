@@ -110,7 +110,7 @@ for confirmation when needed."
 (with-eval-after-load 'mu4e
   (setq smtpmail-smtp-user "eli.q.qian@gmail.com"
 	smtpmail-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-service 465
+	smtpmail-smtp-service 587
 	smtpmail-stream-type 'ssl)
   (setq send-mail-function 'smtpmail-send-it)
   (setq sendmail-program "/usr/bin/msmtp"
@@ -125,10 +125,7 @@ for confirmation when needed."
   (setq mail-user-agent 'mu4e-user-agent)
   (setq user-full-name "Eli Qian")
   (setq user-mail-address "eli.q.qian@gmail.com")
-  (setq mu4e-html2text-command 'mu4e-shr2text)
   (setq shr-use-colors nil)
-  (setq mu4e-view-show-images t)
-  (setq mu4e-view-prefer-html t)
   (setq mu4e-compose-format-flowed t)
   (setq mu4e-get-mail-command "proxychains mbsync -a"
 	mu4e-update-interval 600)
@@ -158,27 +155,7 @@ for confirmation when needed."
   (setq mu4e-view-show-addresses t)
   (setq message-citation-line-format "On %a, %b %d %Y, %f wrote:\n")
   (setq message-citation-line-function #'message-insert-formatted-citation-line)
-
-;;   ;; overlay the original `mu4e~view-make-urls-clickable' to  hide URLs
-;;   (defun mu4e~view-make-urls-clickable ()
-;;     "Turn things that look like URLs into clickable things.
-;; Also number them so they can be opened using `mu4e-view-go-to-url'."
-;;     (let ((num 0))
-;;       (save-excursion
-;; 	(setq mu4e~view-link-map ;; buffer local
-;;               (make-hash-table :size 32 :weakness nil))
-;; 	(goto-char (point-min))
-;; 	(while (re-search-forward mu4e~view-beginning-of-url-regexp nil t)
-;;           (let ((bounds (thing-at-point-bounds-of-url-at-point)))
-;;             (when bounds
-;;               (let* ((url (thing-at-point-url-at-point))
-;;                      (ov (make-overlay (car bounds) (cdr bounds))))
-;; 		(puthash (cl-incf num) url mu4e~view-link-map)
-;; 		(overlay-put ov 'after-string
-;;                              (propertize (format "\u200B[%d]" num)
-;; 					 'face 'mu4e-url-number-face))
-;; 		(overlay-put ov 'display "")
-;; 		)))))))
+  
   (keymap-set mu4e-headers-mode-map "f" #'eli/mu4e-search-filter-source)
   (keymap-set mu4e-headers-mode-map "!" #'mu4e-headers-mark-for-refile)
   (keymap-set mu4e-headers-mode-map "r" #'mu4e-headers-mark-for-read)
