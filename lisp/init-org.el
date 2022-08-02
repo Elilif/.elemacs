@@ -701,14 +701,27 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 ;; clock
 (elemacs-require-package 'org-mru-clock)
 (with-eval-after-load 'embark
-  (add-hook 'minibuffer-setup-hook #'(lambda ()
-				                       (require 'org-mru-clock)
-				                       (org-mru-clock-embark-minibuffer-hook))))
+  (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
 (with-eval-after-load 'org
+  (require 'org-mru-clock)
+  (defun org-mru-clock-goto (task)
+    "Go to buffer and position of the TASK (cons of description and marker)."
+    (interactive (progn
+                   (org-mru-clock-to-history)
+                   (list (org-mru-clock--completing-read))))
+    (let ((m (cdr task)))
+      (switch-to-buffer (org-base-buffer (marker-buffer m)))
+      (if (or (< m (point-min)) (> m (point-max))) (widen))
+      (goto-char m)
+      (org-show-entry)
+      (org-back-to-heading t)
+      (org-cycle-hide-drawers 'children)
+      (org-reveal)))
   (setq org-mru-clock-capture-if-no-match '((".*" . "c"))
-	org-mru-clock-how-many 50
-	org-mru-clock-files #'org-agenda-files
-	org-capture-templates-contexts '(("c" (org-mru-clock-capturing))))
+	    org-mru-clock-how-many 50
+        org-mru-clock-completing-read #'completing-read
+	    org-mru-clock-files #'org-agenda-files
+	    org-capture-templates-contexts '(("c" (org-mru-clock-capturing))))
   )
 
 (elemacs-require-package 'org-clock-convenience)
