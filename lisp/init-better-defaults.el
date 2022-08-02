@@ -413,5 +413,60 @@ create new one."
 	ledger-copy-transaction-insert-blank-line-after t)
   (setq-default ledger-occur-use-face-shown nil))
 
+
+;;; enable call emacs functions from outside
+;;; from https://isamert.net/2022/03/16/global-interactive-emacs-functions.html
+
+(defvar elemacs-global-interactive-defer-to-system-app nil)
+
+(defvar elemacs-global-interactive-commands '(org-mru-clock-in))
+
+
+(defun elemacs-global-interactive-system-read-string (prompt)
+  "Like `read-string' but use an Emacs independent system level app
+to get user input. You need to install `zenity'."
+  (string-trim
+   (shell-command-to-string
+    (format "zenity --entry --text='%s'" prompt))))
+
+(advice-add #'read-string :around #'(lambda (orig-fun prompt &rest args)
+                                      (if elemacs-global-interactive-defer-to-system-app
+                                          (elemacs-global-interactive-system-read-string prompt)
+                                        (apply orig-fun prompt args))))
+
+(defun elemacs-global-interactive-dmenu (prompt items &rest ignored)
+  "Like `completing-read' but instead use dmenu.
+Useful for system-wide scripts."
+  (with-temp-buffer
+    (thread-first
+      (cond
+       ((functionp items)
+        (funcall items "" nil t))
+       ((listp (car items))
+        (mapcar #'car items))
+       (t
+        items))
+      (string-join "\n")
+      string-trim
+      insert)
+    (shell-command-on-region
+     (point-min)
+     (point-max)
+     (pcase system-type
+       ('gnu/linux (format "rofi -dmenu -fuzzy -i -p '%s' -theme $HOME/.config/rofi/carbonized/config.rasi" prompt))
+       ('darwin "choose"))
+     nil t "*elemacs-global-interactive-dmenu error*" nil)
+    (string-trim (buffer-string))))
+
+(defun elemacs-global-interactive-run ()
+  "enable selecting a functions from `elemacs-global-interactive-commands' and call it."
+  (let*
+      ((completing-read-function #'elemacs-global-interactive-dmenu)
+       (elemacs-global-interactive-defer-to-system-app t)
+       (candidates (mapcar #'symbol-name  elemacs-global-interactive-commands))
+       (selected-item (completing-read "Select: " candidates)))
+    (unless (string-empty-p selected-item)
+      (funcall (intern selected-item)))))
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
