@@ -53,6 +53,9 @@
 ;; set fill column
 (setq-default fill-column 80)
 
+;; use system trash
+(setq delete-by-moving-to-trash t)
+
 ;; open customize group buffers in one buffer
 (defadvice custom-buffer-create (before my-advice-custom-buffer-create)
   "Exit the current Customize buffer before creating a new one, unless there are modified widgets."
