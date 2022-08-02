@@ -59,10 +59,10 @@
       (gray-silver . "#B0BEC5")
       ;; (purple . "#5c3e99")
       (purple . "#980abf")
-      (green . "#249674")
+      (green . "#1a6360")
       (green-faint . "#537469")
       ;; (yellow-dark . "#54433a")
-      (yellow-dark . "#a15a35")
+      (yellow-dark . "#8a573e")
       (red . "#9E0000")
       (orange . "#d47500"))))
 
