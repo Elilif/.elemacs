@@ -179,11 +179,11 @@
 (keymap-global-set "C-'" #'avy-goto-char)
 (keymap-global-set "C-\"" #'avy-goto-char-near-point)
 
+(elemacs-require-package 'ace-window)
 (add-to-list 'load-path "~/.emacs.d/site-lisp/pinyinlib/")
 (add-to-list 'load-path "~/.emacs.d/site-lisp/ace-pinyin/")
-(add-hook 'elemacs-first-file-hook #'(lambda ()
-				       (require 'ace-pinyin)
-				       (ace-pinyin-global-mode)))
+(autoload 'ace-pinyin-global-mode "ace-pinyin")
+(add-hook 'elemacs-first-input-hook #'ace-pinyin-global-mode)
 
 (elemacs-require-package 'grab-x-link)
 
@@ -196,9 +196,8 @@
 
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/auto-save/")
-(add-hook 'elemacs-first-input-hook #' (lambda ()
-					(require 'auto-save)
-					(auto-save-enable)))
+(autoload #'auto-save-enable "auto-save")
+(add-hook 'elemacs-first-input-hook #'auto-save-enable)
 (with-eval-after-load 'auto-save
   (setq auto-save-silent t)   ; quietly save
   (setq auto-save-delete-trailing-whitespace t)
@@ -381,8 +380,8 @@ create new one."
 ;; Chinese calendar
 ;; `pC' can show lunar details
 (elemacs-require-package 'cal-china-x)
+(autoload #'cal-china-x-setup "cal-china-x")
 (with-eval-after-load 'calendar
-  (require 'cal-china-x)
   (cal-china-x-setup)
   ;; Holidays
   (setq calendar-mark-holidays-flag t

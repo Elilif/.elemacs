@@ -44,7 +44,8 @@
 (elemacs-require-package 'posframe)
 
 ;;; modeline.
-(elemacs-require-package 'mood-line)
+(add-to-list 'load-path "~/.emacs.d/site-lisp/mood-line/")
+(autoload 'mood-line-mode "mood-line")
 (add-hook 'after-init-hook 'mood-line-mode)
 (column-number-mode 1)
 
