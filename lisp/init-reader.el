@@ -56,9 +56,8 @@
   (define-key pdf-view-mode-map (kbd "v") #'+pdf-keyboard-select-region))
 
 (elemacs-require-package 'saveplace-pdf-view)
-(with-eval-after-load 'saveplace-pdf-view
-  (advice-add 'save-place-find-file-hook :around #'saveplace-pdf-view-find-file-advice)
-  (advice-add 'save-place-to-alist :around #'saveplace-pdf-view-to-alist-advice))
+(with-eval-after-load 'pdf-tools
+  (require 'saveplace-pdf-view))
 
 (elemacs-require-package 'org-noter)
 (with-eval-after-load 'org
