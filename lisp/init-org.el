@@ -112,8 +112,8 @@
 					 ("#+END_SRC" . "□")
 					 ("#+begin_src" . "✎")
 					 ("#+end_src" . "□")
-					 ("[ ]" . "☐")
-					 ("[X]" . "☑")
+					 ("[ ]" . "🞎")
+					 ("[X]" . "🗹")
 					 ("#+begin_quote" . "»")
 					 ("#+end_quote" . "«")
 					 ("#+begin_verse" . "ζ")
@@ -276,6 +276,7 @@ This list represents a \"habit\" for the rest of this module."
 (keymap-global-set "C-c c" #'org-capture)
 (with-eval-after-load 'org
   (keymap-set org-mode-map "C-c C-l" #'org-insert-link)
+  (keymap-set org-mode-map "<remap> <org-cycle-agenda-files>" #'avy-goto-char)
   (keymap-set org-mode-map "C-<tab>" #'eli/org-expand-all))
 
 
