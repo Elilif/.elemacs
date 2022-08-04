@@ -155,10 +155,39 @@ for confirmation when needed."
   (setq mu4e-view-show-addresses t)
   (setq message-citation-line-format "On %a, %b %d %Y, %f wrote:\n")
   (setq message-citation-line-function #'message-insert-formatted-citation-line)
-  
+
   (keymap-set mu4e-headers-mode-map "f" #'eli/mu4e-search-filter-source)
   (keymap-set mu4e-headers-mode-map "!" #'mu4e-headers-mark-for-refile)
   (keymap-set mu4e-headers-mode-map "r" #'mu4e-headers-mark-for-read)
+
+  ;; override original `mu4e~view-activate-urls'
+  (defun mu4e~view-activate-urls ()
+    "Turn things that look like URLs into clickable things.
+Also number them so they can be opened using `mu4e-view-go-to-url'."
+    (let ((num 0))
+      (save-excursion
+        (setq mu4e~view-link-map ;; buffer local
+	          (make-hash-table :size 32 :weakness nil))
+        (goto-char (point-min))
+        (while (re-search-forward mu4e~view-beginning-of-url-regexp nil t)
+	      (let ((bounds (thing-at-point-bounds-of-url-at-point)))
+	        (when bounds
+	          (let* ((url (thing-at-point-url-at-point))
+		             (ov (make-overlay (car bounds) (cdr bounds))))
+	            (puthash (cl-incf num) url mu4e~view-link-map)
+	            (add-text-properties
+	             (car bounds)
+	             (cdr bounds)
+	             `(face mu4e-link-face
+		                mouse-face highlight
+		                mu4e-url ,url
+		                keymap ,mu4e-view-active-urls-keymap
+		                help-echo
+		                "[mouse-1] or [M-RET] to open the link"))
+	            (overlay-put ov 'invisible t)
+	            (overlay-put ov 'after-string
+			                 (propertize (format "\u200B[%d]" num)
+				                         'face 'mu4e-url-number-face)))))))))
   )
 
 
