@@ -63,7 +63,7 @@
   (progn
     ;; Setting English Font
     ;; (set-face-attribute 'default nil :font "Source Code Pro 13")
-    (set-face-attribute 'default nil :font "Cascadia Code 13")
+    (set-face-attribute 'default nil :font "Cascadia Mono 13")
     ;; Chinese fonts
     (dolist (charset '(kana han cjk-misc bopomofo))
       (set-fontset-font (frame-parameter nil 'font) charset
