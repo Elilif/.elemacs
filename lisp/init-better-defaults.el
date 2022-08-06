@@ -29,6 +29,10 @@
 ;;
 
 ;;; Code:
+
+;; disable large file warning
+(setq large-file-warning-threshold nil)
+
 ;; No scroll bars
 (if (fboundp 'scroll-bar-mode) (set-scroll-bar-mode nil))
 
