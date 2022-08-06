@@ -38,6 +38,7 @@
 	corfu-separator ?\s
 	corfu-max-width 150
 	corfu-auto-prefix 3
+    corfu-excluded-modes '(org-mode)
 	corfu-on-exact-match nil))
 
 (elemacs-require-package 'kind-icon)
