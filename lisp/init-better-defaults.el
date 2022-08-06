@@ -426,8 +426,7 @@ create new one."
 
 (defvar elemacs-global-interactive-defer-to-system-app nil)
 
-(defvar elemacs-global-interactive-commands '(org-mru-clock-in
-                                              elemacs-global-interactive--capture))
+(defvar elemacs-global-interactive-commands nil)
 
 
 (defun elemacs-global-interactive-system-read-string (prompt)
@@ -495,6 +494,9 @@ Useful for system-wide scripts."
                                (completing-read "Input: " nil))))
     (when (and key (not (string-empty-p org-capture-initial)))
       (org-capture nil key))))
+
+(setq elemacs-global-interactive-commands '(org-mru-clock-in
+                                            elemacs-global-interactive--capture))
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
