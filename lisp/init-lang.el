@@ -31,14 +31,14 @@
 ;;; Code:
 (elemacs-require-package 'yasnippet)
 (add-hook 'elemacs-first-file-hook #'yas-global-mode)
-(with-eval-after-load 'yasnippet
-  (defun my/yas-try-expanding-auto-snippets ()
-    (when (bound-and-true-p yas-minor-mode)
-      (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
-	(yas-expand))))
+;; (with-eval-after-load 'yasnippet
+;;   (defun my/yas-try-expanding-auto-snippets ()
+;;     (when (bound-and-true-p yas-minor-mode)
+;;       (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+;; 	(yas-expand))))
 
-  ;; Try after every insertion
-  (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets))
+;;   ;; Try after every insertion
+;;   (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets))
 
 (elemacs-require-package 'auto-yasnippet)
 
