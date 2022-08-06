@@ -732,7 +732,10 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 	    org-mru-clock-how-many 50
         org-mru-clock-completing-read #'completing-read
 	    org-mru-clock-files #'org-agenda-files
-	    org-capture-templates-contexts '(("c" (org-mru-clock-capturing))))
+	    org-capture-templates-contexts '(("c" (org-mru-clock-capturing))
+                                         ("1" (elemacs-global-interactive-capture))
+                                         ("2" (elemacs-global-interactive-capture))
+                                         ))
   )
 
 (elemacs-require-package 'org-clock-convenience)

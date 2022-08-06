@@ -426,7 +426,8 @@ create new one."
 
 (defvar elemacs-global-interactive-defer-to-system-app nil)
 
-(defvar elemacs-global-interactive-commands '(org-mru-clock-in))
+(defvar elemacs-global-interactive-commands '(org-mru-clock-in
+                                              elemacs-global-interactive--capture))
 
 
 (defun elemacs-global-interactive-system-read-string (prompt)
@@ -474,6 +475,24 @@ Useful for system-wide scripts."
        (selected-item (completing-read "Select: " candidates)))
     (unless (string-empty-p selected-item)
       (funcall (intern selected-item)))))
+
+
+;;; support call org-capture from outside.
+(defvar elemacs-global-interactive-capture-p nil
+  "Non-nil if call `org-capture' through `elemacs-global-interactive--capture'.")
+
+(defun elemacs-global-interactive-capture ()
+  "For use as an `org-capture-templates-contexts'."
+  elemacs-global-interactive-capture-p)
+
+(defun elemacs-global-interactive--capture ()
+  "Call `org-capture' from outside."
+  (let* ((key-alist '(("Note" . "1")
+                      ("TODO" . "2")))
+         (key (cdr (assoc (completing-read "Input: " '("Note" "TODO")) key-alist)))
+         (elemacs-global-interactive-capture-p t)
+         (org-capture-initial (read-string "Input:")))
+    (org-capture nil key)))
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
