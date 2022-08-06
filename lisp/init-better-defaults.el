@@ -491,8 +491,10 @@ Useful for system-wide scripts."
                       ("TODO" . "2")))
          (key (cdr (assoc (completing-read "Input: " '("Note" "TODO")) key-alist)))
          (elemacs-global-interactive-capture-p t)
-         (org-capture-initial (read-string "Input:")))
-    (org-capture nil key)))
+         (org-capture-initial (when key
+                               (completing-read "Input: " nil))))
+    (when (and key (not (string-empty-p org-capture-initial)))
+      (org-capture nil key))))
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
