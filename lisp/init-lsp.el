@@ -73,25 +73,25 @@
     (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
            (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
       `(progn
-	 (defun ,intern-pre (info)
+	     (defun ,intern-pre (info)
            (setq buffer-file-name (or (->> info caddr (alist-get :file))
                                       "org-src-babel.tmp"))
            (pcase centaur-lsp
              ('eglot
               (when (fboundp 'eglot-ensure)
-		(eglot-ensure)))
+		        (eglot-ensure)))
              ('lsp-mode
               (when (fboundp 'lsp-deferred)
-		;; Avoid headerline conflicts
-		(setq-local lsp-headerline-breadcrumb-enable nil)
-		(lsp-deferred)))
+		        ;; Avoid headerline conflicts
+		        (setq-local lsp-headerline-breadcrumb-enable nil)
+		        (lsp-deferred)))
              (_
               (user-error "LSP:: invalid `centaur-lsp' type"))))
-	 (put ',intern-pre 'function-documentation
+	     (put ',intern-pre 'function-documentation
               (format "Enable `%s' in the buffer of org source block (%s)."
                       centaur-lsp (upcase ,lang)))
 
-	 (if (fboundp ',edit-pre)
+	     (if (fboundp ',edit-pre)
              (advice-add ',edit-pre :after ',intern-pre)
            (progn
              (defun ,edit-pre (info)
@@ -110,10 +110,11 @@
 (add-hook 'lsp-mode-hook #'lsp-ui-mode)
 (with-eval-after-load 'lsp-mode
   (setq lsp-ui-sideline-show-hover t
-	lsp-ui-sideline-ignore-duplicate t
-	lsp-ui-sideline-show-diagnostics t
-	lsp-ui-sideline-show-code-actions t
-	lsp-ui-doc-show-with-cursor t))
+	    lsp-ui-sideline-ignore-duplicate t
+        lsp-ui-doc-enable nil
+	    lsp-ui-sideline-show-diagnostics t
+	    lsp-ui-sideline-show-code-actions t
+	    lsp-ui-doc-show-with-cursor t))
 
 
 (provide 'init-lsp)

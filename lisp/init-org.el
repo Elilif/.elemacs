@@ -109,18 +109,19 @@
 		(sequence "WAITING(w@/!)" "NEXT(n!/!)" "SOMEDAY(S)" "|" "CANCELLED(c@/!)"))))
 
   (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "✎")
-					 ("#+END_SRC" . "□")
-					 ("#+begin_src" . "✎")
-					 ("#+end_src" . "□")
-					 ("[ ]" . "🞎")
-					 ("[X]" . "🗹")
-					 ("#+begin_quote" . "»")
-					 ("#+end_quote" . "«")
-					 ("#+begin_verse" . "ζ")
-					 ("#+end_verse" . "ζ")
-					 ("#+begin_example" . "")
-					 ("#+end_example" . "")
-					 ))
+					                     ("#+END_SRC" . "□")
+					                     ("#+begin_src" . "✎")
+					                     ("#+end_src" . "□")
+					                     ("[ ]" . "🞎")
+                                         ("[-]" . "🞔")
+					                     ("[X]" . "🗹")
+					                     ("#+begin_quote" . "»")
+					                     ("#+end_quote" . "«")
+					                     ("#+begin_verse" . "ζ")
+					                     ("#+end_verse" . "ζ")
+					                     ("#+begin_example" . "")
+					                     ("#+end_example" . "")
+					                     ))
   (setq org-ellipsis "▼")
   )
 
@@ -151,118 +152,118 @@ This list represents a \"habit\" for the rest of this module."
       (if pom (goto-char pom))
       (cl-assert (org-is-habit-p (point)))
       (let* ((scheduled (org-get-scheduled-time (point)))
-	     (scheduled-repeat (org-get-repeat (org-entry-get (point) "SCHEDULED")))
-	     (end (org-entry-end-position))
-	     (habit-entry (org-no-properties (nth 4 (org-heading-components))))
-	     closed-dates deadline dr-days sr-days sr-type)
-	(if scheduled
-	    (setq scheduled (time-to-days scheduled))
-	  (error "Habit %s has no scheduled date" habit-entry))
-	(unless scheduled-repeat
-	  (error
-	   "Habit `%s' has no scheduled repeat period or has an incorrect one"
-	   habit-entry))
-	(setq sr-days (org-habit-duration-to-days scheduled-repeat)
-	      sr-type (progn (string-match "[\\.+]?\\+" scheduled-repeat)
-			     (match-string-no-properties 0 scheduled-repeat)))
-	(unless (> sr-days 0)
-	  (error "Habit %s scheduled repeat period is less than 1d" habit-entry))
-	(when (string-match "/\\([0-9]+[dwmy]\\)" scheduled-repeat)
-	  (setq dr-days (org-habit-duration-to-days
-			 (match-string-no-properties 1 scheduled-repeat)))
-	  (if (<= dr-days sr-days)
-	      (error "Habit %s deadline repeat period is less than or equal to scheduled (%s)"
-		     habit-entry scheduled-repeat))
-	  (setq deadline (+ scheduled (- dr-days sr-days))))
-	(org-back-to-heading t)
-	(let* ((maxdays 99999)
-	       (reversed org-log-states-order-reversed)
-	       (search (if reversed 're-search-forward 're-search-backward))
-	       (limit (if reversed end (point)))
-	       (count 0)
-	       (re (format
-		    "^[ \t]*-[ \t]+\\(?:State \"%s\".*%s%s\\)"
-		    (regexp-opt org-done-keywords)
-		    org-ts-regexp-inactive
-		    (let ((value (cdr (assq 'done org-log-note-headings))))
-		      (if (not value) ""
-			(concat "\\|"
-				(org-replace-escapes
-				 (regexp-quote value)
-				 `(("%d" . ,org-ts-regexp-inactive)
-				   ("%D" . ,org-ts-regexp)
-				   ("%s" . "\"\\S-+\"")
-				   ("%S" . "\"\\S-+\"")
-				   ("%t" . ,org-ts-regexp-inactive)
-				   ("%T" . ,org-ts-regexp)
-				   ("%u" . ".*?")
-				   ("%U" . ".*?")))))))))
-	  (unless reversed (goto-char end))
-	  (while (and (< count maxdays) (funcall search re limit t))
-	    (push (time-to-days
-		   (org-time-string-to-time
-		    (or (match-string-no-properties 1)
-			(match-string-no-properties 2))))
-		  closed-dates)
-	    (setq count (1+ count))))
-	(list scheduled sr-days deadline dr-days closed-dates sr-type))))
+	         (scheduled-repeat (org-get-repeat (org-entry-get (point) "SCHEDULED")))
+	         (end (org-entry-end-position))
+	         (habit-entry (org-no-properties (nth 4 (org-heading-components))))
+	         closed-dates deadline dr-days sr-days sr-type)
+	    (if scheduled
+	        (setq scheduled (time-to-days scheduled))
+	      (error "Habit %s has no scheduled date" habit-entry))
+	    (unless scheduled-repeat
+	      (error
+	       "Habit `%s' has no scheduled repeat period or has an incorrect one"
+	       habit-entry))
+	    (setq sr-days (org-habit-duration-to-days scheduled-repeat)
+	          sr-type (progn (string-match "[\\.+]?\\+" scheduled-repeat)
+			                 (match-string-no-properties 0 scheduled-repeat)))
+	    (unless (> sr-days 0)
+	      (error "Habit %s scheduled repeat period is less than 1d" habit-entry))
+	    (when (string-match "/\\([0-9]+[dwmy]\\)" scheduled-repeat)
+	      (setq dr-days (org-habit-duration-to-days
+			             (match-string-no-properties 1 scheduled-repeat)))
+	      (if (<= dr-days sr-days)
+	          (error "Habit %s deadline repeat period is less than or equal to scheduled (%s)"
+		             habit-entry scheduled-repeat))
+	      (setq deadline (+ scheduled (- dr-days sr-days))))
+	    (org-back-to-heading t)
+	    (let* ((maxdays 99999)
+	           (reversed org-log-states-order-reversed)
+	           (search (if reversed 're-search-forward 're-search-backward))
+	           (limit (if reversed end (point)))
+	           (count 0)
+	           (re (format
+		            "^[ \t]*-[ \t]+\\(?:State \"%s\".*%s%s\\)"
+		            (regexp-opt org-done-keywords)
+		            org-ts-regexp-inactive
+		            (let ((value (cdr (assq 'done org-log-note-headings))))
+		              (if (not value) ""
+			            (concat "\\|"
+				                (org-replace-escapes
+				                 (regexp-quote value)
+				                 `(("%d" . ,org-ts-regexp-inactive)
+				                   ("%D" . ,org-ts-regexp)
+				                   ("%s" . "\"\\S-+\"")
+				                   ("%S" . "\"\\S-+\"")
+				                   ("%t" . ,org-ts-regexp-inactive)
+				                   ("%T" . ,org-ts-regexp)
+				                   ("%u" . ".*?")
+				                   ("%U" . ".*?")))))))))
+	      (unless reversed (goto-char end))
+	      (while (and (< count maxdays) (funcall search re limit t))
+	        (push (time-to-days
+		           (org-time-string-to-time
+		            (or (match-string-no-properties 1)
+			            (match-string-no-properties 2))))
+		          closed-dates)
+	        (setq count (1+ count))))
+	    (list scheduled sr-days deadline dr-days closed-dates sr-type))))
 
   (defun eli-habit-streaks (habit)
     (interactive)
     (let ((closed-days (nth 4 habit))
-	  (counter 1)
-	  (sum (length (nth 4 habit)))
-	  (streaks 1)
-	  (current-streaks 0)
-	  (today (time-to-days (current-time)))
-	  (max-streaks 1)
-	  )
+	      (counter 1)
+	      (sum (length (nth 4 habit)))
+	      (streaks 1)
+	      (current-streaks 0)
+	      (today (time-to-days (current-time)))
+	      (max-streaks 1)
+	      )
       (while (< counter (length closed-days))
-	(if (= (time-convert (time-subtract (nth  counter closed-days) (nth (1- counter) closed-days)) 'integer) 1)
-	    (progn (setq streaks (1+ streaks)))
-	  (if (> streaks max-streaks)
-	      (progn (setq max-streaks streaks)
-		     (setq streaks 1)))
-	  )
-	(setq counter (1+ counter)))
+	    (if (= (time-convert (time-subtract (nth  counter closed-days) (nth (1- counter) closed-days)) 'integer) 1)
+	        (progn (setq streaks (1+ streaks)))
+	      (if (> streaks max-streaks)
+	          (progn (setq max-streaks streaks)
+		             (setq streaks 1)))
+	      )
+	    (setq counter (1+ counter)))
       (setq counter (1- counter))
       (if (= (time-convert (time-subtract today (nth counter closed-days)) 'integer) 1)
-	  (progn (setq current-streaks (1+ current-streaks))
-		 (while (= (time-convert (time-subtract (nth  counter closed-days) (nth (1- counter) closed-days)) 'integer) 1)
-		   (setq current-streaks (1+ current-streaks))
-		   (setq counter (1- counter)))
-		 )
+	      (progn (setq current-streaks (1+ current-streaks))
+		         (while (= (time-convert (time-subtract (nth  counter closed-days) (nth (1- counter) closed-days)) 'integer) 1)
+		           (setq current-streaks (1+ current-streaks))
+		           (setq counter (1- counter)))
+		         )
 
-	)
+	    )
       (if (> streaks max-streaks)
-	  (setq max-streaks streaks))
+	      (setq max-streaks streaks))
       (insert " (" (number-to-string current-streaks) "/" (number-to-string max-streaks) "/" (number-to-string sum) ")")
       ))
   (defun org-habit-insert-consistency-graphs (&optional line)
     "Insert consistency graph for any habitual tasks."
     (let ((inhibit-read-only t)
-	  (buffer-invisibility-spec '(org-link))
-	  (moment (org-time-subtract nil
-				     (* 3600 org-extend-today-until))))
+	      (buffer-invisibility-spec '(org-link))
+	      (moment (org-time-subtract nil
+				                     (* 3600 org-extend-today-until))))
       (save-excursion
-	(goto-char (if line (point-at-bol) (point-min)))
-	(while (not (eobp))
-	  (let ((habit (get-text-property (point) 'org-habit-p)))
-	    (when habit
-	      (move-to-column org-habit-graph-column t)
-	      (delete-char (min (+ 1 org-habit-preceding-days
-				   org-habit-following-days)
-				(- (line-end-position) (point))))
-	      (insert-before-markers
-	       (org-habit-build-graph
-		habit
-		(time-subtract moment (days-to-time org-habit-preceding-days))
-		moment
-		(time-add moment (days-to-time org-habit-following-days))))
-	      (end-of-line)
-	      (eli-habit-streaks habit)
-	      ))
-	  (forward-line))))))
+	    (goto-char (if line (point-at-bol) (point-min)))
+	    (while (not (eobp))
+	      (let ((habit (get-text-property (point) 'org-habit-p)))
+	        (when habit
+	          (move-to-column org-habit-graph-column t)
+	          (delete-char (min (+ 1 org-habit-preceding-days
+				                   org-habit-following-days)
+				                (- (line-end-position) (point))))
+	          (insert-before-markers
+	           (org-habit-build-graph
+		        habit
+		        (time-subtract moment (days-to-time org-habit-preceding-days))
+		        moment
+		        (time-add moment (days-to-time org-habit-following-days))))
+	          (end-of-line)
+	          (eli-habit-streaks habit)
+	          ))
+	      (forward-line))))))
 
 ;;; hooks
 (add-hook 'org-mode-hook #'org-indent-mode)
@@ -294,22 +295,22 @@ This list represents a \"habit\" for the rest of this module."
   (setq org-agenda-log-mode-add-notes nil)
 
   (setq org-agenda-custom-commands
-	'(("g" "GTD"
+	    '(("g" "GTD"
            ((agenda "" nil)
             (tags-todo  "/+TODO"
-			((org-agenda-overriding-header "Inbox")
-			 (org-tags-match-list-sublevels t)
-			 (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp))))
+			            ((org-agenda-overriding-header "Inbox")
+			             (org-tags-match-list-sublevels t)
+			             (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp))))
             (tags-todo "/+NEXT"
-		       ((org-agenda-overriding-header "Next")))
+		               ((org-agenda-overriding-header "Next")))
             (tags-todo "PROJECT|INBOX/+STARTED"
-		       ((org-agenda-overriding-header "Started")))
+		               ((org-agenda-overriding-header "Started")))
             (tags-todo "/+PROJECT"
-		       ((org-agenda-overriding-header "Projects")))
+		               ((org-agenda-overriding-header "Projects")))
             (tags-todo "/+WAITING"
-		       ((org-agenda-overriding-header "Waiting")))
+		               ((org-agenda-overriding-header "Waiting")))
             (tags-todo "/+SOMEDAY"
-		       ((org-agenda-overriding-header "Someday/Maybe")))
+		               ((org-agenda-overriding-header "Someday/Maybe")))
             ))))
 
 
@@ -322,15 +323,15 @@ This list represents a \"habit\" for the rest of this module."
           (file (buffer-file-name))
           (agenda (funcall (ad-get-orig-definition 'org-agenda-files)) ))
       (unless (member file agenda)
-	(if done
+	    (if done
             (save-excursion
               (goto-char (point-min))
               ;; Delete file from dynamic files when all TODO entry changed to DONE
               (unless (search-forward-regexp org-not-done-heading-regexp nil t)
-		(customize-save-variable
-		 'dynamic-agenda-files
-		 (cl-delete-if (lambda (k) (string= k file))
-			       dynamic-agenda-files))))
+		        (customize-save-variable
+		         'dynamic-agenda-files
+		         (cl-delete-if (lambda (k) (string= k file))
+			                   dynamic-agenda-files))))
           ;; Add this file to dynamic agenda files
           (unless (member file dynamic-agenda-files)
             (customize-save-variable 'dynamic-agenda-files
@@ -361,8 +362,8 @@ This list represents a \"habit\" for the rest of this module."
   (defun eli/capture-report-date-file ()
     (let ((name (read-string "Name: ")))
       (expand-file-name (format "%s-%s.org"
-				(format-time-string "%Y-%m-%d")
-				name) "~/Dropbox/org/blog")))
+				                (format-time-string "%Y-%m-%d")
+				                name) "~/Dropbox/org/blog")))
 
   ;; add a property to create id
   (defun eli/org-capture-maybe-create-id ()
@@ -375,13 +376,13 @@ This list represents a \"habit\" for the rest of this module."
     (let ((v-i (plist-get org-store-link-plist :initial)))
       (if (equal v-i "")
           ""
-	(concat "\n#+begin_quote\n" v-i "\n#+end_quote\n"))))
+	    (concat "\n#+begin_quote\n" v-i "\n#+end_quote\n"))))
 
   (defun v-a-or-nothing ()
     (let ((v-a (plist-get org-store-link-plist :annotation)))
       (if (equal v-a "")
           ""
-	(concat "- reference :: " v-a))))
+	    (concat "- reference :: " v-a))))
 
   ;; better fill region in capture
   (defun eli/fill-region ()
@@ -402,36 +403,45 @@ This list represents a \"habit\" for the rest of this module."
     (let ((hd (nth 2 (org-capture-get :target))))
       (goto-char (point-min))
       (if (re-search-forward
-	   (format org-complex-heading-regexp-format (regexp-quote hd))
-	   nil t)
-	  (goto-char (point-at-bol))
-	(goto-char 361)
-	(insert "\n")
-	(insert "* " hd "\n")
-	(beginning-of-line 0))))
+	       (format org-complex-heading-regexp-format (regexp-quote hd))
+	       nil t)
+	      (goto-char (point-at-bol))
+	    (goto-char 361)
+	    (insert "\n")
+	    (insert "* " hd "\n")
+	    (beginning-of-line 0))))
 
   (setq org-capture-templates
 	'(
-          ("t" "Todo" entry (file org-agenda-file-inbox)
-           "* TODO %?\n\n%i\n%U"
-           :empty-lines 0)
+      ("t" "Todo" entry (file org-agenda-file-inbox)
+       "* TODO %?\n\n%i\n%U"
+       :empty-lines 0)
 	  ("c" "Start-new" entry (file org-agenda-file-inbox)
-           "* TODO %i"
-           :empty-lines 0
+       "* TODO %i"
+       :empty-lines 0
 	   :immediate-finish t)
-          ("p" "Project" entry (file org-agenda-file-projects)
-           "* PROJECT %?"
-           :empty-lines 0)
-          ("h" "Habit" entry (file org-agenda-file-habit)
-           "* TODO %?\nSCHEDULED: <%(org-read-date nil nil \"+0d\") .+1d>\n:PROPERTIES:\n:STYLE:    habit\n:END:\n\n%U"
-           :empty-lines 0)
-          ("n" "Notes" entry (file+headline org-agenda-file-inbox "Notes")
-           "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)\n%U"
-           :empty-lines 0
+      ("1" "global notes" entry (file+headline org-agenda-file-inbox "Notes")
+       "* %i"
+       :prepend t
+       :empty-lines 0
+	   :immediate-finish t)
+      ("2" "global todo" entry (file org-agenda-file-inbox)
+       "* TODO %i"
+       :empty-lines 0
+	   :immediate-finish t)
+      ("p" "Project" entry (file org-agenda-file-projects)
+       "* PROJECT %?"
+       :empty-lines 0)
+      ("h" "Habit" entry (file org-agenda-file-habit)
+       "* TODO %?\nSCHEDULED: <%(org-read-date nil nil \"+0d\") .+1d>\n:PROPERTIES:\n:STYLE:    habit\n:END:\n\n%U"
+       :empty-lines 0)
+      ("n" "Notes" entry (file+headline org-agenda-file-inbox "Notes")
+       "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)\n%U"
+       :empty-lines 0
 	   :prepend t)
-          ("j" "Journals" entry (file+function org-agenda-file-journal org-reverse-datetree-goto-date-in-file)
-           "* %<%H:%M> %?"
-           :empty-lines 1
+      ("j" "Journals" entry (file+function org-agenda-file-journal org-reverse-datetree-goto-date-in-file)
+       "* %<%H:%M> %?"
+       :empty-lines 1
 	   :prepend t
 	   :clock-resume t
 	   :clock-in t
@@ -446,9 +456,9 @@ This list represents a \"habit\" for the rest of this module."
 	   "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6 :block %<%Y-%m-%d> :fileskip0 t :indent t :link t :formula % :sort (3 . ?T)\n#+END:"
 	   :empty-lines 0
 	   :jump-to-captured t)
-          ;; ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
-          ;;  "* %a \n%i \n%U"
-          ;;  :empty-lines 0)
+      ;; ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
+      ;;  "* %a \n%i \n%U"
+      ;;  :empty-lines 0)
 	  ("w" "Words" entry (file org-agenda-file-te)
 	   "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
 	   :jump-to-captured t)
@@ -469,7 +479,7 @@ This list represents a \"habit\" for the rest of this module."
 	  ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
 	   "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
 	   :create-id t)
-          ))
+      ))
   )
 
 ;;; time report
