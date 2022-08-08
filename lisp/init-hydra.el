@@ -361,9 +361,9 @@
   ("Playlists"
    (("e" emms)
     ;; ("g" emms-play-directory "open dir")
-    ("v" emms-playlist-mode-go "go to current")
+    ("a" consult-emms-library "add library")
     ("m" emms-metaplaylist-mode-go "metaplaylist")
-    ;; ("t" emms-play-directory-tree "play directory")
+    ("c" consult-emms-current-playlist "choose to play")
     )
    "Controls"
    (("n" emms-next "next" :exit nil)
@@ -382,7 +382,7 @@
     )
    "lyrics"
    (("l" lyrics-fetcher-show-lyrics "lyrics")
-    ("c" lyrics-fetcher-lyrics-catchup "lyrics catchup")
+    ("C" lyrics-fetcher-lyrics-catchup "lyrics catchup")
     ("t" emms-lyrics-toggle-display-on-minibuffer "toggle lyrics")
     )
    "Browser"

@@ -42,7 +42,6 @@
   (setq emms-player-list '(emms-player-mpv))
   ;; covers
   (setq emms-browser-covers #'emms-browser-cache-thumbnail-async)
-  (require 'emms-setup)
   (emms-all)
   (emms-history-load)
   (emms-mode-line-disable)
@@ -102,6 +101,11 @@
       (message "This function must be called in lyrics-fetcher-view-mode!")))
   (lyrics-fetcher-use-backend 'neteasecloud)
   (keymap-set lyrics-fetcher-view-mode-map "RET" #'lyrics-fetcher-neteasecloud-lyrics-jump))
+
+(add-to-list 'load-path "~/.emacs.d/site-lisp/consult-emms/")
+(with-eval-after-load 'emms
+  (require 'consult-emms)
+  (setq consult-emms--sort-album-function 'string<))
 
 (provide 'init-music)
 ;;; init-music.el ends here.
