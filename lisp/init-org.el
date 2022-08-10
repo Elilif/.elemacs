@@ -765,8 +765,8 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 (with-eval-after-load 'org-agenda
   (keymap-set org-agenda-mode-map "M-<up>" #'org-clock-convenience-timestamp-up)
   (keymap-set org-agenda-mode-map "M-<down>" #'org-clock-convenience-timestamp-down)
-  (keymap-set org-agenda-mode-map "<f6>" #'org-clock-convenience-fill-gap)
-  (keymap-set org-agenda-mode-map "<f7>" #'org-clock-convenience-fill-gap-both))
+  (keymap-set org-agenda-mode-map "<f9>" #'org-clock-convenience-fill-gap)
+  (keymap-set org-agenda-mode-map "<f10>" #'org-clock-convenience-fill-gap-both))
 
 ;; fix M-j
 (defun eli-org-fill-prefix ()
