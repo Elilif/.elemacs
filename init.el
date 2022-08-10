@@ -70,6 +70,7 @@
 (require 'init-spell)
 (require 'init-blog)
 (require 'init-music)
+(require 'init-finance)
 
 (defun eli/open-init-file()
   (interactive)
