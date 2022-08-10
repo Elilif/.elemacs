@@ -181,8 +181,8 @@
 	  :post (progn (setq which-key-inhibit nil) ))
   ("Actions"
    (("TAB" other-window "switch")
-    ("x" ace-delete-window "delete")
-    ("m" ace-delete-other-windows "maximize")
+    ("m" ace-delete-window "maximize")
+    ("x" ace-delete-other-windows "delete")
     ("s" ace-swap-window "swap")
     ("a" ace-select-window "select"))
 
