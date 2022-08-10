@@ -91,7 +91,18 @@
   (setq org-hide-block-startup t)
   (setq org-hide-emphasis-markers t)
   (elemacs-require-package 'org-appear)
+
+  ;;; org babel
   (setq org-confirm-babel-evaluate nil)
+  (setq org-babel-load-languages '((emacs-lisp . t)
+                                   (shell . t)
+                                   (C. t)))
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((emacs-lisp . t)
+                                 (shell . t)
+                                 (C . t)))
+
+
   (setq org-startup-with-inline-images t)
   ;; renumbering and sorting footnotes automatically after each deletion or insertion
   (defun eli/clock-in-to-nest (kw)
