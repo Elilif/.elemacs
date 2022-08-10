@@ -39,30 +39,30 @@
   (defun org-cycle-hide-drawers (state)
     "Re-hide all drawers after a visibility state change."
     (when (and (derived-mode-p 'org-mode)
-	       (not (memq state '(overview folded contents))))
+	           (not (memq state '(overview folded contents))))
       (save-excursion
-	(let* ((globalp (memq state '(contents all)))
-	       (beg (if globalp
-			(point-min)
+	    (let* ((globalp (memq state '(contents all)))
+	           (beg (if globalp
+			            (point-min)
                       (point)))
-	       (end (if globalp
-			(point-max)
+	           (end (if globalp
+			            (point-max)
                       (if (eq state 'children)
-			  (save-excursion
+			              (save-excursion
                             (outline-next-heading)
                             (point))
-			(org-end-of-subtree t)))))
+			            (org-end-of-subtree t)))))
           (goto-char beg)
           (while (re-search-forward org-drawer-regexp end t)
             (save-excursion
               (beginning-of-line 1)
               (when (looking-at org-drawer-regexp)
-		(let* ((start (1- (match-beginning 0)))
-		       (limit
-			(save-excursion
+		        (let* ((start (1- (match-beginning 0)))
+		               (limit
+			            (save-excursion
                           (outline-next-heading)
                           (point)))
-		       (msg (format
+		               (msg (format
                              (concat
                               "org-cycle-hide-drawers:  "
                               "`:END:`"
@@ -102,12 +102,11 @@
                                  (shell . t)
                                  (C . t)))
 
-
   (setq org-startup-with-inline-images t)
   ;; renumbering and sorting footnotes automatically after each deletion or insertion
   (defun eli/clock-in-to-nest (kw)
     (if (org-get-todo-state)
-	"STARTED"))
+	    "STARTED"))
   (setq org-footnote-auto-adjust t)
   (setq org-clock-in-switch-to-state `eli/clock-in-to-nest)
   (setq org-clock-mode-line-total 'today)
@@ -115,9 +114,9 @@
   (setq org-clock-continuously t)
   ;; org todo keaywords
   (setq org-todo-keywords
-	(quote ((sequence "TODO(t/!)" "STARTED(s)" "|" "DONE(d!/!)")
-		(sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
-		(sequence "WAITING(w@/!)" "NEXT(n!/!)" "SOMEDAY(S)" "|" "CANCELLED(c@/!)"))))
+	    (quote ((sequence "TODO(t/!)" "STARTED(s)" "|" "DONE(d!/!)")
+		        (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
+		        (sequence "WAITING(w@/!)" "NEXT(n!/!)" "SOMEDAY(S)" "|" "CANCELLED(c@/!)"))))
 
   (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "✎")
 					                     ("#+END_SRC" . "□")
@@ -295,6 +294,18 @@ This list represents a \"habit\" for the rest of this module."
 
 ;;; agenda
 (with-eval-after-load 'org
+  (setq org-agenda-clock-consistency-checks
+        '(:max-duration "10:00" :min-duration 0 :max-gap "0:00" :gap-ok-around
+		                ("4:00")
+		                :default-face
+		                ((:background "DarkRed")
+		                 (:foreground "white"))
+		                :overlap-face nil :gap-face nil :no-end-time-face nil :long-face nil :short-face nil))
+  (setq org-agenda-clockreport-parameter-plist
+        '(:link t :maxlevel 2 :fileskip0 t :sort
+	            (3 . 84)
+	            :formula %))
+  (setq org-duration-format '((special . h:mm)))
   (setq org-agenda-span 'day)
   (setq org-agenda-show-inherited-tags nil)
   (setq org-agenda-window-setup 'only-window)
@@ -423,74 +434,74 @@ This list represents a \"habit\" for the rest of this module."
 	    (beginning-of-line 0))))
 
   (setq org-capture-templates
-	'(
-      ("t" "Todo" entry (file org-agenda-file-inbox)
-       "* TODO %?\n\n%i\n%U"
-       :empty-lines 0)
-	  ("c" "Start-new" entry (file org-agenda-file-inbox)
-       "* TODO %i"
-       :empty-lines 0
-	   :immediate-finish t)
-      ("1" "global notes" entry (file+headline org-agenda-file-inbox "Notes")
-       "* %i"
-       :prepend t
-       :empty-lines 0
-	   :immediate-finish t)
-      ("2" "global todo" entry (file org-agenda-file-inbox)
-       "* TODO %i"
-       :empty-lines 0
-	   :immediate-finish t)
-      ("p" "Project" entry (file org-agenda-file-projects)
-       "* PROJECT %?"
-       :empty-lines 0)
-      ("h" "Habit" entry (file org-agenda-file-habit)
-       "* TODO %?\nSCHEDULED: <%(org-read-date nil nil \"+0d\") .+1d>\n:PROPERTIES:\n:STYLE:    habit\n:END:\n\n%U"
-       :empty-lines 0)
-      ("n" "Notes" entry (file+headline org-agenda-file-inbox "Notes")
-       "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)\n%U"
-       :empty-lines 0
-	   :prepend t)
-      ("j" "Journals" entry (file+function org-agenda-file-journal org-reverse-datetree-goto-date-in-file)
-       "* %<%H:%M> %?"
-       :empty-lines 1
-	   :prepend t
-	   :clock-resume t
-	   :clock-in t
-	   )
-	  ("e" "Events" entry (file+function "~/Elilif.github.io/Eli's timeline.org"  eli-org-capture-template-goto-today)
-	   "* %?"
-	   )
-	  ("B" "Blogs" plain (file eli/capture-report-date-file)
-	   "#+TITLE: %?\n#+DATE: %<%Y-%m-%d>\n#+STARTUP: showall\n#+OPTIONS: toc:nil H:2 num:2\n"
-	   )
-	  ("T" "Time Report" plain (file+function "~/Dropbox/org/Clock_Report.org"  org-reverse-datetree-goto-date-in-file)
-	   "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6 :block %<%Y-%m-%d> :fileskip0 t :indent t :link t :formula % :sort (3 . ?T)\n#+END:"
-	   :empty-lines 0
-	   :jump-to-captured t)
-      ;; ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
-      ;;  "* %a \n%i \n%U"
-      ;;  :empty-lines 0)
-	  ("w" "Words" entry (file org-agenda-file-te)
-	   "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
-	   :jump-to-captured t)
-	  ("f" "Français" entry (file "~/Dropbox/org/Français.org")
-	   "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
-	   :jump-to-captured t)
-	  ("g" "古文" entry (file "~/Dropbox/org/古文.org")
-	   "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
-	   :jump-to-captured t)
-	  ("b" "Book" entry (file+headline org-agenda-file-lists "Books")
-	   "* %?\n  %^{Title}p %^{Isbn}p %^{Types}p %^{Authors}p %^{Translator}p %^{Publisher}p %^{Nation}p %^{Lang}p %^{Rating}p")
-	  ("m" "Movies and Musicals" entry (file+headline org-agenda-file-lists "Movies and Musicals")
-	   "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p %^{Actors}p %^{Types}p %^{Time}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p")
-	  ("s" "Series" entry (file+headline org-agenda-file-lists "Series")
-	   "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p %^{Actors}p %^{Types}p %^{Time}p %^{Episodes}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p")
-	  ("a" "Animes" entry (file+headline org-agenda-file-lists "Animes")
-	   "* %?\n %^{Title}p %^{URL}p %^{Episodes}p %^{Release}p %^{Director}p %^{Authors}p %^{Publisher}p %^{Rating}p")
-	  ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
-	   "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
-	   :create-id t)
-      ))
+	    '(
+          ("t" "Todo" entry (file org-agenda-file-inbox)
+           "* TODO %?\n\n%i\n%U"
+           :empty-lines 0)
+	      ("c" "Start-new" entry (file org-agenda-file-inbox)
+           "* TODO %i"
+           :empty-lines 0
+	       :immediate-finish t)
+          ("1" "global notes" entry (file+headline org-agenda-file-inbox "Notes")
+           "* %i"
+           :prepend t
+           :empty-lines 0
+	       :immediate-finish t)
+          ("2" "global todo" entry (file org-agenda-file-inbox)
+           "* TODO %i"
+           :empty-lines 0
+	       :immediate-finish t)
+          ("p" "Project" entry (file org-agenda-file-projects)
+           "* PROJECT %?"
+           :empty-lines 0)
+          ("h" "Habit" entry (file org-agenda-file-habit)
+           "* TODO %?\nSCHEDULED: <%(org-read-date nil nil \"+0d\") .+1d>\n:PROPERTIES:\n:STYLE:    habit\n:END:\n\n%U"
+           :empty-lines 0)
+          ("n" "Notes" entry (file+headline org-agenda-file-inbox "Notes")
+           "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)\n%U"
+           :empty-lines 0
+	       :prepend t)
+          ("j" "Journals" entry (file+function org-agenda-file-journal org-reverse-datetree-goto-date-in-file)
+           "* %<%H:%M> %?"
+           :empty-lines 1
+	       :prepend t
+	       :clock-resume t
+	       :clock-in t
+	       )
+	      ("e" "Events" entry (file+function "~/Elilif.github.io/Eli's timeline.org"  eli-org-capture-template-goto-today)
+	       "* %?"
+	       )
+	      ("B" "Blogs" plain (file eli/capture-report-date-file)
+	       "#+TITLE: %?\n#+DATE: %<%Y-%m-%d>\n#+STARTUP: showall\n#+OPTIONS: toc:nil H:2 num:2\n"
+	       )
+	      ("T" "Time Report" plain (file+function "~/Dropbox/org/Clock_Report.org"  org-reverse-datetree-goto-date-in-file)
+	       "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6 :block %<%Y-%m-%d> :fileskip0 t :indent t :link t :formula % :sort (3 . ?T)\n#+END:"
+	       :empty-lines 0
+	       :jump-to-captured t)
+          ;; ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
+          ;;  "* %a \n%i \n%U"
+          ;;  :empty-lines 0)
+	      ("w" "Words" entry (file org-agenda-file-te)
+	       "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
+	       :jump-to-captured t)
+	      ("f" "Français" entry (file "~/Dropbox/org/Français.org")
+	       "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
+	       :jump-to-captured t)
+	      ("g" "古文" entry (file "~/Dropbox/org/古文.org")
+	       "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
+	       :jump-to-captured t)
+	      ("b" "Book" entry (file+headline org-agenda-file-lists "Books")
+	       "* %?\n  %^{Title}p %^{Isbn}p %^{Types}p %^{Authors}p %^{Translator}p %^{Publisher}p %^{Nation}p %^{Lang}p %^{Rating}p")
+	      ("m" "Movies and Musicals" entry (file+headline org-agenda-file-lists "Movies and Musicals")
+	       "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p %^{Actors}p %^{Types}p %^{Time}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p")
+	      ("s" "Series" entry (file+headline org-agenda-file-lists "Series")
+	       "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p %^{Actors}p %^{Types}p %^{Time}p %^{Episodes}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p")
+	      ("a" "Animes" entry (file+headline org-agenda-file-lists "Animes")
+	       "* %?\n %^{Title}p %^{URL}p %^{Episodes}p %^{Release}p %^{Director}p %^{Authors}p %^{Publisher}p %^{Rating}p")
+	      ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
+	       "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
+	       :create-id t)
+          ))
   )
 
 ;;; time report
@@ -530,13 +541,13 @@ This list represents a \"habit\" for the rest of this module."
 
   (defun appt-disp-window-and-notification (min-to-appt current-time appt-msg)
     (if (atom min-to-appt)
-	(notifications-notify :timeout (* appt-display-interval 60000) ;一直持续到下一次提醒
-			      :title (format "%s分钟内有新的任务" min-to-appt)
-			      :body appt-msg)
+	    (notifications-notify :timeout (* appt-display-interval 60000) ;一直持续到下一次提醒
+			                  :title (format "%s分钟内有新的任务" min-to-appt)
+			                  :body appt-msg)
       (dolist (i (number-sequence 0 (1- (length min-to-appt))))
-	(notifications-notify :timeout (* appt-display-interval 60000) ;一直持续到下一次提醒
-			      :title (format "%s分钟内有新的任务" (nth i min-to-appt))
-			      :body (nth i appt-msg)))))
+	    (notifications-notify :timeout (* appt-display-interval 60000) ;一直持续到下一次提醒
+			                  :title (format "%s分钟内有新的任务" (nth i min-to-appt))
+			                  :body (nth i appt-msg)))))
   )
 
 ;;; org-refile
@@ -544,9 +555,8 @@ This list represents a \"habit\" for the rest of this module."
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps nil)
   (setq org-refile-targets
-	'((nil :maxlevel . 3)
-          (org-agenda-files :maxlevel . 3)))
-  )
+	    '((nil :maxlevel . 5)
+          (org-agenda-files :maxlevel . 5))))
 
 ;;; rime
 (elemacs-require-package 'rime)
@@ -562,29 +572,29 @@ This list represents a \"habit\" for the rest of this module."
     "If the cursor is after a latin character.
 Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
     (and (> (point) (save-excursion (back-to-indentation) (point)))
-	 (let ((string (buffer-substring (point) (max (line-beginning-position) (- (point) 80)))))
+	     (let ((string (buffer-substring (point) (max (line-beginning-position) (- (point) 80)))))
            (string-match-p "\\cl$" string))))
 
   (setq eli/prefer-English t)
   (defun eli/input-switch ()
     (interactive)
     (if (not eli/prefer-English)
-	(progn
-	  (setq rime-disable-predicates '(rime-predicate-prog-in-code-p
-					  rime-predicate-space-after-ascii-p
-					  rime-predicate-after-ascii-char-p
-					  +rime-predicate-punctuation-line-begin-p
-					  rime-predicate-org-in-src-block-p
-					  rime-predicate-space-after-cc-p
-					  rime-predicate-current-uppercase-letter-p
-					  rime-predicate-hydra-p ))
-	  (setq eli/prefer-English t))
+	    (progn
+	      (setq rime-disable-predicates '(rime-predicate-prog-in-code-p
+					                      rime-predicate-space-after-ascii-p
+					                      rime-predicate-after-ascii-char-p
+					                      +rime-predicate-punctuation-line-begin-p
+					                      rime-predicate-org-in-src-block-p
+					                      rime-predicate-space-after-cc-p
+					                      rime-predicate-current-uppercase-letter-p
+					                      rime-predicate-hydra-p ))
+	      (setq eli/prefer-English t))
       (progn
-	(setq rime-disable-predicates
-	      (seq-difference rime-disable-predicates '(rime-predicate-space-after-ascii-p
-							+rime-predicate-punctuation-line-begin-p)))
-	(setq eli/prefer-English nil)
-	)))
+	    (setq rime-disable-predicates
+	          (seq-difference rime-disable-predicates '(rime-predicate-space-after-ascii-p
+							                            +rime-predicate-punctuation-line-begin-p)))
+	    (setq eli/prefer-English nil)
+	    )))
 
   (defun +rime-convert-string-at-point (&optional return-cregexp)
     "将光标前的字符串转换为中文."
@@ -592,41 +602,42 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
     (rime-force-enable)
     (let ((string (if mark-active
                       (buffer-substring-no-properties
-		       (region-beginning) (region-end))
+		               (region-beginning) (region-end))
                     (buffer-substring-no-properties
                      (point) (max (line-beginning-position) (- (point) 80)))))
           code
           length)
       (cond ((string-match "\\([a-z'-]+\\|[[:punct:]]\\) *$" string)
              (setq code (replace-regexp-in-string
-			 "^[-']" ""
-			 (match-string 0 string)))
+			             "^[-']" ""
+			             (match-string 0 string)))
              (setq length (length code))
              (setq code (replace-regexp-in-string " +" "" code))
              (if mark-active
-		 (delete-region (region-beginning) (region-end))
-	       (when (> length 0)
-		 (delete-char (- 0 length))))
+		         (delete-region (region-beginning) (region-end))
+	           (when (> length 0)
+		         (delete-char (- 0 length))))
              (when (> length 0)
-	       (setq unread-command-events
+	           (setq unread-command-events
                      (append (listify-key-sequence code)
                              unread-command-events))))
             (t (message "`+rime-convert-string-at-point' did nothing.")))))
 
   (setq default-input-method "rime"
-	rime-user-data-dir "~/.emacs.d/rime"
-	rime-disable-predicates '(rime-predicate-prog-in-code-p
-				  rime-predicate-space-after-ascii-p
-				  rime-predicate-after-ascii-char-p
-				  +rime-predicate-punctuation-line-begin-p
-				  rime-predicate-org-in-src-block-p
-				  rime-predicate-space-after-cc-p
-				  rime-predicate-current-uppercase-letter-p
-				  rime-predicate-hydra-p
-				  rime-predicate-after-latin-char-p
-				  )
-	rime-show-candidate 'nil
-	rime-inline-ascii-trigger 'shift-l)
+	    rime-user-data-dir "~/.emacs.d/rime"
+	    rime-disable-predicates '(rime-predicate-prog-in-code-p
+				                  rime-predicate-space-after-ascii-p
+				                  rime-predicate-after-ascii-char-p
+				                  +rime-predicate-punctuation-line-begin-p
+				                  rime-predicate-org-in-src-block-p
+				                  rime-predicate-space-after-cc-p
+				                  rime-predicate-current-uppercase-letter-p
+				                  rime-predicate-hydra-p
+				                  rime-predicate-after-latin-char-p
+				                  )
+	    rime-show-candidate 'nil
+	    rime-inline-ascii-trigger 'shift-l
+        rime-deactivate-when-exit-minibuffer nil)
   (keymap-global-set "C-s-k" #'rime-inline-ascii)
   (keymap-global-set "C-s-j" #'+rime-convert-string-at-point)
   (add-hook 'org-mode-hook 'toggle-input-method)
@@ -642,38 +653,38 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 (with-eval-after-load 'org
   (setq org-roam-directory "~/Dropbox/org/roam/")
   (setq org-roam-db-gc-threshold most-positive-fixnum
-	org-id-link-to-org-use-id 'create-if-interactive)
+	    org-id-link-to-org-use-id 'create-if-interactive)
   (add-to-list 'display-buffer-alist
-	       '("\\*org-roam\\*"
-		 (display-buffer-in-direction)
-		 (direction . right)
-		 (window-width . 0.4)
-		 (window-height . fit-window-to-buffer)))
+	           '("\\*org-roam\\*"
+		         (display-buffer-in-direction)
+		         (direction . right)
+		         (window-width . 0.4)
+		         (window-height . fit-window-to-buffer)))
   (setq org-roam-mode-section-functions
-	(list #'org-roam-backlinks-section
-	      #'org-roam-reflinks-section
-	      ;; #'org-roam-unlinked-references-section
-	      ))
+	    (list #'org-roam-backlinks-section
+	          #'org-roam-reflinks-section
+	          ;; #'org-roam-unlinked-references-section
+	          ))
   (setq org-roam-completion-everywhere t)
 
   (setq org-roam-dailies-capture-templates
-	'(("d" "default" entry
+	    '(("d" "default" entry
            "* %?"
            :if-new (file+datetree "~/Dropbox/org/roam/daily/dailies.org" day))))
   (setq org-roam-capture-templates '(("m" "main" plain "%?"
                                       :if-new (file+head "main/%<%Y%m%d%H%M%S>.org"
-							 "#+TITLE: ${title}\n")
+							                             "#+TITLE: ${title}\n")
                                       :unnarrowed t)
-				     ("b" "bibliography reference" plain
-				      (file "~/.emacs.d/private/orb-capture-template.org")
-				      :if-new (file+head "references/${citekey}.org" "#+title: ${title}\n")
-				      )
-				     ("r" "reference" plain "%? \n %(v-i-or-nothing) \n\n%(v-a-or-nothing)"
-				      :if-new
-				      (file+head "references/%<%Y%m%d%H%M%S>.org" "#+title: ${title}\n")
-				      :unnarrowed t)))
+				                     ("b" "bibliography reference" plain
+				                      (file "~/.emacs.d/private/orb-capture-template.org")
+				                      :if-new (file+head "references/${citekey}.org" "#+title: ${title}\n")
+				                      )
+				                     ("r" "reference" plain "%? \n %(v-i-or-nothing) \n\n%(v-a-or-nothing)"
+				                      :if-new
+				                      (file+head "references/%<%Y%m%d%H%M%S>.org" "#+title: ${title}\n")
+				                      :unnarrowed t)))
   (run-at-time 20 nil
-	       #'org-roam-db-autosync-mode)
+	           #'org-roam-db-autosync-mode)
   (with-eval-after-load 'org-roam
     ;; Codes blow are used to general a hierachy for title nodes that under a file
     (cl-defmethod org-roam-node-doom-filetitle ((node org-roam-node))
@@ -682,7 +693,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
       (or (if (= (org-roam-node-level node) 0)
               (org-roam-node-title node)
             (org-roam-get-keyword "TITLE" (org-roam-node-file node)))
-	  ""))
+	      ""))
     (cl-defmethod org-roam-node-doom-hierarchy ((node org-roam-node))
       "Return hierarchy for NODE, constructed of its file title, OLP and direct title.
         If some elements are missing, they will be stripped out."
@@ -691,33 +702,33 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
             (level     (org-roam-node-level node))
             (filetitle (org-roam-node-doom-filetitle node))
             (separator (propertize " > " 'face 'shadow)))
-	(cl-case level
-	  ;; node is a top-level file
-	  (0 filetitle)
-	  ;; node is a level 1 heading
-	  (1 (concat (propertize filetitle 'face '(shadow italic))
+	    (cl-case level
+	      ;; node is a top-level file
+	      (0 filetitle)
+	      ;; node is a level 1 heading
+	      (1 (concat (propertize filetitle 'face '(shadow italic))
                      separator title))
-	  ;; node is a heading with an arbitrary outline path
-	  (t (concat (propertize filetitle 'face '(shadow italic))
+	      ;; node is a heading with an arbitrary outline path
+	      (t (concat (propertize filetitle 'face '(shadow italic))
                      separator (propertize (string-join olp " > ") 'face '(shadow italic))
                      separator title)))))
 
     (cl-defmethod org-roam-node-type ((node org-roam-node))
       "Return the TYPE of NODE."
       (condition-case nil
-	  (file-name-nondirectory
-	   (directory-file-name
+	      (file-name-nondirectory
+	       (directory-file-name
             (file-name-directory
              (file-relative-name (org-roam-node-file node) org-roam-directory))))
-	(error "")))
+	    (error "")))
 
     (setq org-roam-node-display-template (concat "${type:15} ${doom-hierarchy:120} " (propertize "${tags:*}" 'face 'org-tag))))
 
   (elemacs-require-package 'org-roam-ui)
   (setq org-roam-ui-sync-theme t
-	org-roam-ui-follow t
-	org-roam-ui-update-on-save t
-	org-roam-ui-open-on-start t)
+	    org-roam-ui-follow t
+	    org-roam-ui-update-on-save t
+	    org-roam-ui-open-on-start t)
   )
 
 ;; clock
@@ -763,30 +774,17 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
   (setq fill-prefix ""))
 (add-hook 'org-mode-hook #'eli-org-fill-prefix)
 
-
-;;; org-download
-;; Allow Emacs to access content from clipboard.
-(setq x-select-enable-clipboard t
-      x-select-enable-primary nil)
-
 (with-eval-after-load 'org
-  (defun make-orgcapture-frame ()
-    "Create a new frame and run org-capture."
-    (interactive)
-    (make-frame '((name . "org-capture") (window-system . x)))
-    (select-frame-by-name "org-capture")
-    (org-capture)
-    (delete-other-windows))
-
+  ;;; org-download
   (elemacs-require-package 'org-download)
   (setq-default org-download-method 'directory
-		org-download-image-dir "~/Documents/org-images"
-		org-download-heading-lvl nil
-		org-download-delete-image-after-download t
-		org-download-screenshot-method "flameshot gui --raw > %s"
-		org-download-image-org-width 800
-		org-download-annotate-function (lambda (link) "") ;; Don't annotate
-		)
+		        org-download-image-dir "~/Documents/org-images"
+		        org-download-heading-lvl nil
+		        org-download-delete-image-after-download t
+		        org-download-screenshot-method "flameshot gui --raw > %s"
+		        org-download-image-org-width 800
+		        org-download-annotate-function (lambda (link) "") ;; Don't annotate
+		        )
 
   ;; org-download use buffer-local variables. Set it individually in files. Otherwise, put things flatly in misc
   ;; folder.
@@ -797,9 +795,19 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
   (setq org-image-actual-width nil)
   ;; org-attach method
   (setq-default org-attach-method 'mv
-		org-attach-auto-tag "attach"
-		org-attach-store-link-p 't)
+		        org-attach-auto-tag "attach"
+		        org-attach-store-link-p 't)
   )
+
+;;; misc
+(with-eval-after-load 'org
+  (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-link-frame-setup
+        '((vm . vm-visit-folder-other-frame)
+          (vm-imap . vm-visit-imap-folder-other-frame)
+          (gnus . org-gnus-no-new-news)
+          (file . find-file)
+          (wl . wl-other-frame))))
 
 (provide 'init-org)
 ;;; init-org.el ends here.
