@@ -18,3 +18,5 @@ private/
 url/
 mydictionaryfr-en
 multisession/
+.mc-lists.el
+request/
