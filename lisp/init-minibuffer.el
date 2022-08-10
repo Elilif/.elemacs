@@ -51,7 +51,7 @@
 
 (elemacs-require-package 'embark-consult)
 (with-eval-after-load 'embark
-  (require embark-consult))
+  (require 'embark-consult))
 
 (elemacs-require-package 'orderless)
 (with-eval-after-load 'vertico
