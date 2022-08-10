@@ -62,10 +62,12 @@
 	lsp-enable-on-type-formatting nil
 	lsp-lens-enable nil)
 
-  (add-to-list 'lsp-language-id-configuration '(snippet-mode . "plaintext"))
+  (add-to-list 'lsp-language-id-configuration '(snippet-mode . "plaintext")))
 
+(with-eval-after-load 'org
   (setq centaur-lsp 'lsp-mode)
   ;; Enable LSP in org babel
+  ;; need to add `:file test.xx' in the header
   ;; https://github.com/emacs-lsp/lsp-mode/issues/377
   (cl-defmacro lsp-org-babel-enable (lang)
     "Support LANG in org source code block."
@@ -101,7 +103,7 @@
                           (upcase ,lang))))))))
 
   (defvar org-babel-lang-list
-    '("go" "python" "ipython" "ruby" "js" "css" "sass" "c" "rust" "java" "cpp" "c++"))
+    '("go" "python" "ipython" "ruby" "js" "css" "sass" "c" "rust" "java" "cpp" "c++" "shell"))
   ;; (add-to-list 'org-babel-lang-list (if emacs/>=26p "shell" "sh"))
   (dolist (lang org-babel-lang-list)
     (eval `(lsp-org-babel-enable ,lang))))
