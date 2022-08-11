@@ -114,6 +114,7 @@
 (keymap-global-set "C-c \\" #'consult-register)
 (keymap-global-set "C-c -" #'consult-register-load)
 (keymap-global-set "C-c =" #'consult-register-store)
+(keymap-global-set "C-x b" #'consult-buffer)
 (with-eval-after-load 'vertico
   (require 'consult)
   (defun my/consult-org-file (&optional match)
