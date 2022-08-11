@@ -313,6 +313,11 @@
 (add-hook 'ibuffer-mode-hook
           (lambda ()
             (ibuffer-switch-to-saved-filter-groups "default")))
+(elemacs-require-package 'all-the-icons-ibuffer)
+(with-eval-after-load 'all-the-icons-ibuffer-mode
+  (setq all-the-icons-ibuffer-icon t)
+  (setq all-the-icons-ibuffer-color-icon t))
+(add-hook 'ibuffer-mode-hook #'all-the-icons-ibuffer-mode)
 
 (elemacs-require-package 'hl-todo)
 (add-hook 'elemacs-first-file-hook #'global-hl-todo-mode)
