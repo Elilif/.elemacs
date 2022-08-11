@@ -153,6 +153,9 @@
   (call-interactively 'occur))
 (keymap-global-set "M-s o" #'occur-dwim)
 (define-key occur-mode-map (kbd "q") 'kill-this-buffer)
+(add-hook 'occur-hook
+          '(lambda ()
+             (switch-to-buffer-other-window "*Occur*")))
 
 ;; use winner-mode
 (defun transient-winner-undo ()
