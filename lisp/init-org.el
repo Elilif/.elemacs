@@ -478,9 +478,9 @@ This list represents a \"habit\" for the rest of this module."
 	       "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6 :block %<%Y-%m-%d> :fileskip0 t :indent t :link t :formula % :sort (3 . ?T)\n#+END:"
 	       :empty-lines 0
 	       :jump-to-captured t)
-          ;; ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
-          ;;  "* %a \n%i \n%U"
-          ;;  :empty-lines 0)
+          ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
+           "* %a\n%?\n%(v-i-or-nothing)\n%U"
+           :empty-lines 0)
 	      ("w" "Words" entry (file org-agenda-file-te)
 	       "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
 	       :jump-to-captured t)
