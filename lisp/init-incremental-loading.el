@@ -110,7 +110,7 @@ If this is a daemon session, load them all immediately instead."
  '(calendar find-func format-spec org-macs org-compat
 	    org-faces org-entities org-list org-pcomplete org-src
 	    org-footnote org-macro ob org org-clock org-agenda
-	    org-capture dired-x ispell all-the-icons mu4e embark emms-setup))
+	    org-capture dired-x ispell all-the-icons mu4e embark emms-setup youdao-dictionary))
 
 
 (defvar elemacs-first-input-hook nil
