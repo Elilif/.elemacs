@@ -501,9 +501,6 @@ This list represents a \"habit\" for the rest of this module."
 	      ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
 	       "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
 	       :create-id t)
-          ("S" "Scheduled Todo" entry (file org-agenda-file-inbox)
-           "* TODO %?\nSCHEDULED: <%(org-read-date)>\n\n%i\n%U"
-           :empty-lines 0)
           ))
   )
 
