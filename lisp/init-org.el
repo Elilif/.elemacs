@@ -777,6 +777,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 (with-eval-after-load 'org
   ;;; org-download
   (elemacs-require-package 'org-download)
+  (require 'org-download)
   (setq-default org-download-method 'directory
 		        org-download-image-dir "~/Documents/org-images"
 		        org-download-heading-lvl nil
