@@ -32,7 +32,7 @@
 
 ;; (setq package-enable-at-startup nil)
 
-; Adjust garbage collection thresholds during startup, and thereafter
+;; Adjust garbage collection thresholds during startup, and thereafter
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
       (init-gc-cons-threshold most-positive-fixnum))
   (setq gc-cons-threshold init-gc-cons-threshold)
@@ -137,6 +137,10 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 (when (featurep 'ns)
   (push '(ns-transparent-titlebar . t) default-frame-alist))
+(push '(internal-border-width . 20) default-frame-alist)
+(push '(line-spacing . 5) default-frame-alist)
+
+
 
 (provide 'early-init)
 ;;; early-init.el ends here.
