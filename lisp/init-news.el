@@ -188,6 +188,25 @@ Also number them so they can be opened using `mu4e-view-go-to-url'."
 	            (overlay-put ov 'after-string
 			                 (propertize (format "\u200B[%d]" num)
 				                         'face 'mu4e-url-number-face)))))))))
+  (setq mu4e-header-info
+        '((:bcc :name "Bcc" :shortname "Bcc" :help "Blind Carbon-Copy recipients for the message" :sortable t)
+          (:cc :name "Cc" :shortname "Cc" :help "Carbon-Copy recipients for the message" :sortable t)
+          (:changed :name "Changed" :shortname "Chg" :help "Date/time when the message was changed most recently" :sortable t)
+          (:date :name "Date" :shortname " Date" :help "Date/time when the message was sent" :sortable t)
+          (:human-date :name "Date" :shortname " Date" :help "Date/time when the message was sent" :sortable :date)
+          (:flags :name "Flags" :shortname " Flgs" :help "Flags for the message" :sortable nil)
+          (:from :name "From" :shortname " From" :help "The sender of the message" :sortable t)
+          (:from-or-to :name "From/To" :shortname "From/To" :help "Sender of the message if it's not me; otherwise the recipient" :sortable nil)
+          (:maildir :name "Maildir" :shortname "Maildir" :help "Maildir for this message" :sortable t)
+          (:list :name "List-Id" :shortname " List" :help "Mailing list id for this message" :sortable t)
+          (:mailing-list :name "List" :shortname " List" :help "Mailing list friendly name for this message" :sortable :list)
+          (:message-id :name "Message-Id" :shortname "MsgID" :help "Message-Id for this message" :sortable nil)
+          (:path :name "Path" :shortname "Path" :help "Full filesystem path to the message" :sortable t)
+          (:size :name "Size" :shortname "Size" :help "Size of the message" :sortable t)
+          (:subject :name "Subject" :shortname " Subject" :help "Subject of the message" :sortable t)
+          (:tags :name "Tags" :shortname "Tags" :help "Tags for the message" :sortable nil)
+          (:thread-subject :name "Subject" :shortname "Subject" :help "Subject of the thread" :sortable :subject)
+          (:to :name "To" :shortname "To" :help "Recipient of the message" :sortable t)))
   )
 
 
