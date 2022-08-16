@@ -38,6 +38,7 @@
 	("nongnu" . "http://elpa.nongnu.org/nongnu/")
 	))
 (setq package-quickstart t)
+(setq package-native-compile t)
 
 (defun elemacs-require-package (package)
   (unless (package-installed-p package)
