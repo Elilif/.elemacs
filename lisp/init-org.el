@@ -29,6 +29,7 @@
 ;;
 
 ;;; Code:
+(elemacs-require-package 'org-contrib)
 (with-eval-after-load 'org
   ;; hide drawers
   ;; ((eq org-cycle-subtree-status 'subtree)
