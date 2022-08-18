@@ -253,6 +253,10 @@
 (with-eval-after-load 'dired-x
     (setq all-the-icons-dired-monochrome nil))
 
+(add-to-list 'load-path "~/.emacs.d/site-lisp/diredfl/")
+(with-eval-after-load 'dired-x
+  (require 'diredfl)
+  (diredfl-global-mode))
 
 (elemacs-require-package 'hungry-delete)
 (add-hook 'elemacs-first-input-hook #'global-hungry-delete-mode)
