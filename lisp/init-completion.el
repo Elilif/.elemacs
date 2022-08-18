@@ -54,7 +54,9 @@
     my-search-with-chrome))
 
 (defvar mcfly-back-commands
-  '(self-insert-command))
+  '(self-insert-command
+    yank
+    org-yank))
 
 (defun mcfly-back-to-present ()
   (remove-hook 'pre-command-hook 'mcfly-back-to-present t)
