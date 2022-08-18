@@ -181,6 +181,7 @@
 (keymap-global-set "C-\"" #'avy-goto-char-near-point)
 
 (elemacs-require-package 'ace-window)
+(keymap-global-set "M-o" #'ace-select-window)
 (add-to-list 'load-path "~/.emacs.d/site-lisp/pinyinlib/")
 (add-to-list 'load-path "~/.emacs.d/site-lisp/ace-pinyin/")
 (autoload 'ace-pinyin-global-mode "ace-pinyin")
