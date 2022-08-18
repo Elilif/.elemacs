@@ -814,7 +814,29 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
           (vm-imap . vm-visit-imap-folder-other-frame)
           (gnus . org-gnus-no-new-news)
           (file . find-file)
-          (wl . wl-other-frame))))
+          (wl . wl-other-frame)))
+
+  ;; remove superfluous whitespace.
+  (defun eli-org-whitespace-cleanup (&optional arg)
+    (when arg
+      (progn
+        (whitespace-cleanup-region (mark) (point))
+        (fill-paragraph))))
+
+  (advice-add 'org-yank :after #'eli-org-whitespace-cleanup)
+
+  )
+
+;;; anki integration
+(elemacs-require-package 'org-anki)
+(with-eval-after-load 'org
+  (setq org-anki-default-deck "Default")
+  (defun org-anki-skip ()
+    "Skip headlines with \"noanki\" property.
+Used by `org-anki-skip-function'"
+    (if (string= "t" (org-entry-get nil "NOANKI"))
+        (point)))
+  (setq org-anki-skip-function #'org-anki-skip))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

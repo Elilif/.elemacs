@@ -70,6 +70,7 @@
 	  (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords keywords:*}")
 	  (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
 	  (note . "${title}
+#+filetags: :book:
 - bibliography :: bibliography:/home/eli/Documents/Thesis/catalog.bib
 - tags :: ${tags}
 - keywords :: ${keywords}
@@ -81,6 +82,7 @@
 :AUTHOR: ${author}
 :NOTER_DOCUMENT: ${file}
 :NOTER_PAGE:
+:NOANKI:t
 :END:")))
   (setq citar-symbols
 	`((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
