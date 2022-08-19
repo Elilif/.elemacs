@@ -31,7 +31,7 @@
 ;;; Code:
 
 (elemacs-require-package 'smartparens)
-(add-hook 'elemacs-first-file-hook #'(lambda ()
+(add-hook 'elemacs-first-file-hook (lambda ()
 					(require 'smartparens-config)
 					(smartparens-global-mode)))
 ;; (add-hook 'elemacs-first-input-hook #'smartparens-global-mode)

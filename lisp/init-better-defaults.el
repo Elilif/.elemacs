@@ -81,7 +81,7 @@
 
 (add-hook 'elemacs-first-buffer-hook #'delete-selection-mode)
 (add-hook 'elemacs-first-buffer-hook #'global-hl-line-mode)
-(add-hook 'elemacs-first-buffer-hook #'(lambda () (blink-cursor-mode -1)))
+(add-hook 'elemacs-first-buffer-hook (lambda () (blink-cursor-mode -1)))
 
 (setq auto-save-list-file-prefix nil)
 
@@ -145,7 +145,7 @@
 (keymap-global-set "M-s o" #'occur-dwim)
 (define-key occur-mode-map (kbd "q") 'kill-this-buffer)
 (add-hook 'occur-hook
-          '(lambda ()
+          (lambda ()
              (switch-to-buffer-other-window "*Occur*")))
 
 ;; use winner-mode
@@ -440,7 +440,7 @@ to get user input. You need to install `zenity'."
    (shell-command-to-string
     (format "zenity --entry --text='%s'" prompt))))
 
-(advice-add #'read-string :around #'(lambda (orig-fun prompt &rest args)
+(advice-add #'read-string :around (lambda (orig-fun prompt &rest args)
                                       (if elemacs-global-interactive-defer-to-system-app
                                           (elemacs-global-interactive-system-read-string prompt)
                                         (apply orig-fun prompt args))))

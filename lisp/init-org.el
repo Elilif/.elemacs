@@ -310,7 +310,7 @@ This list represents a \"habit\" for the rest of this module."
   (setq org-agenda-span 'day)
   (setq org-agenda-show-inherited-tags nil)
   (setq org-agenda-window-setup 'only-window)
-  (advice-add 'org-agenda-log-mode :after #'(lambda (&rest _arg) (beginning-of-buffer)))
+  (advice-add 'org-agenda-log-mode :after (lambda (&rest _arg) (beginning-of-buffer)))
   (with-eval-after-load 'org
     (elemacs-require-package 'org-reverse-datetree))
 

@@ -31,10 +31,10 @@
 ;;; Code:
 
 (elemacs-require-package 'lsp-mode)
-(add-hook 'prog-mode-hook #'(lambda ()
+(add-hook 'prog-mode-hook (lambda ()
                               (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode)
 				(lsp-deferred))))
-(add-hook 'lsp-mode-hook #'(lambda ()
+(add-hook 'lsp-mode-hook (lambda ()
 			     ;; Integrate `which-key'
 			     (lsp-enable-which-key-integration)))
 (with-eval-after-load 'lsp-mode
