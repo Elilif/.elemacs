@@ -52,38 +52,6 @@
   (keymap-set flyspell-mode-map "C-;" #'flyspell-correct-wrapper)
   (keymap-set flyspell-mode-map "C-." nil))
 
-(elemacs-require-package 'youdao-dictionary)
-(keymap-global-set "C-c t" #'youdao-dictionary-search-at-point-posframe)
-(with-eval-after-load 'youdao-dictionary
-  (setq url-automatic-caching t)
-  (defun youdao-dictionary-delete-newlines (&optional beg end)
-    "Save the current region (or line) to the `kill-ring' after stripping extra whitespace and new lines"
-    (interactive
-     (if (region-active-p)
-	 (list (region-beginning) (region-end))
-       (list (line-beginning-position) (line-end-position))))
-    (let ((my-text (buffer-substring-no-properties beg end)))
-      (with-temp-buffer
-	(insert my-text)
-	(goto-char 1)
-	(while (looking-at "[ \t\n]")
-          (delete-char 1))
-	(let ((fill-column 9333999))
-          (fill-region (point-min) (point-max)))
-	(buffer-substring-no-properties (point-min) (point-max)))))
-  (defun youdao-dictionary--region-or-word ()
-    "Return word in region or word at point."
-    (if (derived-mode-p 'pdf-view-mode)
-	(if (pdf-view-active-region-p)
-            (mapconcat 'identity (pdf-view-active-region-text) "\n"))
-      (if (use-region-p)
-          (youdao-dictionary-delete-newlines (region-beginning)
-                                             (region-end))
-	(thing-at-point (if youdao-dictionary-use-chinese-word-segmentation
-                            'chinese-or-other-word
-                          'word)
-			t)))))
-
 (elemacs-require-package 'wordnut)
 (keymap-global-set "C-c y" #'wordnut-lookup-current-word)
 
