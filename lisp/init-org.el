@@ -113,6 +113,7 @@
   (setq org-clock-mode-line-total 'today)
   (setq org-clock-out-remove-zero-time-clocks t)
   (setq org-clock-continuously t)
+  (setq org-clock-sound "~/.emacs.d/private/bellring.wav")
   ;; org todo keaywords
   (setq org-todo-keywords
 	    (quote ((sequence "TODO(t/!)" "STARTED(s)" "|" "DONE(d!/!)")
@@ -808,6 +809,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 
 ;;; misc
 (with-eval-after-load 'org
+  (setq org-adapt-indentation t)
   (setq org-fontify-quote-and-verse-blocks t)
   (setq org-link-frame-setup
         '((vm . vm-visit-folder-other-frame)
