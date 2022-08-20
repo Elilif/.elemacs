@@ -68,61 +68,54 @@
   )
 
 
-;; (elemacs-require-package 'cdlatex)
-;; (with-eval-after-load 'tex
-;;   (keymap-set cdlatex-mode-map "$" nil)
-;;   (keymap-set cdlatex-mode-map "\(" nil)
-;;   (add-hook 'LaTeX-mode #'turn-on-cdlatex)
-;;   (add-hook 'cdlatex-tab #'cdlatex-in-yas-field)
+(elemacs-require-package 'cdlatex)
+(with-eval-after-load 'tex
+  (require 'cdlatex)
+  (keymap-set cdlatex-mode-map "$" nil)
+  (keymap-set cdlatex-mode-map "\(" nil)
+  (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
+  (add-hook 'cdlatex-tab-hook #'cdlatex-in-yas-field)
 
-;;   (defun cdlatex-in-yas-field ()
-;;     ;; Check if we're at the end of the Yas field
-;;     (when-let* ((_ (overlayp yas--active-field-overlay))
-;;                 (end (overlay-end yas--active-field-overlay)))
-;;       (if (>= (point) end)
-;;           ;; Call yas-next-field if cdlatex can't expand here
-;;           (let ((s (thing-at-point 'sexp)))
-;;             (unless (and s (assoc (substring-no-properties s)
-;;                                   cdlatex-command-alist-comb))
-;;               (yas-next-field-or-maybe-expand)
-;;               t))
-;;         ;; otherwise expand and jump to the correct location
-;;         (let (cdlatex-tab-hook minp)
-;;           (setq minp
-;;                 (min (save-excursion (cdlatex-tab)
-;;                                      (point))
-;;                      (overlay-end yas--active-field-overlay)))
-;;           (goto-char minp) t))))
+  (defun cdlatex-in-yas-field ()
+    ;; Check if we're at the end of the Yas field
+    (when-let* ((_ (overlayp yas--active-field-overlay))
+                (end (overlay-end yas--active-field-overlay)))
+      (if (>= (point) end)
+          ;; Call yas-next-field if cdlatex can't expand here
+          (let ((s (thing-at-point 'sexp)))
+            (unless (and s (assoc (substring-no-properties s)
+                                  cdlatex-command-alist-comb))
+              (yas-next-field-or-maybe-expand)
+              t))
+        ;; otherwise expand and jump to the correct location
+        (let (cdlatex-tab-hook minp)
+          (setq minp
+                (min (save-excursion (cdlatex-tab)
+                                     (point))
+                     (overlay-end yas--active-field-overlay)))
+          (goto-char minp) t))))
 
-;;   (defun yas-next-field-or-cdlatex ()
-;;     (interactive)
-;;     "Jump to the next Yas field correctly with cdlatex active."
-;;     (if (bound-and-true-p cdlatex-mode)
-;;         (cdlatex-tab)
-;;       (yas-next-field-or-maybe-expand)))
-;;   (setq cdlatex-paired-parens "$([{|<")
-;;   )
-;; ;; yasnippet support
-;; (with-eval-after-load 'tex
-;;   (add-hook 'cdlatex-tab #'yas-expand)
-;;   (keymap-set cdlatex-mode-map "<tab>" #'cdlatex-tab)
-;;   (keymap-set yas-keymap "<tab>" #'yas-next-field-or-cdlatex)
-;;   (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex)
-;; )
+  (defun yas-next-field-or-cdlatex ()
+    (interactive)
+    "Jump to the next Yas field correctly with cdlatex active."
+    (if (bound-and-true-p cdlatex-mode)
+        (cdlatex-tab)
+      (yas-next-field-or-maybe-expand)))
+  (setq cdlatex-paired-parens "$([{|<")
+  )
+;; yasnippet support
+(with-eval-after-load 'tex
+  (add-hook 'cdlatex-tab-hook #'yas-expand)
+  (keymap-set cdlatex-mode-map "<tab>" #'cdlatex-tab)
+  (keymap-set yas-keymap "<tab>" #'yas-next-field-or-cdlatex)
+  (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex)
+)
 
-;; (elemacs-require-package 'xenops)
-;; (with-eval-after-load 'tex
-;;   (add-hook 'LaTeX-mode #'xenops-mode)
-;;   (setq xenops-math-image-scale-factor 1.3)
-;;   (setq xenops-image-try-write-clipboard-image-to-file nil))
-
-(elemacs-require-package 'org-latex-impatient)
-(with-eval-after-load 'org
-  (add-hook 'org-mode-hook #'org-latex-impatient-mode)
-  (setq org-latex-impatient-tex2svg-bin
-        ;; location of tex2svg executable
-        "~/node_modules/mathjax-node-cli/bin/tex2svg")
-  (setq org-latex-impatient-posframe-position 'point))
+(elemacs-require-package 'xenops)
+(with-eval-after-load 'tex
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (setq xenops-math-image-scale-factor 1.3)
+  (setq xenops-image-try-write-clipboard-image-to-file nil))
 
 (provide 'init-latex)
 ;;; init-latex.el ends here.

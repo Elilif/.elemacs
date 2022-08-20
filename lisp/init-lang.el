@@ -31,14 +31,43 @@
 ;;; Code:
 (elemacs-require-package 'yasnippet)
 (add-hook 'elemacs-first-file-hook #'yas-global-mode)
-;; (with-eval-after-load 'yasnippet
-;;   (defun my/yas-try-expanding-auto-snippets ()
-;;     (when (bound-and-true-p yas-minor-mode)
-;;       (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
-;; 	(yas-expand))))
+(with-eval-after-load 'yasnippet
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+  (add-hook 'minibuffer-setup-hook 'yas-minor-mode)
 
-;;   ;; Try after every insertion
-;;   (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets))
+  ;; Function that tries to autoexpand YaSnippets
+  ;; The double quoting is NOT a typo!
+  (defun my/yas-try-expanding-auto-snippets ()
+    (when (bound-and-true-p yas-minor-mode)
+      (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+	(yas-expand))))
+
+  ;; Try after every insertion
+  (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets)
+  (defun eli-latex-smart-kill ()
+    (condition-case nil
+        (save-excursion
+          (let ((ip (point))
+                (void (backward-sexp))
+                (cp (point))
+                (beg-of-line (save-excursion (beginning-of-line) (point)))
+                (bp (re-search-backward "\s")))
+            (if (= (1- cp) bp)
+                (kill-region cp ip)
+              (if (< bp beg-of-line)
+                  (if (= cp beg-of-line)
+                      (kill-region cp ip)
+                    (kill-region beg-of-line ip))
+                (kill-region (1+ bp) ip)))))
+      (error (setq numerator 'nil))))
+
+  (defun eli-latex-smart-paste ()
+    (if numerator
+        (let ((temp (string-clean-whitespace (current-kill 0))))
+          (if (string-match "^(\\(.*\\))$" temp)
+              (match-string 1 temp)
+            temp))))
+  )
 
 (elemacs-require-package 'auto-yasnippet)
 
