@@ -838,5 +838,147 @@ Used by `org-anki-skip-function'"
         (point)))
   (setq org-anki-skip-function #'org-anki-skip))
 
+;;; latex
+(with-eval-after-load 'org
+  (require 'ox-latex)
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n")
+  (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+  (setq org-format-latex-options '(:foreground default :background default
+                                               :scale 1.5 :html-foreground "Black"
+                                               :html-background "Transparent"
+                                               :html-scale 1.0
+                                               :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+                                        ; pdf exporting
+  (setq org-preview-latex-process-alist
+        '((dvisvgm :programs
+                   ("xelatex" "dvisvgm")
+                   :description "xdv > svg" :message "you need to install the programs: xelatex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
+                   (1.7 . 1.5)
+                   :latex-compiler
+                   ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                   :image-converter
+                   ("dvisvgm %f -n -b min -c %S -o %O"))
+          (imagemagick :programs
+                       ("xelatex" "convert")
+                       :description "pdf > png" :message "you need to install the programs: xelatex and imagemagick." :use-xcolor t :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                       (1.0 . 1.0)
+                       :latex-compiler
+                       ("xelatex -interaction nonstopmode -output-directory %o %f")
+                       :image-converter
+                       ("convert -density %D -trim -antialias %f -quality 100 %O"))))
+
+  (setq org-latex-listings 'minted)
+  (setq org-latex-minted-options '(("breaklines")
+                                   ("bgcolor" "bg")))
+  (setq org-latex-compiler "xelatex")
+  ;; (add-to-list 'org-latex-packages-alist
+  ;;            '("UTF8" "ctex" t))
+  (add-to-list 'org-latex-packages-alist
+	           '("cache=false" "minted" t))
+  (add-to-list 'org-latex-packages-alist
+	           '("" "xcolor" t))
+  (add-to-list 'org-latex-packages-alist
+	           '("" "tikz"))
+  (setq org-latex-pdf-process
+	    '("xelatex -8bit --shell-escape -interaction nonstopmode -output-directory=%o %f"
+	      "biber %b"
+	      "xelatex -8bit --shell-escape -interaction nonstopmode -output-directory=%o %f"
+	      "xelatex -8bit --shell-escape -interaction nonstopmode -output-directory=%o %f"
+	      "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl auto"
+	      ))
+  (add-to-list 'org-latex-classes
+	           '("beamer"
+		         "\\documentclass[ignorenonframetext,presentation]{beamer}"
+		         ("\\section{%s}" . "\\section*{%s}")
+		         ("\\subsection{%s}" . "\\subsection*{%s}")))
+  (add-to-list 'org-latex-classes
+	           '("article_cn"
+		         "\\documentclass[11pt]{ctexart}"
+		         ("\\section{%s}" . "\\section*{%s}")
+		         ("\\subsection{%s}" . "\\subsection*{%s}")
+		         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		         ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+
+
+;;; pandoc support
+(elemacs-require-package 'ox-pandoc)
+(with-eval-after-load 'ox
+  (require 'ox-pandoc)
+  (setq org-pandoc-options-for-docx '((standalone . nil)))
+  (defun org-pandoc-link (link contents info)
+    "Transcode a LINK object.
+
+The registered formatter for the 'pandoc backend is used. If none
+exists, transcode using the registered formatter for the 'org
+export backend. For fuzzy (internal) links, resolve the link
+destination in order to determine the appropriate reference
+number of the target Table/Figure/Equation etc. CONTENTS is the
+description of the link, as a string, or nil. INFO is a plist
+holding contextual information."
+    (let ((type (org-element-property :type link)))
+      (cond
+       ;; Try exporting with a registered formatter for 'pandoc
+       ((org-export-custom-protocol-maybe link contents 'pandoc))
+       ;; Try exporting with a registered formatter for 'org
+       ((org-export-custom-protocol-maybe link contents 'org))
+
+       ;; Otherwise, override fuzzy (internal) links that point to
+       ;; numbered items such as Tables, Figures, Sections, etc.
+       ((string= type "fuzzy")
+	    (let* ((path (org-element-property :path link))
+               (destination (org-export-resolve-fuzzy-link link info))
+               (dest-type (when destination (org-element-type destination)))
+               (number nil))
+          ;; Different link targets require different predicates to the
+          ;; `org-export-get-ordinal' function in order to resolve to
+          ;; the correct number. NOTE: Should be the same predicate
+          ;; function as used to generate the number in the
+          ;; caption/label/listing etc.
+          (cond
+           ((eq dest-type 'paragraph)   ; possible figure
+            (setq number (org-export-get-ordinal
+                          destination info nil #'org-html-standalone-image-p)))
+
+           ((eq dest-type 'latex-environment)
+            (setq number (org-export-get-ordinal
+                          destination info nil #'org-pandoc--numbered-equation-p)))
+
+           ((eq dest-type 'has-caption)                           ; captioned items
+            (setq number (org-export-get-ordinal
+                          destination info nil #'org-pandoc--has-caption-p))
+	        ))
+
+          ;; Numbered items have the number listed in the link
+          ;; description, , fall back on the text in `contents'
+          ;; if there's no resolvable destination
+          (cond
+           ;; Numbered items have the number listed in the link description
+           (number
+            (format "[[#%s][%s]]" path
+                    (if (atom number) (number-to-string number)
+                      (mapconcat #'number-to-string number ".")))
+	        )
+
+           ;; Unnumbered headlines have the heading name in the link
+           ;; description
+           ((eq dest-type 'headline)
+            (format "[[#%s][%s]]" path
+                    (org-export-data
+                     (org-element-property :title destination) info)))
+
+           ;; No resolvable destination, fallback on the text in `contents'
+           ((eq destination nil)
+            (when (org-string-nw-p contents) contents))
+
+           ;; Valid destination, but without a numbered caption/equation
+           ;; and not a heading, fallback to standard org-mode link format
+           (t
+            (org-element-link-interpreter link contents)))))
+
+       ;; Otherwise, fallback to standard org-mode link format
+       ((org-element-link-interpreter link contents))))))
+
 (provide 'init-org)
 ;;; init-org.el ends here.

@@ -34,11 +34,16 @@
 (add-hook 'elemacs-first-file-hook (lambda ()
 					(require 'smartparens-config)
 					(smartparens-global-mode)))
-;; (add-hook 'elemacs-first-input-hook #'smartparens-global-mode)
 (with-eval-after-load 'smartparens
   (sp-pair "（" "）")
   (sp-pair "《" "》")
   (sp-pair "“" "”")
+  ;; improving emphasis marker
+  (with-eval-after-load 'smartparens-org
+    (defun sp-texmathp (id action _context)
+      (texmathp))
+    (sp-with-modes 'org-mode
+      (sp-local-pair "/" "/" :unless '(sp-point-after-word-p sp-org-point-after-left-square-bracket-p sp-texmathp) :post-handlers '(("[d1]" "SPC")))))
   (define-advice show-paren-function (:around (fn) fix-show-paren-function)
     "Highlight enclosing parens."
     (cond ((looking-at-p "\\s(") (funcall fn))
