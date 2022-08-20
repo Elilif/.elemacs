@@ -4,4 +4,4 @@
 # condition: (texmathp)
 # group: math
 # --
-\\frac{`(if (region-active-p) (let ((temp (yas-selected-text))) (if (string-match "^(\\(.*\\))$" temp) (match-string 1 temp) (yas-selected-text))))`$1}{$0}
+\\frac{`(if (region-active-p) (let ((temp (yas-selected-text))) (if (string-match "^(\\(.*\\))$" temp) (match-string 1 temp) temp)))`$1}{$0}
