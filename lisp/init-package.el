@@ -35,8 +35,7 @@
 (setq package-archives
       '(("gnu"   . "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")
-	("nongnu" . "http://elpa.nongnu.org/nongnu/")
-	))
+	    ("nongnu" . "http://elpa.nongnu.org/nongnu/")))
 (setq package-quickstart t)
 (setq package-native-compile t)
 
