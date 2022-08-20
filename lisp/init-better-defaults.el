@@ -51,20 +51,6 @@
 ;; use system trash
 (setq delete-by-moving-to-trash t)
 
-;; open customize group buffers in one buffer
-(defadvice custom-buffer-create (before my-advice-custom-buffer-create)
-  "Exit the current Customize buffer before creating a new one, unless there are modified widgets."
-  (if (eq major-mode 'Custom-mode)
-      (let ((custom-buffer-done-kill t)
-            (custom-buffer-modified nil))
-        (mapc (lambda (widget)
-                (and (not custom-buffer-modified)
-                     (eq (widget-get widget :custom-state) 'modified)
-                     (setq custom-buffer-modified t)))
-              custom-options)
-        (if (not custom-buffer-modified)
-            (Custom-buffer-done)))))
-(ad-activate 'custom-buffer-create)
 (setq custom-buffer-done-kill t)
 
 (add-hook 'elemacs-first-file-hook #'global-auto-revert-mode)
