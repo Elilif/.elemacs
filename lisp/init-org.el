@@ -825,6 +825,51 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 
   (advice-add 'org-yank :after #'eli-org-whitespace-cleanup)
 
+  ;; movie rating
+  (defun eli/get-tag-counts ()
+    (interactive)
+    (let ((all-tags '()))
+      (org-map-entries
+       (lambda ()
+	     (let ((tag-string (car (last (org-heading-components)))))
+	       (when tag-string
+	         (setq all-tags
+		           (append all-tags (split-string tag-string ":" t)))))) "+LEVEL=1")
+      (list (completing-read "Select a tag:" all-tags))))
+  (defun eli/entry-rating ()
+    (interactive)
+    (let* ((eli/temp)
+	       (eli/rate))
+      (setq eli/temp (org-map-entries (lambda () (string-to-number (if (org-entry-get nil "Rating") (org-entry-get nil "Rating") "0"))) "+Rating>=0" `tree))
+      (pop eli/temp)
+      (setq eli/rate (if (= (length eli/temp) 0) 0 (/ (apply `+  eli/temp) (length eli/temp))))
+      (org-set-property "Rating" (format "%.2f" eli/rate))))
+  (defun eli/rating (type)
+    (interactive (eli/get-tag-counts))
+    (org-map-entries 'eli/entry-rating (concat type "+LEVEL=2-TODO=\"DONE\"-TODO=\"CANCELLED\"")))
+  (define-key org-mode-map (kbd "<f8>") 'eli/rating)
+  (define-key org-mode-map (kbd "<f7>") 'eli/entry-rating)
+
+
+  ;; rating films
+  (defun eli/get-film-rating ()
+    (interactive)
+    (let ((ratings)
+	      (dimensions (list "剧情" "演技" "美术" "声效" "画面" "剪辑" "运镜" "立意" "人物" "细节")))
+      (cl-loop for dim in dimensions
+	           do
+	           (push (string-to-number (org-entry-get (point) dim)) ratings))
+      (org-entry-put (point) "Rating" (number-to-string (/ (-sum ratings) 10.0)))))
+
+  (defun eli/set-film-ratings ()
+    (interactive)
+    (let ((dimensions (list "剧情" "演技" "美术" "声效" "画面" "剪辑" "运镜" "立意" "人物" "细节")))
+      (cl-loop for dim in dimensions
+	           do
+	           (org-entry-put (point) dim (read-from-minibuffer (format "Set rating for %s : " dim) )))))
+  (define-key org-mode-map (kbd "<f9>") 'eli/set-film-ratings)
+  (define-key org-mode-map (kbd "<f10>") 'eli/get-film-rating)
+
   )
 
 ;;; anki integration
