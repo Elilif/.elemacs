@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+;; accept function redefinition warning
+(setq ad-redefinition-action 'accept)
+
 ;; disable large file warning
 (setq large-file-warning-threshold nil)
 
