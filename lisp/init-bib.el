@@ -82,7 +82,7 @@
 :AUTHOR: ${author}
 :NOTER_DOCUMENT: ${file}
 :NOTER_PAGE:
-:NOANKI:t
+:NOANKI: t
 :END:")))
   (setq citar-symbols
 	`((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
