@@ -72,6 +72,13 @@
 (require 'init-music)
 (require 'init-finance)
 
+;; fix keymap-set completing error
+(defun keymap-set--anon-cmacro
+    (form keymap &optional key definition)
+  (ignore keymap key definition)
+  (keymap--compile-check key)
+  form)
+
 (defun eli/open-init-file()
   (interactive)
   (find-file "~/.emacs.d/init.el"))
