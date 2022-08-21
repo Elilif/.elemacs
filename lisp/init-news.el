@@ -98,6 +98,8 @@ for confirmation when needed."
   (elfeed-org)
   (setq  rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org")))
 
+(elemacs-require-package 'link-hint)
+(elemacs-require-package 'powerline)
 (add-to-list 'load-path "~/.emacs.d/site-lisp/elfeed-goodies/")
 (with-eval-after-load 'elfeed
   (require 'elfeed-goodies)
