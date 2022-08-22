@@ -112,7 +112,8 @@
 )
 
 (elemacs-require-package 'xenops)
-(with-eval-after-load 'tex
+(with-eval-after-load 'xenops
+  (keymap-set xenops-mode-map "C-y" nil)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (setq xenops-math-image-scale-factor 1.3)
   (setq xenops-image-try-write-clipboard-image-to-file nil))
