@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+;; enable recursive minibuffer
+(setq enable-recursive-minibuffers t)
+
 ;; accept function redefinition warning
 (setq ad-redefinition-action 'accept)
 
