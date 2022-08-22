@@ -809,6 +809,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 
 ;;; misc
 (with-eval-after-load 'org
+  (setq org-export-preserve-breaks t)
   (setq org-adapt-indentation t)
   (setq org-fontify-quote-and-verse-blocks t)
   (setq org-link-frame-setup
