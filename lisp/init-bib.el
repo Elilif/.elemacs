@@ -42,8 +42,8 @@
   (setq org-cite-global-bibliography eli/bibliography)
   (setq org-cite-csl-styles-dir "~/Documents/styles")
   (setq org-cite-export-processors '((beamer natbib)
-				     (latex biblatex)
-				     (t csl)))
+    			                     (latex biblatex)
+    			                     (t csl)))
   (require 'oc-natbib)
   (require 'oc-biblatex))
 
