@@ -133,6 +133,8 @@
 					                     ("#+end_verse" . "ζ")
 					                     ("#+begin_example" . "")
 					                     ("#+end_example" . "")
+                                         ("#+begin_export" . "🙑")
+                                         ("#+end_export" . "🙔")
 					                     ))
   (setq org-ellipsis "▼")
   )
@@ -651,7 +653,10 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
   )
 
 (elemacs-require-package 'org-superstar)
-(setq org-superstar-headline-bullets-list '("☰" "○" "✸" "✤" "◆" "✜" "▶"))
+(setq org-superstar-headline-bullets-list '("⦿" "⦾" "◎" "🞊" "⊚" "○" "⚬" "✤" "◆" "✜" "▶"))
+(setq org-superstar-item-bullet-alist '((?* . ?•)
+                                        (?+ . ?➤)
+                                        (?- . ?•)))
 (add-hook 'org-mode-hook #'org-superstar-mode)
 
 

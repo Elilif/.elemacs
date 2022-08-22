@@ -64,6 +64,7 @@
       (set-fontset-font (frame-parameter nil 'font) charset
 			            (font-spec :family "Sarasa Mono SC Nerd" :size 20)))
     (set-fontset-font "fontset-default" 'unicode "AR PL New Kai" nil 'prepend)
+    (set-fontset-font "fontset-default" 'unicode "HanaMinA" nil 'prepend)
     (set-fontset-font "fontset-default" 'unicode "Noto Color Emoji" nil 'prepend)))
 
 ;; (with-eval-after-load 'org
