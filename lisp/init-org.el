@@ -884,7 +884,44 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 Used by `org-anki-skip-function'"
     (if (string= "t" (org-entry-get nil "NOANKI"))
         (point)))
-  (setq org-anki-skip-function #'org-anki-skip))
+  (setq org-anki-skip-function #'org-anki-skip)
+  (defun org-anki-sync-checkbox (checkbox)
+    (org-anki-connect-request
+     (org-anki--create-note-single checkbox)
+     (lambda (the-result)
+       (message
+        "org-anki: note succesfully updated: %s"
+        the-result))
+     (lambda (the-error)
+       (org-anki--report-error
+        "Couldn't update note, received: %s"
+        the-error))))
+
+  (defun org-anki-get-checkbox ()
+    (interactive)
+    (save-excursion
+      (save-restriction
+        (org-back-to-heading)
+        (org-narrow-to-subtree)
+        (while (re-search-forward "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\([^\n]*\\(?:\n  .*\n\\)*\\)"
+                                  nil t)
+          (let*
+              ((front (org-anki--string-to-html (org-no-properties (match-string 2))))
+               (maybe-id (org-entry-get nil org-anki-prop-note-id))
+               (back "")
+               (tags (org-anki--get-tags))
+               (deck "Words")
+               (type (org-anki--find-prop org-anki-note-type org-anki-default-note-type))
+               (note-start (point))
+               (card (make-org-anki--note
+                      :maybe-id (if (stringp maybe-id) (string-to-number maybe-id))
+                      :front    front
+                      :back     back
+                      :tags     tags
+                      :deck     deck
+                      :type     type
+                      :point    note-start)))
+            (org-anki-sync-checkbox card)))))))
 
 ;;; latex
 (with-eval-after-load 'org
