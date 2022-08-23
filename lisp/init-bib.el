@@ -95,8 +95,9 @@
   (setq citar-note-format-function #'eli-citar-org-format-note)
   (setq citar-notes-paths '("~/Dropbox/org/roam/references")))
 
-
-
+(elemacs-require-package 'citar-org-roam)
+(with-eval-after-load 'citar
+  (citar-org-roam-mode))
 
 (elemacs-require-package 'citar-embark)
 (with-eval-after-load 'citar
