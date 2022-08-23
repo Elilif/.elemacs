@@ -135,6 +135,9 @@
 					                     ("#+end_example" . "")
                                          ("#+begin_export" . "🙑")
                                          ("#+end_export" . "🙔")
+                                         ("#+END:" . "□")
+                                         ("#+BEGIN:" . "✎")
+                                         ("#+CAPTION:" . "🙛")
 					                     ))
   (setq org-ellipsis "▼")
   )
@@ -653,7 +656,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
   )
 
 (elemacs-require-package 'org-superstar)
-(setq org-superstar-headline-bullets-list '("⦿" "⦾" "◎" "🞊" "⊚" "○" "⚬" "✤" "◆" "✜" "▶"))
+(setq org-superstar-headline-bullets-list '("⦿" "⦾" "⌾" "⊚" "⊚" "⚬" "✤" "◆" "✜" "▶"))
 (setq org-superstar-item-bullet-alist '((?* . ?•)
                                         (?+ . ?➤)
                                         (?- . ?•)))
@@ -1069,6 +1072,16 @@ holding contextual information."
 
        ;; Otherwise, fallback to standard org-mode link format
        ((org-element-link-interpreter link contents))))))
+
+;;; mixed pitch mode
+(elemacs-require-package 'mixed-pitch)
+(with-eval-after-load 'org
+  (require 'mixed-pitch)
+  (add-hook 'org-mode-hook #'mixed-pitch-mode)
+  (setq mixed-pitch-variable-pitch-cursor 'box
+        mixed-pitch-set-height t)
+  (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-date)
+  )
 
 (provide 'init-org)
 ;;; init-org.el ends here.
