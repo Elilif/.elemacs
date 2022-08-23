@@ -21,3 +21,4 @@ multisession/
 .mc-lists.el
 request/
 xenops/
+auto-save-list/
