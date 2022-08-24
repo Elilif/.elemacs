@@ -64,7 +64,6 @@
 (require 'init-r)
 (require 'init-completion)
 (require 'init-flycheck)
-;; (require 'init-hydra)
 (require 'init-reader)
 (require 'init-news)
 (require 'init-spell)

@@ -62,16 +62,15 @@
     ;; Chinese fonts
     (dolist (charset '(kana han cjk-misc bopomofo))
       (set-fontset-font (frame-parameter nil 'font) charset
-			            (font-spec :family "Sarasa Mono SC Nerd" :size 20)))
+			            (font-spec :family "Sarasa Mono SC Nerd")))
     (set-fontset-font "fontset-default" 'unicode "AR PL New Kai" nil 'prepend)
     (set-fontset-font "fontset-default" 'unicode "HanaMinA" nil 'prepend)
-    (set-fontset-font "fontset-default" 'unicode "Noto Color Emoji" nil 'prepend)))
+    (set-fontset-font "fontset-default" 'unicode "Noto Color Emoji" nil 'prepend)
+    (setq face-font-rescale-alist '(("-cdac$" . 1.3)
+                                    ("Sarasa" . 1.18)
+                                    ("Bookerly" . 1.2)))))
 
-;; (with-eval-after-load 'org
-;;   (if window-system
-;;       (eli/set-font)))
 (add-hook 'after-init-hook #'eli/set-font)
-
 
 (setq use-dialog-box nil)
 (when (bound-and-true-p tooltip-mode)
