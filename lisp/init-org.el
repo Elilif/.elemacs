@@ -490,7 +490,7 @@ This list represents a \"habit\" for the rest of this module."
            "* %a\n%?\n%(v-i-or-nothing)\n%U"
            :empty-lines 0)
 	      ("w" "Words" entry (file org-agenda-file-te)
-	       "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
+	       "* %u [/]\n%?"
 	       :jump-to-captured t)
 	      ("f" "Français" entry (file "~/Dropbox/org/Français.org")
 	       "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
