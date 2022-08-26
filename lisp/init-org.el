@@ -656,7 +656,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
   )
 
 (elemacs-require-package 'org-superstar)
-(setq org-superstar-headline-bullets-list '("⦿" "⦾" "⌾" "⊚" "⊚" "⚬" "✤" "◆" "✜" "▶"))
+(setq org-superstar-headline-bullets-list '("⦿" "⊚" "𐰧" "◯" "●" "►" "▻"))
 (setq org-superstar-item-bullet-alist '((?* . ?•)
                                         (?+ . ?➤)
                                         (?- . ?•)))
