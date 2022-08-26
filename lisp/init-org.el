@@ -1135,8 +1135,7 @@ holding contextual information."
   (add-hook 'org-mode-hook #'mixed-pitch-mode)
   (setq mixed-pitch-variable-pitch-cursor 'box
         mixed-pitch-set-height t)
-  (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-date)
-  )
+  (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-date))
 
 (provide 'init-org)
 ;;; init-org.el ends here.
