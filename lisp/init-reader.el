@@ -70,5 +70,7 @@
 (with-eval-after-load 'org-noter
   (org-pdftools-setup-link))
 
+(elemacs-require-package 'toc-mode)
+
 (provide 'init-reader)
 ;;; init-reader.el ends here.
