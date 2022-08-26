@@ -138,8 +138,7 @@
 (when (featurep 'ns)
   (push '(ns-transparent-titlebar . t) default-frame-alist))
 (push '(internal-border-width . 20) default-frame-alist)
-(push '(line-spacing . 5) default-frame-alist)
-
+(push '(line-spacing . 8) default-frame-alist)
 
 
 (provide 'early-init)
