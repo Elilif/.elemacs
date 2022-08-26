@@ -940,6 +940,7 @@ References from FILE are excluded."
 ;;; anki integration
 (elemacs-require-package 'org-anki)
 (with-eval-after-load 'org
+  (require 'org-anki)
   (setq org-anki-default-deck "Default")
   (defun org-anki-skip ()
     "Skip headlines with \"noanki\" property.
