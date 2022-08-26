@@ -870,6 +870,7 @@ References from FILE are excluded."
 
 ;;; misc
 (with-eval-after-load 'org
+  (setq org-indirect-buffer-display 'current-window)
   (setq org-export-preserve-breaks t)
   (setq org-adapt-indentation t)
   (setq org-fontify-quote-and-verse-blocks t)
