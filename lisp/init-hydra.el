@@ -111,7 +111,8 @@
 	  :post (progn (setq which-key-inhibit nil) ))
   ("basic"
    (("E" eval-buffer)
-    ("f" (find-file "~/.emacs.d/lisp") "config files")
+    ("f" (let ((default-directory "~/.emacs.d/lisp/"))
+           (call-interactively 'find-file)) "config files")
     ("R" restart-emacs)
     )
    "Bookmark"
