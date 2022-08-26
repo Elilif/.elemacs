@@ -32,7 +32,8 @@
 
 (elemacs-require-package 'elfeed)
 (with-eval-after-load 'elfeed
-  (setq elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890"))
+  (setq elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890")
+        shr-width 80)
   (defun eli/elfeed-search-quit-and-kill-buffers ()
     "Save the database, then kill elfeed buffers, asking the user
 for confirmation when needed."
