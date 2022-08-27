@@ -882,13 +882,19 @@ References from FILE are excluded."
           (wl . wl-other-frame)))
 
   ;; remove superfluous whitespace.
-  (defun eli-org-whitespace-cleanup (&optional arg)
+  (defun eli-org-fill-paragraph (&optional arg)
     (when arg
-      (progn
-        (whitespace-cleanup-region (mark) (point))
-        (fill-paragraph))))
+      (fill-paragraph)))
 
-  (advice-add 'org-yank :after #'eli-org-whitespace-cleanup)
+  (defun eli-org-clean-sentence (&optional arg)
+    (when arg
+      (let* ((temp (pop kill-ring))
+             (new-string (string-clean-whitespace
+                          (replace-regexp-in-string "\n" " " eli-temp))))
+        (push new-string kill-ring))))
+
+  (advice-add 'org-yank :before #'eli-org-clean-sentence)
+  (advice-add 'org-yank :after #'eli-org-fill-paragraph)
 
   ;; movie rating
   (defun eli/get-tag-counts ()
