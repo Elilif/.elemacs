@@ -587,21 +587,16 @@ This list represents a \"habit\" for the rest of this module."
 Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
     (and (> (point) (save-excursion (back-to-indentation) (point)))
 	     (let ((string (buffer-substring (point) (max (line-beginning-position) (- (point) 80)))))
-           (string-match-p "\\cl$" string))))
+           (and (string-match-p "\\cl$" string)
+                (not (string-match-p " $" string))))))
 
   (setq eli/prefer-English t)
   (defun eli/input-switch ()
     (interactive)
     (if (not eli/prefer-English)
 	    (progn
-	      (setq rime-disable-predicates '(rime-predicate-prog-in-code-p
-					                      rime-predicate-space-after-ascii-p
-					                      rime-predicate-after-ascii-char-p
-					                      +rime-predicate-punctuation-line-begin-p
-					                      rime-predicate-org-in-src-block-p
-					                      rime-predicate-space-after-cc-p
-					                      rime-predicate-current-uppercase-letter-p
-					                      rime-predicate-hydra-p ))
+          (add-to-list 'rime-disable-predicates 'rime-predicate-space-after-ascii-p)
+		  (add-to-list 'rime-disable-predicates '+rime-predicate-punctuation-line-begin-p)
 	      (setq eli/prefer-English t))
       (progn
 	    (setq rime-disable-predicates
