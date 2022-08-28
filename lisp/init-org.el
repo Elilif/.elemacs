@@ -124,8 +124,8 @@
 					                     ("#+END_SRC" . "□")
 					                     ("#+begin_src" . "✎")
 					                     ("#+end_src" . "□")
-					                     ("[ ]" . "🞎")
-                                         ("[-]" . "🞔")
+					                     ("[ ]" . "☐")
+                                         ("[-]" . "🝕")
 					                     ("[X]" . "🗹")
 					                     ("#+begin_quote" . "»")
 					                     ("#+end_quote" . "«")
@@ -653,10 +653,8 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
   )
 
 (elemacs-require-package 'org-superstar)
-(setq org-superstar-headline-bullets-list '("⦿" "⊚" "𐰧" "◯" "●" "►" "▻"))
-(setq org-superstar-item-bullet-alist '((?* . ?•)
-                                        (?+ . ?➤)
-                                        (?- . ?•)))
+(setq org-superstar-headline-bullets-list '("⦿" "⊚" "𐰧" "◯" "●" "►" "▻")
+      org-superstar-prettify-item-bullets nil)
 (add-hook 'org-mode-hook #'org-superstar-mode)
 
 
