@@ -30,10 +30,15 @@
 
 ;;; Code:
 
+(setq shr-width 90)
+
+(elemacs-require-package 'hide-mode-line)
 (elemacs-require-package 'elfeed)
 (with-eval-after-load 'elfeed
-  (setq elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890")
-        shr-width 80)
+  (add-hook 'elfeed-show-mode-hook #'visual-fill-column-mode)
+  (add-hook 'elfeed-show-mode-hook #'hide-mode-line-mode)
+  (add-hook 'elfeed-search-update-hook #'hide-mode-line-mode)
+  (setq elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890"))
   (defun eli/elfeed-search-quit-and-kill-buffers ()
     "Save the database, then kill elfeed buffers, asking the user
 for confirmation when needed."
@@ -111,15 +116,28 @@ for confirmation when needed."
 		(define-key elfeed-show-mode-map (kbd "M-v") nil))))
 
 (with-eval-after-load 'mu4e
+  (add-hook 'mu4e-view-mode-hook #'visual-fill-column-mode)
+  (add-hook 'mu4e-view-mode-hook #'hide-mode-line-mode)
+  (require 'auth-source)
+  (setq auth-sources '("~/.authinfo"))
   (setq smtpmail-smtp-user "eli.q.qian@gmail.com"
-	smtpmail-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-service 587
-	smtpmail-stream-type 'ssl)
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587
+        smtpmail-stream-type 'starttls
+        smtpmail-local-domain "gmail.com"
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-server         "smtp.gmail.com")
+  (setq user-mail-address "eli.q.qian@gmail.com")
+  (setq message-send-mail-function 'message-send-mail-with-sendmail)
+  ;; (setq message-send-mail-function 'smtpmail-send-it)
   (setq send-mail-function 'smtpmail-send-it)
-  (setq sendmail-program "/usr/bin/msmtp"
-	message-sendmail-f-is-evil t
-	message-sendmail-extra-arguments '("--read-envelope-from")
-	message-send-mail-function 'message-send-mail-with-sendmail))
+  ;;Debug
+  (setq smtpmail-debug-info t)
+  (setq smtpmail-debug-verb t)
+  ;; (setq message-sendmail-f-is-evil t
+  ;;  message-sendmail-extra-arguments '("--read-envelope-from")
+  ;;   message-send-mail-function 'message-send-mail-with-sendmail)
+  )
 
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
@@ -127,6 +145,7 @@ for confirmation when needed."
 (with-eval-after-load 'mu4e
   (setq mail-user-agent 'mu4e-user-agent)
   (setq user-full-name "Eli Qian")
+  (add-to-list 'mm-discouraged-alternatives "text/richtext")
   (setq user-mail-address "eli.q.qian@gmail.com")
   (setq shr-use-colors nil)
   (setq mu4e-compose-format-flowed t)
@@ -219,10 +238,16 @@ Also number them so they can be opened using `mu4e-view-go-to-url'."
   (mu4e-alert-set-default-style 'notifications)
   (setq mu4e-alert-interesting-mail-query "flag:unread AND NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"))
 
-(elemacs-require-package 'mu4e-maildirs-extension)
-(with-eval-after-load 'mu4e
-  (mu4e-maildirs-extension))
+;; (elemacs-require-package 'mu4e-maildirs-extension)
+;; (with-eval-after-load 'mu4e
+;;   (mu4e-maildirs-extension))
 ;; (add-hook 'mu4e-main-mode-hook #'mu4e-maildirs-extension)
+(elemacs-require-package 'visual-fill-column)
+(with-eval-after-load 'visual-fill-column
+  (setq-default visual-fill-column-center-text t)
+  (setq-default visual-fill-column-width 100)
+  (setq-default visual-fill-column-extra-text-width nil)
+  )
 
 (provide 'init-news)
 ;;; init-news.el ends here.
