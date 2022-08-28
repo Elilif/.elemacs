@@ -884,7 +884,7 @@ References from FILE are excluded."
     (when arg
       (let* ((temp (pop kill-ring))
              (new-string (string-clean-whitespace
-                          (replace-regexp-in-string "\n" " " eli-temp))))
+                          (replace-regexp-in-string "\n" " " temp))))
         (push new-string kill-ring))))
 
   (advice-add 'org-yank :before #'eli-org-clean-sentence)
@@ -933,9 +933,7 @@ References from FILE are excluded."
 	           do
 	           (org-entry-put (point) dim (read-from-minibuffer (format "Set rating for %s : " dim) )))))
   (define-key org-mode-map (kbd "<f9>") 'eli/set-film-ratings)
-  (define-key org-mode-map (kbd "<f10>") 'eli/get-film-rating)
-
-  )
+  (define-key org-mode-map (kbd "<f10>") 'eli/get-film-rating))
 
 ;;; anki integration
 (elemacs-require-package 'org-anki)
