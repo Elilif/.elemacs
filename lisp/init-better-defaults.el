@@ -369,7 +369,7 @@ create new one."
   (setq shackle-rules '(("*Messages*" :align below :size 0.3 :select t)
 			("*scratch*" :select t :align right)
 			(helpful-mode :select t :align right)
-			(elfeed-show-mode :select t :align right :size 0.75)
+			(elfeed-show-mode :select t :align bottom :size 0.85)
 			("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
 			("*WordNut*" :select t :align right :size 0.4)
 			("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
