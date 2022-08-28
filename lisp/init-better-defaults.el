@@ -534,5 +534,8 @@ BUFFER is a string, the name of a buffer."
                                             elemacs-global-interactive--capture
                                             consult-emms-current-playlist))
 
+;; another choice is `info-pretty-mode'
+(add-hook 'Info-mode-hook #'variable-pitch-mode)
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
