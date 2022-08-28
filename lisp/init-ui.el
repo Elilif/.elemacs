@@ -68,7 +68,7 @@
     (set-fontset-font "fontset-default" 'unicode "Noto Color Emoji" nil 'prepend)
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
                                     ("Sarasa" . 1.18)
-                                    ("Bookerly" . 1.2)))))
+                                    ("Bookerly" . 1.3)))))
 
 (add-hook 'after-init-hook #'eli/set-font)
 
