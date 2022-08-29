@@ -887,6 +887,13 @@ References from FILE are excluded."
                           (replace-regexp-in-string "\n" " " temp))))
         (push new-string kill-ring))))
 
+  (defun eli-unfill-string (string)
+    (if (and (memq major-mode '(org-mode mu4e-view-mode elfeed-show-mode))
+             (member (prefix-numeric-value current-prefix-arg) '(4 16 64)))
+        (string-clean-whitespace
+         (replace-regexp-in-string "\n" " " string))
+      string))
+  (advice-add 'filter-buffer-substring :filter-return #'eli-unfill-string)
   (advice-add 'org-yank :before #'eli-org-clean-sentence)
   (advice-add 'org-yank :after #'eli-org-fill-paragraph)
 
