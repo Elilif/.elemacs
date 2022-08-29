@@ -971,10 +971,11 @@ Used by `org-anki-skip-function'"
       (save-restriction
         (org-back-to-heading)
         (org-narrow-to-subtree)
-        (while (re-search-forward "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\([^\n]*\\(?:\n  .*\n\\)*\\)"
+        (while (re-search-forward "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n\\)*\\)"
                                   nil t)
           (let*
-              ((front (org-anki--string-to-html (org-no-properties (match-string 2))))
+              ((front (org-anki--string-to-html (string-clean-whitespace
+                                                 (replace-regexp-in-string "\n" " " (org-no-properties (match-string 2))))))
                (maybe-id (org-entry-get nil org-anki-prop-note-id))
                (back "")
                (tags (org-anki--get-tags))
