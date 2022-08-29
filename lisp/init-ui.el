@@ -66,6 +66,7 @@
     (set-fontset-font "fontset-default" 'unicode "AR PL New Kai" nil 'prepend)
     (set-fontset-font "fontset-default" 'unicode "HanaMinA" nil 'prepend)
     (set-fontset-font "fontset-default" 'unicode "Noto Color Emoji" nil 'prepend)
+    (set-fontset-font "fontset-default" 'unicode "Meslo LG S DZ" nil 'prepend)
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
                                     ("Sarasa" . 1.18)
                                     ("Bookerly" . 1.3)))))
