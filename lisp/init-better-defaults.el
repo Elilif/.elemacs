@@ -341,10 +341,10 @@ create new one."
 	  helpful-mode
 	  compilation-mode))
   (setq popper-mode-line t)
-  (setq popper-echo-dispatch-keys '("1" "2" "3" "4" "5" "6" "7" "8" "9"))
-  (setq popper-display-control nil))
-(add-hook 'elemacs-first-buffer-hook #'popper-mode)
-(add-hook 'elemacs-first-buffer-hook #'popper-echo-mode)
+  (setq popper-echo-dispatch-keys '("0" "1" "2" "3" "4" "5" "6" "7" "8" "9"))
+  (setq popper-display-control nil)
+  (advice-add 'popper-raise-popup :after (lambda (&optional _arg)
+                                           (delete-other-windows))))
 
 (elemacs-require-package 'shackle)
 (with-eval-after-load 'popper
