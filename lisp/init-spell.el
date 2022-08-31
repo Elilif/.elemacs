@@ -50,7 +50,8 @@
 (elemacs-require-package 'flyspell-correct)
 (with-eval-after-load 'flyspell
   (keymap-set flyspell-mode-map "C-;" #'flyspell-correct-wrapper)
-  (keymap-set flyspell-mode-map "C-." nil))
+  (keymap-set flyspell-mode-map "C-." nil)
+  (keymap-set flyspell-mode-map "C-," nil))
 
 (elemacs-require-package 'wordnut)
 (keymap-global-set "C-c y" #'wordnut-lookup-current-word)
