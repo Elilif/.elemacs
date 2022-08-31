@@ -64,7 +64,7 @@
   (setq org-noter-auto-save-last-location t)
   (setq org-noter-doc-split-fraction '(0.52 0.48))
   (setq org-noter-notes-search-path '("~/Dropbox/org/roam"))
-  (setq org-noter-always-create-frame nil))
+  (setq org-noter-always-create-frame t))
 
 (elemacs-require-package 'org-pdftools)
 (with-eval-after-load 'org-noter
