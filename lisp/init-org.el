@@ -254,8 +254,9 @@ This list represents a \"habit\" for the rest of this module."
 	    )
       (if (> streaks max-streaks)
 	      (setq max-streaks streaks))
-      (insert " (" (number-to-string current-streaks) "/" (number-to-string max-streaks) "/" (number-to-string sum) ")")
-      ))
+      (insert (propertize (propertize (concat " (" (number-to-string current-streaks) "/" (number-to-string max-streaks) "/" (number-to-string sum) ")") 'face 'mindre-faded)
+                          'field t))))
+  
   (defun org-habit-insert-consistency-graphs (&optional line)
     "Insert consistency graph for any habitual tasks."
     (let ((inhibit-read-only t)
