@@ -71,7 +71,7 @@
 	  (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
 	  (note . "${title}
 #+filetags: :book:
-- bibliography :: bibliography:/home/eli/Documents/Thesis/catalog.bib
+- bibliography ::
 - tags :: ${tags}
 - keywords :: ${keywords}
 
@@ -97,7 +97,26 @@
 
 (elemacs-require-package 'citar-org-roam)
 (with-eval-after-load 'citar
-  (citar-org-roam-mode))
+  (citar-org-roam-mode)
+  (setq citar-org-roam-note-title-template (cdr (assoc 'note citar-templates)))
+  (defun citar-org-roam--create-capture-note (citekey entry)
+    "Open or create org-roam node for CITEKEY and ENTRY."
+    ;; adapted from https://jethrokuan.github.io/org-roam-guide/#orgc48eb0d
+    (let ((title (citar-format--entry
+                  citar-org-roam-note-title-template entry)))
+      (org-roam-capture-
+       :templates
+       '(("r" "reference" plain "%?" :if-new
+          (file+head
+           "%(concat
+ (when citar-org-roam-subdir (concat citar-org-roam-subdir \"/\")) \"${citekey}.org\")"
+           "#+title: ${title}\n")
+          :immediate-finish t
+          :unnarrowed t))
+       :info (list :citekey citekey)
+       :node (org-roam-node-create :title (replace-regexp-in-string ":/home.*:PDF" (car (gethash citekey (citar-get-files citekey))) title))
+       :props '(:finalize find-file))
+      (org-roam-ref-add (concat "@" citekey)))))
 
 (elemacs-require-package 'citar-embark)
 (with-eval-after-load 'citar
