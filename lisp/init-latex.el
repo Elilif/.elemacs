@@ -101,7 +101,7 @@
     (if (bound-and-true-p cdlatex-mode)
         (cdlatex-tab)
       (yas-next-field-or-maybe-expand)))
-  (setq cdlatex-paired-parens "$([{|<")
+  (setq cdlatex-paired-parens "$[{")
   )
 ;; yasnippet support
 (with-eval-after-load 'tex
