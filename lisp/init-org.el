@@ -295,7 +295,6 @@ This list represents a \"habit\" for the rest of this module."
 (keymap-global-set "C-c c" #'org-capture)
 (with-eval-after-load 'org
   (keymap-set org-mode-map "C-c C-j" nil)
-  (keymap-set org-mode-map "C-c C-l" #'org-insert-link)
   (keymap-set org-mode-map "<remap> <org-cycle-agenda-files>" #'avy-goto-char)
   (keymap-set org-mode-map "C-<tab>" #'eli/org-expand-all))
 
@@ -941,7 +940,35 @@ References from FILE are excluded."
 	           do
 	           (org-entry-put (point) dim (read-from-minibuffer (format "Set rating for %s : " dim) )))))
   (define-key org-mode-map (kbd "<f9>") 'eli/set-film-ratings)
-  (define-key org-mode-map (kbd "<f10>") 'eli/get-film-rating))
+  (define-key org-mode-map (kbd "<f10>") 'eli/get-film-rating)
+
+  ;; Learn from: https://xenodium.com/emacs-dwim-do-what-i-mean/
+  (defun ar/org-insert-link-dwim ()
+    "Like `org-insert-link' but with personal dwim preferences."
+    (interactive)
+    (let* ((point-in-link (org-in-regexp org-link-any-re 1))
+           (clipboard-url (when (string-match-p "^http" (current-kill 0))
+                            (current-kill 0)))
+           (region-content (when (region-active-p)
+                             (buffer-substring-no-properties (region-beginning)
+                                                             (region-end)))))
+      (cond ((and region-content clipboard-url (not point-in-link))
+             (delete-region (region-beginning) (region-end))
+             (insert (org-make-link-string clipboard-url region-content)))
+            ((and clipboard-url (not point-in-link))
+             (insert (org-make-link-string
+                      clipboard-url
+                      (read-string "title: "
+                                   (with-current-buffer (url-retrieve-synchronously clipboard-url)
+                                     (dom-text (car
+                                                (dom-by-tag (libxml-parse-html-region
+                                                             (point-min)
+                                                             (point-max))
+                                                            'title))))))))
+            (t
+             (call-interactively 'org-insert-link)))))
+  (keymap-set org-mode-map "C-c C-l" #'ar/org-insert-link-dwim)
+  )
 
 ;;; anki integration
 (elemacs-require-package 'org-anki)
