@@ -326,11 +326,28 @@ This list represents a \"habit\" for the rest of this module."
   (setq org-agenda-log-mode-items '(clock))
   (setq org-agenda-log-mode-add-notes nil)
 
+  (defun eli-make-progress (width)
+    (let* ((today (time-to-day-in-year (current-time)))
+           (percent (floor (* 100 (/ today 365.0))))
+           (done (/ percent 100.0))
+           (done-width (floor (* width done))))
+      (concat
+       "["
+       (make-string done-width ?/)
+       (make-string (- width done-width) ? )
+       "]"
+       (concat " " (number-to-string percent) "%"))))
+
   (setq org-agenda-custom-commands
 	    '(("g" "GTD"
-           ((agenda "" nil)
+           ((agenda ""
+                    ((org-agenda-overriding-header
+                      (concat "Day-agenda (W"
+                              (format-time-string "%U" (current-time))
+                              ") "
+                              (eli-make-progress 50)))))
             (tags-todo  "/+TODO"
-			            ((org-agenda-overriding-header "Inbox")
+			            ((org-agenda-overriding-header (propertize "Inbox" 'face 'mindre-faded))
 			             (org-tags-match-list-sublevels t)
 			             (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp))))
             (tags-todo "/+NEXT"
@@ -344,7 +361,27 @@ This list represents a \"habit\" for the rest of this module."
             (tags-todo "/+SOMEDAY"
 		               ((org-agenda-overriding-header "Someday/Maybe")))
             ))))
-
+  ;; change the progress color
+  (defun eli-show-progress-color ()
+    (save-excursion
+      (goto-char (point-min))
+      (re-search-forward "\\([0-9]\\{2,3\\}\\)%" nil t)
+      (when (match-string 1)
+       (let* ((percent (string-to-number (match-string 1)))
+             percent-face)
+        (cond
+         ((< percent 33)
+          (setq percent-face 'mindre-note))
+         ((< percent 66)
+          (setq percent-face 'mindre-keyword))
+         ((< percent 90)
+          (setq percent-face 'mindre-warning))
+         ((< percent 100)
+          (setq percent-face 'mindre-critical)))
+        (overlay-put (make-overlay
+                      (match-beginning 0) (match-end 0))
+                     'face percent-face)))))
+  (add-hook 'org-agenda-finalize-hook #'eli-show-progress-color)
 
   (defvar dynamic-agenda-files nil
     "dynamic generate agenda files list when changing org state")
