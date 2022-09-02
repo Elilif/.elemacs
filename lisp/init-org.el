@@ -999,7 +999,7 @@ Used by `org-anki-skip-function'"
       (save-restriction
         (org-back-to-heading)
         (org-narrow-to-subtree)
-        (while (re-search-forward "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n\\)*\\)"
+        (while (re-search-forward "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)"
                                   nil t)
           (let*
               ((front (org-anki--string-to-html (string-clean-whitespace
@@ -1007,7 +1007,10 @@ Used by `org-anki-skip-function'"
                (maybe-id (org-entry-get nil org-anki-prop-note-id))
                (back "")
                (tags (org-anki--get-tags))
-               (deck "Words")
+               (deck (save-excursion
+                       (save-restriction
+                         (widen)
+                         (org-anki--find-prop org-anki-prop-deck org-anki-default-deck))))
                (type (org-anki--find-prop org-anki-note-type org-anki-default-note-type))
                (note-start (point))
                (card (make-org-anki--note
