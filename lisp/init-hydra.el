@@ -132,13 +132,10 @@
 	  (progn (setq which-key-inhibit t))
 	  :post (progn (setq which-key-inhibit nil) ))
   ("Basic"
-   (("a" org-archive-subtree "archive subtree")
-    ;; ("c" org-capture "org capture")
-    ("h" org-mode "org mode")
+    (("h" org-mode "org mode")
     ("pp" org-pomodoro "sart a pomodoro")
     ("pt" org-pomodoro-extend-last-clock "extend pomodoro")
-    ("f" my/consult-org-file "agenda filter")
-    )
+    ("f" my/consult-org-file "agenda filter"))
    "Org link"
    (("li" grab-x-link-chromium-insert-link "insert web link")
     ("lo" grab-x-link-chromium-insert-org-link "insert org link")
@@ -164,12 +161,16 @@
     ("tt" org-timer-item)
     ("tz" (org-info "Timers") "info timers")
     )
-   "Writing"
-   (("ww" writeroom-mode "write room")
-    ("wm" writeroom-toggle-mode-lint "toggle modeline")
-    ("wg" writegood-mode "write good")
-    ("wl" writegood-grade-level "grade level")
-    ("we" writegood-reading-ease "reading-ease"))
+   "Anki"
+   (("ab" org-anki-browse-entry "browse")
+    ("ac" org-anki-cloze-dwim "close")
+    ("ad" org-anki-delete-entry "delete entry")
+    ("aD" org-anki-delete-all "delete all")
+    ("ax" org-anki-sync-checkbox "check boxes")
+    ("al" org-anki-sync-description "description lists")
+    ("aS" org-anki-sync-all "sync all")
+    ("as" org-anki-sync-entry "sync entry")
+    ("au" org-anki-update-all "update all"))
    "blog"
    (("bp" org-publish)
     ("bg" eli/push-to-gitpage)
