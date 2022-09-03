@@ -1041,7 +1041,9 @@ Used by `org-anki-skip-function'"
          (while (re-search-forward ,reg nil t)
            (let*
                ((front-string (match-string ,front))
-                (back-string (match-string ,back))
+                (back-string (if ,back
+                                 (match-string ,back)
+                               nil))
                 (front (org-anki--string-to-html (string-clean-whitespace
                                                   (replace-regexp-in-string
                                                    "\n" " "
