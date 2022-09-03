@@ -529,13 +529,13 @@ This list represents a \"habit\" for the rest of this module."
            "* %a\n%?\n%(v-i-or-nothing)\n%U"
            :empty-lines 0)
 	      ("w" "Words" entry (file org-agenda-file-te)
-	       "* %u [/]\n%?"
+	       "* TODO %u [/]\n%?"
 	       :jump-to-captured t)
 	      ("f" "Français" entry (file "~/Dropbox/org/Français.org")
-	       "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
+	       "* TODO %u [/]\n%?"
 	       :jump-to-captured t)
 	      ("g" "古文" entry (file "~/Dropbox/org/古文.org")
-	       "* TODO %u [/]\nSCHEDULED: <%(org-read-date nil nil \"+1d\") .+1d>\n%?"
+	       "* TODO %u [/]\n%?"
 	       :jump-to-captured t)
 	      ("b" "Book" entry (file+headline org-agenda-file-lists "Books")
 	       "* %?\n  %^{Title}p %^{Isbn}p %^{Types}p %^{Authors}p %^{Translator}p %^{Publisher}p %^{Nation}p %^{Lang}p %^{Rating}p"
