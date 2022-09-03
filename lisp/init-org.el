@@ -915,7 +915,8 @@ References from FILE are excluded."
   ;; remove superfluous whitespace.
   (defun eli-org-fill-paragraph (&optional arg)
     (when arg
-      (fill-paragraph)))
+      (fill-paragraph)
+      (goto-char (mark))))
 
   (defun eli-org-clean-sentence (&optional arg)
     (when arg
