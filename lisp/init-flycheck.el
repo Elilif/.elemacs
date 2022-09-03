@@ -34,7 +34,7 @@
 (add-hook 'elemacs-first-buffer-hook #'global-flycheck-mode)
 (with-eval-after-load 'flycheck
   (setq flycheck-global-modes
-	'(not text-mode outline-mode fundamental-mode lisp-interaction-mode
+	'(not text-mode outline-mode fundamental-mode lisp-interaction-mode emacs-lisp-mode
               org-mode diff-mode shell-mode eshell-mode term-mode vterm-mode)))
 
 (elemacs-require-package 'flycheck-posframe)
