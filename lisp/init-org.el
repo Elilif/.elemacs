@@ -1074,8 +1074,17 @@ Used by `org-anki-skip-function'"
                        :type     type
                        :point    note-start)))
              (eli-org-anki-sync-item card)))))))
-(eli-org-anki-install "description" "^ *\\- \\(.*?\\) :: \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 1 2)
-(eli-org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2))
+  (eli-org-anki-install "description" (rx bol
+                                          (* " ")
+                                          "- "
+                                          (group (* any))
+                                          " :: "
+                                          (group (* any)
+                                                 (? "\n")
+                                                 (* (** 1 2 " ")
+                                                    (* any)
+                                                    (? "\n")))) 1 2)
+  (eli-org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2))
 
 ;;; latex
 (with-eval-after-load 'org
