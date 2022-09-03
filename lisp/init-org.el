@@ -1018,9 +1018,10 @@ Used by `org-anki-skip-function'"
     (if (string= "t" (org-entry-get nil "NOANKI"))
         (point)))
   (setq org-anki-skip-function #'org-anki-skip)
-  (defun org-anki-sync-checkbox (checkbox)
+
+  (defun eli-org-anki-sync-item (item)
     (org-anki-connect-request
-     (org-anki--create-note-single checkbox)
+     (org-anki--create-note-single item)
      (lambda (the-result)
        (message
         "org-anki: note succesfully updated: %s"
@@ -1029,36 +1030,52 @@ Used by `org-anki-skip-function'"
        (org-anki--report-error
         "Couldn't update note, received: %s"
         the-error))))
-
-  (defun org-anki-get-checkbox ()
-    (interactive)
-    (save-excursion
-      (save-restriction
-        (org-back-to-heading)
-        (org-narrow-to-subtree)
-        (while (re-search-forward "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)"
-                                  nil t)
-          (let*
-              ((front (org-anki--string-to-html (string-clean-whitespace
-                                                 (replace-regexp-in-string "\n" " " (org-no-properties (match-string 2))))))
-               (maybe-id (org-entry-get nil org-anki-prop-note-id))
-               (back "")
-               (tags (org-anki--get-tags))
-               (deck (save-excursion
-                       (save-restriction
-                         (widen)
-                         (org-anki--find-prop org-anki-prop-deck org-anki-default-deck))))
-               (type (org-anki--find-prop org-anki-note-type org-anki-default-note-type))
-               (note-start (point))
-               (card (make-org-anki--note
-                      :maybe-id (if (stringp maybe-id) (string-to-number maybe-id))
-                      :front    front
-                      :back     back
-                      :tags     tags
-                      :deck     deck
-                      :type     type
-                      :point    note-start)))
-            (org-anki-sync-checkbox card)))))))
+  (defmacro eli-org-anki-install (fun-name reg front &optional back)
+  `(defun ,(intern (format "org-anki-sync-%s" fun-name)) ()
+     (interactive)
+     (save-excursion
+       (save-restriction
+         (org-back-to-heading)
+         (org-narrow-to-subtree)
+         (while (re-search-forward ,reg nil t)
+           (let*
+               ((front-string (match-string ,front))
+                (back-string (match-string ,back))
+                (front (org-anki--string-to-html (string-clean-whitespace
+                                                  (replace-regexp-in-string
+                                                   "\n" " "
+                                                   (org-no-properties
+                                                    front-string)))))
+                (maybe-id (org-entry-get nil org-anki-prop-note-id))
+                (back (if ,back
+                          (org-anki--back-post-processing (org-anki--string-to-html
+                                                           (string-clean-whitespace
+                                                            (replace-regexp-in-string
+                                                             "\n" " "
+                                                             (org-no-properties
+                                                              back-string)))))
+                        ""))
+                (tags (org-anki--get-tags))
+                (deck (save-excursion
+                        (save-restriction
+                          (widen)
+                          (org-anki--find-prop
+                           org-anki-prop-deck org-anki-default-deck))))
+                (type (org-anki--find-prop
+                       org-anki-note-type org-anki-default-note-type))
+                (note-start (point))
+                (card (make-org-anki--note
+                       :maybe-id (if (stringp maybe-id)
+                                     (string-to-number maybe-id))
+                       :front    front
+                       :back     back
+                       :tags     tags
+                       :deck     deck
+                       :type     type
+                       :point    note-start)))
+             (eli-org-anki-sync-item card)))))))
+(eli-org-anki-install "description" "^ *\\- \\(.*?\\) :: \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 1 2)
+(eli-org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2))
 
 ;;; latex
 (with-eval-after-load 'org
