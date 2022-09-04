@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: begin_src latex
+# key: tx
+# --
+#+begin_src latex
+$0
+#+end_src

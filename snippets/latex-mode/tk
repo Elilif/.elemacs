@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: tk
+# key: tk
+# --
+\begin{tikzpicture}
+  \draw $0;
+\end{tikzpicture}
