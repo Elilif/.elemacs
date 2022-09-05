@@ -31,12 +31,8 @@
 ;;; Code:
 (elemacs-require-package 'org-contrib)
 (with-eval-after-load 'org
+  
   ;; hide drawers
-  ;; ((eq org-cycle-subtree-status 'subtree)
-  ;;  (org-show-subtree)
-  ;;  (org-unlogged-message "ALL")
-  ;;  (setq org-cycle-subtree-status 'all))
-  ;; add above codes before ((or children-skipped in org-cycle-internal-local
   (defun org-cycle-hide-drawers (state)
     "Re-hide all drawers after a visibility state change."
     (when (and (derived-mode-p 'org-mode)
@@ -1009,6 +1005,7 @@ References from FILE are excluded."
   )
 
 ;;; anki integration
+(elemacs-require-package 'htmlize)
 (elemacs-require-package 'org-anki)
 (with-eval-after-load 'org
   (require 'org-anki)
