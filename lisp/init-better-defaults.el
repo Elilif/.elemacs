@@ -176,7 +176,7 @@
 (add-hook 'elemacs-first-input-hook #'auto-save-enable)
 (with-eval-after-load 'auto-save
   (setq auto-save-silent t)   ; quietly save
-  (setq auto-save-delete-trailing-whitespace t)
+  (setq auto-save-delete-trailing-whitespace nil)
   (setq auto-save-idle 2))
 
 ;;; dired
