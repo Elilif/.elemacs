@@ -969,7 +969,7 @@ References from FILE are excluded."
       (cl-loop for dim in dimensions
 	           do
 	           (push (string-to-number (org-entry-get (point) dim)) ratings))
-      (org-entry-put (point) "Rating" (number-to-string (/ (-sum ratings) 10.0)))))
+      (org-entry-put (point) "Rating" (format "%.2f" (/ (-sum ratings) 10.0)))))
 
   (defun eli/set-film-ratings ()
     (interactive)
