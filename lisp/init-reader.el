@@ -66,72 +66,20 @@
   (setq org-noter-notes-search-path '("~/Dropbox/org/roam"))
   (setq org-noter-always-create-frame t)
 
-  (defun org-noter--focus-notes-region (view-info)
-    (org-noter--with-selected-notes-window
-     (if (org-noter--session-hide-other session)
-         (save-excursion
-           (goto-char (org-element-property :begin (org-noter--parse-root)))
-           (outline-hide-subtree))
-       (org-cycle-hide-drawers 'all))
-
-     (let* ((notes-cons (org-noter--view-info-notes view-info))
-            (regions (or (org-noter--view-info-regions view-info)
-                         (org-noter--view-info-prev-regions view-info)))
-            (point-before (point))
-            target-region
-            point-inside-target-region)
-       (cond
-        (notes-cons
-         (dolist (note-cons notes-cons) (org-noter--show-note-entry session (car note-cons)))
-         (save-excursion
-           (goto-char (org-entry-beginning-position))
-           (let* ((hl (org-element-context))
-                  (hl-begin (plist-get  (plist-get hl 'headline) :begin))
-                  (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin))))
-             (remove-overlays hl-begin hl-end 'org-noter-current-hl t)))
-         (setq target-region (or (catch 'result (dolist (region regions)
-                                                  (when (and (>= point-before (car region))
-                                                             (or (save-restriction (goto-char (cdr region)) (eobp))
-                                                                 (< point-before (cdr region))))
-                                                    (setq point-inside-target-region t)
-                                                    (throw 'result region))))
-                                 (car regions)))
-
-         (let ((begin (car target-region)) (end (cdr target-region)) num-lines
-               (target-char (if point-inside-target-region
-                                point-before
-                              (org-noter--get-properties-end (caar notes-cons))))
-               (window-start (window-start)) (window-end (window-end nil t)))
-           (setq num-lines (count-screen-lines begin end))
-
-           (cond
-            ((> num-lines (window-height))
-             (goto-char begin)
-             (recenter 0))
-
-            ((< begin window-start)
-             (goto-char begin)
-             (recenter 0))
-
-            ((> end window-end)
-             (goto-char end)
-             (recenter -2)))
-
-           (goto-char target-char)))
-
-        (t (org-noter--show-note-entry session (org-noter--parse-root)))))
-
-     (org-cycle-show-empty-lines t)
-     (org-cycle-hide-drawers 'all)
-     (save-excursion
-       (goto-char (org-entry-beginning-position))
-       (let* ((hl (org-element-context))
-              (hl-begin (plist-get  (plist-get hl 'headline) :begin))
-              (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
-              (hl-ov (make-overlay hl-begin hl-end)))
-         (overlay-put hl-ov 'face 'mindre-keyword)
-         (overlay-put hl-ov 'org-noter-current-hl t)
-         )))))
+  (defun eli-org-noter-set-highlight (_arg)
+    "Highlight current org-noter note."
+    (save-excursion
+      (switch-to-buffer "Notes of Notes")
+      (remove-overlays (point-min) (point-max) 'org-noter-current-hl t)
+      (goto-char (org-entry-beginning-position))
+      (let* ((hl (org-element-context))
+             (hl-begin (plist-get  (plist-get hl 'headline) :begin))
+             (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
+             (hl-ov (make-overlay hl-begin hl-end)))
+        (overlay-put hl-ov 'face 'mindre-keyword)
+        (overlay-put hl-ov 'org-noter-current-hl t))
+      (org-cycle-hide-drawers 'all)))
+  (advice-add #'org-noter--focus-notes-region :after #'eli-org-noter-set-highlight))
 
 (elemacs-require-package 'org-pdftools)
 (with-eval-after-load 'org-noter
