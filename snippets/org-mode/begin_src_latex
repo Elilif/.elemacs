@@ -2,6 +2,6 @@
 # name: begin_src latex
 # key: tx
 # --
-#+begin_src latex
+#+begin_src latex :file test.tex
 $0
 #+end_src

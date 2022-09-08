@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: begin_scr c++
+# key: c++
+# --
+#+begin_src c++ :file test.cpp
+  $0
+#+end_src
