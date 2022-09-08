@@ -84,7 +84,43 @@
         (overlay-put hl-ov 'face 'mindre-keyword)
         (overlay-put hl-ov 'org-noter-current-hl t))
       (org-cycle-hide-drawers 'all)))
-  (advice-add #'org-noter--focus-notes-region :after #'eli-org-noter-set-highlight))
+  (advice-add #'org-noter--focus-notes-region :after #'eli-org-noter-set-highlight)
+
+  (defun eli-org-noter-back-to-current-window (orig-fun)
+    (save-selected-window
+      (call-interactively orig-fun)))
+  
+  (defvar org-noter-move-functions
+    '(org-noter-sync-prev-note
+      org-noter-sync-next-note))
+  
+  (defmacro eli-advise-org-noter-functions (functions)
+    `(progn
+       ,@(mapcar (lambda (command)
+                   `(advice-add ',command :around
+                                #'eli-org-noter-back-to-current-window))
+                 (eval functions))))
+
+  (eli-advise-org-noter-functions org-noter-move-functions)
+
+  (defun eli-org-noter-scroll-up-other-window (lines)
+    (interactive "P")
+    (with-selected-window (other-window-for-scrolling)
+      (funcall (or (command-remapping #'pdf-view-scroll-up-or-next-page)
+                   #'pdf-view-scroll-up-or-next-page)
+               lines)))
+  
+  (keymap-set org-noter-notes-mode-map "M-]" #'eli-org-noter-scroll-up-other-window)
+
+  (defun eli-org-noter-scroll-down-other-window (lines)
+    (interactive "P")
+    (with-selected-window (other-window-for-scrolling)
+      (funcall (or (command-remapping #'pdf-view-scroll-down-or-previous-page)
+                   #'pdf-view-scroll-down-or-previous-page)
+               lines)))
+
+  (keymap-set org-noter-notes-mode-map "M-[" #'eli-org-noter-scroll-down-other-window)
+  )
 
 (elemacs-require-package 'toc-mode)
 
