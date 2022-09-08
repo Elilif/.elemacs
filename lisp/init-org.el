@@ -361,8 +361,7 @@ This list represents a \"habit\" for the rest of this module."
   (defun eli-show-progress-color ()
     (save-excursion
       (goto-char (point-min))
-      (re-search-forward "\\([0-9]\\{2,3\\}\\)%" nil t)
-      (when (match-string 1)
+      (when (re-search-forward "\\([0-9]\\{2,3\\}\\)%" nil t)
        (let* ((percent (string-to-number (match-string 1)))
              percent-face)
         (cond
