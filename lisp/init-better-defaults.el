@@ -306,15 +306,29 @@ currently in the helpful buffer, reuse it's window, otherwise
 create new one."
     (if (eq major-mode 'helpful-mode)
 	(switch-to-buffer buffer-or-name)
-      (pop-to-buffer buffer-or-name)))
-  (keymap-set helpful-mode-map "q" #'kill-buffer-and-window))
+    (pop-to-buffer buffer-or-name)))
+
+  (keymap-set helpful-mode-map "q" #'kill-buffer-and-window)
+  (defun helpful-set-arguments-face (&rest _args)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((case-fold-search nil)
+            (limit (save-excursion
+                     (re-search-forward "Source Code" nil t))))
+        (while (re-search-forward
+                "\\<[A-Z]+\\>" limit t)
+          (overlay-put (make-overlay
+                        (match-beginning 0) (match-end 0))
+                       'face 'help-argument-name)))))
+
+  (advice-add 'helpful--update-and-switch-buffer :after  #'helpful-set-arguments-face))
 
 (defun my-search-with-chrome ()
   "search with chrome."
   (interactive)
   (let ((target (read-string "Search for: ")))
     (browse-url (concat "http://www.google.com/search?q="
-			(url-hexify-string target)))))
+			            (url-hexify-string target)))))
 (setq sentence-end-double-space nil)
 
 (setq kill-whole-line t)
