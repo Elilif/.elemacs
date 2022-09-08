@@ -343,17 +343,17 @@ create new one."
 (keymap-global-set "C-M-`" #'popper-toggle-type)
 (with-eval-after-load 'popper
   (setq popper-reference-buffers
-	'("\\*Messages\\*"
-	  "\\*scratch\\*"
-	  "Output\\*$"
-	  "\\*Async Shell Command\\*"
-	  "\\*Xenops-Doctor\\*"
-	  "\\*Emms\\*.*"
-	  "\\*Org LATEX Export\\*"
-	  emms-browser-mode
-	  org-agenda-mode
-	  helpful-mode
-	  compilation-mode))
+	    '("\\*Messages\\*"
+	      "\\*scratch\\*"
+	      "Output\\*$"
+	      "\\*Async Shell Command\\*"
+	      "\\*Xenops-Doctor\\*"
+	      "\\*Emms\\*.*"
+	      "\\*Org LATEX Export\\*"
+	      emms-browser-mode
+	      org-agenda-mode
+	      helpful-mode
+	      compilation-mode))
   (setq popper-mode-line t)
   (setq popper-echo-dispatch-keys '("0" "1" "2" "3" "4" "5" "6" "7" "8" "9"))
   (setq popper-display-control nil)
@@ -363,16 +363,16 @@ create new one."
 (elemacs-require-package 'shackle)
 (with-eval-after-load 'popper
   (setq shackle-rules '(("*Messages*" :align below :size 0.3 :select t)
-			("*scratch*" :select t :align right)
-			(helpful-mode :select t :align right)
-			(elfeed-show-mode :select t :align bottom :size 0.85)
-			("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
-			("*WordNut*" :select t :align right :size 0.4)
-			("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
-			(emms-browser-mode :select t :align right :size 0.5)
-			(org-agenda-mode :select t :same t)
-			("*Org Select*" :select t :align right :size 0.3)
-			)))
+			            ("*scratch*" :select t :align right)
+			            (helpful-mode :select t :align right)
+			            (elfeed-show-mode :select t :align bottom :size 0.85)
+			            ("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
+			            ("*WordNut*" :select t :align right :size 0.4)
+			            ("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
+			            (emms-browser-mode :select t :align right :size 0.5)
+			            (org-agenda-mode :select t :same t)
+			            ("*Org Select*" :select t :align right :size 0.3)
+			            )))
 (add-hook 'elemacs-first-buffer-hook #'shackle-mode)
 
 
@@ -406,10 +406,10 @@ create new one."
 (elemacs-require-package 'ledger-mode)
 (with-eval-after-load 'ledger
   (setq ledger-reconcile-default-commodity "¥"
-	ledger-post-amount-alignment-column 80
-	ledger-report-auto-refresh-sticky-cursor t
-	ledger-report-auto-refresh t
-	ledger-copy-transaction-insert-blank-line-after t)
+	    ledger-post-amount-alignment-column 80
+	    ledger-report-auto-refresh-sticky-cursor t
+	    ledger-report-auto-refresh t
+	    ledger-copy-transaction-insert-blank-line-after t)
   (setq-default ledger-occur-use-face-shown nil))
 
 
@@ -429,9 +429,9 @@ to get user input. You need to install `zenity'."
     (format "zenity --entry --text='%s'" prompt))))
 
 (advice-add #'read-string :around (lambda (orig-fun prompt &rest args)
-                                      (if elemacs-global-interactive-defer-to-system-app
-                                          (elemacs-global-interactive-system-read-string prompt)
-                                        (apply orig-fun prompt args))))
+                                    (if elemacs-global-interactive-defer-to-system-app
+                                        (elemacs-global-interactive-system-read-string prompt)
+                                      (apply orig-fun prompt args))))
 
 (defun elemacs-global-interactive-dmenu (prompt items &rest ignored)
   "Like `completing-read' but instead use dmenu.
@@ -483,7 +483,7 @@ Useful for system-wide scripts."
          (key (cdr (assoc (completing-read "Input: " '("Note" "TODO")) key-alist)))
          (elemacs-global-interactive-capture-p t)
          (org-capture-initial (when key
-                               (completing-read "Input: " nil))))
+                                (completing-read "Input: " nil))))
     (when (and key (not (string-empty-p org-capture-initial)))
       (org-capture nil key))))
 
