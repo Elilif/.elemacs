@@ -53,7 +53,12 @@
     (pdf-view-display-region)))
 
 (with-eval-after-load 'pdf-tools
-  (define-key pdf-view-mode-map (kbd "v") #'+pdf-keyboard-select-region))
+  (define-key pdf-view-mode-map (kbd "v") #'+pdf-keyboard-select-region)
+  (add-hook 'pdf-tools-enabled-hook #'pdf-view-auto-slice-minor-mode)
+  (add-hook 'pdf-tools-enabled-hook #'pdf-isearch-minor-mode)
+  (setq pdf-view-use-scaling t
+        pdf-view-use-imagemagick nil
+        pdf-annot-activate-created-annotations t))
 
 (elemacs-require-package 'saveplace-pdf-view)
 (with-eval-after-load 'pdf-tools
