@@ -204,8 +204,8 @@
    "Zoom"
    (("=" text-scale-increase "in")
     ("-" text-scale-decrease "out")
-    ("[" shrink-window-horizontally "h-shrink window")
-    ("]" enlarge-window-horizontally "h-shrink window")
+    ("[" shrink-window-horizontally "h-shrink window" :exit nil)
+    ("]" enlarge-window-horizontally "h-shrink window" :exit nil)
     ("b" balacne-windows "balacne windows")
     )))
 
