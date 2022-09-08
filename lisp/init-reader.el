@@ -86,11 +86,23 @@
       (org-cycle-hide-drawers 'all)))
   (advice-add #'org-noter--focus-notes-region :after #'eli-org-noter-set-highlight))
 
-(elemacs-require-package 'org-pdftools)
-(with-eval-after-load 'org-noter
-  (org-pdftools-setup-link))
-
 (elemacs-require-package 'toc-mode)
+
+(elemacs-require-package 'nov)
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+(with-eval-after-load 'nov
+  (setq nov-text-width 80)
+  (with-no-warnings
+    ;; WORKAROUND: errors while opening `nov' files with Unicode characters
+    ;; @see https://github.com/wasamasa/nov.el/issues/63
+    (defun my-nov-content-unique-identifier (content)
+      "Return the the unique identifier for CONTENT."
+      (let* ((name (nov-content-unique-identifier-name content))
+             (selector (format "package>metadata>identifier[id='%s']"
+                               (regexp-quote name)))
+             (id (car (esxml-node-children (esxml-query selector content)))))
+        (and id (intern id))))
+    (advice-add #'nov-content-unique-identifier :override #'my-nov-content-unique-identifier)))
 
 (provide 'init-reader)
 ;;; init-reader.el ends here.
