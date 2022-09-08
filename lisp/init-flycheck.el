@@ -35,7 +35,10 @@
 (with-eval-after-load 'flycheck
   (setq flycheck-global-modes
 	'(not text-mode outline-mode fundamental-mode lisp-interaction-mode emacs-lisp-mode
-              org-mode diff-mode shell-mode eshell-mode term-mode vterm-mode)))
+          org-mode diff-mode shell-mode eshell-mode term-mode vterm-mode))
+  (setq flycheck-idle-change-delay 3
+        flycheck-idle-buffer-switch-delay 3
+        flycheck-display-errors-delay 3))
 
 (elemacs-require-package 'flycheck-posframe)
 (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
