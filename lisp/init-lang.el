@@ -74,6 +74,9 @@
 (elemacs-require-package 'quickrun)
 
 (elemacs-require-package 'vterm)
+(with-eval-after-load 'vterm
+  (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+  (add-hook 'vterm-copy-mode-hook (lambda () (call-interactively 'hl-line-mode))))
 
 (provide 'init-lang)
 ;;; init-lang.el ends here.
