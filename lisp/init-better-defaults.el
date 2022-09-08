@@ -538,5 +538,8 @@ BUFFER is a string, the name of a buffer."
 (keymap-global-set "C-a" #'mwim-beginning)
 (keymap-global-set "C-e" #'mwim-end)
 
+;; automatically select apropos buffer
+(add-hook 'apropos-mode-hook (lambda () (switch-to-buffer-other-window "*Apropos*")))
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
