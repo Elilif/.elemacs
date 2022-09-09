@@ -100,7 +100,8 @@
                                  (C . t)))
 
   (setq org-startup-with-inline-images t)
-  ;; renumbering and sorting footnotes automatically after each deletion or insertion
+  ;; renumbering and sorting footnotes automatically after each deletion
+  ;; or insertion
   (defun eli/clock-in-to-nest (kw)
     (if (org-get-todo-state)
 	    "STARTED"))
@@ -114,7 +115,8 @@
   (setq org-todo-keywords
 	    (quote ((sequence "TODO(t/!)" "STARTED(s)" "|" "DONE(d!/!)")
 		        (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
-		        (sequence "WAITING(w@/!)" "NEXT(n!/!)" "SOMEDAY(S)" "|" "CANCELLED(c@/!)"))))
+		        (sequence "WAITING(w@/!)" "NEXT(n!/!)"
+                          "SOMEDAY(S)" "|" "CANCELLED(c@/!)"))))
 
   (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "✎")
 					                     ("#+END_SRC" . "□")
@@ -165,7 +167,8 @@ This list represents a \"habit\" for the rest of this module."
       (if pom (goto-char pom))
       (cl-assert (org-is-habit-p (point)))
       (let* ((scheduled (org-get-scheduled-time (point)))
-	         (scheduled-repeat (org-get-repeat (org-entry-get (point) "SCHEDULED")))
+	         (scheduled-repeat (org-get-repeat (org-entry-get (point)
+                                                              "SCHEDULED")))
 	         (end (org-entry-end-position))
 	         (habit-entry (org-no-properties (nth 4 (org-heading-components))))
 	         closed-dates deadline dr-days sr-days sr-type)
@@ -185,7 +188,8 @@ This list represents a \"habit\" for the rest of this module."
 	      (setq dr-days (org-habit-duration-to-days
 			             (match-string-no-properties 1 scheduled-repeat)))
 	      (if (<= dr-days sr-days)
-	          (error "Habit %s deadline repeat period is less than or equal to scheduled (%s)"
+	          (error "Habit %s deadline repeat period is less than
+or equal to scheduled (%s)"
 		             habit-entry scheduled-repeat))
 	      (setq deadline (+ scheduled (- dr-days sr-days))))
 	    (org-back-to-heading t)
@@ -232,7 +236,9 @@ This list represents a \"habit\" for the rest of this module."
 	      (max-streaks 1)
 	      )
       (while (< counter (length closed-days))
-	    (if (= (time-convert (time-subtract (nth  counter closed-days) (nth (1- counter) closed-days)) 'integer) 1)
+	    (if (= (time-convert (time-subtract (nth  counter closed-days)
+                                            (nth (1- counter) closed-days))
+                             'integer) 1)
 	        (progn (setq streaks (1+ streaks)))
 	      (if (> streaks max-streaks)
 	          (progn (setq max-streaks streaks)
@@ -240,9 +246,13 @@ This list represents a \"habit\" for the rest of this module."
 	      )
 	    (setq counter (1+ counter)))
       (setq counter (1- counter))
-      (if (= (time-convert (time-subtract today (nth counter closed-days)) 'integer) 1)
+      (if (= (time-convert (time-subtract today (nth counter closed-days))
+                           'integer) 1)
 	      (progn (setq current-streaks (1+ current-streaks))
-		         (while (= (time-convert (time-subtract (nth  counter closed-days) (nth (1- counter) closed-days)) 'integer) 1)
+		         (while (= (time-convert (time-subtract
+                                          (nth  counter closed-days)
+                                          (nth (1- counter) closed-days))
+                                         'integer) 1)
 		           (setq current-streaks (1+ current-streaks))
 		           (setq counter (1- counter)))
 		         )
@@ -250,7 +260,13 @@ This list represents a \"habit\" for the rest of this module."
 	    )
       (if (> streaks max-streaks)
 	      (setq max-streaks streaks))
-      (insert (propertize (propertize (concat " (" (number-to-string current-streaks) "/" (number-to-string max-streaks) "/" (number-to-string sum) ")") 'face 'mindre-faded)
+      (insert (propertize (propertize (concat " ("
+                                              (number-to-string current-streaks)
+                                              "/"
+                                              (number-to-string max-streaks)
+                                              "/"
+                                              (number-to-string sum) ")")
+                                      'face 'mindre-faded)
                           'field t))))
   
   (defun org-habit-insert-consistency-graphs (&optional line)
@@ -304,7 +320,8 @@ This list represents a \"habit\" for the rest of this module."
 		                :default-face
 		                ((:background "DarkRed")
 		                 (:foreground "white"))
-		                :overlap-face nil :gap-face nil :no-end-time-face nil :long-face nil :short-face nil))
+		                :overlap-face nil :gap-face nil
+                        :no-end-time-face nil :long-face nil :short-face nil))
   (setq org-agenda-clockreport-parameter-plist
         '(:link t :maxlevel 2 :fileskip0 t :sort
 	            (3 . 84)
@@ -313,8 +330,10 @@ This list represents a \"habit\" for the rest of this module."
   (setq org-agenda-span 'day)
   (setq org-agenda-show-inherited-tags nil)
   (setq org-agenda-window-setup 'only-window)
-  (advice-add 'org-agenda-log-mode :after (lambda (&rest _arg) (beginning-of-buffer)))
-  (advice-add 'org-agenda-redo-all :after (lambda (&rest _arg) (beginning-of-buffer)))
+  (advice-add 'org-agenda-log-mode
+              :after (lambda (&rest _arg) (beginning-of-buffer)))
+  (advice-add 'org-agenda-redo-all
+              :after (lambda (&rest _arg) (beginning-of-buffer)))
   (with-eval-after-load 'org
     (elemacs-require-package 'org-reverse-datetree))
 
@@ -343,9 +362,11 @@ This list represents a \"habit\" for the rest of this module."
                               ") "
                               (eli-make-progress 50)))))
             (tags-todo  "/+TODO"
-			            ((org-agenda-overriding-header (propertize "Inbox" 'face 'mindre-faded))
+			            ((org-agenda-overriding-header
+                          (propertize "Inbox" 'face 'mindre-faded))
 			             (org-tags-match-list-sublevels t)
-			             (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp))))
+			             (org-agenda-skip-function
+                          '(org-agenda-skip-entry-if 'timestamp))))
             (tags-todo "/+NEXT"
 		               ((org-agenda-overriding-header "Next")))
             (tags-todo "PROJECT|INBOX/+STARTED"
@@ -362,20 +383,20 @@ This list represents a \"habit\" for the rest of this module."
     (save-excursion
       (goto-char (point-min))
       (when (re-search-forward "\\([0-9]\\{2,3\\}\\)%" nil t)
-       (let* ((percent (string-to-number (match-string 1)))
-             percent-face)
-        (cond
-         ((< percent 33)
-          (setq percent-face 'mindre-note))
-         ((< percent 66)
-          (setq percent-face 'mindre-keyword))
-         ((< percent 90)
-          (setq percent-face 'mindre-warning))
-         ((< percent 100)
-          (setq percent-face 'mindre-critical)))
-        (overlay-put (make-overlay
-                      (match-beginning 0) (match-end 0))
-                     'face percent-face)))))
+        (let* ((percent (string-to-number (match-string 1)))
+               percent-face)
+          (cond
+           ((< percent 33)
+            (setq percent-face 'mindre-note))
+           ((< percent 66)
+            (setq percent-face 'mindre-keyword))
+           ((< percent 90)
+            (setq percent-face 'mindre-warning))
+           ((< percent 100)
+            (setq percent-face 'mindre-critical)))
+          (overlay-put (make-overlay
+                        (match-beginning 0) (match-end 0))
+                       'face percent-face)))))
   (add-hook 'org-agenda-finalize-hook #'eli-show-progress-color)
 
   (defvar dynamic-agenda-files nil
@@ -390,7 +411,8 @@ This list represents a \"habit\" for the rest of this module."
 	    (if done
             (save-excursion
               (goto-char (point-min))
-              ;; Delete file from dynamic files when all TODO entry changed to DONE
+              ;; Delete file from dynamic files
+              ;; when all TODO entry changed to DONE
               (unless (search-forward-regexp org-not-done-heading-regexp nil t)
 		        (customize-save-variable
 		         'dynamic-agenda-files
@@ -399,14 +421,16 @@ This list represents a \"habit\" for the rest of this module."
           ;; Add this file to dynamic agenda files
           (unless (member file dynamic-agenda-files)
             (customize-save-variable 'dynamic-agenda-files
-                                     (add-to-list 'dynamic-agenda-files file)))))))
+                                     (add-to-list 'dynamic-agenda-files
+                                                  file)))))))
 
   (defun dynamic-agenda-files-advice (orig-val)
     (cl-union orig-val dynamic-agenda-files :test #'equal))
 
   (advice-add 'org-agenda-files :filter-return #'dynamic-agenda-files-advice)
   (with-eval-after-load 'org
-    (add-to-list 'org-after-todo-state-change-hook 'update-dynamic-agenda-hook t)))
+    (add-to-list 'org-after-todo-state-change-hook
+                 'update-dynamic-agenda-hook t)))
 
 
 ;;; capture
@@ -416,13 +440,21 @@ This list represents a \"habit\" for the rest of this module."
   (setq org-directory "~/Dropbox/org")
 
   (setq org-agenda-file-inbox (expand-file-name "inbox.org" org-agenda-dir))
-  (setq org-agenda-file-projects (expand-file-name "projects.org" org-agenda-dir))
+  (setq org-agenda-file-projects
+        (expand-file-name "projects.org" org-agenda-dir))
   (setq org-agenda-file-habit (expand-file-name "daily.org" org-agenda-dir))
   (setq org-agenda-file-notes (expand-file-name "notes.org" org-agenda-dir))
   (setq org-agenda-file-journal (expand-file-name "journal.org" org-agenda-dir))
   (setq org-agenda-file-te (expand-file-name "words.org" org-agenda-dir))
   (setq org-agenda-file-lists (expand-file-name "lists.org" org-agenda-dir))
-  (setq org-agenda-files '("~/Dropbox/org/journal.org" "/home/eli/Dropbox/org/古文.org" "/home/eli/Dropbox/org/Français.org" "/home/eli/Dropbox/org/daily.org" "/home/eli/Dropbox/org/lists.org" "/home/eli/Dropbox/org/inbox.org" "/home/eli/Dropbox/org/words.org" "/home/eli/Dropbox/org/projects.org"))
+  (setq org-agenda-files '("~/Dropbox/org/journal.org"
+                           "/home/eli/Dropbox/org/古文.org"
+                           "/home/eli/Dropbox/org/Français.org"
+                           "/home/eli/Dropbox/org/daily.org"
+                           "/home/eli/Dropbox/org/lists.org"
+                           "/home/eli/Dropbox/org/inbox.org"
+                           "/home/eli/Dropbox/org/words.org"
+                           "/home/eli/Dropbox/org/projects.org"))
   (defun eli/capture-report-date-file ()
     (let ((name (read-string "Name: ")))
       (expand-file-name (format "%s-%s.org"
@@ -435,7 +467,8 @@ This list represents a \"habit\" for the rest of this module."
       (org-id-get-create)))
   (add-hook 'org-capture-prepare-finalize-hook #'eli/org-capture-maybe-create-id)
 
-  ;; from: https://stackoverflow.com/questions/21073859/is-there-a-way-with-org-capture-templates-to-not-insert-a-line-if-initial-conten
+  ;; from: https://stackoverflow.com/questions/21073859/is-there-a-way-
+  ;; with-org-capture-templates-to-not-insert-a-line-if-initial-conten
   (defun v-i-or-nothing ()
     (let ((v-i (plist-get org-store-link-plist :initial)))
       (if (equal v-i "")
@@ -460,8 +493,11 @@ This list represents a \"habit\" for the rest of this module."
 
   ;; dedicated to "event" template
   (defun eli-org-capture-template-goto-today ()
-    "Set point for capturing at what capture target file+headline with headline set to %l would do."
-    (org-capture-put :target (list 'file+headline (nth 1 (org-capture-get :target)) (format-time-string "%Y-%m-%d")))
+    "Set point for capturing at what capture target file+headline
+with headline set to %l would do."
+    (org-capture-put :target (list 'file+headline
+                                   (nth 1 (org-capture-get :target))
+                                   (format-time-string "%Y-%m-%d")))
     (org-capture-put-target-region-and-position)
     (widen)
     (let ((hd (nth 2 (org-capture-get :target))))
@@ -497,27 +533,37 @@ This list represents a \"habit\" for the rest of this module."
            "* PROJECT %?"
            :empty-lines 0)
           ("h" "Habit" entry (file org-agenda-file-habit)
-           "* TODO %?\nSCHEDULED: <%(org-read-date nil nil \"+0d\") .+1d>\n:PROPERTIES:\n:STYLE:    habit\n:END:\n\n%U"
+           "* TODO %?\nSCHEDULED: <%(org-read-date nil nil \"+0d\") .+1d>\
+\n:PROPERTIES:\n:STYLE:    habit\n:END:\n\n%U"
            :empty-lines 0)
           ("n" "Notes" entry (file+headline org-agenda-file-inbox "Notes")
            "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)\n%U"
            :empty-lines 0
 	       :prepend t)
-          ("j" "Journals" entry (file+function org-agenda-file-journal org-reverse-datetree-goto-date-in-file)
+          ("j" "Journals" entry (file+function
+                                 org-agenda-file-journal
+                                 org-reverse-datetree-goto-date-in-file)
            "* %<%H:%M> %?"
            :empty-lines 1
 	       :prepend t
 	       :clock-resume t
 	       :clock-in t
 	       )
-	      ("e" "Events" entry (file+function "~/Elilif.github.io/Eli's timeline.org"  eli-org-capture-template-goto-today)
+	      ("e" "Events" entry (file+function
+                               "~/Elilif.github.io/Eli's timeline.org"
+                               eli-org-capture-template-goto-today)
 	       "* %?"
 	       )
 	      ("B" "Blogs" plain (file eli/capture-report-date-file)
-	       "#+TITLE: %?\n#+DATE: %<%Y-%m-%d>\n#+STARTUP: showall\n#+OPTIONS: toc:nil H:2 num:2\n"
+	       "#+TITLE: %?\n#+DATE: %<%Y-%m-%d>\n#+STARTUP: showall\
+\n#+OPTIONS: toc:nil H:2 num:2\n"
 	       )
-	      ("T" "Time Report" plain (file+function "~/Dropbox/org/Clock_Report.org"  org-reverse-datetree-goto-date-in-file)
-	       "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6 :block %<%Y-%m-%d> :fileskip0 t :indent t :link t :formula % :sort (3 . ?T)\n#+END:"
+	      ("T" "Time Report" plain (file+function
+                                    "~/Dropbox/org/Clock_Report.org"
+                                    org-reverse-datetree-goto-date-in-file)
+	       "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6\
+:block %<%Y-%m-%d> :fileskip0 t\
+:indent t :link t :formula % :sort (3 . ?T)\n#+END:"
 	       :empty-lines 0
 	       :jump-to-captured t)
           ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
@@ -533,16 +579,23 @@ This list represents a \"habit\" for the rest of this module."
 	       "* TODO %u [/]\n%?"
 	       :jump-to-captured t)
 	      ("b" "Book" entry (file+headline org-agenda-file-lists "Books")
-	       "* %?\n  %^{Title}p %^{Isbn}p %^{Types}p %^{Authors}p %^{Translator}p %^{Publisher}p %^{Nation}p %^{Lang}p %^{Rating}p"
+	       "* %?\n  %^{Title}p %^{Isbn}p %^{Types}p %^{Authors}p %^{Translator}p\
+ %^{Publisher}p %^{Nation}p %^{Lang}p %^{Rating}p"
            :prepend t)
-	      ("m" "Movies and Musicals" entry (file+headline org-agenda-file-lists "Movies and Musicals")
-	       "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p %^{Actors}p %^{Types}p %^{Time}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
+	      ("m" "Movies and Musicals" entry (file+headline
+                                            org-agenda-file-lists
+                                            "Movies and Musicals")
+	       "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p\
+%^{Actors}p %^{Types}p %^{Time}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
            :prepend t)
 	      ("s" "Series" entry (file+headline org-agenda-file-lists "Series")
-	       "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p %^{Actors}p %^{Types}p %^{Time}p %^{Episodes}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
+	       "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p\
+%^{Actors}p %^{Types}p %^{Time}p %^{Episodes}p\
+%^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
            :prepend t)
 	      ("a" "Animes" entry (file+headline org-agenda-file-lists "Animes")
-	       "* %?\n %^{Title}p %^{URL}p %^{Episodes}p %^{Release}p %^{Director}p %^{Authors}p %^{Publisher}p %^{Rating}p"
+	       "* %?\n %^{Title}p %^{URL}p %^{Episodes}p %^{Release}p\
+%^{Director}p %^{Authors}p %^{Publisher}p %^{Rating}p"
            :prepend t)
 	      ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
 	       "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
@@ -551,7 +604,8 @@ This list represents a \"habit\" for the rest of this module."
   )
 
 ;;; time report
-;; from: https://emacs.stackexchange.com/questions/31683/schedule-org-task-for-last-day-of-every-month
+;; from: https://emacs.stackexchange.com/questions/31683
+;; /schedule-org-task-for-last-day-of-every-month
 ;; ORG-MODE:  * My Task
 ;;              SCHEDULED: <%%(diary-last-day-of-month date)>
 ;; DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
@@ -587,12 +641,15 @@ This list represents a \"habit\" for the rest of this module."
 
   (defun appt-disp-window-and-notification (min-to-appt current-time appt-msg)
     (if (atom min-to-appt)
-	    (notifications-notify :timeout (* appt-display-interval 60000) ;一直持续到下一次提醒
+	    (notifications-notify :timeout (* appt-display-interval 60000)
+                                        ;; 一直持续到下一次提醒
 			                  :title (format "%s分钟内有新的任务" min-to-appt)
 			                  :body appt-msg)
       (dolist (i (number-sequence 0 (1- (length min-to-appt))))
-	    (notifications-notify :timeout (* appt-display-interval 60000) ;一直持续到下一次提醒
-			                  :title (format "%s分钟内有新的任务" (nth i min-to-appt))
+	    (notifications-notify :timeout (* appt-display-interval 60000)
+                                        ;; 一直持续到下一次提醒
+			                  :title (format "%s分钟内有新的任务"
+                                             (nth i min-to-appt))
 			                  :body (nth i appt-msg)))))
   )
 
@@ -618,7 +675,8 @@ This list represents a \"habit\" for the rest of this module."
     "If the cursor is after a latin character.
 Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
     (and (> (point) (save-excursion (back-to-indentation) (point)))
-	     (let ((string (buffer-substring (point) (max (line-beginning-position) (- (point) 80)))))
+	     (let ((string (buffer-substring (point) (max (line-beginning-position)
+                                                      (- (point) 80)))))
            (and (string-match-p "\\cl$" string)
                 (not (string-match-p " $" string))))))
 
@@ -627,13 +685,16 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
     (interactive)
     (if (not eli/prefer-English)
 	    (progn
-          (add-to-list 'rime-disable-predicates 'rime-predicate-space-after-ascii-p)
-		  (add-to-list 'rime-disable-predicates '+rime-predicate-punctuation-line-begin-p)
+          (add-to-list 'rime-disable-predicates
+                       'rime-predicate-space-after-ascii-p)
+		  (add-to-list 'rime-disable-predicates
+                       '+rime-predicate-punctuation-line-begin-p)
 	      (setq eli/prefer-English t))
       (progn
 	    (setq rime-disable-predicates
-	          (seq-difference rime-disable-predicates '(rime-predicate-space-after-ascii-p
-							                            +rime-predicate-punctuation-line-begin-p)))
+	          (seq-difference rime-disable-predicates
+                              '(rime-predicate-space-after-ascii-p
+							    +rime-predicate-punctuation-line-begin-p)))
 	    (setq eli/prefer-English nil)
 	    )))
 
@@ -720,18 +781,23 @@ References from FILE are excluded."
     (when (and (executable-find "rg")
                (org-roam-node-title node)
                (not (string-match "PCRE2 is not available"
-                                  (shell-command-to-string "rg --pcre2-version"))))
+                                  (shell-command-to-string
+                                   "rg --pcre2-version"))))
       (let* ((titles (cons (org-roam-node-title node)
                            (org-roam-node-aliases node)))
              (rg-command (concat "rg -L -o --vimgrep -P -i "
                                  (mapconcat (lambda (glob) (concat "-g " glob))
-                                            (org-roam--list-files-search-globs org-roam-file-extensions)
+                                            (org-roam--list-files-search-globs
+                                             org-roam-file-extensions)
                                             " ")
                                  (format " '\\[([^[]]++|(?R))*\\]%s' "
-                                         (mapconcat (lambda (title)
-                                                      (setq eli-test title)
-                                                      (format "|(\\b%s\\b)" (shell-quote-argument title)))
-                                                    titles ""))
+                                         (mapconcat
+                                          (lambda (title)
+                                            (setq eli-test title)
+                                            (format "|(\\b%s\\b)"
+                                                    (shell-quote-argument
+                                                     title)))
+                                          titles ""))
                                  org-roam-directory))
              (results (split-string (shell-command-to-string rg-command) "\n"))
              f row col match)
@@ -752,8 +818,10 @@ References from FILE are excluded."
                     (oset section row row)
                     (oset section col col)
                     (insert (propertize (format "%s:%s:%s"
-                                                (truncate-string-to-width (file-name-base f) 15 nil nil t)
-                                                row col) 'font-lock-face 'org-roam-dim)
+                                                (truncate-string-to-width
+                                                 (file-name-base f) 15 nil nil t)
+                                                row col)
+                                        'font-lock-face 'org-roam-dim)
                             " "
                             (org-roam-fontify-like-in-org-mode
                              (org-roam-unlinked-references-preview-line f row))
@@ -765,22 +833,24 @@ References from FILE are excluded."
 	    '(("d" "default" entry
            "* %?"
            :if-new (file+datetree "~/Dropbox/org/roam/daily/dailies.org" day))))
-  (setq org-roam-capture-templates '(("m" "main" plain "%?"
-                                      :if-new (file+head "main/%<%Y%m%d%H%M%S>.org"
-							                             "#+TITLE: ${title}\n")
-                                      :unnarrowed t)
-				                     ("b" "bibliography reference" plain
-				                      (file "~/.emacs.d/private/orb-capture-template.org")
-				                      :if-new (file+head "references/${citekey}.org" "#+title: ${title}\n")
-				                      )
-				                     ("r" "reference" plain "%? \n %(v-i-or-nothing) \n\n%(v-a-or-nothing)"
-				                      :if-new
-				                      (file+head "references/%<%Y%m%d%H%M%S>.org" "#+title: ${title}\n")
-				                      :unnarrowed t)))
+  (setq org-roam-capture-templates
+        '(("m" "main" plain "%?"
+           :if-new (file+head "main/%<%Y%m%d%H%M%S>.org"
+							  "#+TITLE: ${title}\n")
+           :unnarrowed t)
+		  ("b" "bibliography reference" plain
+		   (file "~/.emacs.d/private/orb-capture-template.org")
+		   :if-new (file+head "references/${citekey}.org" "#+title: ${title}\n")
+		   )
+		  ("r" "reference" plain "%? \n %(v-i-or-nothing) \n\n%(v-a-or-nothing)"
+		   :if-new
+		   (file+head "references/%<%Y%m%d%H%M%S>.org" "#+title: ${title}\n")
+		   :unnarrowed t)))
   (run-at-time 20 nil
 	           #'org-roam-setup)
   (with-eval-after-load 'org-roam
-    ;; Codes blow are used to general a hierachy for title nodes that under a file
+    ;; Codes blow are used to general a hierachy
+    ;; for title nodes that under a file
     (cl-defmethod org-roam-node-doom-filetitle ((node org-roam-node))
       "Return the value of \"#+title:\" (if any) from file that NODE resides in.
       If there's no file-level title in the file, return empty string."
@@ -789,7 +859,8 @@ References from FILE are excluded."
             (org-roam-get-keyword "TITLE" (org-roam-node-file node)))
 	      ""))
     (cl-defmethod org-roam-node-doom-hierarchy ((node org-roam-node))
-      "Return hierarchy for NODE, constructed of its file title, OLP and direct title.
+      "Return hierarchy for NODE, constructed of its file title, OLP and
+direct title.
         If some elements are missing, they will be stripped out."
       (let ((title     (org-roam-node-title node))
             (olp       (org-roam-node-olp   node))
@@ -804,7 +875,8 @@ References from FILE are excluded."
                      separator title))
 	      ;; node is a heading with an arbitrary outline path
 	      (t (concat (propertize filetitle 'face '(shadow italic))
-                     separator (propertize (string-join olp " > ") 'face '(shadow italic))
+                     separator (propertize (string-join olp " > ")
+                                           'face '(shadow italic))
                      separator title)))))
 
     (cl-defmethod org-roam-node-type ((node org-roam-node))
@@ -816,7 +888,9 @@ References from FILE are excluded."
              (file-relative-name (org-roam-node-file node) org-roam-directory))))
 	    (error "")))
 
-    (setq org-roam-node-display-template (concat "${type:15} ${doom-hierarchy:120} " (propertize "${tags:*}" 'face 'org-tag))))
+    (setq org-roam-node-display-template
+          (concat "${type:15} ${doom-hierarchy:120} "
+                  (propertize "${tags:*}" 'face 'org-tag))))
 
   (elemacs-require-package 'org-roam-ui)
   (setq org-roam-ui-sync-theme t
@@ -848,19 +922,22 @@ References from FILE are excluded."
 	    org-mru-clock-how-many 50
         org-mru-clock-completing-read #'completing-read
 	    org-mru-clock-files #'org-agenda-files
-	    org-capture-templates-contexts '(("c" (org-mru-clock-capturing))
-                                         ("1" (elemacs-global-interactive-capture))
-                                         ("2" (elemacs-global-interactive-capture))
-                                         ))
-  )
+	    org-capture-templates-contexts
+        '(("c" (org-mru-clock-capturing))
+          ("1" (elemacs-global-interactive-capture))
+          ("2" (elemacs-global-interactive-capture)))) )
 
 (elemacs-require-package 'org-clock-convenience)
 (setq org-clock-convenience-clocked-agenda-re "^ +\\([^:]+\\):[[:space:]]*\\(\\([ 	012][0-9]\\):\\([0-5][0-9]\\)\\)-\\(\\([ 012]*[0-9]\\):\\([0-5][0-9]\\)\\|.*\\)?[[:space:]]+Clocked:[[:space:]]+\\(([0-9]+:[0-5][0-9])\\|(-)\\)")
 (with-eval-after-load 'org-agenda
-  (keymap-set org-agenda-mode-map "M-<up>" #'org-clock-convenience-timestamp-up)
-  (keymap-set org-agenda-mode-map "M-<down>" #'org-clock-convenience-timestamp-down)
-  (keymap-set org-agenda-mode-map "<f9>" #'org-clock-convenience-fill-gap)
-  (keymap-set org-agenda-mode-map "<f10>" #'org-clock-convenience-fill-gap-both))
+  (keymap-set org-agenda-mode-map "M-<up>"
+              #'org-clock-convenience-timestamp-up)
+  (keymap-set org-agenda-mode-map "M-<down>"
+              #'org-clock-convenience-timestamp-down)
+  (keymap-set org-agenda-mode-map "<f9>"
+              #'org-clock-convenience-fill-gap)
+  (keymap-set org-agenda-mode-map "<f10>"
+              #'org-clock-convenience-fill-gap-both))
 
 ;; fix M-j
 (defun eli-org-fill-prefix ()
@@ -878,14 +955,16 @@ References from FILE are excluded."
 		        org-download-delete-image-after-download t
 		        org-download-screenshot-method "flameshot gui --raw > %s"
 		        org-download-image-org-width 800
-		        org-download-annotate-function (lambda (link) "") ;; Don't annotate
+		        org-download-annotate-function (lambda (link) "")
+                ;; Don't annotate
 		        )
 
-  ;; org-download use buffer-local variables. Set it individually in files. Otherwise, put things flatly in misc
-  ;; folder.
+  ;; org-download use buffer-local variables. Set it individually in files.
+  ;; Otherwise, put things flatly in misc folder.
 
   (add-hook 'dired-mode-hook 'org-download-enable)
-  (global-set-key (kbd "C-c l") 'org-store-link) ;; crop in X11 first, and paste within here later
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  ;; crop in X11 first, and paste within here later
   ;; Use #+ATTR_ORG: :width 300px to customized image display width
   (setq org-image-actual-width nil)
   ;; org-attach method
@@ -939,19 +1018,28 @@ References from FILE are excluded."
 	     (let ((tag-string (car (last (org-heading-components)))))
 	       (when tag-string
 	         (setq all-tags
-		           (append all-tags (split-string tag-string ":" t)))))) "+LEVEL=1")
+		           (append all-tags (split-string tag-string ":" t))))))
+       "+LEVEL=1")
       (list (completing-read "Select a tag:" all-tags))))
   (defun eli/entry-rating ()
     (interactive)
     (let* ((eli/temp)
 	       (eli/rate))
-      (setq eli/temp (org-map-entries (lambda () (string-to-number (if (org-entry-get nil "Rating") (org-entry-get nil "Rating") "0"))) "+Rating>=0" `tree))
+      (setq eli/temp (org-map-entries (lambda ()
+                                        (string-to-number
+                                         (if (org-entry-get nil "Rating")
+                                             (org-entry-get nil "Rating")
+                                           "0")))
+                                      "+Rating>=0" `tree))
       (pop eli/temp)
-      (setq eli/rate (if (= (length eli/temp) 0) 0 (/ (apply `+  eli/temp) (length eli/temp))))
+      (setq eli/rate (if (= (length eli/temp) 0)
+                         0
+                       (/ (apply `+  eli/temp) (length eli/temp))))
       (org-set-property "Rating" (format "%.2f" eli/rate))))
   (defun eli/rating (type)
     (interactive (eli/get-tag-counts))
-    (org-map-entries 'eli/entry-rating (concat type "+LEVEL=2-TODO=\"DONE\"-TODO=\"CANCELLED\"")))
+    (org-map-entries 'eli/entry-rating
+                     (concat type "+LEVEL=2-TODO=\"DONE\"-TODO=\"CANCELLED\"")))
   (define-key org-mode-map (kbd "<f8>") 'eli/rating)
   (define-key org-mode-map (kbd "<f7>") 'eli/entry-rating)
 
@@ -960,7 +1048,9 @@ References from FILE are excluded."
   (defun eli/get-film-rating ()
     (interactive)
     (let ((ratings)
-	      (dimensions (list "剧情" "演技" "美术" "声效" "画面" "剪辑" "运镜" "立意" "人物" "细节")))
+	      (dimensions
+           (list "剧情" "演技" "美术" "声效" "画面"
+                 "剪辑" "运镜" "立意" "人物" "细节")))
       (cl-loop for dim in dimensions
 	           do
 	           (push (string-to-number (org-entry-get (point) dim)) ratings))
@@ -968,10 +1058,14 @@ References from FILE are excluded."
 
   (defun eli/set-film-ratings ()
     (interactive)
-    (let ((dimensions (list "剧情" "演技" "美术" "声效" "画面" "剪辑" "运镜" "立意" "人物" "细节")))
+    (let ((dimensions (list "剧情" "演技" "美术" "声效" "画面"
+                            "剪辑" "运镜" "立意" "人物" "细节")))
       (cl-loop for dim in dimensions
 	           do
-	           (org-entry-put (point) dim (read-from-minibuffer (format "Set rating for %s : " dim) )))))
+	           (org-entry-put (point)
+                              dim
+                              (read-from-minibuffer
+                               (format "Set rating for %s : " dim))))))
   (define-key org-mode-map (kbd "<f9>") 'eli/set-film-ratings)
   (define-key org-mode-map (kbd "<f10>") 'eli/get-film-rating)
 
@@ -992,12 +1086,14 @@ References from FILE are excluded."
              (insert (org-make-link-string
                       clipboard-url
                       (read-string "title: "
-                                   (with-current-buffer (url-retrieve-synchronously clipboard-url)
+                                   (with-current-buffer
+                                       (url-retrieve-synchronously clipboard-url)
                                      (dom-text (car
-                                                (dom-by-tag (libxml-parse-html-region
-                                                             (point-min)
-                                                             (point-max))
-                                                            'title))))))))
+                                                (dom-by-tag
+                                                 (libxml-parse-html-region
+                                                  (point-min)
+                                                  (point-max))
+                                                 'title))))))))
             (t
              (call-interactively 'org-insert-link)))))
   (keymap-set org-mode-map "C-c C-l" #'ar/org-insert-link-dwim)
@@ -1047,12 +1143,13 @@ Used by `org-anki-skip-function'"
                                                     front-string)))))
                 (maybe-id (org-entry-get nil org-anki-prop-note-id))
                 (back (if ,back
-                          (org-anki--back-post-processing (org-anki--string-to-html
-                                                           (string-clean-whitespace
-                                                            (replace-regexp-in-string
-                                                             "\n" " "
-                                                             (org-no-properties
-                                                              back-string)))))
+                          (org-anki--back-post-processing
+                           (org-anki--string-to-html
+                            (string-clean-whitespace
+                             (replace-regexp-in-string
+                              "\n" " "
+                              (org-no-properties
+                               back-string)))))
                         ""))
                 (tags (org-anki--get-tags))
                 (deck (save-excursion
@@ -1091,25 +1188,35 @@ Used by `org-anki-skip-function'"
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n")
   (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
-  (setq org-format-latex-options '(:foreground default :background default
-                                               :scale 1.5 :html-foreground "Black"
-                                               :html-background "Transparent"
-                                               :html-scale 1.0
-                                               :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+  (setq org-format-latex-options
+        '(:foreground default
+                      :background default
+                      :scale 1.5 :html-foreground "Black"
+                      :html-background "Transparent"
+                      :html-scale 1.0
+                      :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
                                         ; pdf exporting
   (setq org-preview-latex-process-alist
         '((dvisvgm :programs
                    ("xelatex" "dvisvgm")
-                   :description "xdv > svg" :message "you need to install the programs: xelatex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
-                   (1.7 . 1.5)
+                   :description "xdv > svg"
+                   :message "you need to install the programs: xelatex and dvisvgm."
+                   :use-xcolor t
+                   :image-input-type "xdv"
+                   :image-output-type "svg"
+                   :image-size-adjust (1.7 . 1.5)
                    :latex-compiler
                    ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
                    :image-converter
                    ("dvisvgm %f -n -b min -c %S -o %O"))
           (imagemagick :programs
                        ("xelatex" "convert")
-                       :description "pdf > png" :message "you need to install the programs: xelatex and imagemagick." :use-xcolor t :image-input-type "pdf" :image-output-type "png" :image-size-adjust
-                       (1.0 . 1.0)
+                       :description "pdf > png"
+                       :message "you need to install the programs: xelatex and imagemagick."
+                       :use-xcolor t
+                       :image-input-type "pdf"
+                       :image-output-type "png"
+                       :image-size-adjust (1.0 . 1.0)
                        :latex-compiler
                        ("xelatex -interaction nonstopmode -output-directory %o %f")
                        :image-converter
@@ -1190,9 +1297,10 @@ holding contextual information."
 
            ((eq dest-type 'latex-environment)
             (setq number (org-export-get-ordinal
-                          destination info nil #'org-pandoc--numbered-equation-p)))
+                          destination info nil
+                          #'org-pandoc--numbered-equation-p)))
 
-           ((eq dest-type 'has-caption)                           ; captioned items
+           ((eq dest-type 'has-caption) ;; captioned items
             (setq number (org-export-get-ordinal
                           destination info nil #'org-pandoc--has-caption-p))
 	        ))
