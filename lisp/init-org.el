@@ -1180,7 +1180,43 @@ Used by `org-anki-skip-function'"
                                                  (* (** 1 2 " ")
                                                     (* any)
                                                     (? "\n")))) 1 2)
-  (eli-org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2))
+  (eli-org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2)
+  
+  (defun org-anki-select-region (beg end)
+    (interactive "r")
+    (let* ((text (buffer-substring beg end))
+           (delimiter (read-string "Input a Regexp: "))
+           (void (string-match (concat
+                                "\\(.*\\)"
+                                delimiter
+                                "\\(.*\\)")
+                               text))
+           (front-string (string-clean-whitespace
+                          (match-string-no-properties 1 text)))
+           (back-string (string-clean-whitespace
+                         (match-string-no-properties 2 text)))
+           (front (org-anki--string-to-html
+                   (read-string "Front Card: " front-string)))
+           (back (org-anki--back-post-processing
+                  (org-anki--string-to-html
+                   (read-string "Back Card: " back-string))))
+           (deck (read-string "Input Deck to import: "))
+           (type (org-anki--find-prop
+                  org-anki-note-type org-anki-default-note-type))
+           (note-start (point))
+           (maybe-id (org-entry-get nil org-anki-prop-note-id))
+           (tags (org-anki--get-tags))
+           (card (make-org-anki--note
+                  :maybe-id (if (stringp maybe-id)
+                                (string-to-number maybe-id))
+                  :front    front
+                  :back     back
+                  :tags     tags
+                  :deck     deck
+                  :type     type
+                  :point    note-start)))
+      (eli-org-anki-sync-item card)
+      (deactivate-mark))))
 
 ;;; latex
 (with-eval-after-load 'org
