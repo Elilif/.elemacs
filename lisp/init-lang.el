@@ -78,5 +78,8 @@
   (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   (add-hook 'vterm-copy-mode-hook (lambda () (call-interactively 'hl-line-mode))))
 
+(elemacs-require-package 'electric-operator)
+(add-hook 'c++-mode-hook #'electric-operator-mode)
+
 (provide 'init-lang)
 ;;; init-lang.el ends here.
