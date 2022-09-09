@@ -1,4 +1,4 @@
-;; init-reader.el --- Initialize reader configurations.	-*- lexical-binding: t -*-
+;; init-reader.el - Initialize reader configurations. -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2019-2021 by Eli
 
@@ -33,20 +33,22 @@
 (elemacs-require-package 'pdf-tools)
 (pdf-loader-install)
 (defun +pdf-keyboard-select-region (&optional all-pages-p)
-  "Ref: https://github.com/dalanicolai/dala-emacs-lisp/blob/9662aa2ab993157e6e7587385d27c48ed50a1a50/pdf-keyboard-highlight.el#L79"
+  "Ref: https://github.com/dalanicolai/dala-emacs-lisp/blob\
+/9662aa2ab993157e6e7587385d27c48ed50a1a50/pdf-keyboard-highlight.el#L79"
   (interactive "P")
   (pdf-view-deactivate-region)
   (let* ((pages (if all-pages-p nil (pdf-view-current-page)))
-	 (candidates (mapcar (lambda (x)
-			       (list (cdar (cdr x))
-				     (cdar x)
-                                     (cdar (cddr x))))
-			     (pdf-info-search-regexp (read-string "Regexp: ") pages)))
-         (page-edges-list (alist-get (completing-read "Select correct context: " candidates)
+	     (candidates (mapcar (lambda (x)
+			                   (list (cdar (cdr x)) (cdar x) (cdar (cddr x))))
+			                 (pdf-info-search-regexp
+                              (read-string "Regexp: ") pages)))
+         (page-edges-list (alist-get (completing-read
+                                      "Select correct context: " candidates)
                                      candidates nil nil 'equal))
-	 (edges-list (cadr page-edges-list))
-         (edges (append (cl-subseq (car edges-list) 0 2) (cl-subseq (car (last edges-list)) 2 4)))
-	 )
+	     (edges-list (cadr page-edges-list))
+         (edges (append (cl-subseq
+                         (car edges-list) 0 2)
+                        (cl-subseq (car (last edges-list)) 2 4))))
     (pdf-view-goto-page (car page-edges-list))
     (setq pdf-view-active-region (list edges))
     (pdf-view--push-mark)
@@ -84,7 +86,9 @@
         (overlay-put hl-ov 'face 'mindre-keyword)
         (overlay-put hl-ov 'org-noter-current-hl t))
       (org-cycle-hide-drawers 'all)))
-  (advice-add #'org-noter--focus-notes-region :after #'eli-org-noter-set-highlight)
+  
+  (advice-add #'org-noter--focus-notes-region
+              :after #'eli-org-noter-set-highlight)
 
   (defun eli-org-noter-back-to-current-window (orig-fun)
     (save-selected-window
@@ -110,7 +114,8 @@
                    #'pdf-view-scroll-up-or-next-page)
                lines)))
   
-  (keymap-set org-noter-notes-mode-map "M-]" #'eli-org-noter-scroll-up-other-window)
+  (keymap-set org-noter-notes-mode-map "M-]"
+              #'eli-org-noter-scroll-up-other-window)
 
   (defun eli-org-noter-scroll-down-other-window (lines)
     (interactive "P")
@@ -119,8 +124,8 @@
                    #'pdf-view-scroll-down-or-previous-page)
                lines)))
 
-  (keymap-set org-noter-notes-mode-map "M-[" #'eli-org-noter-scroll-down-other-window)
-  )
+  (keymap-set org-noter-notes-mode-map "M-["
+              #'eli-org-noter-scroll-down-other-window))
 
 (elemacs-require-package 'toc-mode)
 
@@ -138,7 +143,8 @@
                                (regexp-quote name)))
              (id (car (esxml-node-children (esxml-query selector content)))))
         (and id (intern id))))
-    (advice-add #'nov-content-unique-identifier :override #'my-nov-content-unique-identifier)))
+    (advice-add #'nov-content-unique-identifier
+                :override #'my-nov-content-unique-identifier)))
 
 (provide 'init-reader)
 ;;; init-reader.el ends here.
