@@ -61,6 +61,12 @@ for confirmation when needed."
 	      #'kill-buffer-and-window)
   (setq elfeed-show-entry-switch #'pop-to-buffer)
   (setq elfeed-search-filter "@2-days-ago +unread +A")
+  
+  (defun eli-filter-read ()
+    (interactive)
+    (elfeed-search-set-filter "@7-days-ago -unread +A"))
+  
+  (keymap-set elfeed-search-mode-map "R" #'eli-filter-read)
 
   ;; face for starred articles
   (defface elfeed-search-starred-title-face
