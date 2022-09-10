@@ -166,11 +166,15 @@
     ("ac" org-anki-cloze-dwim "close")
     ("ad" org-anki-delete-entry "delete entry")
     ("aD" org-anki-delete-all "delete all")
-    ("ax" org-anki-sync-checkbox "check boxes")
-    ("al" org-anki-sync-description "description lists")
     ("aS" org-anki-sync-all "sync all")
     ("as" org-anki-sync-entry "sync entry")
     ("au" org-anki-update-all "update all"))
+   ""
+   (("ax" org-anki-sync-checkbox "check boxes")
+    ("al" org-anki-sync-description "description lists")
+    ("ap" org-anki-sync-poem "poem")
+    ("aw" org-anki-sync-word "word")
+    ("ar" org-anki-sync-region "region"))
    "blog"
    (("bp" org-publish)
     ("bg" eli/push-to-gitpage)

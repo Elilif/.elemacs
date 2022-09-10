@@ -1132,24 +1132,18 @@ Used by `org-anki-skip-function'"
          (org-narrow-to-subtree)
          (while (re-search-forward ,reg nil t)
            (let*
-               ((front-string (match-string ,front))
+               ((front-string (match-string-no-properties ,front))
                 (back-string (if ,back
-                                 (match-string ,back)
+                                 (match-string-no-properties ,back)
                                nil))
                 (front (org-anki--string-to-html (string-clean-whitespace
-                                                  (replace-regexp-in-string
-                                                   "\n" " "
-                                                   (org-no-properties
-                                                    front-string)))))
+                                                  front-string)))
                 (maybe-id (org-entry-get nil org-anki-prop-note-id))
                 (back (if ,back
                           (org-anki--back-post-processing
                            (org-anki--string-to-html
                             (string-clean-whitespace
-                             (replace-regexp-in-string
-                              "\n" " "
-                              (org-no-properties
-                               back-string)))))
+                             back-string)))
                         ""))
                 (tags (org-anki--get-tags))
                 (deck (save-excursion
@@ -1182,21 +1176,17 @@ Used by `org-anki-skip-function'"
                                                     (? "\n")))) 1 2)
   (eli-org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2)
   
-  (defun org-anki-select-region (beg end)
+  (defun org-anki-sync-region (beg end)
     (interactive "r")
     (let* ((text (buffer-substring beg end))
-           (delimiter (read-string "Input a Regexp: "))
-           (void (string-match (concat
-                                "\\(.*\\)"
-                                delimiter
-                                "\\(.*\\)")
+           (regexp (read-regexp "Input a Regexp: "))
+           (void (string-match regexp
                                text))
-           (front-string (string-clean-whitespace
-                          (match-string-no-properties 1 text)))
-           (back-string (string-clean-whitespace
-                         (match-string-no-properties 2 text)))
+           (front-string (match-string-no-properties 1 text))
+           (back-string (match-string-no-properties 2 text))
+           (back-string (match-string 2))
            (front (org-anki--string-to-html
-                   (read-string "Front Card: " front-string)))
+                   (read-string "Front Card: " (string-clean-whitespace front-string))))
            (back (org-anki--back-post-processing
                   (org-anki--string-to-html
                    (read-string "Back Card: " back-string))))
@@ -1216,7 +1206,13 @@ Used by `org-anki-skip-function'"
                   :type     type
                   :point    note-start)))
       (eli-org-anki-sync-item card)
-      (deactivate-mark))))
+      (deactivate-mark)))
+  
+  (defalias 'org-anki-sync-word
+    (kmacro "C-SPC C-e M-x org-anki-sync-region <return> ： <return> SPC d C-s-j SPC y u y SPC j k t SPC <return> <return> Words <return>"))
+
+  (defalias 'org-anki-sync-poem
+    (kmacro "M-x org-anki-sync-region <return> \\(.*\\) C-q C-j C-q C-j \\(\\(?:.* C-q C-j ?\\)*\\) <return> <return> <return> Poems <return>")))
 
 ;;; latex
 (with-eval-after-load 'org
