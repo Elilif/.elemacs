@@ -481,6 +481,12 @@ or equal to scheduled (%s)"
           ""
 	    (concat "- reference :: " v-a))))
 
+  (defun v-i-or-nothing-word ()
+    (let* ((v-i (plist-get org-store-link-plist :initial))
+           (new-string (string-clean-whitespace
+                        (replace-regexp-in-string "\n" " " v-i))))
+      new-string))
+
   ;; better fill region in capture
   (defun eli/fill-region ()
     (save-excursion
@@ -490,23 +496,22 @@ or equal to scheduled (%s)"
       (org-fill-paragraph nil t)))
   (add-hook 'org-capture-prepare-finalize-hook 'eli/fill-region)
 
-
-  ;; dedicated to "event" template
-  (defun eli-org-capture-template-goto-today ()
+  (defun eli-org-capture-template-goto-today (format-string start end point)
     "Set point for capturing at what capture target file+headline
 with headline set to %l would do."
     (org-capture-put :target (list 'file+headline
                                    (nth 1 (org-capture-get :target))
-                                   (format-time-string "%Y-%m-%d")))
+                                   (format-time-string format-string)))
     (org-capture-put-target-region-and-position)
     (widen)
     (let ((hd (nth 2 (org-capture-get :target))))
       (goto-char (point-min))
       (if (re-search-forward
-	       (format org-complex-heading-regexp-format (regexp-quote hd))
+	       (format org-complex-heading-regexp-format
+                   (regexp-quote (substring hd start end)))
 	       nil t)
 	      (goto-char (point-at-bol))
-	    (goto-char 361)
+	    (goto-char point)
 	    (insert "\n")
 	    (insert "* " hd "\n")
 	    (beginning-of-line 0))))
@@ -551,7 +556,9 @@ with headline set to %l would do."
 	       )
 	      ("e" "Events" entry (file+function
                                "~/Elilif.github.io/Eli's timeline.org"
-                               eli-org-capture-template-goto-today)
+                               (lambda ()
+                                 (eli-org-capture-template-goto-today
+                                  "%Y-%m-%d" 0 10 361)))
 	       "* %?"
 	       )
 	      ("B" "Blogs" plain (file eli/capture-report-date-file)
@@ -561,17 +568,20 @@ with headline set to %l would do."
 	      ("T" "Time Report" plain (file+function
                                     "~/Dropbox/org/Clock_Report.org"
                                     org-reverse-datetree-goto-date-in-file)
-	       "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6\
-:block %<%Y-%m-%d> :fileskip0 t\
+	       "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6 \
+:block %<%Y-%m-%d> :fileskip0 t \
 :indent t :link t :formula % :sort (3 . ?T)\n#+END:"
 	       :empty-lines 0
 	       :jump-to-captured t)
           ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
            "* %a\n%?\n%(v-i-or-nothing)\n%U"
            :empty-lines 0)
-	      ("w" "Words" entry (file org-agenda-file-te)
-	       "* TODO %u [/]\n%?"
-	       :jump-to-captured t)
+          ("w" "Words" checkitem (file+function
+                                 org-agenda-file-te
+                                 (lambda ()
+                                   (eli-org-capture-template-goto-today
+                                    "TODO %Y-%m-%d [/]" 5 15 81)))
+	       "[ ] %(v-i-or-nothing-word)%?")
 	      ("f" "Français" entry (file "~/Dropbox/org/Français.org")
 	       "* TODO %u [/]\n%?"
 	       :jump-to-captured t)
@@ -580,22 +590,22 @@ with headline set to %l would do."
 	       :jump-to-captured t)
 	      ("b" "Book" entry (file+headline org-agenda-file-lists "Books")
 	       "* %?\n  %^{Title}p %^{Isbn}p %^{Types}p %^{Authors}p %^{Translator}p\
- %^{Publisher}p %^{Nation}p %^{Lang}p %^{Rating}p"
+  %^{Publisher}p %^{Nation}p %^{Lang}p %^{Rating}p"
            :prepend t)
 	      ("m" "Movies and Musicals" entry (file+headline
                                             org-agenda-file-lists
                                             "Movies and Musicals")
 	       "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p\
-%^{Actors}p %^{Types}p %^{Time}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
+ %^{Actors}p %^{Types}p %^{Time}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
            :prepend t)
 	      ("s" "Series" entry (file+headline org-agenda-file-lists "Series")
 	       "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p\
-%^{Actors}p %^{Types}p %^{Time}p %^{Episodes}p\
-%^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
+ %^{Actors}p %^{Types}p %^{Time}p %^{Episodes}p\
+ %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
            :prepend t)
 	      ("a" "Animes" entry (file+headline org-agenda-file-lists "Animes")
 	       "* %?\n %^{Title}p %^{URL}p %^{Episodes}p %^{Release}p\
-%^{Director}p %^{Authors}p %^{Publisher}p %^{Rating}p"
+ %^{Director}p %^{Authors}p %^{Publisher}p %^{Rating}p"
            :prepend t)
 	      ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
 	       "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
@@ -1123,6 +1133,7 @@ Used by `org-anki-skip-function'"
        (org-anki--report-error
         "Couldn't update note, received: %s"
         the-error))))
+  
   (defmacro eli-org-anki-install (fun-name reg front &optional back)
   `(defun ,(intern (format "org-anki-sync-%s" fun-name)) ()
      (interactive)
