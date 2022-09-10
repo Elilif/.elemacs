@@ -68,5 +68,14 @@
 	(INIT-INPUT "\\("))
     (consult-ripgrep BASEDIR INIT-INPUT)))
 
+(defun eli-open-TE (file-name)
+  (interactive
+   (list (read-file-name "Find file:  "
+                         "~/Documents/TE/"
+                         nil nil nil
+                         (lambda (file-name)
+                           (string-match "epub" file-name)))))
+  (find-file file-name))
+
 (provide 'init-spell)
 ;;; init-spell.el ends here.

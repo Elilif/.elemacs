@@ -283,6 +283,7 @@
    "Calibre"
    (("c" calibredb "calibre")
     ("b" eli/update-calibre-bibtex "get bibtex")
+    ("t" eli-open-TE "open TE")
     )
    "Roam Bibtex"
    (("a" orb-note-actions "orb note actions")
@@ -291,8 +292,8 @@
    "Bibtex"
    (("r" org-bibtex-read "org bibtex read")
     ("w" org-bibtex-write "org bibtex write"))
-   )
-  )
+   ))
+
 (pretty-hydra-define hydra-org-noter
   (:color amaranth :exit t :quit-key "q"
 	  :pre (progn (setq which-key-inhibit t)  )
