@@ -907,6 +907,108 @@ direct title.
 	    org-roam-ui-follow t
 	    org-roam-ui-update-on-save t
 	    org-roam-ui-open-on-start t)
+
+  ;; embark support
+  (defun eli/org-roam-backlink-node-read--completions
+      (backlink-nodes &optional filter-fn sort-fn)
+    (let* ((template (org-roam-node--process-display-format
+                      org-roam-node-display-template))
+           (nodes (eli/get-backlink-list backlink-nodes))
+           (nodes (mapcar (lambda (node)
+                            (org-roam-node-read--to-candidate node template))
+                          nodes))
+           (nodes (if filter-fn
+                      (cl-remove-if-not
+                       (lambda (n) (funcall filter-fn (cdr n)))
+                       nodes)
+                    nodes))
+           (sort-fn (or sort-fn
+			            (when org-roam-node-default-sort
+                          (intern (concat "org-roam-node-read-sort-by-"
+                                          (symbol-name
+                                           org-roam-node-default-sort))))))
+           (nodes (if sort-fn (seq-sort sort-fn nodes)
+                    nodes)))
+      nodes))
+
+  (defun eli/org-roam-backlink-node-read
+      (backlink-nodes &optional initial-input
+                      filter-fn sort-fn require-match prompt)
+    (let* ((nodes (eli/org-roam-backlink-node-read--completions
+                   backlink-nodes filter-fn sort-fn))
+           (prompt (or prompt "Node: "))
+           (node (completing-read
+                  prompt
+                  (lambda (string pred action)
+                    (if (eq action 'metadata)
+			            `(metadata
+                          ;; Preserve sorting in the completion UI
+                          ;; if a sort-fn is used
+                          ,@(when sort-fn
+                              '((display-sort-function . identity)
+				                (cycle-sort-function . identity)))
+                          (annotation-function
+                           . ,(lambda (title)
+				                (funcall org-roam-node-annotation-function
+					                     (get-text-property 0 'node title))))
+                          (category . org-roam-node))
+                      (complete-with-action action nodes string pred)))
+                  nil require-match initial-input 'org-roam-node-history)))
+      (or (cdr (assoc node nodes))
+          (org-roam-node-create :title node))))
+
+  (defun eli/get-backlink-list (backlink-nodes)
+    (let ((counter 0)
+	      (node-list nil))
+      (while backlink-nodes
+	    (add-to-list 'node-list
+                     (org-roam-backlink-source-node (pop backlink-nodes)))
+	    (setq counter (1+ counter)))
+      node-list))
+
+  (defun eli/follow-backlinks (entry)
+    (let* ((node-at-point (get-text-property 0 'node entry))
+	       (backlink-nodes (org-roam-backlinks-get node-at-point)))
+      (org-roam-node-visit (eli/org-roam-backlink-node-read backlink-nodes))))
+  
+  (embark-define-keymap embark-org-roam-map
+    "Keymap for Embark heading actions."
+    ("i" org-roam-node-insert)
+    ("s" embark-collect)
+    ("b" eli/follow-backlinks))
+  
+  (add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
+
+  (defun consult-heading-insert-backlink (target)
+    (let* ((marker (plist-get
+                    (text-properties-at 0 target)
+                    'consult--candidate))
+           (headline-name (substring (org-no-properties target)
+                                     0 -1))
+           (headline-id (save-excursion
+                          (with-current-buffer
+                              (marker-buffer marker)
+                            (goto-char marker)
+                            (org-id-get-create)))))
+      (org-insert-link
+	   nil (concat "id:" headline-id) headline-name)))
+
+  (embark-define-keymap embark-org-heading-map
+    "Keymap for Embark heading actions."
+    ("i" embark-insert)
+    ("b" consult-heading-insert-backlink)
+    ("w" embark-copy-as-kill)
+    ("q" embark-toggle-quit)
+    ("E" embark-export)
+    ("S" embark-collect)
+    ("L" embark-live)
+    ("B" embark-become)
+    ("A" embark-act-all)
+    ("C-s" embark-isearch)
+    ("SPC" mark)
+    ("DEL" delete-region))
+
+  (add-to-list 'embark-keymap-alist '(consult-org-heading . embark-org-heading-map))
   )
 
 ;; clock
