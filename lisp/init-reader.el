@@ -133,6 +133,7 @@
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (with-eval-after-load 'nov
   (setq nov-text-width 80)
+  (keymap-set nov-mode-map "o" #'nov-goto-toc)
   (with-no-warnings
     ;; WORKAROUND: errors while opening `nov' files with Unicode characters
     ;; @see https://github.com/wasamasa/nov.el/issues/63
