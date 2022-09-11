@@ -1297,12 +1297,17 @@ Used by `org-anki-skip-function'"
                                text))
            (front-string (match-string-no-properties 1 text))
            (back-string (match-string-no-properties 2 text))
-           (back-string (match-string 2))
            (front (org-anki--string-to-html
-                   (read-string "Front Card: " (string-clean-whitespace front-string))))
+                   (read-string "Front Card: "
+                                (string-clean-whitespace front-string))))
            (back (org-anki--back-post-processing
                   (org-anki--string-to-html
-                   (read-string "Back Card: " back-string))))
+                   (read-string "Back Card: "
+                                (if (member (prefix-numeric-value
+                                             current-prefix-arg)
+                                            '(4 16 64))
+                                    (string-clean-whitespace back-string)
+                                  back-string)))))
            (deck (read-string "Input Deck to import: "))
            (type (org-anki--find-prop
                   org-anki-note-type org-anki-default-note-type))
@@ -1320,12 +1325,14 @@ Used by `org-anki-skip-function'"
                   :point    note-start)))
       (eli-org-anki-sync-item card)
       (deactivate-mark)))
+
+  (keymap-global-set "<f12>" #'org-anki-sync-region)
   
   (defalias 'org-anki-sync-word
-    (kmacro "C-SPC C-e M-x org-anki-sync-region <return> ： <return> SPC d C-s-j SPC y u y SPC j k t SPC <return> <return> Words <return>"))
+    (kmacro "C-u <f12> C-s-k \\(.*\\)：\\(\\(?:.* C-q C-j ?\\)*\\) <return> SPC 的语境 <return> <return> Words <return>"))
 
   (defalias 'org-anki-sync-poem
-    (kmacro "M-x org-anki-sync-region <return> \\(.*\\) C-q C-j C-q C-j \\(\\(?:.* C-q C-j ?\\)*\\) <return> <return> <return> Poems <return>")))
+    (kmacro "<f12> \\(.*\\) C-q C-j C-q C-j \\(\\(?:.* C-q C-j ?\\)*\\) <return> <return> <return> Poems <return>")))
 
 ;;; latex
 (with-eval-after-load 'org
