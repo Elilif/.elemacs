@@ -133,8 +133,7 @@
 	  :post (progn (setq which-key-inhibit nil) ))
   ("Basic"
     (("h" org-mode "org mode")
-    ("pp" org-pomodoro "sart a pomodoro")
-    ("pt" org-pomodoro-extend-last-clock "extend pomodoro")
+    ("j" consult-org-heading "headings")
     ("f" my/consult-org-file "agenda filter"))
    "Org link"
    (("li" grab-x-link-chromium-insert-link "insert web link")
