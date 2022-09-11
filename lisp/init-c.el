@@ -44,7 +44,8 @@
   (setq-default c-basic-offset 4)
   (add-hook 'c-mode-common-hook (lambda () (c-set-style "stroustrup")))
   (add-hook 'c-mode-common-hook #'eli/cc-mode-hook)
-  (keymap-set c-mode-base-map "(" nil))
+  (keymap-set c-mode-base-map "(" nil)
+  (keymap-set c-mode-base-map "{" nil))
 
 (elemacs-require-package 'modern-cpp-font-lock)
 (add-hook 'c-mode-common-hook #'modern-c++-font-lock-global-mode)
