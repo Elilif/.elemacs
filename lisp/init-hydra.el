@@ -36,13 +36,14 @@
 (keymap-global-set "C-c w" #'jp-window/body)
 (keymap-global-set "C-c b" #'hydra-bibtex/body)
 (keymap-global-set "C-c s" #'hydra-search/body)
-(keymap-global-set "C-c p" #'hydra-player/body)
+(keymap-global-set "C-c m" #'hydra-player/body)
 (keymap-global-set "C-c e" #'hydra-edit/body)
-(keymap-global-set "C-c m" #'hydra-misc/body)
-(keymap-global-set "C-c d" #'hydra-develop/body)
+(keymap-global-set "C-c r" #'hydra-misc/body)
+(keymap-global-set "C-c h" #'hydra-develop/body)
 (keymap-global-set "C-c q" #'hydra-emacs/body)
-(keymap-global-set "C-c C-j" #'hydra-roam/body)
+(keymap-global-set "C-c j" #'hydra-roam/body)
 (keymap-global-set "C-c i" #'hydra-insert/body)
+(keymap-global-set "C-c p" #'hydra-move/body)
 (keymap-global-set "C-c [" #'hydra-skan-user-buffers-prev/body)
 (keymap-global-set "C-c ]" #'hydra-skan-user-buffers-next/body)
 (keymap-global-set "C-c n" #'hydra-org-noter/body)
@@ -65,16 +66,57 @@
 (pretty-hydra-define hydra-edit
   (:color amaranth :exit t :quit-key "q"
 	  :pre (progn (setq which-key-inhibit t))
-	  :post (progn (setq which-key-inhibit nil) ))
+	  :post (progn (setq which-key-inhibit nil)))
   ("multiple cursors"
    (("l" mc/edit-lines "edit-lines")
-    ("n" mc/mark-next-like-this-symbol "mark next")
-    ("p" mc/mark-previous-like-this-symbol "mark previous")
     ("a" mc/mark-all-symbols-like-this "mark all")
     ("s" set-rectangular-region-anchor "set mc")
     ("in" mc/insert-numbers "insert numbers"))
    "iedit"
    (("e" iedit-mode "iedit mode"))
+   ))
+
+(pretty-hydra-define hydra-move
+  (:color amaranth :exit t :quit-key "q"
+	      :pre (progn (setq which-key-inhibit t))
+	      :post (progn (setq which-key-inhibit nil)))
+  ("Moving"
+   (("a" sp-beginning-of-sexp)
+    ("e" sp-end-of-sexp)
+    ("f" sp-forward-sexp)
+    ("b" sp-backward-sexp)
+    ("n" sp-down-sexp)
+    ("N" sp-backward-down-sexp)
+    ("p" sp-up-sexp)
+    ("P" sp-backward-up-sexp))
+   "Slurping & barfing"
+   (("h" sp-backward-slurp-sexp)
+    ("H" sp-backward-barf-sexp)
+    ("l" sp-forward-slurp-sexp)
+    ("L" sp-forward-barf-sexp))
+   "Wrapping"
+   (("R" sp-rewrap-sexp)
+    ("u" sp-unwrap-sexp)
+    ("U" sp-backward-unwrap-sexp)
+    ("(" sp-wrap-round)
+    ("{" sp-wrap-curly)
+    ("[" sp-wrap-square))
+   "Sexp juggling"
+   (("S" sp-split-sexp)
+    ("s" sp-splice-sexp)
+    ("r" sp-raise-sexp)
+    ("j" sp-join-sexp)
+    ("t" sp-transpose-sexp)
+    ("A" sp-absorb-sexp)
+    ("E" sp-emit-sexp)
+    ("o" sp-convolute-sexp))
+   "Destructive editing"
+   (("c" sp-change-inner :exit t)
+    ("C" sp-change-enclosing :exit t)
+    ("k" sp-kill-sexp)
+    ("K" sp-backward-kill-sexp)
+    ("w" sp-copy-sexp))
+
    ))
 
 (pretty-hydra-define hydra-roam
@@ -312,7 +354,7 @@
     )
    ))
 
-(pretty-hydra-define hydra-misc
+(pretty-hydra-define hydra-reader
   (:color amaranth :exit t :quit-key "q"
 	  :pre (progn (setq which-key-inhibit t)  )
 	  :post (progn (setq which-key-inhibit nil) ))
@@ -412,8 +454,15 @@
    "Debug"
    (("r" quickrun "quickrun")
     ("s" quickrun-shell "quickrun shell")
-    ("d" gdb "gdb"))
-   ))
+    ("g" gdb "gdb"))
+   ""
+   (("t" toggle-debug-on-error)
+    ("e" edebug-defun)
+    ("l" edebug-remove-instrumentation)
+    ("c" cancel-debug-on-entry)
+    ("o" edebug-on-entry)
+    ("C" edebug-cancel-on-entry)
+    )))
 
 
 
