@@ -115,18 +115,21 @@
 (keymap-global-set "C-c -" #'consult-register-load)
 (keymap-global-set "C-c =" #'consult-register-store)
 (keymap-global-set "C-x b" #'consult-buffer)
+(keymap-global-set "M-g o" #'consult-outline)
 (with-eval-after-load 'vertico
   (require 'consult)
+  
   (defun my/consult-org-file (&optional match)
     (interactive)
     (consult-org-heading match '(list org-agenda-file-inbox org-agenda-file-habit org-agenda-file-projects)))
+  
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
   (consult-customize
    consult-theme
    :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
+   consult-ripgrep consult-git-grep consult-grep my/consult-org-file
    consult-bookmark consult-recent-file consult-xref
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
