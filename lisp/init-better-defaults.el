@@ -165,6 +165,27 @@
 
 (elemacs-require-package 'expand-region)
 (keymap-global-set "C-=" #'er/expand-region)
+(with-eval-after-load 'expand-region
+  (setq-default er/try-expand-list '(er/mark-word
+                                     er/mark-symbol
+                                     ;; er/mark-symbol-with-prefix
+                                     er/mark-next-accessor
+                                     er/mark-method-call
+                                     er/mark-inside-quotes
+                                     er/mark-outside-quotes
+                                     er/mark-inside-pairs
+                                     er/mark-outside-pairs
+                                     er/mark-comment
+                                     er/mark-url
+                                     er/mark-email
+                                     er/mark-defun
+                                     mark-paragraph
+                                     er/mark-sentence))
+
+    (defun eli-er/clearn-history (_arg)
+      (if (not (memq last-command '(er/expand-region er/contract-region)))
+          (er/clear-history)))
+    (advice-add 'er/expand-region :before #'eli-er/clearn-history))
 
 (elemacs-require-package 'which-key)
 (add-hook 'elemacs-first-input-hook #'which-key-mode)
