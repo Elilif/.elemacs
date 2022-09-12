@@ -561,6 +561,9 @@ BUFFER is a string, the name of a buffer."
 
 ;; automatically select apropos buffer
 (add-hook 'apropos-mode-hook (lambda () (switch-to-buffer-other-window "*Apropos*")))
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+
+(keymap-global-set "M-DEL" #'backward-kill-sentence)
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
