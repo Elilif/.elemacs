@@ -55,6 +55,7 @@
 
 (elemacs-require-package 'wordnut)
 (keymap-global-set "C-c y" #'wordnut-lookup-current-word)
+(add-hook 'wordnut-mode-hook #'variable-pitch-mode)
 
 (defun Eli/dict-search ()
   (interactive)
