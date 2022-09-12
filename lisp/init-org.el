@@ -581,7 +581,8 @@ with headline set to %l would do."
                                  (lambda ()
                                    (eli-org-capture-template-goto-today
                                     "TODO %Y-%m-%d [/]" 5 15 81)))
-	       "[ ] %(v-i-or-nothing-word)%?")
+	       "[ ] %(v-i-or-nothing-word)%?"
+           :prepend t)
 	      ("f" "Français" entry (file "~/Dropbox/org/Français.org")
 	       "* TODO %u [/]\n%?"
 	       :jump-to-captured t)
@@ -609,8 +610,7 @@ with headline set to %l would do."
            :prepend t)
 	      ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
 	       "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
-	       :create-id t)
-          ))
+	       :create-id t)))
   )
 
 ;;; time report
