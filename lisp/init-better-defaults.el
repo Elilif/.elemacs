@@ -335,9 +335,9 @@ create new one."
       (goto-char (point-min))
       (let ((case-fold-search nil)
             (limit (save-excursion
-                     (re-search-forward "Source Code" nil t))))
+                     (re-search-forward "^Source Code\n" nil t))))
         (while (re-search-forward
-                "\\<[A-Z]+\\>" limit t)
+                "\\<[-A-Z]+\\>" limit t)
           (overlay-put (make-overlay
                         (match-beginning 0) (match-end 0))
                        'face 'help-argument-name)))))
