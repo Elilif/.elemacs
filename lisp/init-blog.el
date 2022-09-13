@@ -52,7 +52,7 @@
            :publishing-directory ,eli-blog-publish-dir
            :base-extension "org"
            :recursive nil
-	   :htmlized-source t
+	       :htmlized-source t
            :publishing-function org-html-publish-to-html
            :auto-sitemap t
            :sitemap-filename "index.org"
@@ -63,12 +63,13 @@
            :completion-function eli/push-to-gitpage
            )))
 
-  (elemacs-require-package 'ox-hugo)
-  (setq org-hugo-base-dir "~/Documents/braindump/")
+  ;; (elemacs-require-package 'ox-hugo)
+  ;; (setq org-hugo-base-dir "~/Documents/braindump/")
 
-  (elemacs-require-package 'easy-hugo)
-  (setq easy-hugo-basedir "~/Documents/braindump/"
-	easy-hugo-postdir "content/posts"))
+  ;; (elemacs-require-package 'easy-hugo)
+  ;; (setq easy-hugo-basedir "~/Documents/braindump/"
+  ;;       easy-hugo-postdir "content/posts")
+  )
 
 
 
