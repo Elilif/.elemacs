@@ -33,10 +33,10 @@
 (elemacs-require-package 'auctex)
 (with-eval-after-load 'tex
   (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
-  (add-hook 'LaTeX-mode-hook #'prettify-symbols-mode)
   (add-hook 'LaTeX-mode-hook #'tex-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook (lambda () (setq TeX-command-default "XeLaTeX")))
+  (add-hook 'LaTeX-mode-hook (lambda ()
+                               (setq TeX-command-default "XeLaTeX")))
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
 
