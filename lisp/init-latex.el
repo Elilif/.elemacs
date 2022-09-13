@@ -45,7 +45,6 @@
   (setq TeX-source-correlate-start-server t)
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
-  (setq-default LaTeX-biblatex-use-Biber t)
   (setq LaTeX-item-indent 0)
   (setq TeX-show-compilation nil)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
