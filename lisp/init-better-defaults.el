@@ -166,6 +166,22 @@
 (elemacs-require-package 'expand-region)
 (keymap-global-set "C-=" #'er/expand-region)
 (with-eval-after-load 'expand-region
+  (defun er/mark-block-comment ()
+    "Mark the entire comment around point."
+    (interactive)
+    (when (er--point-is-in-comment-p)
+      (let ((p (point)))
+        (while (and (er--point-is-in-comment-p) (not (eobp)))
+          (forward-char 1)
+          (skip-chars-forward "\n\r "))
+        (beginning-of-line)
+        (backward-char 1)
+        (set-mark (point))
+        (goto-char p)
+        (while (er--point-is-in-comment-p)
+          (backward-char 1)
+          (skip-chars-backward "\n\r "))
+        (forward-char 1))))
   (setq-default er/try-expand-list '(er/mark-word
                                      er/mark-symbol
                                      ;; er/mark-symbol-with-prefix
@@ -176,11 +192,13 @@
                                      er/mark-inside-pairs
                                      er/mark-outside-pairs
                                      er/mark-comment
+                                     er/mark-block-comment
                                      er/mark-url
                                      er/mark-email
                                      er/mark-defun
+                                     er/mark-sentence
                                      mark-paragraph
-                                     er/mark-sentence))
+                                     ))
 
     (defun eli-er/clearn-history (_arg)
       (if (not (memq last-command '(er/expand-region er/contract-region)))
