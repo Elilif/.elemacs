@@ -1112,7 +1112,8 @@ direct title.
         (push new-string kill-ring))))
 
   (defun eli-unfill-string (string)
-    (if (and (memq major-mode '(org-mode mu4e-view-mode elfeed-show-mode))
+    (if (and (memq major-mode '(org-mode mu4e-view-mode
+                                         elfeed-show-mode nov-mode))
              (member (prefix-numeric-value current-prefix-arg) '(4 16 64)))
         (string-clean-whitespace
          (replace-regexp-in-string "\n" " " string))
