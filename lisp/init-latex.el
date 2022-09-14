@@ -117,5 +117,19 @@
   (setq xenops-math-image-scale-factor 1.3)
   (setq xenops-image-try-write-clipboard-image-to-file nil))
 
+(add-to-list 'load-path "~/.emacs.d/site-lisp/mathpix/")
+(autoload #'mathpix-screenshot "mathpix" nil t)
+(with-eval-after-load 'mathpix
+  (let ((n (random 4)))
+    (setq mathpix-app-id (with-temp-buffer
+                           (insert-file-contents
+                            "~/.emacs.d/private/mathpix-app-id")
+                           (nth n (split-string (buffer-string) "\n")))
+          mathpix-app-key (with-temp-buffer
+                            (insert-file-contents
+                             "~/.emacs.d/private/mathpix-app-key")
+                            (nth n (split-string (buffer-string) "\n")))))
+  (setq mathpix-screenshot-method "flameshot gui --raw > %s"))
+
 (provide 'init-latex)
 ;;; init-latex.el ends here.

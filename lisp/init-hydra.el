@@ -399,8 +399,10 @@
    (("p" consult-yank-pop "Clipboard"))
    "Emoji"
    (("i" emoji-insert)
-    ("f" emoji-search)))
-  )
+    ("f" emoji-search))
+   "LaTeX"
+   (("l" mathpix-screenshot "mathpix"))))
+
 (pretty-hydra-define hydra-player
   (:color amaranth :exit t :quit-key "q"
 	  :pre (progn (setq which-key-inhibit t))
