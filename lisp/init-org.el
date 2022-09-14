@@ -1677,10 +1677,55 @@ and style elements ARGS."
            ((lambda (tag)
               (svg-tag-make tag :end -1 :inverse t
                             :crop-left t :margin 0 :face 'org-date))))))
+
+  (defun svg-tag-mode-on ()
+    "Activate SVG tag mode."
+    ;; (add-to-list 'font-lock-extra-managed-props 'display)
+
+    ;; Remove currently active tags
+    (when svg-tag--active-tags
+      (font-lock-remove-keywords nil
+                                 (mapcar #'svg-tag--build-keywords svg-tag--active-tags)))
+
+    ;; Install tags
+    (when svg-tag-tags
+      (font-lock-add-keywords nil
+                              (mapcar #'svg-tag--build-keywords svg-tag-tags)))
+
+    ;; Make a copy of newly installed tags
+    (setq svg-tag--active-tags (copy-sequence svg-tag-tags))
+
+    ;; Install an advice on org-fontify that will install a local advice
+    ;; on remove-text-properties. This is a hack to prevent org mode
+    ;; from removing SVG tags that use the 'display property
+    (advice-add 'org-fontify-meta-lines-and-blocks
+                :around #'svg-tag--org-fontify-meta-lines-and-blocks)
+
+    ;; Flush buffer when entering read-only
+    (add-hook 'read-only-mode-hook
+              #'(lambda () (font-lock-flush (point-min) (point-max))))
+    
+    ;; Redisplay everything to show tags
+    (message "SVG tag mode on")
+    ;; (cursor-sensor-mode 1)
+    (font-lock-flush))
   
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (svg-tag-mode)
-                               (cursor-sensor-mode -1))))
+  (add-hook 'org-mode-hook #'svg-tag-mode)
+
+  (defun eli-org-agenda-show-svg ()
+    (let* ((n 0)
+           (case-fold-search nil)
+           (keywords (mapcar #'svg-tag--build-keywords svg-tag--active-tags))
+           (keyword (nth n keywords)))
+      (while keyword
+        (save-excursion
+          (while (re-search-forward (nth 0 keyword) nil t)
+            (overlay-put (make-overlay
+                          (match-beginning 0) (match-end 0))
+                         'display  (nth 3 (eval (nth 2 keyword)))) ))
+        (setq n (1+ n))
+        (setq keyword (nth n keywords)))))
+  (add-hook 'org-agenda-finalize-hook #'eli-org-agenda-show-svg))
 
 (provide 'init-org)
 ;;; init-org.el ends here.
