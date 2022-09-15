@@ -1506,6 +1506,8 @@ holding contextual information."
                       :scale 0.75 :crop-left nil :crop-right nil
                       :collection "material" :font-family "Cascadia Mono"
                       :font-size 11 :font-weight regular :ascent 14))
+  (setq svg-tag-action-at-point 'edit)
+  
   (defun svg-lib-tag (label &optional style &rest args)
     "Create an image displaying LABEL in a rounded box using given STYLE
 and style elements ARGS."
@@ -1576,7 +1578,7 @@ and style elements ARGS."
   
   (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
   (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
-  (defconst day-re "[A-Za-z]\\{3\\}")
+  (defconst day-re "[A-Za-z]\\{3\\}\\(?: [.+]?\\+[0-9]+[dwmy]\\)?")
   (defconst day-time-re (format "\\(%s\\)? ?\\(%s\\)?" day-re time-re))
 
   (defun svg-progress-percent (value)
@@ -1586,7 +1588,8 @@ and style elements ARGS."
                                       :padding 2 :width 4 :height 0.4
                                       :foreground "#B0BEC5")
                 (svg-lib-tag (concat value "%") nil
-                             :stroke 0 :margin 0 :foreground "#384d57"))
+                             :stroke 0 :margin 0 :foreground "#384d57"
+                             :ascent 12))
                :ascent 70 :scale 0.7))
 
   (defun svg-progress-count (value)
@@ -1599,7 +1602,8 @@ and style elements ARGS."
                                         :padding 2 :width 4 :height 0.4
                                         :foreground "#B0BEC5")
                   (svg-lib-tag value nil
-                               :stroke 0 :margin 0 :foreground "#384d57"))
+                               :stroke 0 :margin 0 :foreground "#384d57"
+                               :ascent 12))
                  :ascent 70 :scale 0.7)))
 
   (setq svg-tag-tags
@@ -1611,7 +1615,8 @@ and style elements ARGS."
           ;; Task priority
           ("\\[#[A-Z]\\]" . ( (lambda (tag)
                                 (svg-tag-make tag :face 'org-priority 
-                                              :beg 2 :end -1 :margin 0))))
+                                              :beg 2 :end -1 :margin 0
+                                              :height 1.1 :ascent 16))))
 
           ;; Progress
           ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
@@ -1677,40 +1682,10 @@ and style elements ARGS."
            ((lambda (tag)
               (svg-tag-make tag :end -1 :inverse t
                             :crop-left t :margin 0 :face 'org-date))))))
-
-  (defun svg-tag-mode-on ()
-    "Activate SVG tag mode."
-    ;; (add-to-list 'font-lock-extra-managed-props 'display)
-
-    ;; Remove currently active tags
-    (when svg-tag--active-tags
-      (font-lock-remove-keywords nil
-                                 (mapcar #'svg-tag--build-keywords svg-tag--active-tags)))
-
-    ;; Install tags
-    (when svg-tag-tags
-      (font-lock-add-keywords nil
-                              (mapcar #'svg-tag--build-keywords svg-tag-tags)))
-
-    ;; Make a copy of newly installed tags
-    (setq svg-tag--active-tags (copy-sequence svg-tag-tags))
-
-    ;; Install an advice on org-fontify that will install a local advice
-    ;; on remove-text-properties. This is a hack to prevent org mode
-    ;; from removing SVG tags that use the 'display property
-    (advice-add 'org-fontify-meta-lines-and-blocks
-                :around #'svg-tag--org-fontify-meta-lines-and-blocks)
-
-    ;; Flush buffer when entering read-only
-    (add-hook 'read-only-mode-hook
-              #'(lambda () (font-lock-flush (point-min) (point-max))))
-    
-    ;; Redisplay everything to show tags
-    (message "SVG tag mode on")
-    ;; (cursor-sensor-mode 1)
-    (font-lock-flush))
   
-  (add-hook 'org-mode-hook #'svg-tag-mode)
+  (add-hook 'org-mode-hook (lambda ()
+                             (make-local-variable 'font-lock-extra-managed-props)
+                             (svg-tag-mode)))
 
   (defun eli-org-agenda-show-svg ()
     (let* ((n 0)
