@@ -1506,7 +1506,19 @@ holding contextual information."
                       :scale 0.75 :crop-left nil :crop-right nil
                       :collection "material" :font-family "Cascadia Mono"
                       :font-size 11 :font-weight regular :ascent 14))
+  
   (setq svg-tag-action-at-point 'edit)
+  (setq svg-lib-icon-collections
+        '(("bootstrap" .
+           "https://icons.getbootstrap.com/assets/icons/%s.svg")
+          ("simple" .
+           "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/%s.svg")
+          ("material" .
+           "https://raw.githubusercontent.com/Templarian/MaterialDesign/master/svg/%s.svg")
+          ("octicons" .
+           "https://raw.githubusercontent.com/primer/octicons/master/icons/%s-24.svg")
+          ("boxicons" .
+           "https://boxicons.com/static/img/svg/regular/bx-%s.svg")))
   
   (defun svg-lib-tag (label &optional style &rest args)
     "Create an image displaying LABEL in a rounded box using given STYLE
