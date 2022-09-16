@@ -1401,7 +1401,11 @@ Used by `org-anki-skip-function'"
 		         ("\\subsection{%s}" . "\\subsection*{%s}")))
   (add-to-list 'org-latex-classes
 	           '("article_cn"
-		         "\\documentclass[11pt]{ctexart}"
+		         "\\documentclass[11pt]{ctexart}
+[DEFAULT-PACKAGES]
+[PACKAGES]
+[EXTRA]
+\\definecolor{bg}{rgb}{0.95,0.95,0.95}"
 		         ("\\section{%s}" . "\\section*{%s}")
 		         ("\\subsection{%s}" . "\\subsection*{%s}")
 		         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
