@@ -61,6 +61,7 @@
 (defvar mcfly-back-commands
   '(self-insert-command
     yank
+    yank-pop
     org-yank))
 
 (defun mcfly-back-to-present ()
