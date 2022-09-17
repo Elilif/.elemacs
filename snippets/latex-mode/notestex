@@ -4,9 +4,11 @@
 # --
 \documentclass[10pt]{article}
 \usepackage{/home/eli/Documents/mylatexstyles/NotesTeXV3}
-\usepackage{lipsum}
 $1
 
 \begin{document}
+\maketitle
+\newpage
+\pagestyle{fancynotes}
 $0
 \end{document}

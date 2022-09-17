@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: attr_latex
+# key: attr
+# --
+#+ATTR_LATEX:

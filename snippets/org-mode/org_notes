@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: org_notes
+# key: ons
+# --
+#+LaTeX_CLASS: Notes
+#+CITE_EXPORT: basic
+#+OPTIONS: toc:nil
+\maketitle
+\newpage
+\pagestyle{fancynotes}

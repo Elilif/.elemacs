@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: quote-latex
+# key: @@
+# --
+@@latex:$1@@$0
