@@ -978,7 +978,7 @@ direct title.
   
   (add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
 
-  (defun consult-heading-insert-backlink (target)
+  (defun consult-org-heading-insert-backlink (target)
     (let* ((marker (plist-get
                     (text-properties-at 0 target)
                     'consult--candidate))
@@ -992,10 +992,21 @@ direct title.
       (org-insert-link
 	   nil (concat "id:" headline-id) headline-name)))
 
+  (defun consult-org-headling-insert-reference (target)
+    (let* ((headline (substring (org-no-properties target)
+                                0 -1))
+           (headline-name (car
+                           (last
+                            (split-string
+                             (replace-regexp-in-string "\\*+ " "" headline)
+                             "/")))))
+      (insert (format "[[%s]]" headline-name))))
+  
   (embark-define-keymap embark-org-heading-map
     "Keymap for Embark heading actions."
     ("i" embark-insert)
-    ("b" consult-heading-insert-backlink)
+    ("b" consult-org-heading-insert-backlink)
+    ("r" consult-org-headling-insert-reference)
     ("w" embark-copy-as-kill)
     ("q" embark-toggle-quit)
     ("E" embark-export)
@@ -1007,14 +1018,14 @@ direct title.
     ("SPC" mark)
     ("DEL" delete-region))
 
-  (add-to-list 'embark-keymap-alist '(consult-org-heading . embark-org-heading-map))
+  (add-to-list 'embark-keymap-alist
+               '(consult-org-heading . embark-org-heading-map))
 
   (elemacs-require-package 'org-roam-ui)
   (setq org-roam-ui-sync-theme t
 	    org-roam-ui-follow t
 	    org-roam-ui-update-on-save t
-	    org-roam-ui-open-on-start t)
-  )
+	    org-roam-ui-open-on-start t))
 
 ;; clock
 (elemacs-require-package 'org-mru-clock)
