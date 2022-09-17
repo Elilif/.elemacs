@@ -1533,7 +1533,9 @@ holding contextual information."
   (add-hook 'org-mode-hook #'mixed-pitch-mode)
   (setq mixed-pitch-variable-pitch-cursor 'box
         mixed-pitch-set-height t)
-  (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-date))
+  (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-date)
+  (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-tag)
+  (add-to-list 'mixed-pitch-fixed-pitch-faces 'font-lock-comment-face))
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/svg-tag-mode/")
 (with-eval-after-load 'org
