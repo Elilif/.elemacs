@@ -136,6 +136,7 @@
                                          ("#+END:" . "□")
                                          ("#+BEGIN:" . "✎")
                                          ("#+CAPTION:" . "🙛")
+                                         ("#+ATTR_LATEX" . "🄛")
 					                     ))
   (setq org-ellipsis "▼")
   )
