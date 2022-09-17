@@ -858,6 +858,7 @@ References from FILE are excluded."
 		   :unnarrowed t)))
   (run-at-time 20 nil
 	           #'org-roam-setup)
+  
   (with-eval-after-load 'org-roam
     ;; Codes blow are used to general a hierachy
     ;; for title nodes that under a file
@@ -898,84 +899,81 @@ direct title.
              (file-relative-name (org-roam-node-file node) org-roam-directory))))
 	    (error "")))
 
-    (setq org-roam-node-display-template
-          (concat "${type:15} ${doom-hierarchy:120} "
-                  (propertize "${tags:*}" 'face 'org-tag))))
+    (cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+      "Access slot \"backlinks\" of org-roam-node struct CL-X"
+      (let* ((count (caar (org-roam-db-query
+			               [:select (funcall count source)
+				                    :from links
+				                    :where (= dest $s1)
+				                    :and (= type "id")]
+			               (org-roam-node-id node)))))
+	    (format "[%d]" count)))
+    
+    (cl-defmethod org-roam-node-backlinkscount-number ((node org-roam-node))
+      "Access slot \"backlinks\" of org-roam-node struct CL-X. This
+     is identical to `org-roam-node-backlinkscount' with the
+     difference that it returns a number instead of a fromatted
+     string. This is to be used in
+     `eli-org-roam-node-sort-by-backlinks'"
+      (let* ((count (caar (org-roam-db-query
+			               [:select (funcall count source)
+				                    :from links
+				                    :where (= dest $s1)
+				                    :and (= type "id")]
+			               (org-roam-node-id node)))))
+	    count))
 
-  (elemacs-require-package 'org-roam-ui)
-  (setq org-roam-ui-sync-theme t
-	    org-roam-ui-follow t
-	    org-roam-ui-update-on-save t
-	    org-roam-ui-open-on-start t)
+    (setq org-roam-node-display-template
+          (concat "${type:15} ${doom-hierarchy:120} ${backlinkscount:6}"
+                  (propertize "${tags:*}" 'face 'org-tag))))
+  
+  (defun eli-org-roam-node-sort-by-backlinks (completion-a completion-b)
+    "Sorting function for org-roam that sorts the list of nodes by
+   the number of backlinks. This is the sorting function in
+   `eli-org-roam-backlinks--read-node-backlinks'"
+    (let ((node-a (cdr completion-a))
+	      (node-b (cdr completion-b)))
+	  (>= (org-roam-node-backlinkscount-number node-a)
+	      (org-roam-node-backlinkscount-number node-b))))
 
   ;; embark support
-  (defun eli/org-roam-backlink-node-read--completions
-      (backlink-nodes &optional filter-fn sort-fn)
-    (let* ((template (org-roam-node--process-display-format
-                      org-roam-node-display-template))
-           (nodes (eli/get-backlink-list backlink-nodes))
-           (nodes (mapcar (lambda (node)
-                            (org-roam-node-read--to-candidate node template))
-                          nodes))
-           (nodes (if filter-fn
-                      (cl-remove-if-not
-                       (lambda (n) (funcall filter-fn (cdr n)))
-                       nodes)
-                    nodes))
-           (sort-fn (or sort-fn
-			            (when org-roam-node-default-sort
-                          (intern (concat "org-roam-node-read-sort-by-"
-                                          (symbol-name
-                                           org-roam-node-default-sort))))))
-           (nodes (if sort-fn (seq-sort sort-fn nodes)
-                    nodes)))
-      nodes))
+  ;; from https://github.com/Vidianos-Giannitsis/Dotfiles/blob/master/emacs/
+  ;; .emacs.d/libs/zettelkasten.org
+  (defun eli-org-roam-backlinks-query* (NODE)
+    "Gets the backlinks of NODE with `org-roam-db-query'."
+    (org-roam-db-query
+     [:select [source dest]
+		      :from links
+		      :where (= dest $s1)
+		      :and (= type "id")]
+     (org-roam-node-id NODE)))
 
-  (defun eli/org-roam-backlink-node-read
-      (backlink-nodes &optional initial-input
-                      filter-fn sort-fn require-match prompt)
-    (let* ((nodes (eli/org-roam-backlink-node-read--completions
-                   backlink-nodes filter-fn sort-fn))
-           (prompt (or prompt "Node: "))
-           (node (completing-read
-                  prompt
-                  (lambda (string pred action)
-                    (if (eq action 'metadata)
-			            `(metadata
-                          ;; Preserve sorting in the completion UI
-                          ;; if a sort-fn is used
-                          ,@(when sort-fn
-                              '((display-sort-function . identity)
-				                (cycle-sort-function . identity)))
-                          (annotation-function
-                           . ,(lambda (title)
-				                (funcall org-roam-node-annotation-function
-					                     (get-text-property 0 'node title))))
-                          (category . org-roam-node))
-                      (complete-with-action action nodes string pred)))
-                  nil require-match initial-input 'org-roam-node-history)))
-      (or (cdr (assoc node nodes))
-          (org-roam-node-create :title node))))
+  (defun eli-org-roam-backlinks-p (SOURCE NODE)
+    "Predicate function that checks if NODE is a backlink of SOURCE."
+    (let* ((source-id (org-roam-node-id SOURCE))
+	       (backlinks (eli-org-roam-backlinks-query* SOURCE))
+	       (id (org-roam-node-id NODE))
+	       (id-list (list id source-id)))
+      (member id-list backlinks)))
 
-  (defun eli/get-backlink-list (backlink-nodes)
-    (let ((counter 0)
-	      (node-list nil))
-      (while backlink-nodes
-	    (add-to-list 'node-list
-                     (org-roam-backlink-source-node (pop backlink-nodes)))
-	    (setq counter (1+ counter)))
-      node-list))
+  (defun eli-org-roam-backlinks--read-node-backlinks (source)
+    "Runs `org-roam-node-read' on the backlinks of SOURCE.
+ The predicate used as `org-roam-node-read''s filter-fn is
+ `eli-org-roam-backlinks-p'."
+    (org-roam-node-read nil (apply-partially #'eli-org-roam-backlinks-p source)
+                        #'eli-org-roam-node-sort-by-backlinks))
 
-  (defun eli/follow-backlinks (entry)
-    (let* ((node-at-point (get-text-property 0 'node entry))
-	       (backlink-nodes (org-roam-backlinks-get node-at-point)))
-      (org-roam-node-visit (eli/org-roam-backlink-node-read backlink-nodes))))
-  
+  (defun eli-org-roam-backlinks-node-read (entry)
+    "Read a NODE and run `eli-org-roam-backlinks--read-node-backlinks'."
+    (let* ((node (get-text-property 0 'node entry))
+           (backlink (eli-org-roam-backlinks--read-node-backlinks node)))
+      (find-file (org-roam-node-file backlink))))
+
   (embark-define-keymap embark-org-roam-map
-    "Keymap for Embark heading actions."
+    "Keymap for Embark org roam actions."
     ("i" org-roam-node-insert)
     ("s" embark-collect)
-    ("b" eli/follow-backlinks))
+    ("b" eli-org-roam-backlinks-node-read))
   
   (add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
 
@@ -1009,6 +1007,12 @@ direct title.
     ("DEL" delete-region))
 
   (add-to-list 'embark-keymap-alist '(consult-org-heading . embark-org-heading-map))
+
+  (elemacs-require-package 'org-roam-ui)
+  (setq org-roam-ui-sync-theme t
+	    org-roam-ui-follow t
+	    org-roam-ui-update-on-save t
+	    org-roam-ui-open-on-start t)
   )
 
 ;; clock
