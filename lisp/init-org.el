@@ -1104,7 +1104,7 @@ direct title.
 ;;; misc
 (with-eval-after-load 'org
   (setq org-indirect-buffer-display 'current-window)
-  (setq org-export-preserve-breaks t)
+  (setq org-export-preserve-breaks nil)
   (setq org-adapt-indentation t)
   (setq org-fontify-quote-and-verse-blocks t)
   (setq org-link-frame-setup
@@ -1354,6 +1354,10 @@ Used by `org-anki-skip-function'"
 ;;; latex
 (with-eval-after-load 'org
   (require 'ox-latex)
+  (setq org-highlight-latex-and-related '(latex entities script))
+  ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
+  (setq org-entities-user '(("ws" "\\ " nil " " " " " " " ")))
+  (setq org-latex-prefer-user-labels t)
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n")
   (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
@@ -1426,7 +1430,21 @@ Used by `org-anki-skip-function'"
 		         ("\\subsection{%s}" . "\\subsection*{%s}")
 		         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
 		         ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		         ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+		         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+	           '("Notes"
+		         "\\documentclass{ctexart}
+[NO-DEFAULT-PACKAGES]
+[NO-PACKAGES]
+\\usepackage{/home/eli/.emacs.d/private/NotesTeXV3}"
+                 ("\\part{%s}" . "\\part*{%s}")
+		         ("\\section{%s}" . "\\section*{%s}")
+		         ("\\subsection{%s}" . "\\subsection*{%s}")
+		         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  )
 
 
 ;;; pandoc support
