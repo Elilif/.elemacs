@@ -38,7 +38,13 @@
 	ledger-report-auto-refresh t
 	ledger-copy-transaction-insert-blank-line-after t)
   (setq-default ledger-occur-use-face-shown nil)
-  )
+  (setq ledger-reports '(("bal" "%(binary) -f %(ledger-file) bal")
+                         ("bal this month" "%(binary) -f %(ledger-file) bal -p %(month) -S amount")
+                         ("bal this year" "%(binary) -f %(ledger-file) bal -p 'this year'")
+                         ("net worth"      "%(binary) -f %(ledger-file) bal Assets Liabilities")
+                         ("reg" "%(binary) -f %(ledger-file) reg")
+                         ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
+                         ("account" "%(binary) -f %(ledger-file) reg %(account)"))))
 
 
 
