@@ -63,6 +63,14 @@
            :completion-function eli/push-to-gitpage
            )))
 
+  (defun org-html--format-image (source attributes info)
+    (format "<img src=\"data:image/%s;base64,%s\"%s />"
+            (or (file-name-extension source) "")
+            (base64-encode-string
+             (with-temp-buffer
+	           (insert-file-contents-literally source)
+	           (buffer-string)))
+            (file-name-nondirectory source)))
   ;; (elemacs-require-package 'ox-hugo)
   ;; (setq org-hugo-base-dir "~/Documents/braindump/")
 
