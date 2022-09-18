@@ -127,16 +127,25 @@ for confirmation when needed."
   (add-hook 'mu4e-view-mode-hook #'hide-mode-line-mode)
   (require 'auth-source)
   (setq auth-sources '("~/.authinfo"))
+  (setq user-full-name "Eli Qian")
   (setq smtpmail-smtp-user "eli.q.qian@gmail.com"
         smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587
+        smtpmail-smtp-service 465
         smtpmail-stream-type 'starttls
         smtpmail-local-domain "gmail.com"
         smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server         "smtp.gmail.com")
-  (setq user-mail-address "eli.q.qian@gmail.com")
-  (setq message-send-mail-function 'message-send-mail-with-sendmail)
-  ;; (setq message-send-mail-function 'smtpmail-send-it)
+        smtpmail-smtp-server         "smtp.gmail.com"
+        user-mail-address  "eli.q.qian@gmail.com")
+  ;; (setq smtpmail-smtp-user "1358722950@qq.com"
+  ;;       smtpmail-smtp-server "smtp.qq.com"
+  ;;       smtpmail-smtp-service 587
+  ;;       smtpmail-stream-type 'starttls
+  ;;       smtpmail-local-domain "qq.com"
+  ;;       smtpmail-default-smtp-server "smtp.qq.com"
+  ;;       smtpmail-smtp-server         "smtp.qq.com"
+  ;;       user-mail-address "1358722950@qq.com")
+  ;; (setq sendmail-program "/usr/bin/msmtp")
+  (setq message-send-mail-function 'smtpmail-send-it)
   (setq send-mail-function 'smtpmail-send-it)
   ;;Debug
   (setq smtpmail-debug-info t)
@@ -151,27 +160,25 @@ for confirmation when needed."
 
 (with-eval-after-load 'mu4e
   (setq mail-user-agent 'mu4e-user-agent)
-  (setq user-full-name "Eli Qian")
   (add-to-list 'mm-discouraged-alternatives "text/richtext")
-  (setq user-mail-address "eli.q.qian@gmail.com")
   (setq shr-use-colors nil)
   (setq mu4e-compose-format-flowed t)
   (setq mu4e-get-mail-command "proxychains mbsync -a"
 	mu4e-update-interval 600)
   ;; configure the bookmarks.
   (setq mu4e-bookmarks
-	'( ("flag:unread AND NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"  "Unread messages"                  ?u)
-	   ("NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                  "All messages"                     ?a)
+	    '( ("flag:unread AND NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"  "Unread messages"                  ?u)
+	       ("NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                  "All messages"                     ?a)
            ("date:today..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                   "Today's messages"                 ?t)
            ("date:7d..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                      "Last 7 days"                      ?w)
            ("date:1d..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                      "Last 1 days"                      ?y)
            ("list:emacs-orgmode.gnu.org"                                                                            "Org mode"                         ?o)
            ("list:emacs-devel.gnu.org"                                                                              "Emacs Devel"                      ?e)
+           ("flag:f"                                                                                                "starred"                          ?m)
            ("maildir:/sent"                                                                                         "sent"                             ?s)
            ("maildir:/drafts"                                                                                       "drafts"                           ?d)
            ("mime:image/*"                                                                                          "Messages with images"             ?p)
-	   ("maildir:/trash"                                                                                        "Trash"                            ?g)
-	   ))
+	       ("maildir:/trash"                                                                                        "Trash"                            ?g)))
 
   ;; filter
   (defun eli/mu4e-search-filter-source ()
