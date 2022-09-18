@@ -397,9 +397,11 @@
    (("s" eli/input-switch "switch input"))
    "Yank"
    (("p" consult-yank-pop "Clipboard"))
-   "Emoji"
+   "Emoji & Pic"
    (("i" emoji-insert)
-    ("f" emoji-search))
+    ("f" emoji-search)
+    ("m" (let ((default-directory "~/Documents/org-images/"))
+           (call-interactively 'find-file)) "images"))
    "LaTeX"
    (("l" mathpix-screenshot "mathpix"))))
 
