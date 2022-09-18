@@ -43,5 +43,9 @@
   (unless (package-installed-p package)
     (package-install package)))
 
+(defun eli-compile-elpa-all ()
+  (interactive)
+  (native-compile-async "~/.emacs.d/elpa" 'recursively))
+
 (provide 'init-package)
 ;;; init-package.el ends here.
