@@ -228,6 +228,11 @@
 [submodule "pcre2el"]
 	path = lib/pcre2el
 	url = git@github.com:joddie/pcre2el.git
+[submodule "pdf-tools"]
+	path = lib/pdf-tools
+	url = git@github.com:vedang/pdf-tools.git
+	load-path = .
+	load-path = ./lisp    
 [submodule "popper"]
 	path = lib/popper
 	url = git@github.com:karthink/popper.git
@@ -249,6 +254,9 @@
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
+[submodule "saveplace-pdf-view"]
+	path = lib/saveplace-pdf-view
+	url = git@github.com:nicolaisingh/saveplace-pdf-view.git
 [submodule "shackle"]
 	path = lib/shackle
 	url = https://depp.brause.cc/shackle.git
@@ -261,6 +269,9 @@
 [submodule "string-inflection"]
 	path = lib/string-inflection
 	url = git@github.com:akicho8/string-inflection.git
+[submodule "tablist"]
+	path = lib/tablist
+	url = git@github.com:politza/tablist.git
 [submodule "toc-mode"]
 	path = lib/toc-mode
 	url = git@github.com:dalanicolai/toc-mode.git
