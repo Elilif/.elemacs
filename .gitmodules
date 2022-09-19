@@ -153,6 +153,9 @@
 [submodule "ht"]
 	path = lib/ht
 	url = git@github.com:Wilfred/ht.el.git
+[submodule "hungry-delete"]
+	path = lib/hungry-delete
+	url = git@github.com:nflath/hungry-delete.git
 [submodule "hydra"]
 	path = lib/hydra
 	url = git@github.com:abo-abo/hydra.git
