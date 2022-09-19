@@ -1,3 +1,6 @@
+[submodule "ace-window"]
+	path = lib/ace-window
+	url = git@github.com:abo-abo/ace-window.git
 [submodule "aio"]
 	path = lib/aio
 	url = git@github.com:skeeto/emacs-aio.git
@@ -7,10 +10,10 @@
 [submodule "auctex"]
 	path = lib/auctex
 	url = git@github.com:emacsmirror/auctex.git
-    build-step = ./autogen.sh
+	build-step = ./autogen.sh
 	build-step = ./configure --with-texmf-dir=$HOME/texmf
 	build-step = make
-	build-step = sudo make install
+	build-step = sudo make install    
 [submodule "avy"]
 	path = lib/avy
 	url = git@github.com:abo-abo/avy.git
