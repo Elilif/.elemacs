@@ -4,6 +4,9 @@
 [submodule "avy"]
 	path = lib/avy
 	url = git@github.com:abo-abo/avy.git
+[submodule "benchmark-init"]
+	path = lib/benchmark-init
+	url = git@github.com:dholm/benchmark-init-el.git
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
