@@ -212,6 +212,9 @@
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "modern-cpp-font-lock"]
+	path = lib/modern-cpp-font-lock
+	url = git@github.com:ludwigpacifici/modern-cpp-font-lock.git
 [submodule "mpv"]
 	path = lib/mpv
 	url = git@github.com:kljohann/mpv.el.git
