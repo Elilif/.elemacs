@@ -1,3 +1,6 @@
+[submodule "async"]
+	path = lib/async
+	url = git@github.com:jwiegley/emacs-async.git
 [submodule "avy"]
 	path = lib/avy
 	url = git@github.com:abo-abo/avy.git
@@ -40,16 +43,25 @@
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
+[submodule "hl-todo"]
+	path = lib/hl-todo
+	url = git@github.com:tarsius/hl-todo.git
 [submodule "magit"]
 	path = lib/magit
 	url = git@github.com:magit/magit.git
     no-byte-compile = lisp/magit-libgit.el
+[submodule "magit-todos"]
+	path = lib/magit-todos
+	url = git@github.com:alphapapa/magit-todos.git
 [submodule "org-roam"]
 	path = lib/org-roam
 	url = git@github.com:org-roam/org-roam.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
+[submodule "pcre2el"]
+	path = lib/pcre2el
+	url = git@github.com:joddie/pcre2el.git
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
