@@ -138,6 +138,9 @@
 [submodule "pcre2el"]
 	path = lib/pcre2el
 	url = git@github.com:joddie/pcre2el.git
+[submodule "popper"]
+	path = lib/popper
+	url = git@github.com:karthink/popper.git
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
