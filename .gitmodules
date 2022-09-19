@@ -286,6 +286,9 @@
 [submodule "org-noter"]
 	path = lib/org-noter
 	url = git@github.com:weirdNox/org-noter.git
+[submodule "org-reverse-datetree"]
+	path = lib/org-reverse-datetree
+	url = https://github.com/akirak/org-reverse-datetree.git
 [submodule "org-roam"]
 	path = lib/org-roam
 	url = git@github.com:org-roam/org-roam.git
