@@ -309,6 +309,9 @@
 [submodule "request"]
 	path = lib/request
 	url = git@github.com:tkf/emacs-request.git
+[submodule "rime"]
+	path = lib/rime
+	url = git@github.com:DogLooksGood/emacs-rime.git
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
