@@ -292,6 +292,9 @@
 [submodule "org-superstar"]
 	path = lib/org-superstar
 	url = git@github.com:integral-dw/org-superstar-mode.git
+[submodule "ox-pandoc"]
+	path = lib/ox-pandoc
+	url = git@github.com:emacsorphanage/ox-pandoc.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
