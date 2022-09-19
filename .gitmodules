@@ -34,6 +34,9 @@
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
+[submodule "cal-china-x"]
+	path = lib/cal-china-x
+	url = git@github.com:xwl/cal-china-x.git
 [submodule "calibredb"]
 	path = lib/calibredb
 	url = git@github.com:chenyanming/calibredb.el.git
