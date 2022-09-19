@@ -75,6 +75,9 @@
 [submodule "marginalia"]
 	path = lib/marginalia
 	url = git@github.com:minad/marginalia.git
+[submodule "nov"]
+	path = lib/nov
+	url = https://depp.brause.cc/nov.el.git
 [submodule "orderless"]
 	path = lib/orderless
 	url = git@github.com:oantolin/orderless.git
