@@ -7,6 +7,9 @@
 [submodule "citar"]
 	path = lib/citar
 	url = git@github.com:emacs-citar/citar.git
+[submodule "citar-org-roam"]
+	path = lib/citar-org-roam
+	url = git@github.com:emacs-citar/citar-org-roam.git
 [submodule "citeproc"]
 	path = lib/citeproc
 	url = git@github.com:andras-simonyi/citeproc-el.git
@@ -37,6 +40,13 @@
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
+[submodule "magit"]
+	path = lib/magit
+	url = git@github.com:magit/magit.git
+    no-byte-compile = lisp/magit-libgit.el
+[submodule "org-roam"]
+	path = lib/org-roam
+	url = git@github.com:org-roam/org-roam.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
@@ -54,3 +64,6 @@
 	url = git@github.com:minad/vertico.git
     load-path = .
     load-path = extensions
+[submodule "with-editor"]
+	path = lib/with-editor
+	url = git@github.com:magit/with-editor.git
