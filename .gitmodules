@@ -72,6 +72,9 @@
     no-byte-compile = esxml-query-tests.el
     no-byte-compile = esxml-tests.el
     no-byte-compile = esxpath.el
+[submodule "expand-region"]
+	path = lib/expand-region
+	url = git@github.com:magnars/expand-region.el.git
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
