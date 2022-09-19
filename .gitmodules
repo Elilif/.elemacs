@@ -4,6 +4,12 @@
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
+[submodule "citar"]
+	path = lib/citar
+	url = git@github.com:emacs-citar/citar.git
+[submodule "citeproc"]
+	path = lib/citeproc
+	url = git@github.com:andras-simonyi/citeproc-el.git
 [submodule "closql"]
 	path = lib/closql
 	url = git@github.com:emacscollective/closql.git
@@ -15,6 +21,9 @@
 	url = git@github.com:minad/consult.git
     no-byte-compile	= consult-icomplete.el
 	no-byte-compile	= consult-selectrum.el
+[submodule "dash"]
+	path = lib/dash
+	url = git@github.com:magnars/dash.el.git
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = git@github.com:skeeto/emacsql.git
@@ -25,6 +34,21 @@
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
+[submodule "f"]
+	path = lib/f
+	url = git@github.com:rejeep/f.el.git
+[submodule "parsebib"]
+	path = lib/parsebib
+	url = git@github.com:joostkremers/parsebib.git
+[submodule "queue"]
+	path = lib/queue
+	url = git@github.com:emacsmirror/queue.git
+[submodule "s"]
+	path = lib/s
+	url = git@github.com:magnars/s.el.git
+[submodule "string-inflection"]
+	path = lib/string-inflection
+	url = git@github.com:akicho8/string-inflection.git
 [submodule "vertico"]
 	path = lib/vertico
 	url = git@github.com:minad/vertico.git
