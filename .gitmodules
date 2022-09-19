@@ -261,6 +261,9 @@
 [submodule "string-inflection"]
 	path = lib/string-inflection
 	url = git@github.com:akicho8/string-inflection.git
+[submodule "toc-mode"]
+	path = lib/toc-mode
+	url = git@github.com:dalanicolai/toc-mode.git
 [submodule "transient"]
 	path = lib/transient
 	url = git@github.com:magit/transient.git
