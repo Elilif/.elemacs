@@ -60,6 +60,9 @@
 [submodule "ccls"]
 	path = lib/ccls
 	url = git@github.com:emacs-lsp/emacs-ccls.git
+[submodule "cdlatex"]
+	path = lib/cdlatex
+	url = git@github.com:cdominik/cdlatex.git
 [submodule "citar"]
 	path = lib/citar
 	url = git@github.com:emacs-citar/citar.git
