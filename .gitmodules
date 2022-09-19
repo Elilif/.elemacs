@@ -69,6 +69,9 @@
 [submodule "dash"]
 	path = lib/dash
 	url = git@github.com:magnars/dash.el.git
+[submodule "deferred"]
+	path = lib/deferred
+	url = git@github.com:kiwanami/emacs-deferred.git
 [submodule "elfeed"]
 	path = lib/elfeed
 	url = git@github.com:skeeto/elfeed.git
@@ -85,6 +88,8 @@
 [submodule "emms"]
 	path = lib/emms
 	url = git@github.com:emacsmirror/emms.git
+    build-step = make
+    build-step = sudo make install
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
@@ -128,6 +133,9 @@
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
+[submodule "lyrics-fetcher"]
+	path = lib/lyrics-fetcher
+	url = git@github.com:SqrtMinusOne/lyrics-fetcher.el.git
 [submodule "magit"]
 	path = lib/magit
 	url = git@github.com:magit/magit.git
@@ -172,6 +180,9 @@
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
+[submodule "request"]
+	path = lib/request
+	url = git@github.com:tkf/emacs-request.git
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
