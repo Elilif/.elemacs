@@ -78,6 +78,9 @@
 [submodule "deferred"]
 	path = lib/deferred
 	url = git@github.com:kiwanami/emacs-deferred.git
+[submodule "electric-operator"]
+	path = lib/electric-operator
+	url = git@github.com:davidshepherd7/electric-operator.git
 [submodule "elfeed"]
 	path = lib/elfeed
 	url = git@github.com:skeeto/elfeed.git
