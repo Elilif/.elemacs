@@ -259,6 +259,9 @@
 	load-path = lisp
     load-path = etc    
 	info-path = doc    
+[submodule "org-contrib"]
+	path = lib/org-contrib
+	url = git@github.com:emacsmirror/org-contrib.git
 [submodule "org-noter"]
 	path = lib/org-noter
 	url = git@github.com:weirdNox/org-noter.git
