@@ -228,6 +228,9 @@
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
+[submodule "quickrun"]
+	path = lib/quickrun
+	url = git@github.com:emacsorphanage/quickrun.git
 [submodule "request"]
 	path = lib/request
 	url = git@github.com:tkf/emacs-request.git
