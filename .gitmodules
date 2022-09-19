@@ -93,6 +93,12 @@
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
+[submodule "ess"]
+	path = lib/ess
+	url = git@github.com:emacs-ess/ESS.git
+[submodule "ess-smart-equals"]
+	path = lib/ess-smart-equals
+	url = git@github.com:genovese/ess-smart-equals.git
 [submodule "esxml"]
 	path = lib/esxml
 	url = git@github.com:tali713/esxml.git
