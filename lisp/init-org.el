@@ -1648,12 +1648,6 @@ holding contextual information."
 (add-to-list 'load-path "~/.emacs.d/site-lisp/svg-tag-mode/")
 (with-eval-after-load 'org
   (require 'svg-tag-mode)
-  (setq svg-lib-style-default
-        '(:background "#F5F5F5" :foreground "#37474f" :padding 1 :margin 0
-                      :stroke 2 :radius 5 :alignment 0.5 :width 20 :height 0.9
-                      :scale 0.75 :crop-left nil :crop-right nil
-                      :collection "material" :font-family "Cascadia Mono"
-                      :font-size 11 :font-weight regular :ascent 14))
   
   (setq svg-tag-action-at-point 'edit)
   (setq svg-lib-icon-collections
@@ -1822,27 +1816,31 @@ and style elements ARGS."
           ;; Active date (with or without day name, with or without time)
           (,(format "\\(<%s>\\)" date-re) .
            ((lambda (tag)
-              (svg-tag-make tag :beg 1 :end -1 :margin 0))))
+              (svg-tag-make tag :beg 1 :end -1 :margin 0 :ascent 14))))
           (,(format "\\(<%s \\)%s>" date-re day-time-re) .
            ((lambda (tag)
-              (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
+              (svg-tag-make tag :beg 1 :inverse nil :crop-right t
+                            :margin 0 :ascent 14))))
           (,(format "<%s \\(%s>\\)" date-re day-time-re) .
            ((lambda (tag)
-              (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
-
+              (svg-tag-make tag :end -1 :inverse t :crop-left t
+                            :margin 0 :ascent 14))))
           ;; Inactive date  (with or without day name, with or without time)
           (,(format "\\(\\[%s\\]\\)" date-re) .
            ((lambda (tag)
-              (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
+              (svg-tag-make tag :beg 1 :end -1 :margin 0
+                            :face 'org-date :ascent 14))))
           (,(format "\\(\\[%s \\)%s\\]" date-re day-time-re) .
            ((lambda (tag)
               (svg-tag-make tag :beg 1 :inverse nil
-                            :crop-right t :margin 0 :face 'org-date))))
+                            :crop-right t :margin 0 :face 'org-date
+                            :ascent 14))))
           (,(format "\\[%s \\(%s\\]\\)" date-re day-time-re) .
            ((lambda (tag)
               (svg-tag-make tag :end -1 :inverse t
-                            :crop-left t :margin 0 :face 'org-date))))))
-  
+                            :crop-left t :margin 0 :face 'org-date
+                            :ascent 14))))))
+
   (add-hook 'org-mode-hook (lambda ()
                              (make-local-variable 'font-lock-extra-managed-props)
                              (svg-tag-mode)))
