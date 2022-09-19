@@ -251,6 +251,13 @@
 	url = git@github.com:minad/vertico.git
     load-path = .
     load-path = extensions
+[submodule "vterm"]
+	path = lib/vterm
+	url = git@github.com:akermu/emacs-libvterm.git
+    build-step = mkdir -p build
+	build-step = cd build && cmake .. && make
+	build-step = borg-byte-compile
+    build-step = borg-update-autoloads
 [submodule "which-key"]
 	path = lib/which-key
 	url = git@github.com:justbur/emacs-which-key.git
