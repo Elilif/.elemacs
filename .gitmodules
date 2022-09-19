@@ -28,6 +28,9 @@
 	build-step = ./configure --with-texmf-dir=$HOME/texmf
 	build-step = make
 	build-step = sudo make install    
+[submodule "auto-yasnippet"]
+	path = lib/auto-yasnippet
+	url = git@github.com:abo-abo/auto-yasnippet.git
 [submodule "avy"]
 	path = lib/avy
 	url = git@github.com:abo-abo/avy.git
@@ -270,3 +273,6 @@
 [submodule "xenops"]
 	path = lib/xenops
 	url = git@github.com:dandavison/xenops.git
+[submodule "yasnippet"]
+	path = lib/yasnippet
+	url = git@github.com:joaotavora/yasnippet.git
