@@ -262,6 +262,9 @@
 [submodule "org-appear"]
 	path = lib/org-appear
 	url = git@github.com:awth13/org-appear.git
+[submodule "org-clock-convenience"]
+	path = lib/org-clock-convenience
+	url = git@github.com:dfeich/org-clock-convenience.git
 [submodule "org-contrib"]
 	path = lib/org-contrib
 	url = git@github.com:emacsmirror/org-contrib.git
