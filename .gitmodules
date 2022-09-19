@@ -37,6 +37,14 @@
 [submodule "benchmark-init"]
 	path = lib/benchmark-init
 	url = git@github.com:dholm/benchmark-init-el.git
+[submodule "biblio"]
+	path = lib/biblio
+	url = git@github.com:cpitclaudel/biblio.el.git
+[submodule "bibtex-completion"]
+	path = lib/bibtex-completion
+	url = git@github.com:tmalsburg/helm-bibtex.git
+    no-byte-compile = helm-bibtex.el
+    no-byte-compile = ivy-bibtex.el
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
