@@ -53,6 +53,9 @@
 [submodule "magit-todos"]
 	path = lib/magit-todos
 	url = git@github.com:alphapapa/magit-todos.git
+[submodule "marginalia"]
+	path = lib/marginalia
+	url = git@github.com:minad/marginalia.git
 [submodule "org-roam"]
 	path = lib/org-roam
 	url = git@github.com:org-roam/org-roam.git
