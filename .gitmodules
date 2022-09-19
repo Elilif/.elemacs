@@ -144,6 +144,9 @@
 	url = git@github.com:minad/vertico.git
     load-path = .
     load-path = extensions
+[submodule "which-key"]
+	path = lib/which-key
+	url = git@github.com:justbur/emacs-which-key.git
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = git@github.com:magit/with-editor.git
