@@ -75,6 +75,9 @@
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
+[submodule "grab-x-link"]
+	path = lib/grab-x-link
+	url = git@github.com:xuchunyang/grab-x-link.git
 [submodule "hl-todo"]
 	path = lib/hl-todo
 	url = git@github.com:tarsius/hl-todo.git
