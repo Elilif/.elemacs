@@ -259,6 +259,9 @@
 	load-path = lisp
     load-path = etc    
 	info-path = doc    
+[submodule "org-appear"]
+	path = lib/org-appear
+	url = git@github.com:awth13/org-appear.git
 [submodule "org-contrib"]
 	path = lib/org-contrib
 	url = git@github.com:emacsmirror/org-contrib.git
