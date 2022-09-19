@@ -115,6 +115,14 @@
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
+[submodule "flyspell-correct"]
+	path = lib/flyspell-correct
+	url = git@github.com:d12frosted/flyspell-correct.git
+    no-byte-compile = flyspell-correct-avy-menu.el
+	no-byte-compile = flyspell-correct-helm.el
+	no-byte-compile = flyspell-correct-ido.el
+	no-byte-compile = flyspell-correct-ivy.el
+	no-byte-compile = flyspell-correct-popup.el
 [submodule "grab-x-link"]
 	path = lib/grab-x-link
 	url = git@github.com:xuchunyang/grab-x-link.git
@@ -218,6 +226,9 @@
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = git@github.com:magit/with-editor.git
+[submodule "wordnut"]
+	path = lib/wordnut
+	url = git@github.com:gromnitsky/wordnut.git
 [submodule "xenops"]
 	path = lib/xenops
 	url = git@github.com:dandavison/xenops.git
