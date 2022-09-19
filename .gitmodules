@@ -226,6 +226,9 @@
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "mixed-pitch"]
+	path = lib/mixed-pitch
+	url = https://gitlab.com/jabranham/mixed-pitch.git
 [submodule "modern-cpp-font-lock"]
 	path = lib/modern-cpp-font-lock
 	url = git@github.com:ludwigpacifici/modern-cpp-font-lock.git
