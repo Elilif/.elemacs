@@ -40,6 +40,9 @@
 [submodule "calibredb"]
 	path = lib/calibredb
 	url = git@github.com:chenyanming/calibredb.el.git
+[submodule "cape"]
+	path = lib/cape
+	url = git@github.com:minad/cape.git
 [submodule "citar"]
 	path = lib/citar
 	url = git@github.com:emacs-citar/citar.git
@@ -110,6 +113,9 @@
 [submodule "js2-mode"]
 	path = lib/js2-mode
 	url = git@github.com:mooz/js2-mode.git
+[submodule "kind-icon"]
+	path = lib/kind-icon
+	url = https://github.com/jdtsmith/kind-icon
 [submodule "kv"]
 	path = lib/kv
 	url = git@github.com:nicferrier/emacs-kv.git
