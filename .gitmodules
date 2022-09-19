@@ -10,6 +10,9 @@
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
+[submodule "calibredb"]
+	path = lib/calibredb
+	url = git@github.com:chenyanming/calibredb.el.git
 [submodule "citar"]
 	path = lib/citar
 	url = git@github.com:emacs-citar/citar.git
@@ -43,12 +46,25 @@
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
+[submodule "esxml"]
+	path = lib/esxml
+	url = git@github.com:tali713/esxml.git
+    no-byte-compile = esxml.el
+    no-byte-compile = esxml-form.el
+    no-byte-compile = esxml-form-tests.el
+    no-byte-compile = esxml-html.el
+    no-byte-compile = esxml-query-tests.el
+    no-byte-compile = esxml-tests.el
+    no-byte-compile = esxpath.el
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
 [submodule "hl-todo"]
 	path = lib/hl-todo
 	url = git@github.com:tarsius/hl-todo.git
+[submodule "kv"]
+	path = lib/kv
+	url = git@github.com:nicferrier/emacs-kv.git
 [submodule "magit"]
 	path = lib/magit
 	url = git@github.com:magit/magit.git
