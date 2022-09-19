@@ -180,6 +180,9 @@
 [submodule "link-hint"]
 	path = lib/link-hint
 	url = git@github.com:noctuid/link-hint.el.git
+[submodule "lsp-latex"]
+	path = lib/lsp-latex
+	url = git@github.com:ROCKTAKEY/lsp-latex.git
 [submodule "lsp-mode"]
 	path = lib/lsp-mode
 	url = git@github.com:emacs-lsp/lsp-mode.git
