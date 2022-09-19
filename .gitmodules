@@ -216,6 +216,17 @@
 [submodule "orderless"]
 	path = lib/orderless
 	url = git@github.com:oantolin/orderless.git
+[submodule "org"]
+	path = lib/org
+	url = git@github.com:emacsmirror/org.git
+	build-step = make compile
+    build-step = borg-update-autoloads
+	load-path = lisp
+    load-path = etc    
+	info-path = doc    
+[submodule "org-noter"]
+	path = lib/org-noter
+	url = git@github.com:weirdNox/org-noter.git
 [submodule "org-roam"]
 	path = lib/org-roam
 	url = git@github.com:org-roam/org-roam.git
