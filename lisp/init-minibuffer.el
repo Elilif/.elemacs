@@ -108,7 +108,7 @@
   (setq marginalia-align 'right)
   (marginalia-mode))
 
-(elemacs-require-package 'consult)
+;; (elemacs-require-package 'consult)
 (keymap-global-set "C-s" #'consult-line)
 (keymap-global-set "C-x C-r" #'consult-recent-file)
 (keymap-global-set "C-c \\" #'consult-register)
