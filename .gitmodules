@@ -56,6 +56,9 @@
 [submodule "org-roam"]
 	path = lib/org-roam
 	url = git@github.com:org-roam/org-roam.git
+[submodule "org-roam-ui"]
+	path = lib/org-roam-ui
+	url = git@github.com:org-roam/org-roam-ui.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
@@ -68,6 +71,9 @@
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
+[submodule "simple-httpd"]
+	path = lib/simple-httpd
+	url = git@github.com:skeeto/emacs-web-server.git
 [submodule "string-inflection"]
 	path = lib/string-inflection
 	url = git@github.com:akicho8/string-inflection.git
