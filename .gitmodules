@@ -173,6 +173,9 @@
 [submodule "ht"]
 	path = lib/ht
 	url = git@github.com:Wilfred/ht.el.git
+[submodule "htmlize"]
+	path = lib/htmlize
+	url = git@github.com:hniksic/emacs-htmlize.git
 [submodule "hungry-delete"]
 	path = lib/hungry-delete
 	url = git@github.com:nflath/hungry-delete.git
@@ -259,6 +262,9 @@
 	load-path = lisp
     load-path = etc    
 	info-path = doc    
+[submodule "org-anki"]
+	path = lib/org-anki
+	url = git@github.com:eyeinsky/org-anki.git
 [submodule "org-appear"]
 	path = lib/org-appear
 	url = git@github.com:awth13/org-appear.git
@@ -309,6 +315,9 @@
 [submodule "powerline"]
 	path = lib/powerline
 	url = git@github.com:milkypostman/powerline.git
+[submodule "promise"]
+	path = lib/promise
+	url = git@github.com:chuntaro/emacs-promise.git
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
