@@ -49,6 +49,9 @@
 [submodule "cape"]
 	path = lib/cape
 	url = git@github.com:minad/cape.git
+[submodule "ccls"]
+	path = lib/ccls
+	url = git@github.com:emacs-lsp/emacs-ccls.git
 [submodule "citar"]
 	path = lib/citar
 	url = git@github.com:emacs-citar/citar.git
