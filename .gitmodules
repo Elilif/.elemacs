@@ -130,6 +130,12 @@
 [submodule "f"]
 	path = lib/f
 	url = git@github.com:rejeep/f.el.git
+[submodule "flycheck"]
+	path = lib/flycheck
+	url = git@github.com:flycheck/flycheck.git
+[submodule "flycheck-posframe"]
+	path = lib/flycheck-posframe
+	url = git@github.com:alexmurray/flycheck-posframe.git
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = git@github.com:d12frosted/flyspell-correct.git
@@ -250,6 +256,9 @@
 [submodule "popwin"]
 	path = lib/popwin
 	url = git@github.com:emacsorphanage/popwin.git
+[submodule "posframe"]
+	path = lib/posframe
+	url = git@github.com:tumashu/posframe.git
 [submodule "powerline"]
 	path = lib/powerline
 	url = git@github.com:milkypostman/powerline.git
