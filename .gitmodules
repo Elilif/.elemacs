@@ -86,6 +86,9 @@
 [submodule "string-inflection"]
 	path = lib/string-inflection
 	url = git@github.com:akicho8/string-inflection.git
+[submodule "transient"]
+	path = lib/transient
+	url = git@github.com:magit/transient.git
 [submodule "vertico"]
 	path = lib/vertico
 	url = git@github.com:minad/vertico.git
