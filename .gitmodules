@@ -4,6 +4,9 @@
 [submodule "aio"]
 	path = lib/aio
 	url = git@github.com:skeeto/emacs-aio.git
+[submodule "alert"]
+	path = lib/alert
+	url = git@github.com:jwiegley/alert.git
 [submodule "all-the-icons"]
 	path = lib/all-the-icons
 	url = git@github.com:domtronn/all-the-icons.el.git
@@ -141,6 +144,9 @@
 [submodule "hl-todo"]
 	path = lib/hl-todo
 	url = git@github.com:tarsius/hl-todo.git
+[submodule "ht"]
+	path = lib/ht
+	url = git@github.com:Wilfred/ht.el.git
 [submodule "hydra"]
 	path = lib/hydra
 	url = git@github.com:abo-abo/hydra.git
@@ -179,6 +185,16 @@
 [submodule "mpv"]
 	path = lib/mpv
 	url = git@github.com:kljohann/mpv.el.git
+[submodule "mu4e"]
+	path = lib/mu4e
+	url = git@github.com:djcb/mu.git
+    build-step = ./autogen.sh
+    build-step = make -C mu4e > /dev/null
+	build-step = "(borg-update-autoloads \"mu4e\")"
+    load-path = build/mu4e
+[submodule "mu4e-alert"]
+	path = lib/mu4e-alert
+	url = git@github.com:xzz53/mu4e-alert.git
 [submodule "mwim"]
 	path = lib/mwim
 	url = git@github.com:alezost/mwim.el.git
