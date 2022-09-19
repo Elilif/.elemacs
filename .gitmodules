@@ -180,6 +180,9 @@
 [submodule "link-hint"]
 	path = lib/link-hint
 	url = git@github.com:noctuid/link-hint.el.git
+[submodule "lsp-mode"]
+	path = lib/lsp-mode
+	url = git@github.com:emacs-lsp/lsp-mode.git
 [submodule "lyrics-fetcher"]
 	path = lib/lyrics-fetcher
 	url = git@github.com:SqrtMinusOne/lyrics-fetcher.el.git
@@ -197,6 +200,9 @@
 [submodule "marginalia"]
 	path = lib/marginalia
 	url = git@github.com:minad/marginalia.git
+[submodule "markdown-mode"]
+	path = lib/markdown-mode
+	url = git@github.com:jrblevin/markdown-mode.git
 [submodule "mpv"]
 	path = lib/mpv
 	url = git@github.com:kljohann/mpv.el.git
@@ -289,6 +295,9 @@
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = git@github.com:Fuco1/smartparens.git
+[submodule "spinner"]
+	path = lib/spinner
+	url = git@github.com:Malabarba/spinner.el.git
 [submodule "string-inflection"]
 	path = lib/string-inflection
 	url = git@github.com:akicho8/string-inflection.git
