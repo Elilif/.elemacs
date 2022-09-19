@@ -265,6 +265,9 @@
 [submodule "org-contrib"]
 	path = lib/org-contrib
 	url = git@github.com:emacsmirror/org-contrib.git
+[submodule "org-mru-clock"]
+	path = lib/org-mru-clock
+	url = git@github.com:unhammer/org-mru-clock.git
 [submodule "org-noter"]
 	path = lib/org-noter
 	url = git@github.com:weirdNox/org-noter.git
