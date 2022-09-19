@@ -1388,6 +1388,23 @@ Used by `org-anki-skip-function'"
                        :image-converter
                        ("convert -density %D -trim -antialias %f -quality 100 %O"))))
 
+  ;; Vertically align LaTeX preview in org mode
+  (defun org--make-preview-overlay (beg end image &optional imagetype)
+    "Build an overlay between BEG and END using IMAGE file.
+Argument IMAGETYPE is the extension of the displayed image,
+as a string.  It defaults to \"png\"."
+    (let ((ov (make-overlay beg end))
+	      (imagetype (or (intern imagetype) 'png)))
+      (overlay-put ov 'org-overlay-type 'org-latex-overlay)
+      (overlay-put ov 'evaporate t)
+      (overlay-put ov
+		           'modification-hooks
+		           (list (lambda (o _flag _beg _end &optional _l)
+			               (delete-overlay o))))
+      (overlay-put ov
+		           'display
+		           (list 'image :type imagetype :file image :ascent 90))))
+  
   (setq org-latex-listings 'minted)
   (setq org-latex-minted-options '(("breaklines")
                                    ("bgcolor" "bg")))
