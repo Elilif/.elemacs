@@ -63,6 +63,9 @@
 [submodule "elfeed"]
 	path = lib/elfeed
 	url = git@github.com:skeeto/elfeed.git
+[submodule "elisp-refs"]
+	path = lib/elisp-refs
+	url = git@github.com:Wilfred/elisp-refs.git
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = git@github.com:skeeto/emacsql.git
@@ -92,6 +95,9 @@
 [submodule "grab-x-link"]
 	path = lib/grab-x-link
 	url = git@github.com:xuchunyang/grab-x-link.git
+[submodule "helpful"]
+	path = lib/helpful
+	url = git@github.com:Wilfred/helpful.git
 [submodule "hl-todo"]
 	path = lib/hl-todo
 	url = git@github.com:tarsius/hl-todo.git
