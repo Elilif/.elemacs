@@ -103,6 +103,12 @@ conventions are checked."
   (add-to-list 'git-commit-finish-query-functions
                #'my-git-commit-check-style-conventions))
 
+(with-eval-after-load 'magit
+  (magit-add-section-hook 'magit-status-sections-hook
+                          'magit-insert-modules
+                          'magit-insert-stashes
+                          'append))
+
 (elemacs-load-packages-incrementally
  '(dash f s with-editor package eieio transient git-commit))
 
