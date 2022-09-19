@@ -363,6 +363,9 @@
 [submodule "string-inflection"]
 	path = lib/string-inflection
 	url = git@github.com:akicho8/string-inflection.git
+[submodule "svg-lib"]
+	path = lib/svg-lib
+	url = https://github.com/rougier/svg-lib.git
 [submodule "tablist"]
 	path = lib/tablist
 	url = git@github.com:politza/tablist.git
