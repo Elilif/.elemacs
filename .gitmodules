@@ -129,6 +129,9 @@
 [submodule "helpful"]
 	path = lib/helpful
 	url = git@github.com:Wilfred/helpful.git
+[submodule "hide-mode-line"]
+	path = lib/hide-mode-line
+	url = git@github.com:hlissner/emacs-hide-mode-line.git
 [submodule "hl-todo"]
 	path = lib/hl-todo
 	url = git@github.com:tarsius/hl-todo.git
