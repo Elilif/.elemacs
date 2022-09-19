@@ -286,6 +286,9 @@
 [submodule "skewer-mode"]
 	path = lib/skewer-mode
 	url = git@github.com:skeeto/skewer-mode.git
+[submodule "smartparens"]
+	path = lib/smartparens
+	url = git@github.com:Fuco1/smartparens.git
 [submodule "string-inflection"]
 	path = lib/string-inflection
 	url = git@github.com:akicho8/string-inflection.git
