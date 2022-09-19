@@ -297,6 +297,9 @@
 [submodule "quickrun"]
 	path = lib/quickrun
 	url = git@github.com:emacsorphanage/quickrun.git
+[submodule "rainbow-delimiters"]
+	path = lib/rainbow-delimiters
+	url = git@github.com:Fanael/rainbow-delimiters.git
 [submodule "request"]
 	path = lib/request
 	url = git@github.com:tkf/emacs-request.git
