@@ -274,6 +274,9 @@
 [submodule "org-roam-ui"]
 	path = lib/org-roam-ui
 	url = git@github.com:org-roam/org-roam-ui.git
+[submodule "org-superstar"]
+	path = lib/org-superstar
+	url = git@github.com:integral-dw/org-superstar-mode.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
