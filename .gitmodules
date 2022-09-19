@@ -75,6 +75,12 @@
 [submodule "elfeed"]
 	path = lib/elfeed
 	url = git@github.com:skeeto/elfeed.git
+[submodule "elfeed-org"]
+	path = lib/elfeed-org
+	url = git@github.com:remyhonig/elfeed-org.git
+[submodule "elfeed-score"]
+	path = lib/elfeed-score
+	url = git@github.com:sp1ff/elfeed-score.git
 [submodule "elisp-refs"]
 	path = lib/elisp-refs
 	url = git@github.com:Wilfred/elisp-refs.git
