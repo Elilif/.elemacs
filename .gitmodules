@@ -4,6 +4,17 @@
 [submodule "aio"]
 	path = lib/aio
 	url = git@github.com:skeeto/emacs-aio.git
+[submodule "all-the-icons"]
+	path = lib/all-the-icons
+	url = git@github.com:domtronn/all-the-icons.el.git
+    load-path = .
+	load-path = data
+[submodule "all-the-icons-dired"]
+	path = lib/all-the-icons-dired
+	url = git@github.com:wyuenho/all-the-icons-dired.git
+[submodule "all-the-icons-ibuffer"]
+	path = lib/all-the-icons-ibuffer
+	url = git@github.com:seagle0128/all-the-icons-ibuffer.git
 [submodule "async"]
 	path = lib/async
 	url = git@github.com:jwiegley/emacs-async.git
