@@ -156,6 +156,9 @@
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
+[submodule "link-hint"]
+	path = lib/link-hint
+	url = git@github.com:noctuid/link-hint.el.git
 [submodule "lyrics-fetcher"]
 	path = lib/lyrics-fetcher
 	url = git@github.com:SqrtMinusOne/lyrics-fetcher.el.git
@@ -200,6 +203,9 @@
 [submodule "popper"]
 	path = lib/popper
 	url = git@github.com:karthink/popper.git
+[submodule "powerline"]
+	path = lib/powerline
+	url = git@github.com:milkypostman/powerline.git
 [submodule "queue"]
 	path = lib/queue
 	url = git@github.com:emacsmirror/queue.git
