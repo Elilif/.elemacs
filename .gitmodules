@@ -228,6 +228,9 @@
 [submodule "popper"]
 	path = lib/popper
 	url = git@github.com:karthink/popper.git
+[submodule "popwin"]
+	path = lib/popwin
+	url = git@github.com:emacsorphanage/popwin.git
 [submodule "powerline"]
 	path = lib/powerline
 	url = git@github.com:milkypostman/powerline.git
