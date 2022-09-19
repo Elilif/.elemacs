@@ -48,8 +48,13 @@
   (setq TeX-show-compilation nil)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
 	    TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
-
   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex --shell-escape --synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+
+  (defun eli-LaTeX-use-biber ()
+    (save-excursion
+      (if (re-search-forward "\\\\usepackage.*{biblatex}" nil t)
+          (setq LaTeX-using-Biber t))))
+  (add-hook 'LaTeX-mode-hook #'eli-LaTeX-use-biber)
 
   ;; reftex
   (setq reftex-plug-into-AUCTeX t)
