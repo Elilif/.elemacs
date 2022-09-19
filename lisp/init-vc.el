@@ -30,8 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'magit)
-
 (with-eval-after-load 'magit
   (setq imperative-verb-file "~/.emacs.d/private/imperatives.txt")
   (defun get-imperative-verbs ()
@@ -112,7 +110,6 @@ conventions are checked."
 (elemacs-load-packages-incrementally
  '(dash f s with-editor package eieio transient git-commit))
 
-(elemacs-require-package 'magit-todos)
 (with-eval-after-load 'magit
   (setq magit-todos-auto-group-items 3)
   (with-eval-after-load 'magit

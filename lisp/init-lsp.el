@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'lsp-mode)
 (add-hook 'prog-mode-hook (lambda ()
                               (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode)
 				(lsp-deferred))))
@@ -108,7 +107,6 @@
   (dolist (lang org-babel-lang-list)
     (eval `(lsp-org-babel-enable ,lang))))
 
-(elemacs-require-package 'lsp-ui)
 (add-hook 'lsp-mode-hook #'lsp-ui-mode)
 (with-eval-after-load 'lsp-mode
   (setq lsp-ui-sideline-show-hover t

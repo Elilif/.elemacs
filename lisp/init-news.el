@@ -32,8 +32,6 @@
 
 (setq shr-width 90)
 
-(elemacs-require-package 'hide-mode-line)
-(elemacs-require-package 'elfeed)
 (with-eval-after-load 'elfeed
   (add-hook 'elfeed-show-mode-hook #'visual-fill-column-mode)
   (add-hook 'elfeed-show-mode-hook #'hide-mode-line-mode)
@@ -98,7 +96,6 @@ for confirmation when needed."
   (keymap-set elfeed-search-mode-map "M" #'eli/elfeed-search-starred-entries))
 
 
-(elemacs-require-package 'elfeed-score)
 (with-eval-after-load 'elfeed
   (setq elfeed-score-serde-score-file "~/.emacs.d/private/elfeed.score")
   (setq elfeed-score-rule-stats-file "~/.emacs.d/private/elfeed.stats")
@@ -106,13 +103,10 @@ for confirmation when needed."
   (define-key elfeed-search-mode-map "=" elfeed-score-map))
 ;; (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)
 
-(elemacs-require-package 'elfeed-org)
 (with-eval-after-load 'elfeed
   (elfeed-org)
   (setq  rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org")))
 
-(elemacs-require-package 'link-hint)
-(elemacs-require-package 'powerline)
 (add-to-list 'load-path "~/.emacs.d/site-lisp/elfeed-goodies/")
 (with-eval-after-load 'elfeed
   (require 'elfeed-goodies)
@@ -156,12 +150,11 @@ for confirmation when needed."
   )
 
 
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
-
 (with-eval-after-load 'mu4e
   (setq mail-user-agent 'mu4e-user-agent)
   (add-to-list 'mm-discouraged-alternatives "text/richtext")
   (setq shr-use-colors nil)
+  (setq mu4e-mu-binary "~/.emacs.d/lib/mu4e/build/mu/mu")
   (setq mu4e-compose-format-flowed t)
   (setq mu4e-get-mail-command "proxychains mbsync -a"
 	mu4e-update-interval 600)
@@ -246,22 +239,16 @@ Also number them so they can be opened using `mu4e-view-go-to-url'."
   )
 
 
-(elemacs-require-package 'mu4e-alert)
 (add-hook 'mu4e-main-mode-hook #'mu4e-alert-enable-notifications)
 (with-eval-after-load 'mu4e
   (mu4e-alert-set-default-style 'notifications)
   (setq mu4e-alert-interesting-mail-query "flag:unread AND NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"))
 
-;; (elemacs-require-package 'mu4e-maildirs-extension)
-;; (with-eval-after-load 'mu4e
-;;   (mu4e-maildirs-extension))
-;; (add-hook 'mu4e-main-mode-hook #'mu4e-maildirs-extension)
-(elemacs-require-package 'visual-fill-column)
+
 (with-eval-after-load 'visual-fill-column
   (setq-default visual-fill-column-center-text t)
   (setq-default visual-fill-column-width 100)
-  (setq-default visual-fill-column-extra-text-width nil)
-  )
+  (setq-default visual-fill-column-extra-text-width nil))
 
 (provide 'init-news)
 ;;; init-news.el ends here.

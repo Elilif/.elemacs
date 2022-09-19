@@ -71,10 +71,9 @@
 	           (insert-file-contents-literally source)
 	           (buffer-string)))
             (file-name-nondirectory source)))
-  ;; (elemacs-require-package 'ox-hugo)
+  
   ;; (setq org-hugo-base-dir "~/Documents/braindump/")
-
-  ;; (elemacs-require-package 'easy-hugo)
+  
   ;; (setq easy-hugo-basedir "~/Documents/braindump/"
   ;;       easy-hugo-postdir "content/posts")
   )

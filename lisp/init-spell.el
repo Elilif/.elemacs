@@ -47,13 +47,11 @@
   (setq ispell-personal-dictionary "~/.emacs.d/mydictionaryfr-en")
   (add-to-list 'ispell-extra-args "--sug-mode=ultra"))
 
-(elemacs-require-package 'flyspell-correct)
 (with-eval-after-load 'flyspell
   (keymap-set flyspell-mode-map "C-;" #'flyspell-correct-wrapper)
   (keymap-set flyspell-mode-map "C-." nil)
   (keymap-set flyspell-mode-map "C-," nil))
 
-(elemacs-require-package 'wordnut)
 (keymap-global-set "C-c y" #'wordnut-lookup-current-word)
 (add-hook 'wordnut-mode-hook #'variable-pitch-mode)
 

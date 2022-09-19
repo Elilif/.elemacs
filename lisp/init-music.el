@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'emms)
 (with-eval-after-load 'emms
   (defvar eli-filter-score 0)
   (setq emms-score-max-score 10)
@@ -80,7 +79,6 @@
        (- score (emms-score-get-score filename))
        filename))))
 
-(elemacs-require-package 'lyrics-fetcher)
 (with-eval-after-load 'emms
   ;; jump to specific lyrics
   (defun lyrics-fetcher-neteasecloud-lyrics-jump ()

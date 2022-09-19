@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'pdf-tools)
 (pdf-loader-install)
 (defun +pdf-keyboard-select-region (&optional all-pages-p)
   "Ref: https://github.com/dalanicolai/dala-emacs-lisp/blob\
@@ -62,11 +61,9 @@
         pdf-view-use-imagemagick nil
         pdf-annot-activate-created-annotations t))
 
-(elemacs-require-package 'saveplace-pdf-view)
 (with-eval-after-load 'pdf-tools
   (require 'saveplace-pdf-view))
 
-(elemacs-require-package 'org-noter)
 (with-eval-after-load 'org-noter
   (setq org-noter-auto-save-last-location t)
   (setq org-noter-doc-split-fraction '(0.52 0.48))
@@ -127,9 +124,6 @@
   (keymap-set org-noter-notes-mode-map "M-["
               #'eli-org-noter-scroll-down-other-window))
 
-(elemacs-require-package 'toc-mode)
-
-(elemacs-require-package 'nov)
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (with-eval-after-load 'nov
   (setq nov-text-width 80)

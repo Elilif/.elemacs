@@ -36,7 +36,6 @@
 (load-theme 'mindre t)
 
 ;;; posframe
-(elemacs-require-package 'posframe)
 
 ;;; modeline.
 (add-to-list 'load-path "~/.emacs.d/site-lisp/mood-line/")
@@ -45,7 +44,6 @@
 (column-number-mode 1)
 
 ;;; programing.
-(elemacs-require-package 'rainbow-delimiters)
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
 (setq inhibit-startup-screen t

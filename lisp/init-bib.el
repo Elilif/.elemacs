@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'mpv)
 (setq eli/bibliography '("/home/eli/Documents/Books/catalog.bib"))
 
 (with-eval-after-load 'org
@@ -46,7 +45,6 @@
   (require 'oc-natbib)
   (require 'oc-biblatex))
 
-(elemacs-require-package 'citar)
 (with-eval-after-load 'citar
   (defun eli-citar-org-format-note (key entry)
     "Format a note from KEY and ENTRY."
@@ -94,7 +92,6 @@
   (setq citar-note-format-function #'eli-citar-org-format-note)
   (setq citar-notes-paths '("~/Dropbox/org/roam/references")))
 
-(elemacs-require-package 'citar-org-roam)
 (with-eval-after-load 'citar
   (citar-org-roam-mode)
   (setq citar-org-roam-note-title-template (cdr (assoc 'note citar-templates)))
@@ -117,17 +114,14 @@
        :props '(:finalize find-file))
       (org-roam-ref-add (concat "@" citekey)))))
 
-(elemacs-require-package 'citar-embark)
 (with-eval-after-load 'citar
   (citar-embark-mode))
 
 
-(elemacs-require-package 'calibredb)
 (with-eval-after-load 'calibredb
   (setq calibredb-root-dir "~/Documents/Books")
   (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
-  (setq calibredb-library-alist '(("~/Documents/Books")
-				  ))
+  (setq calibredb-library-alist '(("~/Documents/Books")))
   (defun eli/update-calibre-bibtex ()
     "Export the catalog with BibTex file."
     (interactive)
@@ -147,7 +141,6 @@
     )
   (add-hook 'calibredb-search-mode-hook 'eli/calibre-refresh))
 
-(elemacs-require-package 'bibtex-completion)
 (with-eval-after-load 'bibtex-completion
   (setq bibtex-completion-bibliography eli/bibliography
 	bibtex-completion-library-path "/home/eli/Documents/Thesis"

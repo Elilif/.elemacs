@@ -30,27 +30,24 @@
 
 ;;; Code:
 
-(elemacs-require-package 'corfu)
 (add-hook 'after-init-hook 'global-corfu-mode)
 (with-eval-after-load 'corfu
   (setq corfu-cycle       t
-	corfu-auto        t
-	corfu-separator ?\s
-	corfu-max-width 150
-	corfu-auto-prefix 3
-    corfu-excluded-modes '(org-mode)
-	corfu-on-exact-match nil))
+	    corfu-auto        t
+	    corfu-separator ?\s
+	    corfu-max-width 150
+	    corfu-auto-prefix 3
+        corfu-excluded-modes '(org-mode)
+	    corfu-on-exact-match nil))
 
-(elemacs-require-package 'kind-icon)
 (with-eval-after-load 'corfu
   (setq kind-icon-use-icons t
-	kind-icon-default-face 'corfu-default
-	kind-icon-blend-background nil
-	kind-icon-blend-frac 0.08)
+	    kind-icon-default-face 'corfu-default
+	    kind-icon-blend-background nil
+	    kind-icon-blend-frac 0.08)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 
-(elemacs-require-package 'cape)
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 (add-to-list 'completion-at-point-functions #'cape-file)
 (provide 'init-corfu)

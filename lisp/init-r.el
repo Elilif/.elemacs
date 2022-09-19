@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'ess)
 (with-eval-after-load 'ess
   (defun eli/disable-corfu-auto ()
     (setq-local corfu-auto nil))
@@ -44,7 +43,6 @@
 	)
   (add-hook 'inferior-ess-r-mode-hook #'eli/disable-corfu-auto))
 
-(elemacs-require-package 'ess-smart-equals)
 (with-eval-after-load 'ess
   (setq ess-smart-equals-extra-ops '(brace paren percent))
   (ess-smart-equals-activate))

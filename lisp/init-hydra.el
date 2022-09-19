@@ -30,8 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'hydra)
-(elemacs-require-package 'pretty-hydra)
 (keymap-global-set "C-c o" #'hydra-org/body)
 (keymap-global-set "C-c w" #'jp-window/body)
 (keymap-global-set "C-c b" #'hydra-bibtex/body)

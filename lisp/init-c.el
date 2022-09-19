@@ -47,10 +47,8 @@
   (keymap-set c-mode-base-map "(" nil)
   (keymap-set c-mode-base-map "{" nil))
 
-(elemacs-require-package 'modern-cpp-font-lock)
 (add-hook 'c-mode-common-hook #'modern-c++-font-lock-global-mode)
 
-(elemacs-require-package 'ccls)
 (add-hook 'c-mode-hook (lambda () (require 'ccls)))
 (add-hook 'c++-mode-hook (lambda () (require 'ccls)))
 

@@ -29,9 +29,8 @@
 ;;
 
 ;;; Code:
-(elemacs-require-package 'org-contrib)
-(with-eval-after-load 'org
-  
+
+(with-eval-after-load 'org  
   ;; hide drawers
   (defun org-cycle-hide-drawers (state)
     "Re-hide all drawers after a visibility state change."
@@ -87,7 +86,7 @@
   (setq org-startup-folded t)
   (setq org-hide-block-startup t)
   (setq org-hide-emphasis-markers t)
-  (elemacs-require-package 'org-appear)
+
 
   ;;; org babel
   (setq org-confirm-babel-evaluate nil)
@@ -335,8 +334,8 @@ or equal to scheduled (%s)"
               :after (lambda (&rest _arg) (beginning-of-buffer)))
   (advice-add 'org-agenda-redo-all
               :after (lambda (&rest _arg) (beginning-of-buffer)))
-  (with-eval-after-load 'org
-    (elemacs-require-package 'org-reverse-datetree))
+  ;; (with-eval-after-load 'org
+
 
   ;; custom org agenda view
   (setq org-agenda-log-mode-items '(clock))
@@ -673,7 +672,6 @@ with headline set to %l would do."
           (org-agenda-files :maxlevel . 5))))
 
 ;;; rime
-(elemacs-require-package 'rime)
 (with-eval-after-load 'org
   (defun +rime-predicate-punctuation-line-begin-p ()
     "Enter half-width punctuation at the beginning of the line.
@@ -753,17 +751,15 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
         rime-deactivate-when-exit-minibuffer nil)
   (keymap-global-set "C-s-k" #'rime-inline-ascii)
   (keymap-global-set "C-s-j" #'+rime-convert-string-at-point)
-  (add-hook 'org-mode-hook 'toggle-input-method)
-  )
+  (add-hook 'org-mode-hook 'toggle-input-method))
 
-(elemacs-require-package 'org-superstar)
+
 (setq org-superstar-headline-bullets-list '("⦿" "⊚" "𐰧" "◯" "●" "►" "▻")
       org-superstar-prettify-item-bullets nil)
 (add-hook 'org-mode-hook #'org-superstar-mode)
 
 
 ;;; roam
-(elemacs-require-package 'org-roam)
 (with-eval-after-load 'org-roam
   (setq org-roam-directory "~/Dropbox/org/roam/")
   (setq org-roam-db-gc-threshold most-positive-fixnum
@@ -1021,14 +1017,14 @@ direct title.
   (add-to-list 'embark-keymap-alist
                '(consult-org-heading . embark-org-heading-map))
 
-  (elemacs-require-package 'org-roam-ui)
+  ;; org-roam ui
   (setq org-roam-ui-sync-theme t
 	    org-roam-ui-follow t
 	    org-roam-ui-update-on-save t
 	    org-roam-ui-open-on-start t))
 
 ;; clock
-(elemacs-require-package 'org-mru-clock)
+
 (with-eval-after-load 'embark
   (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
 (with-eval-after-load 'org
@@ -1055,7 +1051,7 @@ direct title.
           ("1" (elemacs-global-interactive-capture))
           ("2" (elemacs-global-interactive-capture)))) )
 
-(elemacs-require-package 'org-clock-convenience)
+
 (setq org-clock-convenience-clocked-agenda-re "^ +\\([^:]+\\):[[:space:]]*\\(\\([ 	012][0-9]\\):\\([0-5][0-9]\\)\\)-\\(\\([ 012]*[0-9]\\):\\([0-5][0-9]\\)\\|.*\\)?[[:space:]]+Clocked:[[:space:]]+\\(([0-9]+:[0-5][0-9])\\|(-)\\)")
 (with-eval-after-load 'org-agenda
   (keymap-set org-agenda-mode-map "M-<up>"
@@ -1075,7 +1071,6 @@ direct title.
 
 (with-eval-after-load 'org
   ;;; org-download
-  (elemacs-require-package 'org-download)
   (require 'org-download)
   (setq-default org-download-method 'directory
 		        org-download-image-dir "~/Documents/org-images"
@@ -1229,8 +1224,6 @@ direct title.
   )
 
 ;;; anki integration
-(elemacs-require-package 'htmlize)
-(elemacs-require-package 'org-anki)
 (with-eval-after-load 'org
   (require 'org-anki)
   (setq org-anki-default-deck "Default")
@@ -1545,11 +1538,9 @@ font-lock."
     (interactive)
     (insert (let ((label))
               (setq label (completing-read "label: " (org-ref-get-labels)))
-              (format "\\ref{%s}" label))))
-  )
+              (format "\\ref{%s}" label)))))
 
 ;;; pandoc support
-(elemacs-require-package 'ox-pandoc)
 (with-eval-after-load 'ox
   (require 'ox-pandoc)
   (setq org-pandoc-options-for-docx '((standalone . nil)))
@@ -1628,7 +1619,6 @@ holding contextual information."
        ((org-element-link-interpreter link contents))))))
 
 ;;; mixed pitch mode
-(elemacs-require-package 'mixed-pitch)
 (with-eval-after-load 'org
   (require 'mixed-pitch)
   (add-hook 'org-mode-hook #'mixed-pitch-mode)

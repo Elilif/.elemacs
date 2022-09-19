@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'auctex)
 (with-eval-after-load 'tex
   (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
   (add-hook 'LaTeX-mode-hook #'tex-source-correlate-mode)
@@ -59,15 +58,11 @@
   ;; preview
   )
 
-(elemacs-require-package 'lsp-latex)
 (with-eval-after-load 'tex
   (add-hook 'LaTeX-mode-hook #'lsp-deferred)
   (setq lsp-latex-texlab-executable "/usr/bin/texlab")
-  (setq lsp-tex-server 'texlab)
-  )
+  (setq lsp-tex-server 'texlab))
 
-
-(elemacs-require-package 'cdlatex)
 (with-eval-after-load 'tex
   (require 'cdlatex)
   (keymap-set cdlatex-mode-map "$" nil)
@@ -110,7 +105,6 @@
   (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex)
 )
 
-(elemacs-require-package 'xenops)
 (with-eval-after-load 'xenops
   (keymap-set xenops-mode-map "C-y" nil)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)

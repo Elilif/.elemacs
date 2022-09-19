@@ -138,7 +138,6 @@
 (add-hook 'after-init-hook #'winner-mode)
 (keymap-global-set "C-c u" #'transient-winner-undo)
 
-(elemacs-require-package 'avy)
 (defun avy-goto-char-near-point (char)
   "Jump to the currently visible CHAR in the few lines near point."
   (interactive (list (read-char "char: " t)))
@@ -154,16 +153,12 @@
 (keymap-global-set "C-'" #'avy-goto-char)
 (keymap-global-set "C-\"" #'avy-goto-char-near-point)
 
-(elemacs-require-package 'ace-window)
 (keymap-global-set "M-o" #'ace-select-window)
 (add-to-list 'load-path "~/.emacs.d/site-lisp/pinyinlib/")
 (add-to-list 'load-path "~/.emacs.d/site-lisp/ace-pinyin/")
 (autoload 'ace-pinyin-global-mode "ace-pinyin")
 (add-hook 'elemacs-first-input-hook #'ace-pinyin-global-mode)
 
-(elemacs-require-package 'grab-x-link)
-
-(elemacs-require-package 'expand-region)
 (keymap-global-set "C-=" #'er/expand-region)
 (with-eval-after-load 'expand-region
   (defun er/mark-block-comment ()
@@ -205,7 +200,6 @@
           (er/clear-history)))
     (advice-add 'er/expand-region :before #'eli-er/clearn-history))
 
-(elemacs-require-package 'which-key)
 (add-hook 'elemacs-first-input-hook #'which-key-mode)
 (setq which-key-idle-delay 0.3)
 
@@ -261,8 +255,6 @@
 ;; or (setq dired-kill-when-opening-new-dired-buffer t)
 
 
-(elemacs-require-package 'all-the-icons)
-(elemacs-require-package 'all-the-icons-dired)
 (add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
 (with-eval-after-load 'dired-x
     (setq all-the-icons-dired-monochrome nil))
@@ -272,7 +264,6 @@
   (require 'diredfl)
   (diredfl-global-mode))
 
-(elemacs-require-package 'hungry-delete)
 (add-hook 'elemacs-first-input-hook #'global-hungry-delete-mode)
 (setq hungry-delete-join-reluctantly t)
 
@@ -292,13 +283,11 @@
 
 (add-hook 'elemacs-first-file-hook #'save-place-mode)
 
-(elemacs-require-package 'popwin)
 (add-hook 'elemacs-first-buffer-hook #'popwin-mode)
 (with-eval-after-load 'popwin
   (setq popwin:popup-window-position 'right)
   (setq popwin:popup-window-width 80))
 
-(elemacs-require-package 'multiple-cursors)
 (with-eval-after-load 'multiple-cursors
   (setq mc/always-run-for-all nil)
   (setq mc/insert-numbers-default 1))
@@ -322,16 +311,14 @@
 (add-hook 'ibuffer-mode-hook
           (lambda ()
             (ibuffer-switch-to-saved-filter-groups "default")))
-(elemacs-require-package 'all-the-icons-ibuffer)
+
 (with-eval-after-load 'all-the-icons-ibuffer-mode
   (setq all-the-icons-ibuffer-icon t)
   (setq all-the-icons-ibuffer-color-icon t))
 (add-hook 'ibuffer-mode-hook #'all-the-icons-ibuffer-mode)
 
-(elemacs-require-package 'hl-todo)
 (add-hook 'elemacs-first-file-hook #'global-hl-todo-mode)
 
-(elemacs-require-package 'helpful)
 (keymap-global-set "C-h f" #'helpful-callable)
 (keymap-global-set "C-h v" #'helpful-variable)
 (keymap-global-set "C-h k" #'helpful-key)
@@ -374,7 +361,6 @@ create new one."
 
 (setq bookmark-set-fringe-mark nil)
 
-(elemacs-require-package 'popper)
 (add-hook 'elemacs-first-buffer-hook #'popper-mode)
 (add-hook 'elemacs-first-buffer-hook #'popper-echo-mode)
 (keymap-global-set "C-`" #'popper-toggle-latest)
@@ -399,7 +385,6 @@ create new one."
   (advice-add 'popper-raise-popup :after (lambda (&optional _arg)
                                            (delete-other-windows))))
 
-(elemacs-require-package 'shackle)
 (with-eval-after-load 'popper
   (setq shackle-rules '(("*Messages*" :align below :size 0.3 :select t)
 			            ("*scratch*" :select t :align right)
@@ -417,7 +402,6 @@ create new one."
 
 ;; Chinese calendar
 ;; `pC' can show lunar details
-(elemacs-require-package 'cal-china-x)
 (autoload #'cal-china-x-setup "cal-china-x")
 (with-eval-after-load 'calendar
   (cal-china-x-setup)
@@ -440,16 +424,6 @@ create new one."
         calendar-holidays (append cal-china-x-important-holidays
                                   cal-china-x-general-holidays
                                   holiday-other-holidays)))
-
-
-(elemacs-require-package 'ledger-mode)
-(with-eval-after-load 'ledger
-  (setq ledger-reconcile-default-commodity "¥"
-	    ledger-post-amount-alignment-column 80
-	    ledger-report-auto-refresh-sticky-cursor t
-	    ledger-report-auto-refresh t
-	    ledger-copy-transaction-insert-blank-line-after t)
-  (setq-default ledger-occur-use-face-shown nil))
 
 
 ;;; enable call emacs functions from outside
@@ -573,7 +547,6 @@ BUFFER is a string, the name of a buffer."
 (add-hook 'Info-mode-hook #'variable-pitch-mode)
 
 ;;; better movement
-(elemacs-require-package 'mwim)
 (keymap-global-set "C-a" #'mwim-beginning)
 (keymap-global-set "C-e" #'mwim-end)
 

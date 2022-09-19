@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'flycheck)
 (add-hook 'elemacs-first-buffer-hook #'global-flycheck-mode)
 (with-eval-after-load 'flycheck
   (setq flycheck-global-modes
@@ -40,7 +39,6 @@
         flycheck-idle-buffer-switch-delay 3
         flycheck-display-errors-delay 3))
 
-(elemacs-require-package 'flycheck-posframe)
 (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
 
 

@@ -45,13 +45,11 @@
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
-(when (< emacs-major-version 27)
-  (setq package-enable-at-startup nil))
-(add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
-(require 'borg)
-(borg-initialize)
+(eval-and-compile ; `borg'
+  (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
+  (require 'borg)
+  (borg-initialize))
 
-(require 'init-package)
 (require 'init-benchmarking)
 (require 'init-incremental-loading)
 (require 'init-better-defaults)
@@ -61,10 +59,10 @@
 (elemacs-load-packages-incrementally
  '(init-hydra))
 (require 'init-org)
+(require 'init-bib)
 (require 'init-latex)
 (require 'init-vc)
 (require 'init-lang)
-(require 'init-bib)
 (require 'init-c)
 (require 'init-lsp)
 (require 'init-r)

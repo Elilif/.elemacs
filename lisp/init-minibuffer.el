@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-;; (elemacs-require-package 'vertico)
 (add-hook 'elemacs-first-input-hook 'vertico-mode)
 (with-eval-after-load 'vertico
   (setq vertico-cycle t))
@@ -41,7 +40,6 @@
   (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
 
-(elemacs-require-package 'embark)
 (with-eval-after-load 'vertico
   (keymap-global-set "C-." #'embark-act)
   (keymap-global-set "M-." #'embark-dwim)
@@ -49,11 +47,9 @@
 
   (setq prefix-help-command #'embark-prefix-help-command))
 
-(elemacs-require-package 'embark-consult)
 (with-eval-after-load 'embark
   (require 'embark-consult))
 
-(elemacs-require-package 'orderless)
 (with-eval-after-load 'vertico
   (require 'orderless)
   (defun completion--regex-pinyin (str)
@@ -103,12 +99,10 @@
         orderless-component-separator #'orderless-escapable-split-on-space
         orderless-style-dispatchers '(+orderless-dispatch)))
 
-(elemacs-require-package 'marginalia)
 (with-eval-after-load 'vertico
   (setq marginalia-align 'right)
   (marginalia-mode))
 
-;; (elemacs-require-package 'consult)
 (keymap-global-set "C-s" #'consult-line)
 (keymap-global-set "C-x C-r" #'consult-recent-file)
 (keymap-global-set "C-c \\" #'consult-register)

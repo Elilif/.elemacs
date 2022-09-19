@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-(elemacs-require-package 'ledger-mode)
 (with-eval-after-load 'ledger-mode
   (setq ledger-reconcile-default-commodity "¥"
 	ledger-post-amount-alignment-column 80

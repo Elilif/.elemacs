@@ -29,7 +29,6 @@
 ;;
 
 ;;; Code:
-(elemacs-require-package 'yasnippet)
 (add-hook 'elemacs-first-file-hook #'yas-global-mode)
 (with-eval-after-load 'yasnippet
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
@@ -66,19 +65,12 @@
         (let ((temp (string-clean-whitespace (current-kill 0))))
           (if (string-match "^(\\(.*\\))$" temp)
               (match-string 1 temp)
-            temp))))
-  )
+            temp)))))
 
-(elemacs-require-package 'auto-yasnippet)
-
-(elemacs-require-package 'quickrun)
-
-(elemacs-require-package 'vterm)
 (with-eval-after-load 'vterm
   (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   (add-hook 'vterm-copy-mode-hook (lambda () (call-interactively 'hl-line-mode))))
 
-(elemacs-require-package 'electric-operator)
 (add-hook 'c++-mode-hook #'electric-operator-mode)
 
 (provide 'init-lang)
