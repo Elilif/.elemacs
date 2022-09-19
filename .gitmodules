@@ -126,6 +126,9 @@
 [submodule "mpv"]
 	path = lib/mpv
 	url = git@github.com:kljohann/mpv.el.git
+[submodule "mwim"]
+	path = lib/mwim
+	url = git@github.com:alezost/mwim.el.git
 [submodule "nov"]
 	path = lib/nov
 	url = https://depp.brause.cc/nov.el.git
