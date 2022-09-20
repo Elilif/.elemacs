@@ -59,6 +59,9 @@
 [submodule "cape"]
 	path = lib/cape
 	url = git@github.com:minad/cape.git
+[submodule "cape-yasnippet"]
+	path = lib/cape-yasnippet
+	url = https://github.com/elken/cape-yasnippet
 [submodule "ccls"]
 	path = lib/ccls
 	url = git@github.com:emacs-lsp/emacs-ccls.git

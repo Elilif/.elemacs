@@ -50,5 +50,29 @@
 
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 (add-to-list 'completion-at-point-functions #'cape-file)
+
+
+;; cape-yasnippet
+(autoload #'cape-yasnippet--lsp "cape-yasnippet")
+(add-hook 'emacs-lisp-mode-hook
+		  (lambda ()
+            (setq-local completion-at-point-functions
+			            (list (cape-super-capf
+					           #'cape-yasnippet
+					           #'cape-dabbrev
+					           #'cape-file
+					           #'elisp-completion-at-point
+					           )))))
+
+(defun eli-remove-lsp-completion ()
+  (setq-local completion-at-point-functions
+              (remove #'lsp-completion-at-point completion-at-point-functions)))
+(add-hook 'lsp-completion-mode-hook #'eli-remove-lsp-completion)
+(add-hook 'c++-mode-hook
+		  #'cape-yasnippet--lsp)
+(add-hook 'c-mode-hook
+		  #'cape-yasnippet--lsp)
+
+
 (provide 'init-corfu)
 ;;; init-corfu.el ends here.
