@@ -1351,7 +1351,7 @@ Used by `org-anki-skip-function'"
   ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
   (setq org-entities-user '(("ws" "\\ " nil " " " " " " " ")))
   (setq org-latex-prefer-user-labels t)
-  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-preview-latex-default-process 'dvipng)
   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n")
   (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
   (setq org-format-latex-options
@@ -1361,49 +1361,87 @@ Used by `org-anki-skip-function'"
                       :html-background "Transparent"
                       :html-scale 1.0
                       :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
-                                        ; pdf exporting
-  (setq org-preview-latex-process-alist
-        '((dvisvgm :programs
-                   ("xelatex" "dvisvgm")
-                   :description "xdv > svg"
-                   :message "you need to install the programs: xelatex and dvisvgm."
-                   :use-xcolor t
-                   :image-input-type "xdv"
-                   :image-output-type "svg"
-                   :image-size-adjust (1.7 . 1.5)
-                   :latex-compiler
-                   ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
-                   :image-converter
-                   ("dvisvgm %f -n -b min -c %S -o %O"))
-          (imagemagick :programs
-                       ("xelatex" "convert")
-                       :description "pdf > png"
-                       :message "you need to install the programs: xelatex and imagemagick."
-                       :use-xcolor t
-                       :image-input-type "pdf"
-                       :image-output-type "png"
-                       :image-size-adjust (1.0 . 1.0)
-                       :latex-compiler
-                       ("xelatex -interaction nonstopmode -output-directory %o %f")
-                       :image-converter
-                       ("convert -density %D -trim -antialias %f -quality 100 %O"))))
-
+  
   ;; Vertically align LaTeX preview in org mode
-  (defun org--make-preview-overlay (beg end image &optional imagetype)
-    "Build an overlay between BEG and END using IMAGE file.
-Argument IMAGETYPE is the extension of the displayed image,
-as a string.  It defaults to \"png\"."
-    (let ((ov (make-overlay beg end))
-	      (imagetype (or (intern imagetype) 'png)))
-      (overlay-put ov 'org-overlay-type 'org-latex-overlay)
-      (overlay-put ov 'evaporate t)
-      (overlay-put ov
-		           'modification-hooks
-		           (list (lambda (o _flag _beg _end &optional _l)
-			               (delete-overlay o))))
-      (overlay-put ov
-		           'display
-		           (list 'image :type imagetype :file image :ascent 90))))
+  (defun my-org-latex-preview-advice (beg end &rest _args)
+    (let* ((ov (car (overlays-in beg end)))
+           (img (cdr (overlay-get ov 'display)))
+           (new-img (plist-put img :ascent 90)))
+      (overlay-put ov 'display (cons 'image new-img))))
+  (advice-add 'org--make-preview-overlay
+              :after #'my-org-latex-preview-advice)
+  
+  ;; from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/
+  ;; Justifying-LaTeX-preview-fragments-in-org-mode/
+  ;; specify the justification you want
+  (plist-put org-format-latex-options :justify 'center)
+
+  (defun eli-org-justify-fragment-overlay (beg end image imagetype)
+    (let* ((position (plist-get org-format-latex-options :justify))
+           (img (create-image image 'svg t))
+           (ov (car (overlays-in beg end)))
+           (width (car (image-display-size (overlay-get ov 'display))))
+           offset)
+      (cond
+       ((and (eq 'center position) 
+             (= beg (line-beginning-position)))
+        (setq offset (floor (- (/ fill-column 2)
+                               (/ width 2))))
+        (if (< offset 0)
+            (setq offset 0))
+        (overlay-put ov 'before-string (make-string offset ? )))
+       ((and (eq 'right position) 
+             (= beg (line-beginning-position)))
+        (setq offset (floor (- fill-column
+                               width)))
+        (if (< offset 0)
+            (setq offset 0))
+        (overlay-put ov 'before-string (make-string offset ? ))))))
+  (advice-add 'org--make-preview-overlay
+              :after 'eli-org-justify-fragment-overlay)
+
+  ;; from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/
+  ;; Better-equation-numbering-in-LaTeX-fragments-in-org-mode/
+  (defun org-renumber-environment (orig-func &rest args)
+    (let ((results '()) 
+          (counter -1)
+          (numberp))
+      (setq results (cl-loop for (begin .  env) in 
+                             (org-element-map (org-element-parse-buffer)
+                                 'latex-environment
+                               (lambda (env)
+                                 (cons
+                                  (org-element-property :begin env)
+                                  (org-element-property :value env))))
+                             collect
+                             (cond
+                              ((and (string-match "\\\\begin{equation}" env)
+                                    (not (string-match "\\\\tag{" env)))
+                               (cl-incf counter)
+                               (cons begin counter))
+                              ((string-match "\\\\begin{align}" env)
+                               (prog2
+                                   (cl-incf counter)
+                                   (cons begin counter)                          
+                                 (with-temp-buffer
+                                   (insert env)
+                                   (goto-char (point-min))
+                                   ;; \\ is used for a new line. Each one leads
+                                   ;; to a number
+                                   (cl-incf counter (count-matches "\\\\$"))
+                                   ;; unless there are nonumbers.
+                                   (goto-char (point-min))
+                                   (cl-decf counter
+                                            (count-matches "\\nonumber")))))
+                              (t
+                               (cons begin nil)))))
+      (when (setq numberp (cdr (assoc (point) results)))
+        (setf (car args)
+              (concat
+               (format "\\setcounter{equation}{%s}\n" numberp)
+               (car args)))))
+    (apply orig-func args))
+  (advice-add 'org-create-formula-image :around #'org-renumber-environment)
   
   (setq org-latex-listings 'minted)
   (setq org-latex-minted-options '(("breaklines")
