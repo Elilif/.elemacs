@@ -1686,7 +1686,12 @@ holding contextual information."
 (add-to-list 'load-path "~/.emacs.d/site-lisp/svg-tag-mode/")
 (with-eval-after-load 'org
   (require 'svg-tag-mode)
-  
+  (setq svg-lib-style-default
+        '(:background "#F5F5F5" :foreground "#37474f" :padding 1 :margin 0
+                      :stroke 2 :radius 5 :alignment 0.5 :width 20 :height 0.9
+                      :scale 0.75 :ascent center :crop-left nil :crop-right nil
+                      :collection "material" :font-family "Cascadia Mono"
+                      :font-size 11 :font-weight regular))
   (setq svg-tag-action-at-point 'edit)
   (setq svg-lib-icon-collections
         '(("bootstrap" .
