@@ -110,11 +110,18 @@
   (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex)
 )
 
-(with-eval-after-load 'xenops
-  (keymap-set xenops-mode-map "C-y" nil)
+(with-eval-after-load 'tex
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (setq xenops-math-image-scale-factor 1.3)
   (setq xenops-image-try-write-clipboard-image-to-file nil))
+
+(with-eval-after-load 'xenops
+  (defun eli-delete-region ()
+    (if (use-region-p)
+        (delete-region (region-beginning)
+                       (region-end))))
+  (advice-add 'xenops-handle-paste-default
+              :before #'eli-delete-region))
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/mathpix/")
 (autoload #'mathpix-screenshot "mathpix" nil t)
