@@ -30,6 +30,9 @@
 	build-step = make install
     build-step = "(borg-update-autoloads \"auctex\")"
 	info-path = doc    
+[submodule "auto-save"]
+	path = lib/auto-save
+	url = https://github.com/manateelazycat/auto-save
 [submodule "auto-yasnippet"]
 	path = lib/auto-yasnippet
 	url = git@github.com:abo-abo/auto-yasnippet.git
