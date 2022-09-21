@@ -37,9 +37,25 @@
   ;; Function that tries to autoexpand YaSnippets
   ;; The double quoting is NOT a typo!
   (defun my/yas-try-expanding-auto-snippets ()
-    (when (bound-and-true-p yas-minor-mode)
-      (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
-	(yas-expand))))
+    (when (and (memq this-command '(org-self-insert-command
+                                    self-insert-command))
+               (boundp 'yas-minor-mode) yas-minor-mode)
+      (let* ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+        (yas-expand))))
+  
+  ;; `yas--template-can-expand-p' should return `nil' when `CONDITION'
+  ;; and `REQUIREMENT' are both `nil'.
+  (defun yas--template-can-expand-p (condition requirement)
+    "Evaluate CONDITION and REQUIREMENT and return a boolean."
+    (let* ((result (or (null condition)
+                       (yas--eval-condition condition))))
+      (cond ((eq requirement t)
+             result)
+            ((and (null requirement)
+                  (null result))
+             nil)
+            (t
+             (eq requirement result)))))
 
   ;; Try after every insertion
   (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets)
