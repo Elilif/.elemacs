@@ -204,7 +204,6 @@
 (setq which-key-idle-delay 0.3)
 
 
-(add-to-list 'load-path "~/.emacs.d/site-lisp/auto-save/")
 (autoload #'auto-save-enable "auto-save")
 (add-hook 'elemacs-first-input-hook #'auto-save-enable)
 (with-eval-after-load 'auto-save
