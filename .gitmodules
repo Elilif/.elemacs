@@ -125,8 +125,6 @@
 [submodule "emms"]
 	path = lib/emms
 	url = git@github.com:emacsmirror/emms.git
-    build-step = make
-    build-step = sudo make install
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
