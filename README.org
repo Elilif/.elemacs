@@ -1,2 +1,34 @@
-* My personal Emacs configuration
-Work in progress
+#+attr_org: :width 800px
+[[~/Documents/org-images/2022-09-22_10-33.png]]
+* Contents
+** [[id:32476443-ed10-40a3-b007-efef63bb7eb8][Introduction to elemacs]] 
+** [[id:e0890f21-5cad-4029-94b6-a365dbd9c851][Installation]]
+** [[id:eb1c1ee9-44a0-41bf-9e1a-959596364074][Rudimentary configuration]]
+** [[id:1e44b55f-cbfd-4675-82ec-60dd98e62483][Packages]]
+** [[id:ebf96976-241d-4a05-9e94-37a915c6b4bb][Applications]]
+** [[id:05ce3250-e839-4303-90fc-7f545a7f384b][Languages]]
+* Introduction to elemacs
+:PROPERTIES:
+:ID:       32476443-ed10-40a3-b007-efef63bb7eb8
+:END:
+* Installation
+:PROPERTIES:
+:ID:       e0890f21-5cad-4029-94b6-a365dbd9c851
+:END:
+* Rudimentary configuration
+:PROPERTIES:
+:ID:       eb1c1ee9-44a0-41bf-9e1a-959596364074
+:END:
+* Packages
+:PROPERTIES:
+:ID:       1e44b55f-cbfd-4675-82ec-60dd98e62483
+:END:
+* Applications 
+:PROPERTIES:
+:ID:       ebf96976-241d-4a05-9e94-37a915c6b4bb
+:END:
+* Languages 
+:PROPERTIES:
+:ID:       05ce3250-e839-4303-90fc-7f545a7f384b
+:END:
+
