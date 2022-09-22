@@ -30,7 +30,7 @@
 
 ;;; Code:
 
-;; (setq package-enable-at-startup nil)
+(setq package-enable-at-startup nil)
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
 (let ((normal-gc-cons-threshold (* 20 1024 1024))

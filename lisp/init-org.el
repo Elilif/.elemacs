@@ -86,6 +86,71 @@
   (setq org-startup-folded t)
   (setq org-hide-block-startup t)
   (setq org-hide-emphasis-markers t)
+  (setq org-emphasis-regexp-components '("-[:space:]('\"{[:nonascii:]"
+                                         "-[:space:].,:!?;'\")}\\[[:nonascii:]"
+                                         "[:space:]"
+                                         "."
+                                         1))
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+  (org-element-update-syntax)
+  (setq org-match-substring-regexp
+        (concat
+         ;; 限制上标和下标的匹配范围，org 中对其的介绍见：(org) Subscripts and superscripts
+         "\\([0-9a-zA-Zα-γΑ-Ω]\\)\\([_^]\\)\\("
+         "\\(?:" (org-create-multibrace-regexp "{" "}" org-match-sexp-depth) "\\)"
+         "\\|"
+         "\\(?:" (org-create-multibrace-regexp "(" ")" org-match-sexp-depth) "\\)"
+         "\\|"
+         "\\(?:\\*\\|[+-]?[[:alnum:].,\\]*[[:alnum:]]\\)\\)"))
+  (defun org-do-emphasis-faces (limit)
+    "Run through the buffer and emphasize strings."
+    (let ((quick-re (format "\\([%s]\\|^\\)\\([~=*/_+]\\).*?[~=*/_+]"
+    		                (car org-emphasis-regexp-components))))
+      (catch :exit
+        (while (re-search-forward quick-re limit t)
+          (let* ((marker (match-string 2))
+                 (verbatim? (member marker '("~" "="))))
+            (when (save-excursion
+    	            (goto-char (match-beginning 0))
+    	            (and
+    	             ;; Do not match table hlines.
+    	             (not (and (equal marker "+")
+    		                   (org-match-line
+    		                    "[ \t]*\\(|[-+]+|?\\|\\+[-+]+\\+\\)[ \t]*$")))
+    	             ;; Do not match headline stars.  Do not consider
+    	             ;; stars of a headline as closing marker for bold
+    	             ;; markup either.
+    	             (not (and (equal marker "*")
+    		                   (save-excursion
+    		                     (forward-char)
+    		                     (skip-chars-backward "*")
+    		                     (looking-at-p org-outline-regexp-bol))))
+    	             ;; Match full emphasis markup regexp.
+    	             (looking-at (if verbatim? org-verbatim-re org-emph-re))
+    	             ;; Do not span over paragraph boundaries.
+    	             (not (string-match-p org-element-paragraph-separate
+    				                      (match-string 2)))
+    	             ;; Do not span over cells in table rows.
+    	             (not (and (save-match-data (org-match-line "[ \t]*|"))
+    		                   (string-match-p "|" (match-string 4))))))
+              (pcase-let ((`(,_ ,face ,_) (assoc marker org-emphasis-alist))
+    		              (m (if org-hide-emphasis-markers 4 2)))
+                (font-lock-prepend-text-property
+                 (match-beginning m) (match-end m) 'face face)
+                (when verbatim?
+    	          (org-remove-flyspell-overlays-in
+    	           (match-beginning 0) (match-end 0))
+    	          (remove-text-properties (match-beginning 2) (match-end 2)
+    				                      '(display t invisible t intangible t)))
+                (add-text-properties (match-beginning 2) (match-end 2)
+    			                     '(font-lock-multiline t org-emphasis t))
+                (when (and org-hide-emphasis-markers
+    		               (not (org-at-comment-p)))
+    	          (add-text-properties (match-end 4) (match-beginning 5)
+    			                       '(invisible t))
+    	          (add-text-properties (match-beginning 3) (match-end 3)
+    			                       '(invisible t)))
+                (throw :exit t))))))))
 
 
   ;;; org babel
@@ -1609,7 +1674,8 @@ font-lock."
               (setq label (completing-read "label: " (org-ref-get-labels)))
               (format "\\ref{%s}" label)))))
 
-;;; pandoc support
+;;; org exporting config
+;; pandoc support
 (with-eval-after-load 'ox
   (require 'ox-pandoc)
   (setq org-pandoc-options-for-docx '((standalone . nil)))
@@ -1685,7 +1751,15 @@ holding contextual information."
             (org-element-link-interpreter link contents)))))
 
        ;; Otherwise, fallback to standard org-mode link format
-       ((org-element-link-interpreter link contents))))))
+       ((org-element-link-interpreter link contents)))))
+  
+    (defun eli-strip-ws-maybe (text _backend _info)
+      (let* ((text (replace-regexp-in-string
+                    "\\(\\cc\\) *\n *\\(\\cc\\)"
+                    "\\1\\2" text))) ;; remove whitespace from line break
+        text))
+    (add-to-list 'org-export-filter-paragraph-functions #'eli-strip-ws-maybe))
+
 
 ;;; mixed pitch mode
 (with-eval-after-load 'org

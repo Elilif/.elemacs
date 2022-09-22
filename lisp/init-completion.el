@@ -40,14 +40,14 @@
   ;; improving emphasis marker
   (with-eval-after-load 'smartparens-org
     (sp-with-modes 'org-mode
-      (sp-local-pair "/" "/" :unless '(sp-point-after-word-p sp-org-point-after-left-square-bracket-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-      (sp-local-pair "*" "*"
-                     :unless '(sp-point-after-word-p sp-point-at-bol-p sp-in-math-p)
+      (sp-local-pair "/" "/" :unless '(sp-org-point-after-left-square-bracket-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
+      (sp-local-pair "*" "*" ;;sp-point-after-word-p
+                     :unless '(sp-point-at-bol-p sp-in-math-p)
                      :post-handlers '(("SPC"))
                      :skip-match 'sp--org-skip-asterisk)
-      (sp-local-pair "=" "=" :unless '(sp-point-after-word-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-      (sp-local-pair "_" "_" :unless '(sp-point-after-word-p sp-in-math-p))
-      (sp-local-pair "~" "~" :unless '(sp-point-after-word-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))
+      (sp-local-pair "=" "=" :unless '(sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
+      (sp-local-pair "_" "_" :unless '(sp-in-math-p))
+      (sp-local-pair "~" "~" :unless '(sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))
   
   (define-advice show-paren-function (:around (fn) fix-show-paren-function)
     "Highlight enclosing parens."
