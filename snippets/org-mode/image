@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: image
+# key: ig
+# --
+#+attr_org: :width 800px
+[[$1]]$0

@@ -1,5 +1,5 @@
 #+attr_org: :width 800px
-[[~/Documents/org-images/2022-09-22_10-33.png]]
+[[./screenshots/org-mode.png]]
 * Contents
 ** [[id:32476443-ed10-40a3-b007-efef63bb7eb8][Introduction to elemacs]] 
 ** [[id:e0890f21-5cad-4029-94b6-a365dbd9c851][Installation]]
