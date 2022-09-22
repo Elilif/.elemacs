@@ -1,3 +1,4 @@
+* My personal emacs config
 #+attr_org: :width 800px
 [[./screenshots/org-mode.png]]
 * Contents
