@@ -97,6 +97,20 @@
                                '((emacs-lisp . t)
                                  (shell . t)
                                  (C . t)))
+  
+  (defun eli-hide-org-block-begin-line (orig from to flag spec)
+    (let* ((beg-of-line (save-excursion
+                          (beginning-of-line)
+                          (point)))
+           (lang (car (org-babel-get-src-block-info)))
+           (beg (+ beg-of-line
+                   12
+                   (length lang))))
+      (if (eq spec 'org-hide-block)
+          (funcall orig beg to flag spec)
+        (funcall orig from to flag spec))))
+  (advice-add 'org-flag-region :around #'eli-hide-org-block-begin-line)
+  
 
   (setq org-startup-with-inline-images t)
   ;; renumbering and sorting footnotes automatically after each deletion
@@ -1693,6 +1707,7 @@ holding contextual information."
                       :collection "material" :font-family "Cascadia Mono"
                       :font-size 11 :font-weight regular))
   (setq svg-tag-action-at-point 'edit)
+  
   (setq svg-lib-icon-collections
         '(("bootstrap" .
            "https://icons.getbootstrap.com/assets/icons/%s.svg")
