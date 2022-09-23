@@ -61,8 +61,8 @@ An alist.")
     `((unknown . ,(all-the-icons-material "find_in_page" :height 0.8 :v-adjust -0.15))
       (text . ,(all-the-icons-faicon "text-width" :height 0.8 :v-adjust -0.02))
       (method . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
-      (function . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
-      (fun . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
+      (function . ,(all-the-icons-material "functions" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
+      (fun . ,(all-the-icons-material "functions" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
       (constructor . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
       (ctor . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
       (field . ,(all-the-icons-octicon "tag" :height 0.85 :v-adjust 0 :face 'all-the-icons-lblue))
@@ -78,8 +78,8 @@ An alist.")
       (unit . ,(all-the-icons-material "settings_system_daydream" :height 0.8 :v-adjust -0.15))
       (value . ,(all-the-icons-material "format_align_right" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-lblue))
       (enum . ,(all-the-icons-material "storage" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-orange))
-      (keyword . ,(all-the-icons-material "filter_center_focus" :height 0.8 :v-adjust -0.15))
-      (k/w . ,(all-the-icons-material "filter_center_focus" :height 0.8 :v-adjust -0.15))
+      (keyword . ,(all-the-icons-faicon "filter" :height 0.8 :v-adjust -0.15))
+      (k/w . ,(all-the-icons-material "filter" :height 0.8 :v-adjust -0.15))
       (snippet . ,(all-the-icons-material "format_align_center" :height 0.8 :v-adjust -0.15))
       (sn . ,(all-the-icons-material "format_align_center" :height 0.8 :v-adjust -0.15))
       (color . ,(all-the-icons-material "palette" :height 0.8 :v-adjust -0.15))
@@ -144,8 +144,8 @@ function to the relevant margin-formatters list."
 		  (lambda ()
             (setq-local completion-at-point-functions
 			            (list (cape-super-capf
-					           #'elisp-completion-at-point
-                               #'cape-yasnippet)
+                               #'cape-yasnippet
+					           #'elisp-completion-at-point)
                               t))))
 
 (defun cape-yasnippet--lsp ()
@@ -156,8 +156,6 @@ function to the relevant margin-formatters list."
                      #'cape-yasnippet)
                     t)))
 (add-hook 'lsp-completion-mode-hook #'cape-yasnippet--lsp)
-
-
 
 (provide 'init-corfu)
 ;;; init-corfu.el ends here.
