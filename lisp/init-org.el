@@ -86,8 +86,8 @@
   (setq org-startup-folded t)
   (setq org-hide-block-startup t)
   (setq org-hide-emphasis-markers t)
-  (setq org-emphasis-regexp-components '("-[:space:]('\"{[:nonascii:]"
-                                         "-[:space:].,:!?;'\")}\\[[:nonascii:]"
+  (setq org-emphasis-regexp-components '("-[:space:]('\"{[:nonascii:][:alpha:]"
+                                         "-[:space:].,:!?;'\")}\\[[:nonascii:][:alpha:]"
                                          "[:space:]"
                                          "."
                                          1))
