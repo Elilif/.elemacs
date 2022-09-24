@@ -1334,7 +1334,8 @@ Used by `org-anki-skip-function'"
          (org-narrow-to-subtree)
          (while (re-search-forward ,reg nil t)
            (let*
-               ((front-string (match-string-no-properties ,front))
+               ((org-export-preserve-breaks t)
+                (front-string (match-string-no-properties ,front))
                 (back-string (if ,back
                                  (match-string-no-properties ,back)
                                nil))
@@ -1380,7 +1381,8 @@ Used by `org-anki-skip-function'"
   
   (defun org-anki-sync-region (beg end)
     (interactive "r")
-    (let* ((text (buffer-substring beg end))
+    (let* ((org-export-preserve-breaks t)
+           (text (buffer-substring beg end))
            (regexp (read-regexp "Input a Regexp: "))
            (void (string-match regexp
                                text))
