@@ -74,7 +74,7 @@
         (unless (featurep req)
           (message "Incrementally loading %s" req)
           (condition-case-unless-debug e
-              (or (while-no-input
+              (or (progn
                     ;; If `default-directory' is a directory that doesn't exist
                     ;; or is unreadable, Emacs throws up file-missing errors, so
                     ;; we set it to a directory we know exists and is readable.
