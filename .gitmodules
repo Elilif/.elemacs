@@ -229,6 +229,9 @@
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "mindre-theme"]
+	path = lib/mindre-theme
+	url = git@github.com:Elilif/mindre-theme.git
 [submodule "mixed-pitch"]
 	path = lib/mixed-pitch
 	url = https://gitlab.com/jabranham/mixed-pitch.git
