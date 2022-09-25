@@ -67,7 +67,7 @@
 	  :post (progn (setq which-key-inhibit nil)))
   ("multiple cursors"
    (("l" mc/edit-lines "edit-lines")
-    ("a" mc/mark-all-symbols-like-this "mark all")
+    ("a" mc/mark-all-like-this-dwim "mark all")
     ("s" set-rectangular-region-anchor "set mc")
     ("in" mc/insert-numbers "insert numbers"))
    "iedit"
