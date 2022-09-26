@@ -34,8 +34,15 @@
   (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
   (add-hook 'LaTeX-mode-hook #'tex-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook (lambda ()
-                               (setq TeX-command-default "XeLaTeX")))
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (setq TeX-command-default "XeLaTeX")
+              (add-hook 'TeX-update-style-hook
+                        (lambda ()
+                          (when (member "biblatex" TeX-active-styles)
+                            (setq-local LaTeX-biblatex-use-Biber t)))
+                        -100
+                        t)))
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
 
@@ -47,20 +54,12 @@
   (setq LaTeX-item-indent 0)
   (setq TeX-show-compilation nil)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-	    TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex --shell-escape --synctex=1%(mode)%' %t" TeX-run-TeX nil t))
-
-  (defun eli-LaTeX-use-biber ()
-    (save-excursion
-      (if (re-search-forward "\\\\usepackage.*{biblatex}" nil t)
-          (setq LaTeX-using-Biber t))))
-  (add-hook 'LaTeX-mode-hook #'eli-LaTeX-use-biber)
-
+  
   ;; reftex
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-default-bibliography eli/bibliography)
-
-  ;; preview
   )
 
 (with-eval-after-load 'tex
