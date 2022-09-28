@@ -1433,7 +1433,33 @@ Used by `org-anki-skip-function'"
   ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
   (setq org-entities-user '(("ws" "\\ " nil " " " " " " " ")))
   (setq org-latex-prefer-user-labels t)
-  (setq org-preview-latex-default-process 'dvipng)
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-preview-latex-process-alist
+        '((dvisvgm :programs
+                   ("xelatex" "dvisvgm")
+                   :description "xdv > svg"
+                   :message "you need to install the programs: xelatex and dvisvgm."
+                   :use-xcolor t
+                   :image-input-type "xdv"
+                   :image-output-type "svg"
+                   :image-size-adjust (1.7 . 1.5)
+                   :latex-compiler
+                   ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                   :image-converter
+                   ("dvisvgm %f -e -n -b min -c %S -o %O"))
+          (imagemagick :programs
+                       ("xelatex" "convert")
+                       :description "pdf > png"
+                       :message "you need to install the programs: xelatex and imagemagick."
+                       :use-xcolor t
+                       :image-input-type "pdf"
+                       :image-output-type "png"
+                       :image-size-adjust (1.0 . 1.0)
+                       :latex-compiler
+                       ("xelatex -interaction nonstopmode -output-directory %o %f")
+                       :image-converter
+                       ("convert -density %D -trim -antialias %f -quality 100 %O"))))
+  
   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n")
   (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
   (setq org-format-latex-options
