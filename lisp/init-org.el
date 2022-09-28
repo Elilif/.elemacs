@@ -1446,7 +1446,7 @@ Used by `org-anki-skip-function'"
   
   ;; Vertically align LaTeX preview in org mode
   (defun my-org-latex-preview-advice (beg end &rest _args)
-    (let* ((ov (car (overlays-in beg end)))
+    (let* ((ov (car (overlays-at (point) t)))
            (img (cdr (overlay-get ov 'display)))
            (new-img (plist-put img :ascent 90)))
       (overlay-put ov 'display (cons 'image new-img))))
@@ -1461,7 +1461,7 @@ Used by `org-anki-skip-function'"
   (defun eli-org-justify-fragment-overlay (beg end image imagetype)
     (let* ((position (plist-get org-format-latex-options :justify))
            (img (create-image image 'svg t))
-           (ov (car (overlays-in beg end)))
+           (ov (car (overlays-at (point) t)))
            (width (car (image-display-size (overlay-get ov 'display))))
            offset)
       (cond
@@ -1481,7 +1481,7 @@ Used by `org-anki-skip-function'"
         (overlay-put ov 'before-string (make-string offset ? ))))))
   (advice-add 'org--make-preview-overlay
               :after 'eli-org-justify-fragment-overlay)
-
+  
   ;; from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/
   ;; Better-equation-numbering-in-LaTeX-fragments-in-org-mode/
   (defun org-renumber-environment (orig-func &rest args)
