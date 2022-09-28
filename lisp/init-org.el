@@ -83,6 +83,7 @@
   (add-hook 'org-after-todo-statistics-hook 'eli/org-summary-todo)
   (setq org-use-fast-todo-selection 'expert)
   (setq org-log-into-drawer t)
+  (setq org-log-done 'time)
   (setq org-startup-folded t)
   (setq org-hide-block-startup t)
   (setq org-hide-emphasis-markers t)
