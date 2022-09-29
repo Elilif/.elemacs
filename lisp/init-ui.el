@@ -64,6 +64,8 @@
     (set-fontset-font "fontset-default" 'unicode "Meslo LG S DZ" nil 'prepend)
     (set-fontset-font "fontset-default" 'unicode "HanaMinA" nil 'prepend)
     (set-fontset-font "fontset-default" 'unicode "Noto Color Emoji" nil 'prepend)
+    ;; fix the size of "ㄓ" to fit mode-line
+    (set-fontset-font nil ?ㄓ (font-spec :family "Sarasa Mono SC Nerd" :size 12))
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
                                     ("Sarasa" . 1.18)
                                     ("Bookerly" . 1.3)))))
