@@ -1782,12 +1782,12 @@ holding contextual information."
        ;; Otherwise, fallback to standard org-mode link format
        ((org-element-link-interpreter link contents)))))
   
-    (defun eli-strip-ws-maybe (text _backend _info)
-      (let* ((text (replace-regexp-in-string
-                    "\\(\\cc\\) *\n *\\(\\cc\\)"
-                    "\\1\\2" text))) ;; remove whitespace from line break
-        text))
-    (add-to-list 'org-export-filter-paragraph-functions #'eli-strip-ws-maybe))
+  (defun eli-strip-ws-maybe (text _backend _info)
+    (let* ((text (replace-regexp-in-string
+                  "\\(\\cc\\) *\n *\\(\\cc\\)"
+                  "\\1\\2" text))) ;; remove whitespace from line break
+      text))
+  (add-to-list 'org-export-filter-paragraph-functions #'eli-strip-ws-maybe))
 
 
 ;;; mixed pitch mode
