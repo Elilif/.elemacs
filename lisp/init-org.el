@@ -167,9 +167,7 @@
   
   (defun eli-hide-org-block-begin-line (orig from to flag spec)
     (if (eq spec 'org-hide-block)
-        (let* ((beg-of-line (save-excursion
-                              (beginning-of-line)
-                              (point)))
+        (let* ((beg-of-line (line-beginning-position))
                (lang (car (org-babel-get-src-block-info)))
                (beg (+ beg-of-line
                        12
