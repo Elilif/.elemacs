@@ -381,6 +381,7 @@ or equal to scheduled (%s)"
 (add-hook 'org-mode-hook #'auto-fill-mode)
 (add-hook 'org-mode-hook #'prettify-symbols-mode)
 (add-hook 'org-mode-hook #'org-appear-mode)
+(add-hook 'org-mode-hook #'org-fragtog-mode)
 
 
 ;;; keybindings
