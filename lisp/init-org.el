@@ -1801,7 +1801,6 @@ holding contextual information."
   (add-to-list 'mixed-pitch-fixed-pitch-faces 'org-tag)
   (add-to-list 'mixed-pitch-fixed-pitch-faces 'font-lock-comment-face))
 
-(add-to-list 'load-path "~/.emacs.d/site-lisp/svg-tag-mode/")
 (with-eval-after-load 'org
   (require 'svg-tag-mode)
   (setq svg-lib-style-default
@@ -2006,20 +2005,19 @@ and style elements ARGS."
   (add-hook 'org-mode-hook (lambda ()
                              (make-local-variable 'font-lock-extra-managed-props)
                              (svg-tag-mode)))
-
+  
   (defun eli-org-agenda-show-svg ()
-    (let* ((n 0)
-           (case-fold-search nil)
+    (let* ((case-fold-search nil)
            (keywords (mapcar #'svg-tag--build-keywords svg-tag--active-tags))
-           (keyword (nth n keywords)))
+           (keyword (car keywords)))
       (while keyword
         (save-excursion
           (while (re-search-forward (nth 0 keyword) nil t)
             (overlay-put (make-overlay
                           (match-beginning 0) (match-end 0))
                          'display  (nth 3 (eval (nth 2 keyword)))) ))
-        (setq n (1+ n))
-        (setq keyword (nth n keywords)))))
+        (pop keywords)
+        (setq keyword (car keywords)))))
   (add-hook 'org-agenda-finalize-hook #'eli-org-agenda-show-svg))
 
 (provide 'init-org)
