@@ -152,6 +152,7 @@
     	          (add-text-properties (match-beginning 3) (match-end 3)
     			                       '(invisible t)))
                 (throw :exit t))))))))
+  (setq org-appear-autolinks t)
 
 
   ;;; org babel
