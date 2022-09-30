@@ -383,7 +383,6 @@ or equal to scheduled (%s)"
 (add-hook 'org-mode-hook #'org-appear-mode)
 (add-hook 'org-mode-hook #'org-fragtog-mode)
 
-
 ;;; keybindings
 (keymap-global-set "C-c l" #'org-store-link)
 (keymap-global-set "C-c c" #'org-capture)
@@ -1471,10 +1470,22 @@ Used by `org-anki-skip-function'"
                       :html-background "Transparent"
                       :html-scale 1.0
                       :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+
+  ;; show `#+name:' while in latex preview.
+  (defun eli-show-label (orig-fun beg end &rest _args)
+  (let* ((beg (save-excursion
+                (goto-char beg)
+                (if (re-search-forward "#\\+name:" end t)
+                    (progn
+                      (next-line)
+                      (line-beginning-position))
+                  beg))))
+    (apply orig-fun beg end _args)))
+  (advice-add 'org--make-preview-overlay :around #'eli-show-label)
   
   ;; Vertically align LaTeX preview in org mode
   (defun my-org-latex-preview-advice (beg end &rest _args)
-    (let* ((ov (car (overlays-at (point) t)))
+    (let* ((ov (car (overlays-at (/ (+ beg end) 2) t)))
            (img (cdr (overlay-get ov 'display)))
            (new-img (plist-put img :ascent 90)))
       (overlay-put ov 'display (cons 'image new-img))))
@@ -1489,7 +1500,7 @@ Used by `org-anki-skip-function'"
   (defun eli-org-justify-fragment-overlay (beg end image imagetype)
     (let* ((position (plist-get org-format-latex-options :justify))
            (img (create-image image 'svg t))
-           (ov (car (overlays-at (point) t)))
+           (ov (car (overlays-at (/ (+ beg end) 2) t)))
            (width (car (image-display-size (overlay-get ov 'display))))
            offset)
       (cond
