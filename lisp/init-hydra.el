@@ -398,8 +398,7 @@
    "Emoji & Pic"
    (("i" emoji-insert)
     ("f" emoji-search)
-    ("m" (let ((default-directory "~/Documents/org-images/"))
-           (call-interactively 'find-file)) "images"))
+    ("m" eli-select-images "images"))
    "LaTeX"
    (("l" mathpix-screenshot "mathpix"))))
 

@@ -40,12 +40,44 @@
   (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
 
+;; embark
 (with-eval-after-load 'vertico
   (keymap-global-set "C-." #'embark-act)
   (keymap-global-set "M-." #'embark-dwim)
   (keymap-global-set "C-h B" #'embark-bindings)
 
-  (setq prefix-help-command #'embark-prefix-help-command))
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  ;; preview image while using `find-file'
+  (defun eli-image-preview (&rest _args)
+    (let* ((target (embark--targets))
+           (file-path (plist-get (car target) :target))
+           (name (file-name-nondirectory file-path))
+           (mode (assoc-default name auto-mode-alist #'string-match)))
+      (posframe-hide-all)
+      (when (memq mode '(image-mode))
+        (with-current-buffer (get-buffer-create "*image*")
+          (setq inhibit-read-only t)
+          (erase-buffer)
+          (insert-file-contents file-path)
+          (set-auto-mode-0 mode))
+        (when (posframe-workable-p)
+          (posframe-show "*image*"
+                         :poshandler #'posframe-poshandler-frame-center)))))
+
+  (defun eli-select-images ()
+    (interactive)
+    (let ((default-directory "~/Documents/org-images/"))
+      (call-interactively 'find-file)))
+  
+  (advice-add 'eli-select-images
+              :before (lambda (&rest _args)
+                        (add-hook 'post-command-hook #'eli-image-preview)))
+
+  (add-hook 'minibuffer-exit-hook
+            (lambda ()
+              (remove-hook 'post-command-hook #'eli-image-preview)
+              (posframe-delete-all))))
 
 (with-eval-after-load 'embark
   (require 'embark-consult))
