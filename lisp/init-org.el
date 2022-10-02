@@ -400,6 +400,7 @@ or equal to scheduled (%s)"
 	      (forward-line))))))
 
 ;;; hooks
+(add-hook 'org-mode-hook #'toggle-word-wrap)
 (add-hook 'org-mode-hook #'org-indent-mode)
 (add-hook 'org-mode-hook #'auto-fill-mode)
 (add-hook 'org-mode-hook #'prettify-symbols-mode)
