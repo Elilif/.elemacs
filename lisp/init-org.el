@@ -1428,13 +1428,14 @@ Used by `org-anki-skip-function'"
   (defalias 'org-anki-sync-poem
     (kmacro "<f12> \\(.*\\) C-q C-j C-q C-j \\(\\(?:.* C-q C-j ?\\)*\\) <return> <return> <return> Poems <return>")))
 
-;;; latex
+;;; latex and pdf
 (with-eval-after-load 'org
   (require 'ox-latex)
   (setq org-highlight-latex-and-related '(latex entities script))
   ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
   (setq org-entities-user '(("ws" "\\ " nil " " " " " " " ")))
   (setq org-latex-prefer-user-labels t)
+  (setq org-startup-with-latex-preview t)
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-preview-latex-process-alist
         '((dvisvgm :programs
