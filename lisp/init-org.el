@@ -922,7 +922,7 @@ References from FILE are excluded."
            :if-new (file+datetree "~/Dropbox/org/roam/daily/dailies.org" day))))
   (setq org-roam-capture-templates
         '(("m" "main" plain "%?"
-           :if-new (file+head "main/%<%Y%m%d%H%M%S>.org"
+           :if-new (file+head "main/%<%Y%m%d%H%M%S>-${title}.org"
 							  "#+TITLE: ${title}\n")
            :unnarrowed t)
 		  ("b" "bibliography reference" plain
@@ -931,7 +931,7 @@ References from FILE are excluded."
 		   )
 		  ("r" "reference" plain "%? \n %(v-i-or-nothing) \n\n%(v-a-or-nothing)"
 		   :if-new
-		   (file+head "references/%<%Y%m%d%H%M%S>.org" "#+title: ${title}\n")
+		   (file+head "references/%<%Y%m%d%H%M%S>-${title}.org" "#+title: ${title}\n")
 		   :unnarrowed t)))
   (run-at-time 20 nil
 	           #'org-roam-setup)
