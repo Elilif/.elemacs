@@ -91,7 +91,7 @@
                                          "-[:space:].,:!?;'\")}\\[[:nonascii:]"
                                          "[:space:]"
                                          "."
-                                         1))
+                                         3))
   (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
   (org-element-update-syntax)
   (setq org-match-substring-regexp
@@ -152,6 +152,30 @@
     	          (add-text-properties (match-beginning 3) (match-end 3)
     			                       '(invisible t)))
                 (throw :exit t))))))))
+  
+  ;; prevent org emphases from being split by `fill-paragraph'.
+  (defun eli-adjust-line-break-point (linebeg)
+    (let* ((re "\\([-[:space:]('\"{[:nonascii:]]\\|^\\)\\([~=*/_+]\\)\\(?:.+?\\|.*?\n.+?\\)[~=*/_+]")
+           pt)
+      (save-excursion
+        (beginning-of-line)
+        (while (re-search-forward re (line-end-position) t)
+          (when (and (> (save-excursion
+                          (goto-char (match-end 0))
+                          (current-column))
+                        fill-column)
+                     (< (save-excursion
+                          (goto-char (match-beginning 0))
+                          (current-column))
+                        fill-column))
+            (setq pt (match-beginning 0)))))
+      (when pt
+        (goto-char pt)
+        (forward-char 2))))
+
+  (advice-add 'fill-move-to-break-point :before #'eli-adjust-line-break-point)
+
+  ;; org-appear setting
   (setq org-appear-autolinks t)
 
 
