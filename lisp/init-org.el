@@ -380,7 +380,9 @@ or equal to scheduled (%s)"
 (add-hook 'org-mode-hook #'auto-fill-mode)
 (add-hook 'org-mode-hook #'prettify-symbols-mode)
 (add-hook 'org-mode-hook #'org-appear-mode)
-(add-hook 'org-mode-hook #'org-fragtog-mode)
+(add-hook 'org-mode-hook #'org-fragtog-mode)    ;; preview latex fragments
+(add-hook 'org-mode-hook #'org-inline-pdf-mode) ;; preview pdf as image
+
 
 ;;; keybindings
 (keymap-global-set "C-c l" #'org-store-link)
