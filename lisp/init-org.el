@@ -1801,7 +1801,27 @@ holding contextual information."
                   "\\(\\cc\\) *\n *\\(\\cc\\)"
                   "\\1\\2" text))) ;; remove whitespace from line break
       text))
-  (add-to-list 'org-export-filter-paragraph-functions #'eli-strip-ws-maybe))
+  (add-to-list 'org-export-filter-paragraph-functions #'eli-strip-ws-maybe)
+  
+  (defun eli-org-latex-filter-pdf (backend)
+    (when (org-export-derived-backend-p backend 'latex)
+      (let ((end (point-max)))
+        (org-with-point-at (point-min)
+          (let* ((case-fold-search t)
+                 (pdf-link-re "\\[\\[.*?pdf\\]\\]"))
+            (while (re-search-forward pdf-link-re end t)
+              (let* ((link (org-element-lineage
+			                (save-match-data (org-element-context))
+			                '(link) t))
+                     (path (org-element-property :path link))
+		             (link-start (org-element-property :begin link))
+                     (link-end (org-element-property :end link))
+                     (page-num (org-inline-pdf--get-page-number)))
+                (replace-regexp-in-region pdf-link-re (format
+                                                       "\\\\includepdf[pages=%s]{%s}"
+                                                       page-num path)
+                                          link-start))))))))
+  (add-to-list 'org-export-before-parsing-hook #'eli-org-latex-filter-pdf))
 
 
 ;;; mixed pitch mode
