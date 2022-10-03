@@ -1223,22 +1223,23 @@ direct title.
       (fill-paragraph)
       (goto-char (mark))))
 
-  (defun eli-org-clean-sentence (&optional arg)
-    (when arg
-      (let* ((temp (pop kill-ring))
-             (new-string (string-clean-whitespace
-                          (replace-regexp-in-string "\n" " " temp))))
-        (push new-string kill-ring))))
+  (defun formatted-copy (string)
+    "Export string to HTML, and convert it into plain text."
+    (let ((string (org-export-string-as string 'html t)))
+      (shell-command-to-string
+       (format "echo \"%s\" | pandoc --from=html --to=plain" string))))
 
   (defun eli-unfill-string (string)
     (if (and (memq major-mode '(org-mode mu4e-view-mode
                                          elfeed-show-mode nov-mode))
              (member (prefix-numeric-value current-prefix-arg) '(4 16 64)))
-        (string-clean-whitespace
-         (replace-regexp-in-string "\n" " " string))
+        (let* ((new-string (replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 "
+                                                 (formatted-copy string)))
+               (new-string (replace-regexp-in-string "\n" "" new-string)))
+          new-string)
       string))
+  
   (advice-add 'filter-buffer-substring :filter-return #'eli-unfill-string)
-  (advice-add 'org-yank :before #'eli-org-clean-sentence)
   (advice-add 'org-yank :after #'eli-org-fill-paragraph)
 
   ;; movie rating
