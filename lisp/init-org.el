@@ -155,20 +155,21 @@
   
   ;; prevent org emphases from being split by `fill-paragraph'.
   (defun eli-adjust-line-break-point (linebeg)
-    (let* ((re "\\([-[:space:]('\"{[:nonascii:]]\\|^\\)\\([~=*/_+]\\)\\(?:.+?\\|.*?\n.+?\\)[~=*/_+]")
+    (let* ((re "\\([-[:space:]('\"{[:nonascii:]]\\|^\\)\\([~=*/_+]\\)\\(?:.+?\\|.+?\n.+?\\)[~=*/_+]")
            pt)
       (save-excursion
-        (beginning-of-line)
-        (while (re-search-forward re (line-end-position) t)
-          (when (and (> (save-excursion
-                          (goto-char (match-end 0))
-                          (current-column))
-                        fill-column)
-                     (< (save-excursion
+        (end-of-line)
+        (while (re-search-backward re linebeg t)
+          (let* ((beg (save-excursion
                           (goto-char (match-beginning 0))
-                          (current-column))
-                        fill-column))
-            (setq pt (match-beginning 0)))))
+                          (current-column)))
+                 (end (save-excursion
+                          (goto-char (match-end 0))
+                          (current-column))))
+            (when (and (> end fill-column)
+                       (> (+ beg 6) fill-column)
+                       (< beg fill-column))
+              (setq pt (match-beginning 0))))))
       (when pt
         (goto-char pt)
         (forward-char 2))))
