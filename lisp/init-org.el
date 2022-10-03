@@ -1462,7 +1462,7 @@ Used by `org-anki-skip-function'"
   ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
   (setq org-entities-user '(("ws" "\\ " nil " " " " " " " ")))
   (setq org-latex-prefer-user-labels t)
-  (setq org-startup-with-latex-preview t)
+  (setq org-startup-with-latex-preview nil)
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-preview-latex-process-alist
         '((dvisvgm :programs
