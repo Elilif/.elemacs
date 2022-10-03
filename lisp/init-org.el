@@ -1493,12 +1493,7 @@ Used by `org-anki-skip-function'"
   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n")
   (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
   (setq org-format-latex-options
-        '(:foreground default
-                      :background default
-                      :scale 1.5 :html-foreground "Black"
-                      :html-background "Transparent"
-                      :html-scale 1.0
-                      :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+        (plist-put org-format-latex-options :scale 1.5))
 
   ;; show `#+name:' while in latex preview.
   (defun eli-show-label (orig-fun beg end &rest _args)
