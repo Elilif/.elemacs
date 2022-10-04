@@ -555,5 +555,11 @@ BUFFER is a string, the name of a buffer."
 
 (keymap-global-set "M-DEL" #'backward-kill-sentence)
 
+;; insert key-sequence
+(defun eli/insert-key-sequence ()
+  (interactive)
+  (insert (key-description
+           (read-key-sequence-vector "Press a keystrokes"))))
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
