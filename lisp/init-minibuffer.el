@@ -84,9 +84,10 @@
 
 (with-eval-after-load 'vertico
   (require 'orderless)
-  (defun completion--regex-pinyin (str)
-    (orderless-regexp (pinyinlib-build-regexp-string str)))
-  (add-to-list 'orderless-matching-styles 'completion--regex-pinyin)
+  (with-eval-after-load 'pinyinlib
+    (defun completion--regex-pinyin (str)
+      (orderless-regexp (pinyinlib-build-regexp-string str)))
+    (add-to-list 'orderless-matching-styles 'completion--regex-pinyin))
   ;; https://github.com/minad/consult/wiki
   (defvar +orderless-dispatch-alist
     '((?% . char-fold-to-regexp)
