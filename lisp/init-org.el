@@ -177,10 +177,6 @@
 
   (advice-add 'fill-move-to-break-point :before #'eli-adjust-line-break-point)
 
-  ;; org-appear setting
-  (setq org-appear-autolinks t)
-
-
   ;;; org babel
   (setq org-confirm-babel-evaluate nil)
   (setq org-babel-load-languages '((emacs-lisp . t)
