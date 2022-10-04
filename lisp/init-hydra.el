@@ -68,6 +68,7 @@
   ("multiple cursors"
    (("l" mc/edit-lines "edit-lines")
     ("a" mc/mark-all-like-this-dwim "mark all")
+    ("w" mc/mark-all-words-like-this "mark words")
     ("s" set-rectangular-region-anchor "set mc")
     ("in" mc/insert-numbers "insert numbers"))
    "iedit"
