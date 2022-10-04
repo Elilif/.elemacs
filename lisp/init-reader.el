@@ -70,7 +70,7 @@
   (setq org-noter-notes-search-path '("~/Dropbox/org/roam"))
   (setq org-noter-always-create-frame t)
 
-  (defun eli-org-noter-set-highlight (_arg)
+  (defun eli/org-noter-set-highlight (_arg)
     "Highlight current org-noter note."
     (save-excursion
       (switch-to-buffer "Notes of Notes")
@@ -85,9 +85,9 @@
       (org-cycle-hide-drawers 'all)))
   
   (advice-add #'org-noter--focus-notes-region
-              :after #'eli-org-noter-set-highlight)
+              :after #'eli/org-noter-set-highlight)
 
-  (defun eli-org-noter-back-to-current-window (orig-fun)
+  (defun eli/org-noter-back-to-current-window (orig-fun)
     (save-selected-window
       (call-interactively orig-fun)))
   
@@ -95,16 +95,16 @@
     '(org-noter-sync-prev-note
       org-noter-sync-next-note))
   
-  (defmacro eli-advise-org-noter-functions (functions)
+  (defmacro eli/advise-org-noter-functions (functions)
     `(progn
        ,@(mapcar (lambda (command)
                    `(advice-add ',command :around
-                                #'eli-org-noter-back-to-current-window))
+                                #'eli/org-noter-back-to-current-window))
                  (eval functions))))
 
-  (eli-advise-org-noter-functions org-noter-move-functions)
+  (eli/advise-org-noter-functions org-noter-move-functions)
 
-  (defun eli-org-noter-scroll-up-other-window (lines)
+  (defun eli/org-noter-scroll-up-other-window (lines)
     (interactive "P")
     (with-selected-window (other-window-for-scrolling)
       (funcall (or (command-remapping #'pdf-view-scroll-up-or-next-page)
@@ -112,9 +112,9 @@
                lines)))
   
   (keymap-set org-noter-notes-mode-map "M-]"
-              #'eli-org-noter-scroll-up-other-window)
+              #'eli/org-noter-scroll-up-other-window)
 
-  (defun eli-org-noter-scroll-down-other-window (lines)
+  (defun eli/org-noter-scroll-down-other-window (lines)
     (interactive "P")
     (with-selected-window (other-window-for-scrolling)
       (funcall (or (command-remapping #'pdf-view-scroll-down-or-previous-page)
@@ -122,7 +122,7 @@
                lines)))
 
   (keymap-set org-noter-notes-mode-map "M-["
-              #'eli-org-noter-scroll-down-other-window))
+              #'eli/org-noter-scroll-down-other-window))
 
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (with-eval-after-load 'nov

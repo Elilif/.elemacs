@@ -195,10 +195,10 @@
                                      mark-paragraph
                                      ))
 
-    (defun eli-er/clearn-history (_arg)
+    (defun eli/er-clearn-history (_arg)
       (if (not (memq last-command '(er/expand-region er/contract-region)))
           (er/clear-history)))
-    (advice-add 'er/expand-region :before #'eli-er/clearn-history))
+    (advice-add 'er/expand-region :before #'eli/er-clearn-history))
 
 (add-hook 'elemacs-first-input-hook #'which-key-mode)
 (setq which-key-idle-delay 0.3)

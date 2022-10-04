@@ -5,4 +5,4 @@
 # condition: (and (texmathp) (quote auto))
 # group: math
 # --
-`(eli-latex-smart-kill)`\\frac{`(eli-latex-smart-paste)`}{$1}
+`(eli/latex-smart-kill)`\\frac{`(eli/latex-smart-paste)`}{$1}

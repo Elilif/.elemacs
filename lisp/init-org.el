@@ -155,7 +155,7 @@
                 (throw :exit t))))))))
   
   ;; prevent org emphases from being split by `fill-paragraph'.
-  (defun eli-adjust-line-break-point (linebeg)
+  (defun eli/adjust-line-break-point (linebeg)
     (let* ((re "\\([-[:space:]('\"{[:nonascii:]]\\|^\\)\\([~=*/_+]\\)\\(?:.+?\\|.+?\n.+?\\)[~=*/_+]")
            pt)
       (save-excursion
@@ -175,7 +175,7 @@
         (goto-char pt)
         (forward-char 2))))
 
-  (advice-add 'fill-move-to-break-point :before #'eli-adjust-line-break-point)
+  (advice-add 'fill-move-to-break-point :before #'eli/adjust-line-break-point)
 
   ;;; org babel
   (setq org-confirm-babel-evaluate nil)
@@ -187,7 +187,7 @@
                                  (shell . t)
                                  (C . t)))
   
-  (defun eli-hide-org-block-begin-line (orig from to flag spec)
+  (defun eli/hide-org-block-begin-line (orig from to flag spec)
     (if (eq spec 'org-hide-block)
         (let* ((beg-of-line (line-beginning-position))
                (lang (car (org-babel-get-src-block-info)))
@@ -196,7 +196,7 @@
                        (length lang))))
           (funcall orig beg to flag spec))
       (funcall orig from to flag spec)))
-  (advice-add 'org-flag-region :around #'eli-hide-org-block-begin-line)
+  (advice-add 'org-flag-region :around #'eli/hide-org-block-begin-line)
   
 
   (setq org-startup-with-inline-images t)
@@ -327,7 +327,7 @@ or equal to scheduled (%s)"
 	        (setq count (1+ count))))
 	    (list scheduled sr-days deadline dr-days closed-dates sr-type))))
 
-  (defun eli-habit-streaks (habit)
+  (defun eli/habit-streaks (habit)
     (interactive)
     (let ((closed-days (nth 4 habit))
 	      (counter 1)
@@ -393,7 +393,7 @@ or equal to scheduled (%s)"
 		        moment
 		        (time-add moment (days-to-time org-habit-following-days))))
 	          (end-of-line)
-	          (eli-habit-streaks habit)
+	          (eli/habit-streaks habit)
 	          ))
 	      (forward-line))))))
 
@@ -445,7 +445,7 @@ or equal to scheduled (%s)"
   (setq org-agenda-log-mode-items '(clock))
   (setq org-agenda-log-mode-add-notes nil)
 
-  (defun eli-make-progress (width)
+  (defun eli/make-progress (width)
     (let* ((today (time-to-day-in-year (current-time)))
            (percent (floor (* 100 (/ today 365.0))))
            (done (/ percent 100.0))
@@ -464,7 +464,7 @@ or equal to scheduled (%s)"
                       (concat "Day-agenda (W"
                               (format-time-string "%U" (current-time))
                               ") "
-                              (eli-make-progress 50)))))
+                              (eli/make-progress 50)))))
             (tags-todo  "/+TODO"
 			            ((org-agenda-overriding-header
                           (propertize "Inbox" 'face 'mindre-faded))
@@ -483,7 +483,7 @@ or equal to scheduled (%s)"
 		               ((org-agenda-overriding-header "Someday/Maybe")))
             ))))
   ;; change the progress color
-  (defun eli-show-progress-color ()
+  (defun eli/show-progress-color ()
     (save-excursion
       (goto-char (point-min))
       (when (re-search-forward "\\([0-9]\\{2,3\\}\\)%" nil t)
@@ -501,7 +501,7 @@ or equal to scheduled (%s)"
           (overlay-put (make-overlay
                         (match-beginning 0) (match-end 0))
                        'face percent-face)))))
-  (add-hook 'org-agenda-finalize-hook #'eli-show-progress-color)
+  (add-hook 'org-agenda-finalize-hook #'eli/show-progress-color)
 
   (defvar dynamic-agenda-files nil
     "dynamic generate agenda files list when changing org state")
@@ -600,7 +600,7 @@ or equal to scheduled (%s)"
       (org-fill-paragraph nil t)))
   (add-hook 'org-capture-prepare-finalize-hook 'eli/fill-region)
 
-  (defun eli-org-capture-template-goto-today (format-string start end point)
+  (defun eli/org-capture-template-goto-today (format-string start end point)
     "Set point for capturing at what capture target file+headline
 with headline set to %l would do."
     (org-capture-put :target (list 'file+headline
@@ -661,7 +661,7 @@ with headline set to %l would do."
 	      ("e" "Events" entry (file+function
                                "~/Elilif.github.io/Eli's timeline.org"
                                (lambda ()
-                                 (eli-org-capture-template-goto-today
+                                 (eli/org-capture-template-goto-today
                                   "%Y-%m-%d" 0 10 361)))
 	       "* %?"
 	       )
@@ -683,7 +683,7 @@ with headline set to %l would do."
           ("w" "Words" checkitem (file+function
                                  org-agenda-file-te
                                  (lambda ()
-                                   (eli-org-capture-template-goto-today
+                                   (eli/org-capture-template-goto-today
                                     "TODO %Y-%m-%d [/]" 5 15 81)))
 	       "[ ] %(v-i-or-nothing-word)%?"
            :prepend t)
@@ -904,7 +904,7 @@ References from FILE are excluded."
                                  (format " '\\[([^[]]++|(?R))*\\]%s' "
                                          (mapconcat
                                           (lambda (title)
-                                            (setq eli-test title)
+                                            (setq eli/test title)
                                             (format "|(\\b%s\\b)"
                                                     (shell-quote-argument
                                                      title)))
@@ -1015,7 +1015,7 @@ direct title.
      is identical to `org-roam-node-backlinkscount' with the
      difference that it returns a number instead of a fromatted
      string. This is to be used in
-     `eli-org-roam-node-sort-by-backlinks'"
+     `eli/org-roam-node-sort-by-backlinks'"
       (let* ((count (caar (org-roam-db-query
 			               [:select (funcall count source)
 				                    :from links
@@ -1028,10 +1028,10 @@ direct title.
           (concat "${type:15} ${doom-hierarchy:120} ${backlinkscount:6}"
                   (propertize "${tags:*}" 'face 'org-tag))))
   
-  (defun eli-org-roam-node-sort-by-backlinks (completion-a completion-b)
+  (defun eli/org-roam-node-sort-by-backlinks (completion-a completion-b)
     "Sorting function for org-roam that sorts the list of nodes by
    the number of backlinks. This is the sorting function in
-   `eli-org-roam-backlinks--read-node-backlinks'"
+   `eli/org-roam-backlinks--read-node-backlinks'"
     (let ((node-a (cdr completion-a))
 	      (node-b (cdr completion-b)))
 	  (>= (org-roam-node-backlinkscount-number node-a)
@@ -1040,7 +1040,7 @@ direct title.
   ;; embark support
   ;; from https://github.com/Vidianos-Giannitsis/Dotfiles/blob/master/emacs/
   ;; .emacs.d/libs/zettelkasten.org
-  (defun eli-org-roam-backlinks-query* (NODE)
+  (defun eli/org-roam-backlinks-query* (NODE)
     "Gets the backlinks of NODE with `org-roam-db-query'."
     (org-roam-db-query
      [:select [source dest]
@@ -1049,32 +1049,32 @@ direct title.
 		      :and (= type "id")]
      (org-roam-node-id NODE)))
 
-  (defun eli-org-roam-backlinks-p (SOURCE NODE)
+  (defun eli/org-roam-backlinks-p (SOURCE NODE)
     "Predicate function that checks if NODE is a backlink of SOURCE."
     (let* ((source-id (org-roam-node-id SOURCE))
-	       (backlinks (eli-org-roam-backlinks-query* SOURCE))
+	       (backlinks (eli/org-roam-backlinks-query* SOURCE))
 	       (id (org-roam-node-id NODE))
 	       (id-list (list id source-id)))
       (member id-list backlinks)))
 
-  (defun eli-org-roam-backlinks--read-node-backlinks (source)
+  (defun eli/org-roam-backlinks--read-node-backlinks (source)
     "Runs `org-roam-node-read' on the backlinks of SOURCE.
  The predicate used as `org-roam-node-read''s filter-fn is
- `eli-org-roam-backlinks-p'."
-    (org-roam-node-read nil (apply-partially #'eli-org-roam-backlinks-p source)
-                        #'eli-org-roam-node-sort-by-backlinks))
+ `eli/org-roam-backlinks-p'."
+    (org-roam-node-read nil (apply-partially #'eli/org-roam-backlinks-p source)
+                        #'eli/org-roam-node-sort-by-backlinks))
 
-  (defun eli-org-roam-backlinks-node-read (entry)
-    "Read a NODE and run `eli-org-roam-backlinks--read-node-backlinks'."
+  (defun eli/org-roam-backlinks-node-read (entry)
+    "Read a NODE and run `eli/org-roam-backlinks--read-node-backlinks'."
     (let* ((node (get-text-property 0 'node entry))
-           (backlink (eli-org-roam-backlinks--read-node-backlinks node)))
+           (backlink (eli/org-roam-backlinks--read-node-backlinks node)))
       (find-file (org-roam-node-file backlink))))
 
   (embark-define-keymap embark-org-roam-map
     "Keymap for Embark org roam actions."
     ("i" org-roam-node-insert)
     ("s" embark-collect)
-    ("b" eli-org-roam-backlinks-node-read))
+    ("b" eli/org-roam-backlinks-node-read))
   
   (add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
 
@@ -1168,10 +1168,10 @@ direct title.
               #'org-clock-convenience-fill-gap-both))
 
 ;; fix M-j
-(defun eli-org-fill-prefix ()
+(defun eli/org-fill-prefix ()
   "Set `fill-prefix' to the empty string."
   (setq fill-prefix ""))
-(add-hook 'org-mode-hook #'eli-org-fill-prefix)
+(add-hook 'org-mode-hook #'eli/org-fill-prefix)
 
 (with-eval-after-load 'org
   ;;; org-download
@@ -1214,7 +1214,7 @@ direct title.
           (wl . wl-other-frame)))
 
   ;; remove superfluous whitespace.
-  (defun eli-org-fill-paragraph (&optional arg)
+  (defun eli/org-fill-paragraph (&optional arg)
     (when arg
       (fill-paragraph)
       (goto-char (mark))))
@@ -1225,7 +1225,7 @@ direct title.
       (shell-command-to-string
        (format "echo \"%s\" | pandoc --from=html --to=plain" string))))
 
-  (defun eli-unfill-string (string)
+  (defun eli/unfill-string (string)
     (if (and (memq major-mode '(org-mode mu4e-view-mode
                                          elfeed-show-mode nov-mode))
              (member (prefix-numeric-value current-prefix-arg) '(4 16 64)))
@@ -1235,8 +1235,8 @@ direct title.
           new-string)
       string))
   
-  (advice-add 'filter-buffer-substring :filter-return #'eli-unfill-string)
-  (advice-add 'org-yank :after #'eli-org-fill-paragraph)
+  (advice-add 'filter-buffer-substring :filter-return #'eli/unfill-string)
+  (advice-add 'org-yank :after #'eli/org-fill-paragraph)
 
   ;; movie rating
   (defun eli/get-tag-counts ()
@@ -1339,7 +1339,7 @@ Used by `org-anki-skip-function'"
         (point)))
   (setq org-anki-skip-function #'org-anki-skip)
 
-  (defun eli-org-anki-sync-item (item)
+  (defun eli/org-anki-sync-item (item)
     (org-anki-connect-request
      (org-anki--create-note-single item)
      (lambda (the-result)
@@ -1351,7 +1351,7 @@ Used by `org-anki-skip-function'"
         "Couldn't update note, received: %s"
         the-error))))
   
-  (defmacro eli-org-anki-install (fun-name reg front &optional back)
+  (defmacro eli/org-anki-install (fun-name reg front &optional back)
   `(defun ,(intern (format "org-anki-sync-%s" fun-name)) ()
      (interactive)
      (save-excursion
@@ -1392,8 +1392,8 @@ Used by `org-anki-skip-function'"
                        :deck     deck
                        :type     type
                        :point    note-start)))
-             (eli-org-anki-sync-item card)))))))
-  (eli-org-anki-install "description" (rx bol
+             (eli/org-anki-sync-item card)))))))
+  (eli/org-anki-install "description" (rx bol
                                           (* " ")
                                           "- "
                                           (group (* any))
@@ -1403,7 +1403,7 @@ Used by `org-anki-skip-function'"
                                                  (* (** 1 2 " ")
                                                     (* any)
                                                     (? "\n")))) 1 2)
-  (eli-org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2)
+  (eli/org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2)
   
   (defun org-anki-sync-region (beg end)
     (interactive "r")
@@ -1440,7 +1440,7 @@ Used by `org-anki-skip-function'"
                   :deck     deck
                   :type     type
                   :point    note-start)))
-      (eli-org-anki-sync-item card)
+      (eli/org-anki-sync-item card)
       (deactivate-mark)))
 
   (keymap-global-set "<f12>" #'org-anki-sync-region)
@@ -1492,7 +1492,7 @@ Used by `org-anki-skip-function'"
         (plist-put org-format-latex-options :scale 1.5))
 
   ;; show `#+name:' while in latex preview.
-  (defun eli-show-label (orig-fun beg end &rest _args)
+  (defun eli/show-label (orig-fun beg end &rest _args)
   (let* ((beg (save-excursion
                 (goto-char beg)
                 (if (re-search-forward "#\\+name:" end t)
@@ -1501,7 +1501,7 @@ Used by `org-anki-skip-function'"
                       (line-beginning-position))
                   beg))))
     (apply orig-fun beg end _args)))
-  (advice-add 'org--make-preview-overlay :around #'eli-show-label)
+  (advice-add 'org--make-preview-overlay :around #'eli/show-label)
   
   ;; Vertically align LaTeX preview in org mode
   (defun my-org-latex-preview-advice (beg end &rest _args)
@@ -1517,7 +1517,7 @@ Used by `org-anki-skip-function'"
   ;; specify the justification you want
   (plist-put org-format-latex-options :justify 'center)
 
-  (defun eli-org-justify-fragment-overlay (beg end image imagetype)
+  (defun eli/org-justify-fragment-overlay (beg end image imagetype)
     (let* ((position (plist-get org-format-latex-options :justify))
            (img (create-image image 'svg t))
            (ov (car (overlays-at (/ (+ beg end) 2) t)))
@@ -1539,7 +1539,7 @@ Used by `org-anki-skip-function'"
             (setq offset 0))
         (overlay-put ov 'before-string (make-string offset ? ))))))
   (advice-add 'org--make-preview-overlay
-              :after 'eli-org-justify-fragment-overlay)
+              :after 'eli/org-justify-fragment-overlay)
   
   ;; from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/
   ;; Better-equation-numbering-in-LaTeX-fragments-in-org-mode/
@@ -1729,7 +1729,7 @@ font-lock."
       ;; retrieve the cached data
       org-ref-label-cache))
 
-  (defun eli-org-ref-insert-ref-link ()
+  (defun eli/org-ref-insert-ref-link ()
     "Completion function for a ref link."
     (interactive)
     (insert (let ((label))
@@ -1815,15 +1815,15 @@ holding contextual information."
        ;; Otherwise, fallback to standard org-mode link format
        ((org-element-link-interpreter link contents)))))
   
-  (defun eli-strip-ws-maybe (text _backend _info)
+  (defun eli/strip-ws-maybe (text _backend _info)
     (let* ((text (replace-regexp-in-string
                   "\\(\\cc\\) *\n *\\(\\cc\\)"
                   "\\1\\2" text))) ;; remove whitespace from line break
       text))
-  (add-to-list 'org-export-filter-paragraph-functions #'eli-strip-ws-maybe)
+  (add-to-list 'org-export-filter-paragraph-functions #'eli/strip-ws-maybe)
   
   (with-eval-after-load 'org-inline-pdf
-    (defun eli-org-latex-filter-pdf (backend)
+    (defun eli/org-latex-filter-pdf (backend)
       (when (org-export-derived-backend-p backend 'latex)
         (let ((end (point-max)))
           (org-with-point-at (point-min)
@@ -1841,7 +1841,7 @@ holding contextual information."
                                                          "\\\\includepdf[pages=%s]{%s}"
                                                          page-num path)
                                             link-start))))))))
-    (add-to-list 'org-export-before-parsing-hook #'eli-org-latex-filter-pdf)))
+    (add-to-list 'org-export-before-parsing-hook #'eli/org-latex-filter-pdf)))
 
 
 ;;; mixed pitch mode
@@ -2059,7 +2059,7 @@ and style elements ARGS."
                              (make-local-variable 'font-lock-extra-managed-props)
                              (svg-tag-mode)))
   
-  (defun eli-org-agenda-show-svg ()
+  (defun eli/org-agenda-show-svg ()
     (let* ((case-fold-search nil)
            (keywords (mapcar #'svg-tag--build-keywords svg-tag--active-tags))
            (keyword (car keywords)))
@@ -2071,7 +2071,7 @@ and style elements ARGS."
                          'display  (nth 3 (eval (nth 2 keyword)))) ))
         (pop keywords)
         (setq keyword (car keywords)))))
-  (add-hook 'org-agenda-finalize-hook #'eli-org-agenda-show-svg))
+  (add-hook 'org-agenda-finalize-hook #'eli/org-agenda-show-svg))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

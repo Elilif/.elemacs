@@ -326,7 +326,7 @@
    "Calibre"
    (("c" calibredb "calibre")
     ("b" eli/update-calibre-bibtex "get bibtex")
-    ("t" eli-open-TE "open TE")
+    ("t" eli/open-TE "open TE")
     )
    "Roam Bibtex"
    (("a" orb-note-actions "orb note actions")

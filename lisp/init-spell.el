@@ -67,7 +67,7 @@
 	(INIT-INPUT "\\("))
     (consult-ripgrep BASEDIR INIT-INPUT)))
 
-(defun eli-open-TE (file-name)
+(defun eli/open-TE (file-name)
   (interactive
    (list (read-file-name "Find file:  "
                          "~/Documents/TE/"

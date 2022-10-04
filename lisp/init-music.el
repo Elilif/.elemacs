@@ -31,7 +31,7 @@
 ;;; Code:
 
 (with-eval-after-load 'emms
-  (defvar eli-filter-score 0)
+  (defvar eli/filter-score 0)
   (setq emms-score-max-score 10)
   (setq emms-playlist-buffer-name "*Emms*")
   (setq emms-source-file-default-directory "~/Music/")
@@ -52,11 +52,11 @@
   (emms-browser-make-filter
    "by-scores"
    (lambda (track)
-     (not (>= (funcall 'emms-score-get-score (emms-track-get track 'name)) eli-filter-score))))
+     (not (>= (funcall 'emms-score-get-score (emms-track-get track 'name)) eli/filter-score))))
 
   (defun eli/emms-filter (score)
     (interactive "nSet score for filter: ")
-    (setq eli-filter-score score)
+    (setq eli/filter-score score)
     (emms-browser-show-by-scores)
     )
 

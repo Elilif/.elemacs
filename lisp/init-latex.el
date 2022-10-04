@@ -115,12 +115,12 @@
   (setq xenops-image-try-write-clipboard-image-to-file nil))
 
 (with-eval-after-load 'xenops
-  (defun eli-delete-region ()
+  (defun el/delete-region ()
     (if (use-region-p)
         (delete-region (region-beginning)
                        (region-end))))
   (advice-add 'xenops-handle-paste-default
-              :before #'eli-delete-region))
+              :before #'eli/delete-region))
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/mathpix/")
 (autoload #'mathpix-screenshot "mathpix" nil t)

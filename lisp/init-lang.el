@@ -59,7 +59,7 @@
 
   ;; Try after every insertion
   (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets)
-  (defun eli-latex-smart-kill ()
+  (defun eli/latex-smart-kill ()
     (condition-case nil
         (save-excursion
           (let ((ip (point))
@@ -76,7 +76,7 @@
                 (kill-region (1+ bp) ip)))))
       (error (setq numerator 'nil))))
 
-  (defun eli-latex-smart-paste ()
+  (defun eli/latex-smart-paste ()
     (if numerator
         (let ((temp (string-clean-whitespace (current-kill 0))))
           (if (string-match "^(\\(.*\\))$" temp)

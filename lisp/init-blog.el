@@ -43,13 +43,13 @@
   (setq org-html-validation-link nil) ; 去掉validation显示
   (setq org-html-link-home "index.html"); 设置home超链接
   (setq org-html-link-up "index.html")
-  (setq eli-blog-base-dir "~/Dropbox/org/blog")
-  (setq eli-blog-publish-dir "~/Elilif.github.io")
+  (setq eli/blog-base-dir "~/Dropbox/org/blog")
+  (setq eli/blog-publish-dir "~/Elilif.github.io")
   (setq org-html-postamble nil)
   (setq org-publish-project-alist
 	`(("eli's blog"
-           :base-directory ,eli-blog-base-dir
-           :publishing-directory ,eli-blog-publish-dir
+           :base-directory ,eli/blog-base-dir
+           :publishing-directory ,eli/blog-publish-dir
            :base-extension "org"
            :recursive nil
 	       :htmlized-source t

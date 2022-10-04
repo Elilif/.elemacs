@@ -46,7 +46,7 @@
   (require 'oc-biblatex))
 
 (with-eval-after-load 'citar
-  (defun eli-citar-org-format-note (key entry)
+  (defun eli/citar-org-format-note (key entry)
     "Format a note from KEY and ENTRY."
     (let* ((template (citar--get-template 'note))
            (note-meta (when template
@@ -89,7 +89,7 @@
   (setq citar-symbol-separator "  ")
   (setq citar-bibliography eli/bibliography)
   (setq citar-at-point-function 'citar-dwim)
-  (setq citar-note-format-function #'eli-citar-org-format-note)
+  (setq citar-note-format-function #'eli/citar-org-format-note)
   (setq citar-notes-paths '("~/Dropbox/org/roam/references")))
 
 (with-eval-after-load 'citar
