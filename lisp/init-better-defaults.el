@@ -561,5 +561,19 @@ BUFFER is a string, the name of a buffer."
   (insert (key-description
            (read-key-sequence-vector "Press a keystrokes"))))
 
+(defun smart-align (beg end)
+  (interactive "r")
+  (with-demoted-errors
+      "Something wrong when align."
+    (let ((align-start
+           (or beg (save-excursion
+                     (backward-up-list)
+                     (point))))
+          (align-end
+           (or end (save-excursion
+                     (up-list)
+                     (point)))))
+      (align-regexp align-start align-end "\\(\\s-*\\)\\(=\\|:\\)" 1 1))))
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.

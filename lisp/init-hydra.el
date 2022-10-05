@@ -403,7 +403,9 @@
     ("m" eli/select-images "images"))
    "LaTeX"
    (("l" mathpix-screenshot "mathpix")
-    ("r" eli/org-ref-insert-ref-link "insert org ref"))))
+    ("r" eli/org-ref-insert-ref-link "insert org ref"))
+   "Format"
+   (("a" smart-align "align"))))
 
 (pretty-hydra-define hydra-player
   (:color amaranth :exit t :quit-key "q"
