@@ -43,7 +43,8 @@
   (add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
 
   (setq read-process-output-max (* 1024 1024)) ;; 1MB
-
+  (setenv "LSP_USE_PLISTS" "true")
+  
   (setq lsp-completion-provider :none
 	lsp-keep-workspace-alive nil
 	lsp-signature-auto-activate nil
@@ -64,7 +65,7 @@
   (add-to-list 'lsp-language-id-configuration '(snippet-mode . "plaintext")))
 
 (with-eval-after-load 'org
-  (setq centaur-lsp 'lsp-mode)
+  (setq eli/selected-lsp 'lsp-mode)
   ;; Enable LSP in org babel
   ;; need to add `:file test.xx' in the header
   ;; https://github.com/emacs-lsp/lsp-mode/issues/377
@@ -76,8 +77,11 @@
       `(progn
 	     (defun ,intern-pre (info)
            (setq buffer-file-name (or (->> info caddr (alist-get :file))
-                                      "org-src-babel.tmp"))
-           (pcase centaur-lsp
+                                      (make-temp-file "babel-lsp-" nil
+                                                      (concat
+                                                       "."
+                                                       (car info)))))
+           (pcase eli/selected-lsp
              ('eglot
               (when (fboundp 'eglot-ensure)
 		        (eglot-ensure)))
@@ -87,10 +91,10 @@
 		        (setq-local lsp-headerline-breadcrumb-enable nil)
 		        (lsp-deferred)))
              (_
-              (user-error "LSP:: invalid `centaur-lsp' type"))))
+              (user-error "LSP:: invalid `eli/selected-lsp' type"))))
 	     (put ',intern-pre 'function-documentation
               (format "Enable `%s' in the buffer of org source block (%s)."
-                      centaur-lsp (upcase ,lang)))
+                      eli/selected-lsp (upcase ,lang)))
 
 	     (if (fboundp ',edit-pre)
              (advice-add ',edit-pre :after ',intern-pre)
