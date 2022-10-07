@@ -179,6 +179,15 @@
 
   ;;; org babel
   (setq org-confirm-babel-evaluate nil)
+  
+  (setq org-babel-default-header-args
+        '((:session . "none")
+          (:results . "output replace")
+          (:exports . "code")
+          (:cache . "no")
+          (:noweb . "no")
+          (:hlines . "no")
+          (:tangle . "no")))
   (setq org-babel-load-languages '((emacs-lisp . t)
                                    (shell . t)
                                    (C. t)))
