@@ -30,12 +30,16 @@
 
 ;;; Code:
 
-(add-hook 'prog-mode-hook (lambda ()
-                              (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode)
-				(lsp-deferred))))
-(add-hook 'lsp-mode-hook (lambda ()
-			     ;; Integrate `which-key'
-			     (lsp-enable-which-key-integration)))
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode)
+			  (lsp-deferred))))
+(add-hook 'lsp-mode-hook
+          (lambda ()
+			;; Integrate `which-key'
+			(lsp-enable-which-key-integration)
+            (add-hook 'before-save-hook #'lsp-format-buffer t t)
+            (add-hook 'before-save-hook #'lsp-organize-imports t t)))
 (with-eval-after-load 'lsp-mode
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
@@ -106,7 +110,7 @@
                           (upcase ,lang))))))))
 
   (defvar org-babel-lang-list
-    '("go" "python" "ipython" "ruby" "js" "css" "sass" "c" "rust" "java" "cpp" "c++" "shell"))
+    '("python" "ipython" "c" "cpp" "c++" "shell"))
   ;; (add-to-list 'org-babel-lang-list (if emacs/>=26p "shell" "sh"))
   (dolist (lang org-babel-lang-list)
     (eval `(lsp-org-babel-enable ,lang))))
