@@ -30,7 +30,7 @@
 
 ;;; Code:
 
-(setq eli/bibliography '("/home/eli/Documents/Books/catalog.bib"))
+(setq eli/bibliography '("/home/eli/Documents/Mybooks/Books.bib"))
 
 (with-eval-after-load 'org
   (require 'oc-csl)
@@ -46,22 +46,6 @@
   (require 'oc-biblatex))
 
 (with-eval-after-load 'citar
-  (defun eli/citar-org-format-note (key entry)
-    "Format a note from KEY and ENTRY."
-    (let* ((template (citar--get-template 'note))
-           (note-meta (when template
-			(citar-format--entry template entry)))
-           (filepath (expand-file-name
-                      (concat key ".org")
-                      (car citar-notes-paths)))
-           (buffer (find-file filepath)))
-      (with-current-buffer buffer
-	;; This just overrides other template insertion.
-	(erase-buffer)
-	(citar-org-roam-make-preamble key)
-	(insert "#+title: ")
-	(when template (insert (replace-regexp-in-string ":/home.*:PDF" (car (gethash key (citar-get-files key))) note-meta))))))
-
   (setq citar-templates
 	'((main . "${author:30}     ${date year issued:4}     ${title:48}")
 	  (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords keywords:*}")
@@ -89,57 +73,14 @@
   (setq citar-symbol-separator "  ")
   (setq citar-bibliography eli/bibliography)
   (setq citar-at-point-function 'citar-dwim)
-  (setq citar-note-format-function #'eli/citar-org-format-note)
   (setq citar-notes-paths '("~/Dropbox/org/roam/references")))
 
 (with-eval-after-load 'citar
   (citar-org-roam-mode)
-  (setq citar-org-roam-note-title-template (cdr (assoc 'note citar-templates)))
-  (defun citar-org-roam--create-capture-note (citekey entry)
-    "Open or create org-roam node for CITEKEY and ENTRY."
-    ;; adapted from https://jethrokuan.github.io/org-roam-guide/#orgc48eb0d
-    (let ((title (citar-format--entry
-                  citar-org-roam-note-title-template entry)))
-      (org-roam-capture-
-       :templates
-       '(("r" "reference" plain "%?" :if-new
-          (file+head
-           "%(concat
- (when citar-org-roam-subdir (concat citar-org-roam-subdir \"/\")) \"${citekey}.org\")"
-           "#+title: ${title}\n")
-          :immediate-finish t
-          :unnarrowed t))
-       :info (list :citekey citekey)
-       :node (org-roam-node-create :title (replace-regexp-in-string ":/home.*:PDF" (car (gethash citekey (citar-get-files citekey))) title))
-       :props '(:finalize find-file))
-      (org-roam-ref-add (concat "@" citekey)))))
+  (setq citar-org-roam-note-title-template (cdr (assoc 'note citar-templates))))
 
 (with-eval-after-load 'citar
   (citar-embark-mode))
-
-
-(with-eval-after-load 'calibredb
-  (setq calibredb-root-dir "~/Documents/Books")
-  (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
-  (setq calibredb-library-alist '(("~/Documents/Books")))
-  (defun eli/update-calibre-bibtex ()
-    "Export the catalog with BibTex file."
-    (interactive)
-    (calibredb-command :command "catalog"
-                       :option (format "%s"
-                                       (shell-quote-argument
-					(expand-file-name
-					 (or calibredb-ref-default-bibliography
-                                             (concat (file-name-as-directory calibredb-root-dir) "catalog.bib")))))
-                       :input (s-join " " (-remove 's-blank? (-flatten "--fields title,authors,formats,isbn,pubdate,publisher,tags,languages")))
-                       :library (format "--library-path %s" (calibredb-root-dir-quote)))
-    (calibredb-ref-default-bibliography)
-    (message "Updated BibTex file."))
-
-  (defun eli/calibre-refresh ()
-    (setq calibredb-ref-default-bibliography (concat (file-name-as-directory calibredb-root-dir) "catalog.bib"))
-    )
-  (add-hook 'calibredb-search-mode-hook 'eli/calibre-refresh))
 
 (with-eval-after-load 'bibtex-completion
   (setq bibtex-completion-bibliography eli/bibliography
@@ -155,8 +96,6 @@
 	  (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
 	  (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
 	  (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
-
-
 
 (with-eval-after-load 'bibtex
   (setq bibtex-autokey-year-length 4
