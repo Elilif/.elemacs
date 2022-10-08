@@ -290,6 +290,10 @@
 [submodule "org-noter"]
 	path = lib/org-noter
 	url = git@github.com:weirdNox/org-noter.git
+[submodule "org-pdftools"]
+	path = lib/org-pdftools
+	url = git@github.com:fuxialexander/org-pdftools.git
+    no-byte-compile = org-noter-pdftools.el
 [submodule "org-reverse-datetree"]
 	path = lib/org-reverse-datetree
 	url = https://github.com/akirak/org-reverse-datetree.git
