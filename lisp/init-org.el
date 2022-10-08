@@ -1223,11 +1223,6 @@ direct title.
           (wl . wl-other-frame)))
 
   ;; remove superfluous whitespace.
-  (defun eli/org-fill-paragraph (&optional arg)
-    (when arg
-      (fill-paragraph)
-      (goto-char (mark))))
-
   (defun formatted-copy (string)
     "Export string to HTML, and convert it into plain text."
     (let ((string (org-export-string-as string 'html t)))
@@ -1245,7 +1240,6 @@ direct title.
       string))
   
   (advice-add 'filter-buffer-substring :filter-return #'eli/unfill-string)
-  (advice-add 'org-yank :after #'eli/org-fill-paragraph)
 
   ;; movie rating
   (defun eli/get-tag-counts ()
