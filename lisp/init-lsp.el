@@ -38,8 +38,9 @@
           (lambda ()
 			;; Integrate `which-key'
 			(lsp-enable-which-key-integration)
-            (add-hook 'before-save-hook #'lsp-format-buffer t t)
-            (add-hook 'before-save-hook #'lsp-organize-imports t t)))
+            ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
+            ;; (add-hook 'before-save-hook #'lsp-organize-imports t t)
+            ))
 (with-eval-after-load 'lsp-mode
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
