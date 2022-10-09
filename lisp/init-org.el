@@ -1329,8 +1329,13 @@ direct title.
                                                  'title))))))))
             (t
              (call-interactively 'org-insert-link)))))
-  (keymap-set org-mode-map "C-c C-l" #'ar/org-insert-link-dwim)
-  )
+  (keymap-set org-mode-map "C-c C-l" #'ar/org-insert-link-dwim))
+
+;;  org-media-note
+(with-eval-after-load 'org
+  (require 'org-link-edit)
+  (add-hook 'org-mode-hook #'org-media-note-mode)
+  (setq org-media-note-screenshot-image-dir "~/Documents/org-images/"))
 
 ;;; anki integration
 (with-eval-after-load 'org

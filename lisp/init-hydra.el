@@ -341,13 +341,12 @@
 	  :post (progn (setq which-key-inhibit nil) ))
   ("Noter"
    (("n" org-noter "noter")
-    ("c" org-noter-create-skeleton "create skeleton")
-    )
-   "Noter Pdftools"
-   (("pc" org-noter-pdftools-create-skeleton "create skeleton"))
+    ("c" org-noter-create-skeleton "create skeleton"))
+   "Media note"
+   (("p" org-media-note-play-online-video "online video")
+    ("e" org-media-note-hydra/body "media note"))
    "PDF Annotation"
-   (("l" pdf-annot-list-annotations "list annotations")
-    )
+   (("l" pdf-annot-list-annotations "list annotations"))
    ))
 
 (pretty-hydra-define hydra-reader

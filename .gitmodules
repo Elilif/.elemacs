@@ -284,6 +284,13 @@
 [submodule "org-inline-pdf"]
 	path = lib/org-inline-pdf
 	url = git@github.com:Elilif/org-inline-pdf.el.git
+[submodule "org-link-edit"]
+	path = lib/org-link-edit
+	url = https://git.kyleam.com/org-link-edit
+[submodule "org-media-note"]
+	path = lib/org-media-note
+	url = git@github.com:yuchen-lea/org-media-note.git
+    no-byte-compile = org-media-note-org-ref.el
 [submodule "org-mru-clock"]
 	path = lib/org-mru-clock
 	url = git@github.com:unhammer/org-mru-clock.git
