@@ -55,7 +55,7 @@
 
  Set this to nil to disable incremental loading.")
 
-(defvar elemacs-incremental-idle-timer 0.75
+(defvar elemacs-incremental-idle-timer 1.0
   "How long (in idle seconds) in between incrementally loading packages.")
 
 (defvar elemacs-incremental-load-immediately (daemonp)
@@ -74,15 +74,15 @@
         (unless (featurep req)
           (message "Incrementally loading %s" req)
           (condition-case-unless-debug e
-              (or (progn
-                    ;; If `default-directory' is a directory that doesn't exist
-                    ;; or is unreadable, Emacs throws up file-missing errors, so
-                    ;; we set it to a directory we know exists and is readable.
-                    (let ((default-directory user-emacs-directory)
-                          (inhibit-message t)
-                          file-name-handler-alist)
-                      (require req nil t))
-                    t)
+              (or (not (while-no-input
+                         ;; If `default-directory' is a directory that doesn't exist
+                         ;; or is unreadable, Emacs throws up file-missing errors, so
+                         ;; we set it to a directory we know exists and is readable.
+                         (let ((default-directory user-emacs-directory)
+                               (inhibit-message t)
+                               file-name-handler-alist)
+                           (require req nil t))
+                         nil))
                   (push req packages))
             (error
              (message "Failed to load %S package incrementally, because: %s"
@@ -107,12 +107,16 @@ If this is a daemon session, load them all immediately instead."
 
 (add-hook 'emacs-startup-hook #'elemacs-load-packages-incrementally-h)
 (elemacs-load-packages-incrementally
- '(calendar find-func format-spec org-macs org-compat
+ '(borg calendar find-func format-spec org-macs org-compat
 	    org-faces org-entities org-list org-pcomplete org-src
 	    org-footnote org-macro ob org org-clock org-agenda
 	    org-capture dired-x ispell all-the-icons mu4e embark emms-setup org-roam
         tex-site))
 
+;; pdf
+(elemacs-load-packages-incrementally
+ '(image-mode pdf-macs pdf-util pdf-info pdf-cache jka-compr
+              pdf-view pdf-annot pdf-tools pdf-occur org-noter org-refile))
 
 (defvar elemacs-first-input-hook nil
   "Transient hooks run before the first user input.")
