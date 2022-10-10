@@ -67,13 +67,12 @@
 	  :post (progn (setq which-key-inhibit nil)))
   ("multiple cursors"
    (("l" mc/edit-lines "edit-lines")
-    ("a" mc/mark-all-like-this-dwim "mark all")
-    ("w" mc/mark-all-words-like-this "mark words")
+    ("a" mc/mark-all-like-this-dwim "mark all dwim")
+    ("d" mc/mark-all-symbols-like-this "mark all")
     ("s" set-rectangular-region-anchor "set mc")
-    ("in" mc/insert-numbers "insert numbers"))
-   "iedit"
-   (("e" iedit-mode "iedit mode"))
-   ))
+    ("n" mc/insert-numbers "insert numbers"))
+   "Format"
+   (("f" smart-align "align"))))
 
 (pretty-hydra-define hydra-move
   (:color amaranth :exit t :quit-key "q"
@@ -399,9 +398,7 @@
     ("m" eli/select-images "images"))
    "LaTeX"
    (("l" mathpix-screenshot "mathpix")
-    ("r" eli/org-ref-insert-ref-link "insert org ref"))
-   "Format"
-   (("a" smart-align "align"))))
+    ("r" eli/org-ref-insert-ref-link "insert org ref"))))
 
 (pretty-hydra-define hydra-player
   (:color amaranth :exit t :quit-key "q"
