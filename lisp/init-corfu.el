@@ -136,7 +136,7 @@ function to the relevant margin-formatters list."
                #'kind-all-the-icons-margin-formatter))
 
 ;; cape
-(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 (add-to-list 'completion-at-point-functions #'cape-file)
 
 ;; cape-yasnippet
