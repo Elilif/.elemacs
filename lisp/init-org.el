@@ -561,7 +561,6 @@ or equal to scheduled (%s)"
   (setq org-agenda-file-te (expand-file-name "words.org" org-agenda-dir))
   (setq org-agenda-file-lists (expand-file-name "lists.org" org-agenda-dir))
   (setq org-agenda-files '("~/Dropbox/org/journal.org"
-                           "/home/eli/Dropbox/org/古文.org"
                            "/home/eli/Dropbox/org/Français.org"
                            "/home/eli/Dropbox/org/daily.org"
                            "/home/eli/Dropbox/org/lists.org"
