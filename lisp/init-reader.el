@@ -71,20 +71,21 @@
   (setq org-noter-always-create-frame t)
 
   (defun eli/org-noter-set-highlight (_arg)
-    "Highlight current org-noter note." 
-    (with-current-buffer (car (seq-filter
-                               (lambda (string)
-                                 (string-match "Notes of .*" string))
-                               (mapcar #'buffer-name (buffer-list))))
-      (remove-overlays (point-min) (point-max) 'org-noter-current-hl t)
-      (goto-char (org-entry-beginning-position))
-      (let* ((hl (org-element-context))
-             (hl-begin (plist-get  (plist-get hl 'headline) :begin))
-             (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
-             (hl-ov (make-overlay hl-begin hl-end)))
-        (overlay-put hl-ov 'face 'mindre-keyword)
-        (overlay-put hl-ov 'org-noter-current-hl t))
-      (org-cycle-hide-drawers 'all)))
+    "Highlight current org-noter note."
+    (save-excursion
+      (with-current-buffer (car (seq-filter
+                                 (lambda (string)
+                                   (string-match "Notes of .*" string))
+                                 (mapcar #'buffer-name (buffer-list))))
+        (remove-overlays (point-min) (point-max) 'org-noter-current-hl t)
+        (goto-char (org-entry-beginning-position))
+        (let* ((hl (org-element-context))
+               (hl-begin (plist-get  (plist-get hl 'headline) :begin))
+               (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
+               (hl-ov (make-overlay hl-begin hl-end)))
+          (overlay-put hl-ov 'face 'mindre-keyword)
+          (overlay-put hl-ov 'org-noter-current-hl t))
+        (org-cycle-hide-drawers 'all))))
     
   (advice-add #'org-noter--focus-notes-region
               :after #'eli/org-noter-set-highlight)
