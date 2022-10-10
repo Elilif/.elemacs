@@ -575,5 +575,8 @@ BUFFER is a string, the name of a buffer."
                      (point)))))
       (align-regexp align-start align-end "\\(\\s-*\\)\\(=\\|:\\)" 1 1))))
 
+;; smart-mark
+(add-hook 'elemacs-first-input-hook #'smart-mark-mode)
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
