@@ -559,7 +559,7 @@ BUFFER is a string, the name of a buffer."
 (defun eli/insert-key-sequence ()
   (interactive)
   (insert (key-description
-           (read-key-sequence-vector "Press a keystrokes"))))
+           (read-key-sequence-vector "Press a keystrokes:"))))
 
 (defun smart-align (beg end)
   (interactive "r")
