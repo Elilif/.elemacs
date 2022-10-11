@@ -143,7 +143,7 @@
 (require 'init-minibuffer)
 (require 'init-corfu)
 (elemacs-load-packages-incrementally
- '(init-hydra))
+ '(init-hydra) t)
 (require 'init-org)
 (require 'init-bib)
 (require 'init-latex)
