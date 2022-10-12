@@ -25,3 +25,4 @@ mydictionaryfr-en
 nov-places
 /epkgs/
 /etc/
+*.elc
