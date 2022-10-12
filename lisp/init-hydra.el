@@ -67,10 +67,15 @@
 	  :post (progn (setq which-key-inhibit nil)))
   ("multiple cursors"
    (("l" mc/edit-lines "edit-lines")
-    ("a" mc/mark-all-like-this-dwim "mark all dwim")
-    ("d" mc/mark-all-symbols-like-this "mark all")
+    ("a" mc/mark-all-like-this-dwim "this dwim")
     ("s" set-rectangular-region-anchor "set mc")
-    ("n" mc/insert-numbers "insert numbers"))
+    ("N" mc/insert-numbers "insert numbers")
+    ("p" mc/mark-previous-like-this "previous")
+    ("n" mc/mark-next-like-this "next"))
+   "multiple cursors"
+   (("w" mc/mark-all-words-like-this "words")
+    ("t" mc/mark-all-like-this "all")
+    ("d" mc/mark-all-symbols-like-this "symbols"))
    "Format"
    (("f" smart-align "align"))))
 
