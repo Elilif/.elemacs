@@ -119,28 +119,18 @@ for confirmation when needed."
 (with-eval-after-load 'mu4e
   (add-hook 'mu4e-view-mode-hook #'visual-fill-column-mode)
   (add-hook 'mu4e-view-mode-hook #'hide-mode-line-mode)
-  (require 'auth-source)
-  (setq auth-sources '("~/.authinfo"))
   (setq user-full-name "Eli Qian")
   (setq smtpmail-smtp-user "eli.q.qian@gmail.com"
         smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 465
-        smtpmail-stream-type 'starttls
+        smtpmail-stream-type 'ssl
         smtpmail-local-domain "gmail.com"
         smtpmail-default-smtp-server "smtp.gmail.com"
         smtpmail-smtp-server         "smtp.gmail.com"
         user-mail-address  "eli.q.qian@gmail.com")
-  ;; (setq smtpmail-smtp-user "1358722950@qq.com"
-  ;;       smtpmail-smtp-server "smtp.qq.com"
-  ;;       smtpmail-smtp-service 587
-  ;;       smtpmail-stream-type 'starttls
-  ;;       smtpmail-local-domain "qq.com"
-  ;;       smtpmail-default-smtp-server "smtp.qq.com"
-  ;;       smtpmail-smtp-server         "smtp.qq.com"
-  ;;       user-mail-address "1358722950@qq.com")
-  ;; (setq sendmail-program "/usr/bin/msmtp")
-  (setq message-send-mail-function 'smtpmail-send-it)
-  (setq send-mail-function 'smtpmail-send-it)
+  (setq sendmail-program "/usr/bin/msmtp")
+  (setq message-send-mail-function 'sendmail-send-it)
+  (setq send-mail-function 'sendmail-send-it)
   ;;Debug
   (setq smtpmail-debug-info t)
   (setq smtpmail-debug-verb t)
