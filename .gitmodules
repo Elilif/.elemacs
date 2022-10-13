@@ -278,9 +278,6 @@
 [submodule "org-download"]
 	path = lib/org-download
 	url = git@github.com:abo-abo/org-download.git
-[submodule "org-fragtog"]
-	path = lib/org-fragtog
-	url = git@github.com:io12/org-fragtog.git
 [submodule "org-inline-pdf"]
 	path = lib/org-inline-pdf
 	url = git@github.com:Elilif/org-inline-pdf.el.git
