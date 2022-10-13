@@ -88,17 +88,14 @@
 			  (set-buffer (window-buffer (minibuffer-selected-window)))
 			  (or (seq-some (lambda (thing) (thing-at-point thing t))
 					;; '(region url symbol sexp))
-					'(region url symbol))
+					'(url symbol))
 			      "No thing at point")
 			  )    'face 'shadow))
     (add-hook 'pre-command-hook 'mcfly-back-to-present nil t)
-    (forward-visible-line 0)
-    ))
+    (forward-visible-line 0)))
 
 ;; setup code
 (add-hook 'minibuffer-setup-hook #'mcfly-time-travel)
-
-
 
 (provide 'init-completion)
 ;;; init-completion.el ends here.
