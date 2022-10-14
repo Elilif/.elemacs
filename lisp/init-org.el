@@ -164,11 +164,11 @@
         (end-of-line)
         (while (re-search-backward re linebeg t)
           (let* ((beg (save-excursion
-                          (goto-char (match-beginning 0))
-                          (current-column)))
+                        (goto-char (match-beginning 0))
+                        (current-column)))
                  (end (save-excursion
-                          (goto-char (match-end 0))
-                          (current-column))))
+                        (goto-char (match-end 0))
+                        (current-column))))
             (when (and (> end fill-column)
                        (> (+ beg 6) fill-column)
                        (< beg fill-column))
@@ -690,10 +690,10 @@ with headline set to %l would do."
            "* %a\n%?\n%(v-i-or-nothing)\n%U"
            :empty-lines 0)
           ("w" "Words" checkitem (file+function
-                                 org-agenda-file-te
-                                 (lambda ()
-                                   (eli/org-capture-template-goto-today
-                                    "TODO %Y-%m-%d [/]" 5 15 81)))
+                                  org-agenda-file-te
+                                  (lambda ()
+                                    (eli/org-capture-template-goto-today
+                                     "TODO %Y-%m-%d [/]" 5 15 81)))
 	       "[ ] %(v-i-or-nothing-word)%?"
            :prepend t)
 	      ("f" "Français" entry (file "~/Dropbox/org/Français.org")
@@ -765,12 +765,12 @@ with headline set to %l would do."
   (defun appt-disp-window-and-notification (min-to-appt current-time appt-msg)
     (if (atom min-to-appt)
 	    (notifications-notify :timeout (* appt-display-interval 60000)
-                                        ;; 一直持续到下一次提醒
+                              ;; 一直持续到下一次提醒
 			                  :title (format "%s分钟内有新的任务" min-to-appt)
 			                  :body appt-msg)
       (dolist (i (number-sequence 0 (1- (length min-to-appt))))
 	    (notifications-notify :timeout (* appt-display-interval 60000)
-                                        ;; 一直持续到下一次提醒
+                              ;; 一直持续到下一次提醒
 			                  :title (format "%s分钟内有新的任务"
                                              (nth i min-to-appt))
 			                  :body (nth i appt-msg)))))
@@ -1234,7 +1234,7 @@ direct title.
                                          elfeed-show-mode nov-mode))
              (member (prefix-numeric-value current-prefix-arg) '(4 16 64)))
         (let* ((new-string (replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 "
-                                                 (formatted-copy string)))
+                                                     (formatted-copy string)))
                (new-string (replace-regexp-in-string "\n" "" new-string)))
           new-string)
       string))
@@ -1307,7 +1307,7 @@ direct title.
     (interactive)
     (let* ((point-in-link (org-in-regexp org-link-any-re 1))
            (clipboard-url (when (and (not (null kill-ring))
-                                 (string-match-p "^http" (current-kill 0)))
+                                     (string-match-p "^http" (current-kill 0)))
                             (current-kill 0)))
            (region-content (when (region-active-p)
                              (buffer-substring-no-properties (region-beginning)
@@ -1361,47 +1361,47 @@ Used by `org-anki-skip-function'"
         the-error))))
   
   (defmacro eli/org-anki-install (fun-name reg front &optional back)
-  `(defun ,(intern (format "org-anki-sync-%s" fun-name)) ()
-     (interactive)
-     (save-excursion
-       (save-restriction
-         (org-back-to-heading)
-         (org-narrow-to-subtree)
-         (while (re-search-forward ,reg nil t)
-           (let*
-               ((org-export-preserve-breaks t)
-                (front-string (match-string-no-properties ,front))
-                (back-string (if ,back
-                                 (match-string-no-properties ,back)
-                               nil))
-                (front (org-anki--string-to-html (string-clean-whitespace
-                                                  front-string)))
-                (maybe-id (org-entry-get nil org-anki-prop-note-id))
-                (back (if ,back
-                          (org-anki--back-post-processing
-                           (org-anki--string-to-html
-                            (string-clean-whitespace
-                             back-string)))
-                        ""))
-                (tags (org-anki--get-tags))
-                (deck (save-excursion
-                        (save-restriction
-                          (widen)
-                          (org-anki--find-prop
-                           org-anki-prop-deck org-anki-default-deck))))
-                (type (org-anki--find-prop
-                       org-anki-note-type org-anki-default-note-type))
-                (note-start (point))
-                (card (make-org-anki--note
-                       :maybe-id (if (stringp maybe-id)
-                                     (string-to-number maybe-id))
-                       :front    front
-                       :back     back
-                       :tags     tags
-                       :deck     deck
-                       :type     type
-                       :point    note-start)))
-             (eli/org-anki-sync-item card)))))))
+    `(defun ,(intern (format "org-anki-sync-%s" fun-name)) ()
+       (interactive)
+       (save-excursion
+         (save-restriction
+           (org-back-to-heading)
+           (org-narrow-to-subtree)
+           (while (re-search-forward ,reg nil t)
+             (let*
+                 ((org-export-preserve-breaks t)
+                  (front-string (match-string-no-properties ,front))
+                  (back-string (if ,back
+                                   (match-string-no-properties ,back)
+                                 nil))
+                  (front (org-anki--string-to-html (string-clean-whitespace
+                                                    front-string)))
+                  (maybe-id (org-entry-get nil org-anki-prop-note-id))
+                  (back (if ,back
+                            (org-anki--back-post-processing
+                             (org-anki--string-to-html
+                              (string-clean-whitespace
+                               back-string)))
+                          ""))
+                  (tags (org-anki--get-tags))
+                  (deck (save-excursion
+                          (save-restriction
+                            (widen)
+                            (org-anki--find-prop
+                             org-anki-prop-deck org-anki-default-deck))))
+                  (type (org-anki--find-prop
+                         org-anki-note-type org-anki-default-note-type))
+                  (note-start (point))
+                  (card (make-org-anki--note
+                         :maybe-id (if (stringp maybe-id)
+                                       (string-to-number maybe-id))
+                         :front    front
+                         :back     back
+                         :tags     tags
+                         :deck     deck
+                         :type     type
+                         :point    note-start)))
+               (eli/org-anki-sync-item card)))))))
   (eli/org-anki-install "description" (rx bol
                                           (* " ")
                                           "- "
