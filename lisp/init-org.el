@@ -115,6 +115,8 @@
             (when (save-excursion
     	            (goto-char (match-beginning 0))
     	            (and
+                     ;; Do not match in latex fragments.
+                     (not (texmathp))
     	             ;; Do not match table hlines.
     	             (not (and (equal marker "+")
     		                   (org-match-line
