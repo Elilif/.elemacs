@@ -109,20 +109,118 @@
   (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex)
 )
 
-(with-eval-after-load 'tex
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (setq xenops-math-image-scale-factor 1.3)
-  (setq xenops-image-try-write-clipboard-image-to-file nil))
+(add-hook 'org-mode-hook #'xenops-mode) ;; preview latex fragments in org-mode
+(add-hook 'LaTeX-mode-hook #'xenops-mode)
 
 (with-eval-after-load 'xenops
-  (defun el/delete-region ()
+  (setq xenops-math-image-scale-factor 1.3
+        xenops-image-try-write-clipboard-image-to-file nil
+        xenops-reveal-on-entry t
+        xenops-math-image-margin 0)
+  
+  (defun eli/delete-region ()
     (if (use-region-p)
         (delete-region (region-beginning)
                        (region-end))))
   (advice-add 'xenops-handle-paste-default
-              :before #'eli/delete-region))
+              :before #'eli/delete-region)
+  
+  ;; Vertically align LaTeX preview in org mode
+  (defun eli/xenops-preview-align-baseline (element &rest _args)
+    (let* ((ov-beg (plist-get element :begin))
+           (ov-end (plist-get element :end))
+           (ov (car (overlays-at (/ (+ ov-beg ov-end) 2) t)))
+           img new-img)
+      (when ov
+        (setq img (cdr (overlay-get ov 'display)))
+        (setq new-img (plist-put img :ascent 90))
+        (overlay-put ov 'display (cons 'image new-img)))))
+  (advice-add 'xenops-math-display-image :after
+              #'eli/xenops-preview-align-baseline)
 
-(add-to-list 'load-path "~/.emacs.d/site-lisp/mathpix/")
+  ;; from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/
+  ;; Justifying-LaTeX-preview-fragments-in-org-mode/
+  ;; specify the justification you want
+  (plist-put org-format-latex-options :justify 'right)
+  
+  (defun eli/xenops-justify-fragment-overlay (element &rest _args)
+    (let* ((ov-beg (plist-get element :begin))
+           (ov-end (plist-get element :end))
+           (ov (car (overlays-at (/ (+ ov-beg ov-end) 2) t)))
+           (position (plist-get org-format-latex-options :justify))
+           (inline-p (eq 'inline-math (plist-get element :type)))
+           width offset)
+      (when (and ov
+                 (imagep (overlay-get ov 'display)))
+        (setq width (car (image-display-size (overlay-get ov 'display))))
+        (cond
+         ((and (eq 'right position) 
+               (not inline-p)
+               (> width 55))
+          (setq offset (floor (- fill-column
+                                 width)))
+          (if (< offset 0)
+              (setq offset 0))
+          (overlay-put ov 'before-string (make-string offset ? )))
+         ((and (eq 'right position)
+               (not inline-p))
+          (setq offset (floor (- (/ fill-column 2)
+                                 (/ width 2))))
+          (if (< offset 0)
+              (setq offset 0))
+          (overlay-put ov 'before-string (make-string offset ? )))))))
+  (advice-add 'xenops-math-display-image :after
+              #'eli/xenops-justify-fragment-overlay)
+
+
+  ;; from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/
+  ;; Better-equation-numbering-in-LaTeX-fragments-in-org-mode/  
+  (defun eli/xenops-renumber-environment (orig-func element latex colors
+                                                    cache-file display-image)
+    (let ((results '()) 
+          (counter -1)
+          (numberp))
+      (setq results (cl-loop for (begin .  env) in 
+                             (org-element-map (org-element-parse-buffer)
+                                 'latex-environment
+                               (lambda (env)
+                                 (cons
+                                  (org-element-property :begin env)
+                                  (org-element-property :value env))))
+                             collect
+                             (cond
+                              ((and (string-match "\\\\begin{equation}" env)
+                                    (not (string-match "\\\\tag{" env)))
+                               (cl-incf counter)
+                               (cons begin counter))
+                              ((and (string-match "\\\\begin{align}" env)
+                                    (string-match "\\\\notag" env))
+                               (cl-incf counter)
+                               (cons begin counter))
+                              ((string-match "\\\\begin{align}" env)
+                               (prog2
+                                   (cl-incf counter)
+                                   (cons begin counter)                          
+                                 (with-temp-buffer
+                                   (insert env)
+                                   (goto-char (point-min))
+                                   ;; \\ is used for a new line. Each one leads
+                                   ;; to a number
+                                   (cl-incf counter (count-matches "\\\\$"))
+                                   ;; unless there are nonumbers.
+                                   (goto-char (point-min))
+                                   (cl-decf counter
+                                            (count-matches "\\nonumber")))))
+                              (t
+                               (cons begin nil)))))
+      (when (setq numberp (cdr (assoc (plist-get element :begin) results)))
+        (setq latex
+              (concat
+               (format "\\setcounter{equation}{%s}\n" numberp)
+               latex))))
+    (funcall orig-func element latex colors cache-file display-image))
+  (advice-add 'xenops-math-latex-create-image :around #'eli/xenops-renumber-environment))
+
 (autoload #'mathpix-screenshot "mathpix" nil t)
 (with-eval-after-load 'mathpix
   (let ((n (random 4)))
