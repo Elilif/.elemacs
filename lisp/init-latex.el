@@ -94,8 +94,8 @@
           (goto-char minp) t))))
 
   (defun yas-next-field-or-cdlatex ()
-    (interactive)
     "Jump to the next Yas field correctly with cdlatex active."
+    (interactive)
     (if (bound-and-true-p cdlatex-mode)
         (cdlatex-tab)
       (yas-next-field-or-maybe-expand)))
