@@ -106,7 +106,7 @@
   
   (defun org-do-emphasis-faces (limit)
     "Run through the buffer and emphasize strings."
-    (let ((quick-re (format "\\([%s]\\|^\\)\\([~=*/_+]\\)\\(?:.+?\\|.+?\n.+?\\)[~=*/_+]"
+    (let ((quick-re (format "\\([%s]\\|^\\)\\([~=*/_+]\\)\\(?:[^ ].*?\\|[^ ].*?\n.+?\\)[~=*/_+]"
     		                (car org-emphasis-regexp-components))))
       (catch :exit
         (while (re-search-forward quick-re limit t)
