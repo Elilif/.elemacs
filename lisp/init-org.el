@@ -1602,9 +1602,11 @@ Used by `org-anki-skip-function'"
   (add-to-list 'org-latex-packages-alist
 	           '("cache=false" "minted" t))
   (add-to-list 'org-latex-packages-alist
-	           '("" "xcolor" t))
+               '("" "xcolor" t))
   (add-to-list 'org-latex-packages-alist
 	           '("" "tikz"))
+  (add-to-list 'org-latex-packages-alist
+	           '("" "amsfonts"))
   (setq org-latex-pdf-process
 	    '("xelatex -8bit --shell-escape -interaction nonstopmode -output-directory=%o %f"
 	      "biber %b"
