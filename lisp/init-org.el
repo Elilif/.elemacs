@@ -117,6 +117,11 @@
     	            (and
                      ;; Do not match in latex fragments.
                      (not (texmathp))
+                     ;; Do not match in Drawer.
+                     (not (save-excursion
+                            (move-beginning-of-line 1)
+                            (looking-at
+                             "^[ 	]*:\\(\\(?:\\w\\|[-_]\\)+\\):[ 	]*")))
     	             ;; Do not match table hlines.
     	             (not (and (equal marker "+")
     		                   (org-match-line
