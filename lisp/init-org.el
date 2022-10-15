@@ -203,16 +203,16 @@
                                  (shell . t)
                                  (C . t)))
   
-  (defun eli/hide-org-block-begin-line (orig from to flag spec)
-    (if (eq spec 'org-hide-block)
-        (let* ((beg-of-line (line-beginning-position))
-               (lang (car (org-babel-get-src-block-info)))
-               (beg (+ beg-of-line
-                       12
-                       (length lang))))
-          (funcall orig beg to flag spec))
-      (funcall orig from to flag spec)))
-  (advice-add 'org-flag-region :around #'eli/hide-org-block-begin-line)
+  ;; (defun eli/hide-org-block-begin-line (orig from to flag spec)
+  ;;   (if (eq spec 'org-hide-block)
+  ;;       (let* ((beg-of-line (line-beginning-position))
+  ;;              (lang (car (org-babel-get-src-block-info)))
+  ;;              (beg (+ beg-of-line
+  ;;                      12
+  ;;                      (length lang))))
+  ;;         (funcall orig beg to flag spec))
+  ;;     (funcall orig from to flag spec)))
+  ;; (advice-add 'org-flag-region :around #'eli/hide-org-block-begin-line)
   
 
   (setq org-startup-with-inline-images t)
