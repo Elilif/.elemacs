@@ -132,7 +132,7 @@
                         (file-attributes "/home/eli/.emacs.d/.gitmodules")))
                       ".el")))
     (if (file-exists-p file)
-        (load file)
+        (load file nil t)
       (require 'borg)
       (borg-initialize)
       (lld-collect-autoloads file))))
