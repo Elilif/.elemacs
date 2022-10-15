@@ -111,7 +111,7 @@ If this is a daemon session, load them all immediately instead."
 	    org-faces org-entities org-list org-pcomplete org-src
 	    org-footnote org-macro ob org org-clock org-agenda
 	    org-capture dired-x ispell all-the-icons mu4e embark emms-setup org-roam
-        tex-site))
+        tex-site texmath))
 
 ;; pdf
 (elemacs-load-packages-incrementally
