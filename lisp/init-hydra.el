@@ -151,7 +151,7 @@
   )
 
 (pretty-hydra-define hydra-emacs
-  (:color amaranth :exit t :quit-key "q" :idle 2
+  (:color amaranth :exit t :quit-key "q"
 	  :pre (progn (setq which-key-inhibit t))
 	  :post (progn (setq which-key-inhibit nil) ))
   ("basic"
@@ -159,7 +159,7 @@
     ("f" (let ((default-directory "~/.emacs.d/lisp/"))
            (call-interactively 'find-file)) "config files")
     ("R" restart-emacs)
-    )
+    ("c" (byte-recompile-directory "~/.emacs.d/lisp/") "recompile"))
    "Bookmark"
    (("bs" bookmark-set "set bookmark")
     ("bj" consult-bookmark "jump bookmark")
@@ -221,6 +221,7 @@
     ("ar" org-anki-sync-region "region"))
    "blog"
    (("bp" org-publish)
+    ("ba" (org-publish "eli's blog" t) "publish all blogs")
     ("bg" eli/push-to-gitpage)
     ("bt" org-timeline-export-to-html "export timeline"))
    ))
