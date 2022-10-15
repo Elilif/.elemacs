@@ -1223,7 +1223,7 @@ direct title.
           (wl . wl-other-frame)))
 
   ;; remove superfluous whitespace.
-  (defun formatted-copy (string)
+  (defun eli/formatted-copy (string)
     "Export string to HTML, and convert it into plain text."
     (let ((string (org-export-string-as string 'html t)))
       (shell-command-to-string
@@ -1234,7 +1234,7 @@ direct title.
                                          elfeed-show-mode nov-mode))
              (member (prefix-numeric-value current-prefix-arg) '(4 16 64)))
         (let* ((new-string (replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 "
-                                                     (formatted-copy string)))
+                                                     (eli/formatted-copy string)))
                (new-string (replace-regexp-in-string "\n" "" new-string)))
           new-string)
       string))
