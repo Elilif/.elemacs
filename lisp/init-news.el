@@ -36,6 +36,7 @@
   (add-hook 'elfeed-show-mode-hook #'visual-fill-column-mode)
   (add-hook 'elfeed-show-mode-hook #'hide-mode-line-mode)
   (add-hook 'elfeed-search-update-hook #'hide-mode-line-mode)
+  (add-hook 'elfeed-search-update-hook #'hl-line-mode)
   (setq shr-inhibit-images t)
   (setq elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890"))
   (defun eli/elfeed-search-quit-and-kill-buffers ()
