@@ -121,6 +121,7 @@
   (setq lsp-ui-sideline-show-hover t
 	    lsp-ui-sideline-ignore-duplicate t
         lsp-ui-doc-enable nil
+        lsp-ui-sideline-enable nil
 	    lsp-ui-sideline-show-diagnostics t
 	    lsp-ui-sideline-show-code-actions t
 	    lsp-ui-doc-show-with-cursor t))
