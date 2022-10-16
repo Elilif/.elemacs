@@ -159,7 +159,10 @@
 (autoload 'ace-pinyin-global-mode "ace-pinyin")
 (add-hook 'elemacs-first-input-hook #'ace-pinyin-global-mode)
 
+
 (keymap-global-set "C-=" #'er/expand-region)
+(autoload #'er/mark-outside-pairs "expand-region")
+(keymap-global-set "C-+" #'er/mark-outside-pairs)
 (with-eval-after-load 'expand-region
   (defun er/mark-block-comment ()
     "Mark the entire comment around point."
@@ -179,7 +182,7 @@
         (forward-char 1))))
   (setq-default er/try-expand-list '(er/mark-word
                                      er/mark-symbol
-                                     ;; er/mark-symbol-with-prefix
+                                     er/mark-symbol-with-prefix
                                      er/mark-next-accessor
                                      er/mark-method-call
                                      er/mark-inside-quotes
