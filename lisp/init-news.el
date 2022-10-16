@@ -70,7 +70,8 @@ for confirmation when needed."
   ;; face for starred articles
   (defface elfeed-search-starred-title-face
     '((t :foreground "#f77"))
-    "Marks a starred Elfeed entry.")
+    "Marks a starred Elfeed entry."
+    :group 'elfeed)
   (push '(starred elfeed-search-starred-title-face) elfeed-search-face-alist)
   (defalias 'elfeed-toggle-star
     (elfeed-expose #'elfeed-search-toggle-all 'starred))
@@ -172,7 +173,6 @@ for confirmation when needed."
       (mu4e--search-execute (concat "from:" sender-email) nil)))
 
   ;; citation format
-  (setq mu4e-view-show-addresses t)
   (setq message-citation-line-format "On %a, %b %d %Y, %f wrote:\n")
   (setq message-citation-line-function #'message-insert-formatted-citation-line)
 
