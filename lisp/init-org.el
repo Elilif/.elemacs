@@ -761,7 +761,7 @@ with headline set to %l would do."
 
   (with-eval-after-load 'org-agenda
     ;; 每小时同步一次appt,并且现在就开始同步
-    (run-at-time 30 3600 'org-agenda-to-appt t)
+    (run-with-idle-timer 30 3600 'org-agenda-to-appt t)
     ;; 提前半小时提醒
     (setq appt-message-warning-time 30)
     (setq appt-display-interval 5)
