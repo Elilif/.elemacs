@@ -197,11 +197,13 @@
           (:tangle . "no")))
   (setq org-babel-load-languages '((emacs-lisp . t)
                                    (shell . t)
-                                   (C. t)))
+                                   (C. t)
+                                   (latex . t)))
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((emacs-lisp . t)
                                  (shell . t)
-                                 (C . t)))
+                                 (C . t)
+                                 (latex . t)))
   
   ;; (defun eli/hide-org-block-begin-line (orig from to flag spec)
   ;;   (if (eq spec 'org-hide-block)
