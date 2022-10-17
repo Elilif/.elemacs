@@ -959,21 +959,21 @@ References from FILE are excluded."
   (setq org-roam-dailies-capture-templates
 	    '(("d" "default" entry
            "* %?"
-           :if-new (file+datetree "~/Dropbox/org/roam/daily/dailies.org" day))))
+           :target (file+datetree "~/Dropbox/org/roam/daily/dailies.org" day))))
   (setq org-roam-capture-templates
         '(("m" "main" plain "%?"
-           :if-new (file+head "main/%<%Y%m%d%H%M%S>-${title}.org"
+           :target (file+head "main/%<%Y%m%d%H%M%S>-${title}.org"
 							  "#+TITLE: ${title}\n")
            :unnarrowed t)
 		  ("b" "bibliography reference" plain
 		   (file "~/.emacs.d/private/orb-capture-template.org")
-		   :if-new (file+head "references/${citekey}.org" "#+title: ${title}\n")
+		   :target (file+head "references/${citekey}.org" "#+title: ${title}\n")
 		   )
 		  ("r" "reference" plain "%? \n %(v-i-or-nothing) \n\n%(v-a-or-nothing)"
-		   :if-new
+		   :target
 		   (file+head "references/%<%Y%m%d%H%M%S>-${title}.org" "#+title: ${title}\n")
 		   :unnarrowed t)))
-  (run-at-time 20 nil
+  (run-with-idle-timer 15 nil
 	           #'org-roam-setup)
   
   (with-eval-after-load 'org-roam
