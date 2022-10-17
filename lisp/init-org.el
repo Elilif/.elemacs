@@ -1487,7 +1487,7 @@ Used by `org-anki-skip-function'"
                    :image-output-type "svg"
                    :image-size-adjust (1.7 . 1.5)
                    :latex-compiler
-                   ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                   ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
                    :image-converter
                    ("dvisvgm %f -e -n -b min -c %S -o %O"))
           (imagemagick :programs
