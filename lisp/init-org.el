@@ -1222,6 +1222,7 @@ direct title.
   (setq org-export-preserve-breaks nil)
   (setq org-adapt-indentation t)
   (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-context-in-file-links 1)
   (setq org-link-frame-setup
         '((vm . vm-visit-folder-other-frame)
           (vm-imap . vm-visit-imap-folder-other-frame)
