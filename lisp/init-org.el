@@ -1524,7 +1524,6 @@ Used by `org-anki-skip-function'"
   (setq org-latex-prefer-user-labels t)
   (setq org-startup-with-latex-preview nil)
   (setq org-preview-latex-default-process 'dvisvgm)
-  (setq org-format-latex-header "\\documentclass[dvisvgm,tikz]{standalone}\n\\usepackage{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]\n\\pagestyle{empty}             % do not remove\n% The settings below are copied from fullpage.sty\n\\setlength{\\textwidth}{\\paperwidth}\n\\addtolength{\\textwidth}{-3cm}\n\\setlength{\\oddsidemargin}{1.5cm}\n\\addtolength{\\oddsidemargin}{-2.54cm}\n\\setlength{\\evensidemargin}{\\oddsidemargin}\n\\setlength{\\textheight}{\\paperheight}\n\\addtolength{\\textheight}{-\\headheight}\n\\addtolength{\\textheight}{-\\headsep}\n\\addtolength{\\textheight}{-\\footskip}\n\\addtolength{\\textheight}{-3cm}\n\\setlength{\\topmargin}{1.5cm}\n\\addtolength{\\topmargin}{-2.54cm}")
   (setq org-preview-latex-process-alist
         '((dvisvgm :programs
                    ("xelatex" "dvisvgm")
