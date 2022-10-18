@@ -51,6 +51,8 @@
   (setq TeX-source-correlate-start-server t)
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
+  (setq tex-fontify-script nil)
+  (setq font-latex-fontify-script nil)
   (setq LaTeX-item-indent 0)
   (setq TeX-show-compilation nil)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
@@ -106,8 +108,7 @@
   (add-hook 'cdlatex-tab-hook #'yas-expand)
   (keymap-set cdlatex-mode-map "<tab>" #'cdlatex-tab)
   (keymap-set yas-keymap "<tab>" #'yas-next-field-or-cdlatex)
-  (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex)
-)
+  (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex))
 
 (add-hook 'org-mode-hook #'xenops-mode) ;; preview latex fragments in org-mode
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
