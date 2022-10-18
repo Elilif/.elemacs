@@ -590,16 +590,62 @@ or equal to scheduled (%s)"
   ;; from: https://stackoverflow.com/questions/21073859/is-there-a-way-
   ;; with-org-capture-templates-to-not-insert-a-line-if-initial-conten
   (defun v-i-or-nothing ()
-    (let ((v-i (plist-get org-store-link-plist :initial)))
-      (if (equal v-i "")
-          ""
-	    (concat "\n#+begin_quote\n" v-i "\n#+end_quote\n"))))
+    (save-window-excursion
+      (other-window 1)
+      (let ((v-i (plist-get org-store-link-plist :initial))
+            (org-src-mode (replace-regexp-in-string
+			               "-mode"
+			               ""
+			               (format "%s" major-mode)))
+            (type (if (derived-mode-p 'prog-mode) "src" "quote")))
+        (if (equal v-i "")
+            ""
+	      (if (string= type "src")
+              (concat (format "\n#+begin_%s %s\n" type org-src-mode)
+                      v-i
+                      (format "\n#+end_%s\n" type))
+            (concat (format "\n#+begin_%s\n" type)
+                    v-i
+                    (format "\n#+end_%s\n" type)))))))
+  (defun v-i-or-nothing ()
+    (save-window-excursion
+      (other-window 1)
+      (let ((v-i (plist-get org-store-link-plist :initial))
+            (org-src-mode (replace-regexp-in-string
+			               "-mode"
+			               ""
+			               (format "%s" major-mode)))
+            (type (if (derived-mode-p 'prog-mode) "src" "quote")))
+        (cond
+         ((equal v-i "") "")
+         ((string= type "src")
+          (concat (format "\n#+begin_%s %s\n" type org-src-mode)
+                      v-i
+                      (format "\n#+end_%s\n" type)))
+         (t (concat (format "\n#+begin_%s\n" type)
+                    v-i
+                    (format "\n#+end_%s\n" type)))))))
 
   (defun v-a-or-nothing ()
-    (let ((v-a (plist-get org-store-link-plist :annotation)))
-      (if (equal v-a "")
-          ""
-	    (concat "- reference :: " v-a))))
+    (save-window-excursion
+      (other-window 1)
+      (let* ((v-a (plist-get org-store-link-plist :annotation))
+             (v-a-empty-p (equal v-a ""))
+             (file-name (buffer-file-name (current-buffer))))
+        (cond
+         (v-a-empty-p "")
+         ((and (not v-a-empty-p) (eq major-mode 'org-mode))
+          (concat "- reference :: "
+                  (replace-regexp-in-string "::\\(.*?\\)\\]\\[\\(.*?\\)\\]" "\\2" v-a nil nil 1)))
+         ((and (not (string-match-p "::\\(.*?\\)\\]\\[\\(.*?\\)\\]" v-a))
+               file-name)
+          (concat "- reference :: "
+                  (substring v-a 0 -1)
+                  "["
+                  (file-name-nondirectory file-name)
+                  "]]"))
+         (t
+          (concat "- reference :: " v-a))))))
 
   (defun v-i-or-nothing-word ()
     (let* ((v-i (plist-get org-store-link-plist :initial))
@@ -608,13 +654,14 @@ or equal to scheduled (%s)"
       new-string))
 
   ;; better fill region in capture
-  (defun eli/fill-region ()
+  (defun eli/fill-quote ()
     (save-excursion
       (push-mark)
-      (push-mark (point-max) nil t)
-      (goto-char (minibuffer-prompt-end))
-      (org-fill-paragraph nil t)))
-  (add-hook 'org-capture-prepare-finalize-hook 'eli/fill-region)
+      (goto-char (point-min))
+      (when (re-search-forward "#\\+begin_quote\n\\(\\(?:.*\n\\)*?\\)#\\+end_quote" nil t)
+        (fill-region (match-beginning 1)
+                     (match-end 1)))))
+  (add-hook 'org-capture-prepare-finalize-hook 'eli/fill-quote)
 
   (defun eli/org-capture-template-goto-today (format-string start end point)
     "Set point for capturing at what capture target file+headline
