@@ -110,7 +110,15 @@
   (keymap-set yas-keymap "<tab>" #'yas-next-field-or-cdlatex)
   (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex))
 
-(add-hook 'org-mode-hook #'xenops-mode) ;; preview latex fragments in org-mode
+(add-hook 'org-mode-hook
+          (lambda ()
+            (unless (member (buffer-file-name)
+                            (append '("/home/eli/Dropbox/org/Clock_Report.org")
+                                    org-agenda-files
+                                    (mapcar (lambda (x)
+                                              (concat x "_archive"))
+                                            org-agenda-files)))
+              (xenops-mode)))) ;; preview latex fragments in org-mode
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
 
 (with-eval-after-load 'xenops
