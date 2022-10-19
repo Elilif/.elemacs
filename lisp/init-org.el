@@ -836,7 +836,8 @@ with headline set to %l would do."
   (setq org-outline-path-complete-in-steps nil)
   (setq org-refile-targets
 	    '((nil :maxlevel . 5)
-          (org-agenda-files :maxlevel . 5))))
+          (org-agenda-files :maxlevel . 5)
+          (("~/Dropbox/org/Clock_Report.org_archive") :maxlevel . 1))))
 
 ;;; rime
 (with-eval-after-load 'org
