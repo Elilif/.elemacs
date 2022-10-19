@@ -32,11 +32,10 @@
 
 (with-eval-after-load 'org
   ;; publishing
-  (defun eli/push-to-gitpage (&optional UNUSE)
+  (defun eli/push-to-gitpage (&optional _args)
     (interactive)
     (shell-command "~/.emacs.d/private/shell.sh")
-    (message "blogs deployed successfully!")
-    )
+    (message "blogs deployed successfully!"))
 
   (setq org-html-head-include-default-style nil)
   (setq org-html-htmlize-output-type 'css)
@@ -59,7 +58,24 @@
            :sitemap-title "Eli's blog"
            :sitemap-sort-files anti-chronologically
            :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"https://gongzhitaao.org/orgcss/org.css\"/>"
-           :with-creator nil
+           :html-preamble "<div><hr class=\"Solid\"> </div>"
+           :html-postamble "<hr class=\"Solid\">
+<p class=\"author\">Author: %a (%e)</p>
+<p class=\"date\">Create Date: %d</p>
+<p class=\"date\">Last modified: %C</p>
+<p>Creator: %c</p>
+
+<p style=\"text-align:center;\">
+  <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">
+    <img alt=\"知识共享许可协议\" style=\"border-width:0\" src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\"/>
+  </a><br />
+  本作品采用
+  <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">
+    知识共享署名 4.0 国际许可协议
+  </a>
+  进行许可。
+</p>"
+           :with-creator nil 
            :completion-function eli/push-to-gitpage
            )))
 
@@ -68,16 +84,11 @@
             (or (file-name-extension source) "")
             (base64-encode-string
              (with-temp-buffer
-	           (insert-file-contents-literally source)
+	           (insert-file-contents-literally (file-relative-name
+                                                (substring source 7)
+                                                default-directory))
 	           (buffer-string)))
-            (file-name-nondirectory source)))
-  
-  ;; (setq org-hugo-base-dir "~/Documents/braindump/")
-  
-  ;; (setq easy-hugo-basedir "~/Documents/braindump/"
-  ;;       easy-hugo-postdir "content/posts")
-  )
-
+            (file-name-nondirectory source))))
 
 
 (provide 'init-blog)
