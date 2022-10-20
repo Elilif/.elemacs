@@ -78,21 +78,19 @@
                (append unread-command-events
                        (listify-key-sequence (kbd "M-p")))))
         ((memq this-command mcfly-back-commands)
-         (delete-region
-	  (progn (forward-visible-line 0) (point))
-          (point-max)))))
+         (delete-region (point) (point-max)))))
 
 (defun mcfly-time-travel ()
   (when (memq this-command mcfly-commands)
-    (insert (propertize (save-excursion
-			  (set-buffer (window-buffer (minibuffer-selected-window)))
-			  (or (seq-some (lambda (thing) (thing-at-point thing t))
-					;; '(region url symbol sexp))
-					'(url symbol))
-			      "No thing at point")
-			  )    'face 'shadow))
-    (add-hook 'pre-command-hook 'mcfly-back-to-present nil t)
-    (forward-visible-line 0)))
+    (let ((pre-insert-string (with-minibuffer-selected-window
+                               (or (seq-some
+                                    (lambda (thing) (thing-at-point thing t))
+					                '(region url symbol))
+					                ;; '(symbol url region sexp))
+			                       "No thing at point"))))
+      (save-excursion
+        (insert (propertize pre-insert-string 'face 'shadow))))
+    (add-hook 'pre-command-hook 'mcfly-back-to-present nil t)))
 
 ;; setup code
 (add-hook 'minibuffer-setup-hook #'mcfly-time-travel)
