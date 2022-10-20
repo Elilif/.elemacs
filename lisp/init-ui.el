@@ -69,7 +69,7 @@
     (set-fontset-font nil ?⎙ "PragmataPro Liga")
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
                                     ("Sarasa" . 1.18)
-                                    ("Bookerly" . 1.3)))))
+                                    ("Amazon Ember" . 1.3)))))
 
 (add-hook 'after-init-hook #'eli/set-font)
 
