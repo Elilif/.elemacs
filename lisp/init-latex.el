@@ -34,6 +34,8 @@
   (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
   (add-hook 'LaTeX-mode-hook #'tex-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook #'electric-operator-mode)
+  (add-hook 'LaTeX-mode-hook #'mixed-pitch-mode)
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (setq TeX-command-default "XeLaTeX")
