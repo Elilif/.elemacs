@@ -60,23 +60,33 @@
   ;; Try after every insertion
   (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets)
   (defun eli/latex-smart-kill ()
+    "Kill equations, numbers or something else before point in latex math mode.
+
+This function is dedicated for auto yasnippet expanding, for
+instance: \"$4\pi^2 //$\" will be expand into
+\"\\frac{4\pi^2}{*}\", and this function must be used with
+`eli/latex-smart-paste'."
     (condition-case nil
         (save-excursion
-          (let ((ip (point))
-                (void (backward-sexp))
-                (cp (point))
-                (beg-of-line (save-excursion (beginning-of-line) (point)))
-                (bp (re-search-backward "\s")))
-            (if (= (1- cp) bp)
-                (kill-region cp ip)
-              (if (< bp beg-of-line)
-                  (if (= cp beg-of-line)
-                      (kill-region cp ip)
-                    (kill-region beg-of-line ip))
-                (kill-region (1+ bp) ip)))))
+          (let* ((orig-point (point))
+                 (pre-sexp-point (progn
+                                   (backward-sexp)
+                                   (point)))
+                 (bol (line-beginning-position))
+                 (bound-before-target (re-search-backward "\s\\|\\\\(\\|\\$" bol t)))
+            (cond
+             ((= (1- pre-sexp-point) bound-before-target)
+              (kill-region pre-sexp-point orig-point))
+             ((null bound-before-target)
+              (kill-region bol orig-point))
+             ((member (match-string 0) '(" " "$"))
+              (kill-region (1+ bound-before-target) orig-point))
+             ((string= (match-string 0) "\\(")
+              (kill-region (+ bound-before-target 2) orig-point)))))
       (error (setq numerator 'nil))))
 
   (defun eli/latex-smart-paste ()
+    "Paste text killed by `eli/latex-smart-kill'."
     (if numerator
         (let ((temp (string-clean-whitespace (current-kill 0))))
           (if (string-match "^(\\(.*\\))$" temp)
