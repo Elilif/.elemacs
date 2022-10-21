@@ -128,8 +128,7 @@
         xenops-math-image-margin 0
         xenops-math-latex-max-tasks-in-flight 16)
   (defun eli/change-xenops-latex-header (orig &rest args)
-    (let ( foo
-           (org-format-latex-header "\\documentclass[dvisvgm,tikz]{standalone}\n\\usepackage{arev}\n\\usepackage{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]\n\\pagestyle{empty}             % do not remove\n% The settings below are copied from fullpage.sty\n\\setlength{\\textwidth}{\\paperwidth}\n\\addtolength{\\textwidth}{-3cm}\n\\setlength{\\oddsidemargin}{1.5cm}\n\\addtolength{\\oddsidemargin}{-2.54cm}\n\\setlength{\\evensidemargin}{\\oddsidemargin}\n\\setlength{\\textheight}{\\paperheight}\n\\addtolength{\\textheight}{-\\headheight}\n\\addtolength{\\textheight}{-\\headsep}\n\\addtolength{\\textheight}{-\\footskip}\n\\addtolength{\\textheight}{-3cm}\n\\setlength{\\topmargin}{1.5cm}\n\\addtolength{\\topmargin}{-2.54cm}"))
+    (let ((org-format-latex-header "\\documentclass[dvisvgm,preview]{standalone}\n\\usepackage{arev}\n\\usepackage{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]"))
       (apply orig args)))
   (advice-add 'xenops-math-latex-make-latex-document :around #'eli/change-xenops-latex-header)
   (advice-add 'xenops-math-file-name-static-hash-data :around #'eli/change-xenops-latex-header)
@@ -150,56 +149,30 @@
         (add-text-properties (1- end) end '(rear-nonsticky (cursor-sensor-functions))))))
   (advice-add 'xenops-math-add-cursor-sensor-property :override #'eli/xenops-math-add-cursor-sensor-property)
   
- ;; Vertically align LaTeX preview in org mode
+  ;; Vertically align LaTeX preview in org mode
   (setq xenops-math-latex-process-alist
         '((dvisvgm :programs
                    ("latex" "dvisvgm")
                    :description "dvi > svg" :message "you need to install the programs: latex and dvisvgm." :image-input-type "dvi" :image-output-type "svg" :image-size-adjust
                    (1.7 . 1.5)
                    :latex-compiler
-                   ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o \"\\nonstopmode\\nofiles\\PassOptionsToPackage{active,tightpage,auctex}{preview}\\AtBeginDocument{\\ifx\\ifPreview\\undefined\\RequirePackage[displaymath,floats,graphics,textmath,footnotes]{preview}[2004/11/05]\\fi}\\input\\detokenize{\"%f\"}\" %f")
+                   ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
                    :image-converter
-                   ("dvisvgm %f -n -b %B -c %S -o %O"))))
-
-  (defun xenops-aio-subprocess (command &optional _ __)
-    "Start asynchronous subprocess; return a promise.
-
-COMMAND is the command to run as an asynchronous subprocess.
-
-Resolve the promise when the process exits. The value function
-does nothing if the exit is successful, but if the process exits
-with an error status, then the value function signals the error."
-    (let* ((promise (aio-promise))
-           (name (format "xenops-aio-subprocess-%s"
-                         (sha1 (prin1-to-string command))))
-           (output-buffer (generate-new-buffer name))
-           (sentinel
-            (lambda (process event)
-              (unless (process-live-p process)
-                (aio-resolve
-                 promise
-                 (lambda ()
-                   (if (or (eq 0 (process-exit-status process))
-                           (and (eq 1 (process-exit-status process))
-                                (not (string-match-p
-                                      "^! [^P]"
-                                      (with-current-buffer output-buffer
-                                        (buffer-string))))))
-                       (kill-buffer output-buffer)
-                     (signal 'error
-                             (prog1 (list :xenops-aio-subprocess-error-data
-                                          (list (s-join " " command)
-                                                event
-                                                (with-current-buffer output-buffer
-                                                  (buffer-string))))
-                               (kill-buffer output-buffer))))))))))
-      (prog1 promise
-        (make-process
-         :name name
-         :buffer output-buffer
-         :command command
-         :sentinel sentinel))))
+                   ("dvisvgm %f -n -e -b 1 -c %S -o %O"))))
   
+  ;; from https://list.orgmode.org/874k9oxy48.fsf@gmail.com/#Z32lisp:org.el
+  (defun eli/org--match-text-baseline-ascent (imagefile)
+    "Set `:ascent' to match the text baseline of an image to the surrounding text.
+Compute `ascent' with the data collected in IMAGEFILE."
+    (let* ((viewbox (split-string
+                     (xml-get-attribute (car (xml-parse-file imagefile)) 'viewBox)))
+           (min-y (string-to-number (nth 1 viewbox)))
+           (height (string-to-number (nth 3 viewbox)))
+           (ascent (round (* -100 (/ min-y height)))))
+      (if (or (< ascent 0) (> ascent 100))
+          'center
+        ascent)))
+
   (defun eli/xenops-preview-align-baseline (element &rest _args)
     "Redisplay SVG image resulting from successful LaTeX compilation of ELEMENT.
 
@@ -208,50 +181,16 @@ to calculate the decent value of `:ascent'. "
     (let* ((inline-p (eq 'inline-math (plist-get element :type)))
            (ov-beg (plist-get element :begin))
            (ov-end (plist-get element :end))
-           (colors (xenops-math-latex-get-colors))
-           (latex (buffer-substring-no-properties ov-beg
-                                                  ov-end))
-           (cache-svg (xenops-math-compute-file-name latex colors))
-           (cache-log (file-name-with-extension cache-svg "log"))
-           (cache-log-exist-p (file-exists-p cache-log))
-           (tmp-log (f-join temporary-file-directory "xenops"
-                            (concat (f-base cache-svg) ".log")))
+           (cache-file (car (last _args)))
            (ov (car (overlays-at (/ (+ ov-beg ov-end) 2) t)))
-           (regexp-string "^! Preview:.*\(\\([0-9]*?\\)\\+\\([0-9]*?\\)x\\([0-9]*\\))")
-           img new-img ascent bbox log-text log)
+           img new-img ascent)
       (when (and ov inline-p)
-        (if cache-log-exist-p
-            (let ((text (f-read-text cache-log)))
-              (string-match regexp-string text)
-              (setq log (match-string 0 text))
-              (setq bbox (mapcar #'(lambda (x)
-                                     (* (preview-get-magnification)
-                                        (string-to-number x)))
-                                 (list
-                                  (match-string 1 text)
-                                  (match-string 2 text)
-                                  (match-string 3 text)))))
-          (with-temp-file cache-log
-            (insert-file-contents-literally tmp-log)
-            (goto-char (point-max))
-            (if (re-search-backward regexp-string nil t)
-                (progn
-                  (setq log (match-string 0))
-                  (setq bbox (mapcar #'(lambda (x)
-                                         (* (preview-get-magnification)
-                                            (string-to-number x)))
-                                     (list
-                                      (match-string 1)
-                                      (match-string 2)
-                                      (match-string 3))))))
-            (erase-buffer)
-            (insert log)))
-        (setq ascent (preview-ascent-from-bb (preview-TeX-bb bbox)))
+        (setq ascent (+ 1 (eli/org--match-text-baseline-ascent cache-file)))
         (setq img (cdr (overlay-get ov 'display)))
         (setq new-img (plist-put img :ascent ascent))
         (overlay-put ov 'display (cons 'image new-img)))))
-  (advice-add 'xenops-math-display-image :after
-              #'eli/xenops-preview-align-baseline)
+    (advice-add 'xenops-math-display-image :after
+                #'eli/xenops-preview-align-baseline)  
 
   ;; from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/
   ;; Justifying-LaTeX-preview-fragments-in-org-mode/
@@ -271,7 +210,7 @@ to calculate the decent value of `:ascent'. "
         (cond
          ((and (eq 'right position) 
                (not inline-p)
-               (> width 55))
+               (> width 50))
           (setq offset (floor (- fill-column
                                  width)))
           (if (< offset 0)
