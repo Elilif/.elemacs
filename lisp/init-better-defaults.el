@@ -153,7 +153,6 @@
 (keymap-global-set "C-'" #'avy-goto-char)
 (keymap-global-set "C-\"" #'avy-goto-char-near-point)
 
-(keymap-global-set "M-o" #'ace-select-window)
 (add-to-list 'load-path "~/.emacs.d/site-lisp/pinyinlib/")
 (add-to-list 'load-path "~/.emacs.d/site-lisp/ace-pinyin/")
 (autoload 'ace-pinyin-global-mode "ace-pinyin")
@@ -578,8 +577,15 @@ BUFFER is a string, the name of a buffer."
                      (point)))))
       (align-regexp align-start align-end "\\(\\s-*\\)\\(=\\|:\\)" 1 1))))
 
-;; smart-mark
+;;; smart-mark
 (add-hook 'elemacs-first-input-hook #'smart-mark-mode)
+
+;;; ace window
+(keymap-global-set "M-o" #'ace-window)
+(with-eval-after-load 'ace
+  (setq aw-reverse-frame-list t
+        aw-dispatch-always nil
+        aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
