@@ -97,7 +97,25 @@ instance: \"$4\pi^2 //$\" will be expand into
   (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   (add-hook 'vterm-copy-mode-hook (lambda () (call-interactively 'hl-line-mode))))
 
+;; electric operator 
 (add-hook 'c++-mode-hook #'electric-operator-mode)
+
+(with-eval-after-load 'org-mode
+  (defun eli/filter-electric-operator-get-rules-list (list)
+    "Enable `electric-operator-mode' in math environments of org-mode.
+
+This function is a advice for `electric-operator-get-rules-list',
+whose result is LIST."
+    (if (and (eq major-mode 'org-mode)
+             (texmathp))
+        (if (electric-operator--latex-in-math?)
+            (electric-operator-get-rules-trie-for-mode 'latex-math)
+          (if electric-operator-enable-in-docs
+              (electric-operator-get-rules-trie-for-mode 'text-mode)
+            (make-electric-operator--trie)))
+      list))
+  (advice-add 'electric-operator-get-rules-list :filter-return
+              #'eli/filter-electric-operator-get-rules-list))
 
 (provide 'init-lang)
 ;;; init-lang.el ends here.
