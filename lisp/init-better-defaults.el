@@ -271,13 +271,14 @@
 (add-hook 'elemacs-first-input-hook #'recentf-mode)
 (with-eval-after-load 'recentf
     (setq recentf-auto-cleanup 'never)
-    (setq  recentf-exclude
+    (setq recentf-exclude
 	   '("/home/eli/.emacs.d/.cache/treemacs-persist-at-last-error"
 	     "/home/eli/.emacs.d/.cache/treemacs-persist"
 	     "\\.txt"
 	     "/home/eli/.emacs.d/elpa/*"
 	     "/home/eli/.elfeed/index"
 	     "/home/eli/.mail/*"
+         "/tmp/*"
 	     ))
     (setq recentf-max-menu-items 50)
     (setq recentf-max-saved-items 50))
@@ -552,7 +553,9 @@ BUFFER is a string, the name of a buffer."
 (keymap-global-set "C-e" #'mwim-end)
 
 ;; automatically select apropos buffer
-(add-hook 'apropos-mode-hook (lambda () (switch-to-buffer-other-window "*Apropos*")))
+(add-hook 'apropos-mode-hook (lambda ()
+                               (switch-to-buffer-other-window "*Apropos*")))
+
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 (keymap-global-set "M-DEL" #'backward-kill-sentence)
