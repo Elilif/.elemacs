@@ -316,6 +316,9 @@
 [submodule "ox-pandoc"]
 	path = lib/ox-pandoc
 	url = git@github.com:emacsorphanage/ox-pandoc.git
+[submodule "ox-rss"]
+	path = lib/ox-rss
+	url = git@gitlab.com:nsavage/ox-rss.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
