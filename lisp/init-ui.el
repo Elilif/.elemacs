@@ -68,8 +68,8 @@
     (set-fontset-font nil ?ㄓ (font-spec :family "Sarasa Mono SC Nerd" :size 12))
     (set-fontset-font nil ?⎙ "PragmataPro Liga")
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
-                                    ("Sarasa" . 1.18)
-                                    ("Amazon Ember" . 1.3)))))
+                                    ("Sarasa" . 1.2)
+                                    ("Amazon Ember" . 1.2)))))
 
 (add-hook 'after-init-hook #'eli/set-font)
 
