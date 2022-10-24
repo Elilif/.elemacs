@@ -155,23 +155,17 @@
   (keymap-set yas-keymap "<tab>" #'yas-next-field-or-cdlatex)
   (keymap-set yas-keymap "TAB" #'yas-next-field-or-cdlatex))
 
-(add-hook 'org-mode-hook
-          (lambda ()
-            (unless (member (buffer-file-name)
-                            (append '("/home/eli/Dropbox/org/Clock_Report.org")
-                                    org-agenda-files
-                                    (mapcar (lambda (x)
-                                              (concat x "_archive"))
-                                            org-agenda-files)))
-              (xenops-mode)))) ;; preview latex fragments in org-mode
+;; xenops
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
+(add-hook 'org-mode-hook #'xenops-mode)
 
 (with-eval-after-load 'xenops
   (setq xenops-math-image-scale-factor 1.3
         xenops-image-try-write-clipboard-image-to-file nil
         xenops-reveal-on-entry nil
         xenops-math-image-margin 0
-        xenops-math-latex-max-tasks-in-flight 16)
+        xenops-math-latex-max-tasks-in-flight 16
+        xenops-auctex-electric-insert-commands nil)
   (defun eli/change-xenops-latex-header (orig &rest args)
     (let ((org-format-latex-header "\\documentclass[dvisvgm,preview]{standalone}\n\\usepackage{arev}\n\\usepackage{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]"))
       (apply orig args)))
