@@ -389,7 +389,7 @@
     ("q" nil))))
 
 (pretty-hydra-define hydra-insert
-  (:color amaranth :exit t :quit-key "q"
+  (:color amaranth :exit t
 	  :pre (progn (setq which-key-inhibit t))
 	  :post (progn (setq which-key-inhibit nil)
 		       ))
@@ -404,7 +404,8 @@
     ("m" eli/select-images "images"))
    "LaTeX"
    (("l" mathpix-screenshot "mathpix")
-    ("r" eli/org-ref-insert-ref-link "insert org ref"))))
+    ("r" eli/org-ref-insert-ref-link "insert org ref")
+    ("x" eli/LaTeX-swap-display-math "swap display math"))))
 
 (pretty-hydra-define hydra-player
   (:color amaranth :exit t :quit-key "q"

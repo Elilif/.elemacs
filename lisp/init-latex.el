@@ -64,6 +64,49 @@
   ;; reftex
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-default-bibliography eli/bibliography)
+
+  (defun eli/LaTeX-swap-display-math ()
+    "Swap between display math and other math envs."
+    (interactive)
+    (save-excursion
+      (when (texmathp)
+        (let* ((command (car texmathp-why))
+               (command-position (cdr texmathp-why))
+               (command-length (length command))
+               default environment)
+          (cond
+           ((equal command "\\[")
+            (setq default (cond
+                           ((TeX-near-bobp) "document")
+                           ((and LaTeX-default-document-environment
+                                 (string-equal (LaTeX-current-environment) "document"))
+                            LaTeX-default-document-environment)
+                           (t LaTeX-default-environment)))
+            (setq environment (completing-read (concat "Environment type (default "
+                                                       default "): ")
+                                               (LaTeX-environment-list-filtered) nil nil
+                                               nil 'LaTeX-environment-history default))
+            (goto-char command-position)
+            (delete-char command-length)
+            (push-mark)
+            (search-forward "\\]")
+            (delete-char (- command-length))
+            (exchange-point-and-mark)
+            (LaTeX-insert-environment environment)
+            (indent-region (save-excursion (LaTeX-find-matching-begin) (point))
+                           (save-excursion (LaTeX-find-matching-end) (point))))
+           (t 
+            (LaTeX-find-matching-begin)
+            (re-search-forward (concat "\\\\begin{"
+                                       (regexp-quote command)
+                                       "}[ \t\n\r]*"))
+            (replace-match "\\\\[\n")
+            (LaTeX-find-matching-end)
+            (re-search-backward (concat "[ \t\n\r]*\n[ \t\n\r]*\\\\end{"
+                                        (regexp-quote command)
+                                        "}"))
+            (replace-match "\n\\\\]")
+            (call-interactively 'indent-region)))))))
   )
 
 (with-eval-after-load 'tex
