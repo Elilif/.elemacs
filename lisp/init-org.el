@@ -654,14 +654,22 @@ or equal to scheduled (%s)"
       new-string))
 
   ;; better fill region in capture
-  (defun eli/fill-quote ()
+  (defun eli/fill-quote-and-checklist ()
+    "Fill long quotes or checklist after capture them."
     (save-excursion
       (push-mark)
       (goto-char (point-min))
-      (when (re-search-forward "#\\+begin_quote\n\\(\\(?:.*\n\\)*?\\)#\\+end_quote" nil t)
+      (cond  
+       ((save-excursion
+          (re-search-forward "#\\+begin_quote\n\\(\\(?:.*\n\\)*?\\)#\\+end_quote"
+                             nil t))
         (fill-region (match-beginning 1)
-                     (match-end 1)))))
-  (add-hook 'org-capture-prepare-finalize-hook 'eli/fill-quote)
+                     (match-end 1)))
+       ((save-excursion
+          (re-search-forward "^- \\[ \\].*" nil t))
+        (fill-region (match-beginning 0)
+                     (match-end 0))))))
+  (add-hook 'org-capture-prepare-finalize-hook 'eli/fill-quote-and-checklist)
 
   (defun eli/org-capture-template-goto-today (format-string start end point)
     "Set point for capturing at what capture target file+headline
