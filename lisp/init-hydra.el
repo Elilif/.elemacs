@@ -222,6 +222,9 @@
    "blog"
    (("bp" org-publish)
     ("ba" (org-publish "eli's blog" t) "publish all blogs")
+    ("bu" (progn
+            (org-publish "eli's blog")
+            (org-publish "eli's blog rss")) "update rss and blog")
     ("bg" eli/push-to-gitpage)
     ("bt" org-timeline-export-to-html "export timeline"))
    ))

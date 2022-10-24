@@ -738,8 +738,7 @@ with headline set to %l would do."
 	       )
 	      ("B" "Blogs" plain (file eli/capture-report-date-file)
 	       "#+TITLE: %?\n#+DATE: %<%Y-%m-%d>\n#+STARTUP: showall\
-\n#+OPTIONS: H:2 num:2\n
-#+HTML_HEAD_EXTRA: <style> .figure p {text-align: center;}</style>\n"
+\n#+OPTIONS: H:2 num:2\n#+HTML_HEAD_EXTRA: <style> .figure p {text-align: center;}</style>\n"
 	       )
 	      ("T" "Time Report" plain (file+function
                                     "~/Dropbox/org/Clock_Report.org"
