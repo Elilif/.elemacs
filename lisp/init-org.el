@@ -921,6 +921,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 				                  rime-predicate-current-uppercase-letter-p
 				                  rime-predicate-hydra-p
 				                  rime-predicate-after-latin-char-p
+                                  texmathp
 				                  )
 	    rime-show-candidate 'nil
 	    rime-inline-ascii-trigger 'shift-l
