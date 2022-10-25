@@ -2,5 +2,5 @@
 # name: image
 # key: ig
 # --
-#+attr_org: :width 800px
+#+attr_org: :width 700px
 [[$1]]$0
