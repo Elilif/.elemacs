@@ -1520,7 +1520,7 @@ Used by `org-anki-skip-function'"
   (keymap-global-set "<f12>" #'org-anki-sync-region)
   
   (defalias 'org-anki-sync-word
-    (kmacro "C-u <f12> C-s-k \\(.*\\)：\\(\\(?:.* C-q C-j ?\\)*\\) <return> SPC 的语境 <return> <return> Words <return>"))
+    (kmacro "C-u <f12> C-s-k \\(.*\\)\\(?:：\\|:\\)\\(\\(?:.* C-q C-j ?\\)*\\) <return> SPC 的语境 <return> <return> Words <return>"))
 
   (defalias 'org-anki-sync-poem
     (kmacro "<f12> \\(.*\\) C-q C-j C-q C-j \\(\\(?:.* C-q C-j ?\\)*\\) <return> <return> <return> Poems <return>")))
