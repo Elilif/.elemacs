@@ -1278,6 +1278,8 @@ direct title.
   (setq org-indirect-buffer-display 'current-window)
   (setq org-export-preserve-breaks nil)
   (setq org-adapt-indentation t)
+  (setq org-blank-before-new-entry '((heading . nil)
+                                     (plain-list-item . auto)))
   (setq org-fontify-quote-and-verse-blocks t)
   (setq org-context-in-file-links 1)
   (setq org-link-frame-setup
