@@ -91,7 +91,7 @@
                                          "-[:space:].,:!?;'\")}\\[[:nonascii:]"
                                          "[:space:]"
                                          "."
-                                         3))
+                                         1))
   (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
   (org-element-update-syntax)
   (setq org-match-substring-regexp
@@ -106,7 +106,7 @@
   
   (defun org-do-emphasis-faces (limit)
     "Run through the buffer and emphasize strings."
-    (let ((quick-re (format "\\([%s]\\|^\\)\\([~=*/_+]\\)\\(?:[^ ].*?\\|[^ ].*?\n.+?\\)[~=*/_+]"
+    (let ((quick-re (format "\\([%s]\\|^\\)\\([~=*/_+]\\)\\(?:[^ ~=*/_+].*?\\|[^ ~=*/_+].*?\n.+?\\)[~=*/_+]"
     		                (car org-emphasis-regexp-components))))
       (catch :exit
         (while (re-search-forward quick-re limit t)
@@ -163,7 +163,7 @@
   
   ;; prevent org emphases from being split by `fill-paragraph'.
   (defun eli/adjust-line-break-point (linebeg)
-    (let* ((re "\\([-[:space:]('\"{[:nonascii:]]\\|^\\)\\([~=*/_+]\\)\\(?:.+?\\|.+?\n.+?\\)[~=*/_+]")
+    (let* ((re "\\([-[:space:]('\"{[:nonascii:]]\\|^\\)\\([~=*/_+]\\)\\(?:[^ ~=*/_+].*?\\|[^ ~=*/_+].*?\n.+?\\)[~=*/_+]")
            pt)
       (save-excursion
         (end-of-line)
