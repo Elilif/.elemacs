@@ -217,11 +217,14 @@
 (with-eval-after-load 'dired-x
   (keymap-set dired-mode-map "q" #'kill-this-buffer)
   (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-  (setq dired-listing-switches "-alh")
-  (setq dired-recursive-copies 'always)
-  (setq dired-recursive-deletes 'always)
-  (setq dired-dwim-target t)
-  (setq dired-guess-shell-alist-user '(("\\.doc\\'" "wps")
+  (setq dired-listing-switches "-alh"
+        dired-recursive-copies 'always
+        dired-recursive-deletes 'always
+        ;; 在Bookmark中进入dired buffer时自动刷新
+        dired-auto-revert-buffer t
+        dired-dwim-target t
+        dired-kill-when-opening-new-dired-buffer t
+        dired-guess-shell-alist-user '(("\\.doc\\'" "wps")
                                        ("\\.docx\\'" "wps")))
   (put 'dired-find-alternate-file 'disabled nil)
   ;; 切换buffer后，立即刷新
@@ -232,29 +235,16 @@
   ;; 执行shell-command后，立即刷新
   (defadvice shell-command (after revert-buffer-now activate)
     (if (eq major-mode 'dired-mode)
-	(revert-buffer)))
-
-  ;; 在Bookmark中进入dired buffer时自动刷新
-  (setq dired-auto-revert-buffer t))
-
-(with-eval-after-load 'dired-x
-  ;; don't remove `other-window', the caller expects it to be there
-  (defun dired-up-directory (&optional other-window)
-    "Run Dired on parent directory of current directory."
+	    (revert-buffer)))
+  
+  (defun dired-open-externally (&optional arg)
+    "Open marked or current file in operating system's default application."
     (interactive "P")
-    (let* ((dir (dired-current-directory))
-     	   (orig (current-buffer))
-     	   (up (file-name-directory (directory-file-name dir))))
-      (or (dired-goto-file (directory-file-name dir))
-     	  ;; Only try dired-goto-subdir if buffer has more than one dir.
-     	  (and (cdr dired-subdir-alist)
-     	       (dired-goto-subdir up))
-     	  (progn
-     	    (kill-buffer orig)
-     	     (dired up)
-     	     (dired-goto-file dir))))))
-;; or (setq dired-kill-when-opening-new-dired-buffer t)
-
+    (dired-map-over-marks
+     (consult-file-externally (dired-get-filename))
+     arg))
+  (keymap-set dired-mode-map "E" #'dired-open-externally)
+  )
 
 (add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
 (with-eval-after-load 'dired-x
