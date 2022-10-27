@@ -99,8 +99,9 @@ instance: \"$4\pi^2 //$\" will be expand into
 
 ;; electric operator 
 (add-hook 'c++-mode-hook #'electric-operator-mode)
+(add-hook 'org-mode-hook #'electric-operator-mode)
 
-(with-eval-after-load 'org-mode
+(with-eval-after-load 'org
   (defun eli/filter-electric-operator-get-rules-list (list)
     "Enable `electric-operator-mode' in math environments of org-mode.
 
