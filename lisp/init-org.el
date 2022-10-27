@@ -451,11 +451,20 @@ or equal to scheduled (%s)"
   (setq org-agenda-span 'day)
   (setq org-agenda-show-inherited-tags nil)
   (setq org-agenda-window-setup 'only-window)
+
+  (defun eli/org-agenda-goto-started-task (orig)
+    (if (bound-and-true-p org-clock-current-task)
+        (funcall orig)
+      (re-search-forward "started" nil t)
+      (recenter-top-bottom 1)
+      (next-line)))
+  
+  (advice-add 'org-agenda-clock-goto :around #'eli/org-agenda-goto-started-task)
   (advice-add 'org-agenda-log-mode
               :after (lambda (&rest _arg) (beginning-of-buffer)))
   (advice-add 'org-agenda-redo-all
               :after (lambda (&rest _arg) (beginning-of-buffer)))
-  ;; (with-eval-after-load 'org
+  
 
 
   ;; custom org agenda view
