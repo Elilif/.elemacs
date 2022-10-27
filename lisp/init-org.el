@@ -1539,7 +1539,7 @@ Used by `org-anki-skip-function'"
 ;;; latex and pdf
 (with-eval-after-load 'org
   (require 'ox-latex)
-  (setq org-highlight-latex-and-related '(latex entities script))
+  (setq org-highlight-latex-and-related '(latex entities))
   ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
   (setq org-entities-user '(("ws" "\\ " nil " " " " " " " ")))
   (setq org-latex-prefer-user-labels t)
