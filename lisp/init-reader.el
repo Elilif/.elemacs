@@ -71,13 +71,10 @@
   (setq org-noter-notes-search-path '("~/Dropbox/org/roam"))
   (setq org-noter-always-create-frame t)
 
-  (defun eli/org-noter-set-highlight (_arg)
+  (defun eli/org-noter-set-highlight (&rest _arg)
     "Highlight current org-noter note."
     (save-excursion
-      (with-current-buffer (car (seq-filter
-                                 (lambda (string)
-                                   (string-match "Notes of .*" string))
-                                 (mapcar #'buffer-name (buffer-list))))
+      (with-current-buffer (org-noter--session-notes-buffer org-noter--session)
         (remove-overlays (point-min) (point-max) 'org-noter-current-hl t)
         (goto-char (org-entry-beginning-position))
         (let* ((hl (org-element-context))
@@ -90,7 +87,9 @@
     
   (advice-add #'org-noter--focus-notes-region
               :after #'eli/org-noter-set-highlight)
-
+  (advice-add #'org-noter-insert-note
+              :after #'eli/org-noter-set-highlight)
+  
   (defun eli/org-noter-back-to-current-window (orig-fun)
     (save-selected-window
       (call-interactively orig-fun)))
