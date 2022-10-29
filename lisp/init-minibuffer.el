@@ -164,7 +164,7 @@
     "Location of point before entering minibuffer.
 Used to preselect nearest headings and imenu items.")
 
-  (defun consult--set-previous-point ()
+  (defun consult--set-previous-point (&rest _args)
     "Save location of point. Used before entering the minibuffer."
     (setq consult--previous-point (point)))
 
@@ -204,7 +204,7 @@ Used to preselect nearest headings and imenu items.")
    consult-theme
    :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep my/consult-org-file
-   consult-bookmark consult-recent-file consult-xref
+   consult-bookmark consult-recent-file consult-xref consult-org-heading
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
    :preview-key (kbd "M-.")))
