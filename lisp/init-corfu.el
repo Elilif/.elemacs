@@ -30,7 +30,7 @@
 
 ;;; Code:
 
-(add-hook 'after-init-hook 'global-corfu-mode)
+(add-hook 'elemacs-first-input-hook 'global-corfu-mode)
 (with-eval-after-load 'corfu
   (setq corfu-cycle       t
 	    corfu-auto        t
