@@ -1740,11 +1740,53 @@ font-lock."
     (interactive)
     (insert (let ((label))
               (setq label (completing-read "label: " (org-ref-get-labels)))
-              (format "\\ref{%s}" label)))))
+              (format "[[%s]]" label)))))
 
 ;;; org exporting config
 ;; pandoc support
 (with-eval-after-load 'ox
+  (setq org-html-html5-fancy t
+        org-html-doctype "html5")
+
+  ;; use with #+HTML_HEAD: <link rel="stylesheet"
+  ;; href="https://latex.now.sh/style.css">
+  (defun eli/org-export-get-special-block-ordinal (orig element info
+                                                        &optional types predicate)
+    (if (not (eq (org-element-type element) 'special-block))
+        (funcall orig element info types predicate)
+      (let* ((counter 0)
+             (indicator nil)
+             (element-type (org-element-property :type element))
+             (element-name (org-element-property :name element)))
+        (last (org-element-map (plist-get info :parse-tree)
+	              (or types (org-element-type element))
+	            (lambda (el)
+	              (let ((el-type (org-element-property :type el))
+                        (el-name (org-element-property :name el)))
+                   (cond
+                   ((and (string= element-type el-type)
+                         (string= element-name el-name))
+                    (setq indicator t)
+                    (cl-incf counter))
+                   ((and (not indicator)
+                         (or (string= element-type el-type)
+                             (and (member element-type '("theorem" "lemma"))
+                                  (member el-type '("theorem" "lemma"))))
+                         (not (string= element-name el-name)))
+                    (cl-incf counter)))))
+	            info)))))
+  (advice-add 'org-export-get-ordinal :around
+              #'eli/org-export-get-special-block-ordinal)
+
+  (defun eli/org-html-special-block-filter (orig special-block contents info)
+    (let ((new-contents (replace-regexp-in-string
+                         "<p>\n\\(\\(?:.*\n\\)*?\\)</p>\\(\\(?:.*\n?\\)*$\\)"
+                         "\\1\\2"
+                         contents)))
+      (funcall orig special-block new-contents info)))
+  (advice-add 'org-html-special-block :around
+              #'eli/org-html-special-block-filter)
+  
   (require 'ox-pandoc)
   (setq org-pandoc-options-for-docx '((standalone . nil)))
   (defun org-pandoc-link (link contents info)
