@@ -2,6 +2,7 @@
 # name: defun
 # key: defun
 # --
-${1:type} ${2:name}(${3:parameter}) {
+${1:type} ${2:name}(${3:parameter})
+{
    $0
 }

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: latex-html-head
+# key: latexcss
+# --
+#+HTML_HEAD: <link rel="stylesheet" href="https://latex.now.sh/style.css">

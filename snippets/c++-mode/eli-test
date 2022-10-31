@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: eli-test
+# key: eli-test
+# --
+#include <iostream>
+#include <string>
+#include <vector>
+
+int main(int argc, char *argv[]) {
+    $0
+    
+    return 0;
+}

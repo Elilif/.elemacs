@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: theorem-headers
+# key: thmhd
+# --
+#+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
+#+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
+#+LATEX_HEADER: \newtheorem{definition}{Definition}[section]
