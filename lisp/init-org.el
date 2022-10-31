@@ -1600,6 +1600,8 @@ Used by `org-anki-skip-function'"
 	           '("" "tikz"))
   (add-to-list 'org-latex-packages-alist
 	           '("" "amsfonts"))
+  (add-to-list 'org-latex-packages-alist
+	           '("" "amsthm"))
   (setq org-latex-pdf-process
 	    '("xelatex -8bit --shell-escape -interaction nonstopmode -output-directory=%o %f"
 	      "biber %b"
