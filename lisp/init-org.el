@@ -451,17 +451,26 @@ or equal to scheduled (%s)"
   (setq org-agenda-window-setup 'only-window)
 
   (defun eli/org-agenda-goto-started-task (orig)
+    (goto-char (point-min))
     (if (bound-and-true-p org-clock-current-task)
-        (funcall orig)
-      (re-search-forward "started" nil t)
-      (recenter-top-bottom 1)
-      (next-line)))
-  
+        (if (not (save-excursion
+                   (re-search-forward org-clock-current-task nil t)))
+            (progn
+              (re-search-forward "^started" nil t)
+              (recenter-top-bottom 1)
+              (forward-line))
+          (funcall orig))
+      (progn
+        (re-search-forward "^started" nil t)
+        (recenter-top-bottom 1)
+        (forward-line))))
   (advice-add 'org-agenda-clock-goto :around #'eli/org-agenda-goto-started-task)
+  
+  
   (advice-add 'org-agenda-log-mode
-              :after (lambda (&rest _arg) (beginning-of-buffer)))
+              :after (lambda (&rest _arg) (goto-char (point-min))))
   (advice-add 'org-agenda-redo-all
-              :after (lambda (&rest _arg) (beginning-of-buffer)))
+              :after (lambda (&rest _arg) (goto-char (point-min))))
   
 
 
