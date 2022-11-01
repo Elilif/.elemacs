@@ -65,7 +65,7 @@
                               " line missing at position %s")
                              (1+ start))))
                   (if (re-search-forward "^[ \t]*:END:" limit t)
-                      (outline-flag-region start (point-at-eol) t)
+                      (outline-flag-region start (line-end-position) t)
                     (user-error msg))))))))))
 
   (defun eli/org-expand-all ()
@@ -394,7 +394,7 @@ or equal to scheduled (%s)"
 	      (moment (org-time-subtract nil
 				                     (* 3600 org-extend-today-until))))
       (save-excursion
-	    (goto-char (if line (point-at-bol) (point-min)))
+	    (goto-char (if line (line-beginning-position) (point-min)))
 	    (while (not (eobp))
 	      (let ((habit (get-text-property (point) 'org-habit-p)))
 	        (when habit
@@ -692,7 +692,7 @@ with headline set to %l would do."
 	       (format org-complex-heading-regexp-format
                    (regexp-quote (substring hd start end)))
 	       nil t)
-	      (goto-char (point-at-bol))
+	      (goto-char (line-beginning-position))
 	    (goto-char point)
 	    (insert "\n")
 	    (insert "* " hd "\n")
@@ -961,7 +961,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 		         (direction . right)
 		         (window-width . 0.4)
 		         (window-height . fit-window-to-buffer)))
-  (setq org-roam-mode-section-functions
+  (setq org-roam-mode-sections
 	    (list #'org-roam-backlinks-section
 	          #'org-roam-reflinks-section
 	          #'org-roam-unlinked-references-section
@@ -984,7 +984,6 @@ References from FILE are excluded."
                                  (format " '\\[([^[]]++|(?R))*\\]%s' "
                                          (mapconcat
                                           (lambda (title)
-                                            (setq eli/test title)
                                             (format "|(\\b%s\\b)"
                                                     (shell-quote-argument
                                                      title)))
@@ -1038,7 +1037,7 @@ References from FILE are excluded."
 		   (file+head "references/%<%Y%m%d%H%M%S>-${title}.org" "#+title: ${title}\n")
 		   :unnarrowed t)))
   (run-with-idle-timer 15 nil
-	           #'org-roam-setup)
+	           #'org-roam-db-autosync-enable)
   
   (with-eval-after-load 'org-roam
     ;; Codes blow are used to general a hierachy
@@ -1288,7 +1287,7 @@ direct title.
   (setq org-blank-before-new-entry '((heading . nil)
                                      (plain-list-item . auto)))
   (setq org-fontify-quote-and-verse-blocks t)
-  (setq org-context-in-file-links 1)
+  (setq org-link-context-for-files 1)
   (setq org-link-frame-setup
         '((vm . vm-visit-folder-other-frame)
           (vm-imap . vm-visit-imap-folder-other-frame)
@@ -1388,9 +1387,9 @@ direct title.
                                                              (region-end)))))
       (cond ((and region-content clipboard-url (not point-in-link))
              (delete-region (region-beginning) (region-end))
-             (insert (org-make-link-string clipboard-url region-content)))
+             (insert (org-link-make-string clipboard-url region-content)))
             ((and clipboard-url (not point-in-link))
-             (insert (org-make-link-string
+             (insert (org-link-make-string
                       clipboard-url
                       (read-string "title: "
                                    (with-current-buffer
@@ -1580,7 +1579,7 @@ Used by `org-anki-skip-function'"
                   (goto-char beg)
                   (if (re-search-forward "#\\+name:" end t)
                       (progn
-                        (next-line)
+                        (forward-line)
                         (line-beginning-position))
                     beg))))
       (apply orig-fun beg end _args)))
