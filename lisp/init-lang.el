@@ -118,5 +118,8 @@ whose result is LIST."
   (advice-add 'electric-operator-get-rules-list :filter-return
               #'eli/filter-electric-operator-get-rules-list))
 
+(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+(add-hook 'c-mode-common-hook #'aggressive-indent-mode)
+
 (provide 'init-lang)
 ;;; init-lang.el ends here.

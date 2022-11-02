@@ -4,6 +4,9 @@
 [submodule "ag"]
 	path = lib/ag
 	url = git@github.com:Wilfred/ag.el.git
+[submodule "aggressive-indent"]
+	path = lib/aggressive-indent
+	url = git@github.com:Malabarba/aggressive-indent-mode.git
 [submodule "aio"]
 	path = lib/aio
 	url = git@github.com:skeeto/emacs-aio.git
