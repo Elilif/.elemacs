@@ -55,16 +55,16 @@
 (keymap-global-set "C-c y" #'wordnut-lookup-current-word)
 (add-hook 'wordnut-mode-hook #'variable-pitch-mode)
 
-(defun Eli/dict-search ()
+(defun eli/dict-search ()
   (interactive)
   (let ((BASEDIR "~/Documents/txtdict/")
-	(INIT-INPUT))
+	    (INIT-INPUT))
     (consult-ripgrep BASEDIR INIT-INPUT)))
 
-(defun Eli/te-search ()
+(defun eli/te-search ()
   (interactive)
   (let ((BASEDIR "~/Documents/TEdict")
-	(INIT-INPUT "\\("))
+	    (INIT-INPUT "\\("))
     (consult-ripgrep BASEDIR INIT-INPUT)))
 
 (defun eli/open-TE (file-name)
