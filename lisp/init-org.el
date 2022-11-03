@@ -267,7 +267,7 @@
   (require 'org-habit)
   (setq org-habit-graph-column 1)
   (setq org-habit-preceding-days 10)
-  (setq org-habit-following-days 2)
+  (setq org-habit-following-days 1)
   (setq org-habit-show-habits-only-for-today nil)
   (defun org-habit-parse-todo (&optional pom)
     "Parse the TODO surrounding point for its habit-related data.
