@@ -91,7 +91,21 @@ instance: \"$4\pi^2 //$\" will be expand into
         (let ((temp (string-clean-whitespace (current-kill 0))))
           (if (string-match "^(\\(.*\\))$" temp)
               (match-string 1 temp)
-            temp)))))
+            temp))))
+
+  ;; C/C++ mode
+  (defun eli/c-fun-has-namespace-p (namespace)
+    "Predicate whether the current function has NAMESPACE namespace."
+    (save-excursion
+      (c-beginning-of-defun)
+      (unless (re-search-forward
+               (concat "^\s*using\\s-+namespace "
+                       namespace
+                       ";")
+               (save-excursion
+                 (c-end-of-defun)
+                 (point)) 'no-errer)
+        (concat namespace "::")))))
 
 (with-eval-after-load 'vterm
   (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
