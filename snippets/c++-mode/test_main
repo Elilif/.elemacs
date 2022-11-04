@@ -3,8 +3,13 @@
 # key: test_main
 # group: testing
 # --
+#include <iostream>
+$1
+
 int main(int argc, char **argv)
 {
-      ::testing::InitGoogleTest(&argc, argv);
-       return RUN_ALL_TESTS();
+    using namespace std;
+    $0
+
+    return 0;
 }

@@ -2,6 +2,4 @@
 # name: string
 # key: string
 # --
-`(progn (goto-char (point-min)) (unless (re-search-forward
-"^\s*using\\s-+namespace std;" nil 'no-errer) "std::"))
-`string 
+`(eli/c-fun-has-namespace-p "std")`string 

@@ -2,6 +2,4 @@
 # name: cin
 # key: cin
 # --
-`(progn (goto-char (point-min)) (unless (re-search-forward
-"^\s*using\\s-+namespace std;" nil 'no-error) "std::"))
-`cin >> $0;
+`(eli/c-fun-has-namespace-p "std")`cin >> $0;
