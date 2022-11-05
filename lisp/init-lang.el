@@ -135,6 +135,12 @@ whose result is LIST."
 
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 (add-hook 'c-mode-common-hook #'aggressive-indent-mode)
+(with-eval-after-load 'aggressive-indent
+  (add-to-list
+   'aggressive-indent-dont-indent-if
+   '(and (derived-mode-p 'c++-mode)
+         (null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|while\\|return\\)\\b\\)"
+                             (thing-at-point 'line))))))
 
 (provide 'init-lang)
 ;;; init-lang.el ends here.
