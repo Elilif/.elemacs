@@ -33,6 +33,7 @@
 (with-eval-after-load 'yasnippet
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
   (add-hook 'minibuffer-setup-hook 'yas-minor-mode)
+  (setq yas-triggers-in-field t)
 
   ;; Function that tries to autoexpand YaSnippets
   ;; The double quoting is NOT a typo!
