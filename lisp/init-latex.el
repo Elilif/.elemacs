@@ -157,7 +157,6 @@
 
 ;; xenops
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
-(add-hook 'org-mode-hook #'xenops-mode)
 
 (with-eval-after-load 'xenops
   (setq xenops-math-image-scale-factor 1.3
