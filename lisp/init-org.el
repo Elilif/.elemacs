@@ -32,33 +32,34 @@
 
 (with-eval-after-load 'org  
   ;; hide drawers
+  (add-hook 'org-cycle-hook #'org-cycle-hide-drawers)
   (defun org-cycle-hide-drawers (state)
     "Re-hide all drawers after a visibility state change."
     (when (and (derived-mode-p 'org-mode)
-	           (not (memq state '(overview folded contents))))
+               (not (memq state '(overview folded contents))))
       (save-excursion
-	    (let* ((globalp (memq state '(contents all)))
-	           (beg (if globalp
-			            (point-min)
+        (let* ((globalp (memq state '(contents all)))
+               (beg (if globalp
+    		            (point-min)
                       (point)))
-	           (end (if globalp
-			            (point-max)
+               (end (if globalp
+    		            (point-max)
                       (if (eq state 'children)
-			              (save-excursion
+    		              (save-excursion
                             (outline-next-heading)
                             (point))
-			            (org-end-of-subtree t)))))
+    		            (org-end-of-subtree t)))))
           (goto-char beg)
           (while (re-search-forward org-drawer-regexp end t)
             (save-excursion
               (beginning-of-line 1)
               (when (looking-at org-drawer-regexp)
-		        (let* ((start (1- (match-beginning 0)))
-		               (limit
-			            (save-excursion
+    	        (let* ((start (1- (match-beginning 0)))
+    	               (limit
+    		            (save-excursion
                           (outline-next-heading)
                           (point)))
-		               (msg (format
+    	               (msg (format
                              (concat
                               "org-cycle-hide-drawers:  "
                               "`:END:`"
@@ -67,6 +68,15 @@
                   (if (re-search-forward "^[ \t]*:END:" limit t)
                       (outline-flag-region start (line-end-position) t)
                     (user-error msg))))))))))
+  
+  (defun eli/org-fold-hide-drawer (orig &rest _arg)
+    "Hide the drawer when unfold a entry."
+    (funcall orig 'hide-drawer))
+  (advice-add 'org-fold-show-entry :around #'eli/org-fold-hide-drawer)
+  
+  (advice-add 'org-return
+              :before (lambda (&rest _args)
+                        (org-fold-check-before-invisible-edit 'insert)))
 
   (defun eli/org-expand-all ()
     (interactive)
