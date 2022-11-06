@@ -2,4 +2,4 @@
 # name: vector
 # key: vec
 # --
-std::vector<${1:Class}> ${2:var}${3:(${4:10}, $1($5))};
+`(eli/c-fun-has-namespace-p "std")`vector<${1:Class}> ${2:var}${3:(${4:10}, $1($5))};

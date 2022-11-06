@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: string
-# key: string
+# name: name_string
+# key: nstr
 # --
 `(eli/c-fun-has-namespace-p "std")`string 

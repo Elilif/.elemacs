@@ -4,6 +4,8 @@
 # group: testing
 # --
 #include <iostream>
+#include <string>
+#include <vector>
 $1
 
 int main(int argc, char **argv)
