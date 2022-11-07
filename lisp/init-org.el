@@ -1668,7 +1668,7 @@ Used by `org-anki-skip-function'"
       (apply orig-fun beg end _args)))
   (advice-add 'org--make-preview-overlay :around #'eli/org-preview-show-label)
   
-  (setq org-latex-listings 'minted)
+  (setq org-latex-src-block-backend 'minted)
   (setq org-latex-minted-options '(("breaklines")
                                    ("bgcolor" "bg")))
   (setq org-latex-compiler "xelatex")
