@@ -134,7 +134,9 @@
 		            (goto-char (match-beginning 0))
 		            (and
                      ;; Do not match if preceded by org-emphasis
-                     (not (get-pos-property (point) 'org-emphasis))
+                     (not (save-excursion
+                            (forward-char 1)
+                            (get-pos-property (point) 'org-emphasis)))
                      ;; Do not match in latex fragments.
                      (not (texmathp))
                      ;; Do not match in Drawer.
@@ -708,8 +710,8 @@ or equal to scheduled (%s)"
          ((equal v-i "") "")
          ((string= type "src")
           (concat (format "\n#+begin_%s %s\n" type org-src-mode)
-                      v-i
-                      (format "\n#+end_%s\n" type)))
+                  v-i
+                  (format "\n#+end_%s\n" type)))
          (t (concat (format "\n#+begin_%s\n" type)
                     v-i
                     (format "\n#+end_%s\n" type)))))))
