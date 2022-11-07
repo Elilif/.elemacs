@@ -30,7 +30,7 @@
 
 ;;; Code:
 
-(with-eval-after-load 'org  
+(with-eval-after-load 'org
   ;; hide drawers
   (add-hook 'org-cycle-hook #'org-cycle-hide-drawers)
   (defun org-cycle-hide-drawers (state)
@@ -69,14 +69,21 @@
                       (outline-flag-region start (line-end-position) t)
                     (user-error msg))))))))))
   
-  (defun eli/org-fold-hide-drawer (orig &rest _arg)
-    "Hide the drawer when unfold a entry."
-    (funcall orig 'hide-drawer))
-  (advice-add 'org-fold-show-entry :around #'eli/org-fold-hide-drawer)
+  (defun eli/org-return-wrapper (orig &rest args)
+    "Wrap `org-return'."
+    (if (and (or (not (boundp 'visible-mode)) (not visible-mode))
+	         (or (org-invisible-p)
+		         (org-invisible-p (max (point-min) (1- (point))))))
+        (if (= (org-current-line)
+               (org-current-line (point-max)))
+            (insert "\n")
+          (forward-line)
+          (save-excursion
+            (org-newline-and-indent)))
+      (apply orig args)))
   
   (advice-add 'org-return
-              :before (lambda (&rest _args)
-                        (org-fold-check-before-invisible-edit 'insert)))
+              :around #'eli/org-return-wrapper)
 
   (defun eli/org-expand-all ()
     (interactive)
