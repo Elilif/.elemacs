@@ -94,6 +94,9 @@
 	url = git@github.com:minad/consult.git
     no-byte-compile	= consult-icomplete.el
 	no-byte-compile	= consult-selectrum.el
+[submodule "consult-dir"]
+	path = lib/consult-dir
+	url = git@github.com:karthink/consult-dir.git
 [submodule "corfu"]
 	path = lib/corfu
 	url = git@github.com:minad/corfu.git

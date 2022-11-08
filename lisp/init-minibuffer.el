@@ -148,6 +148,7 @@
   (setq marginalia-align 'right)
   (marginalia-mode))
 
+;;; consult 
 (keymap-global-set "C-s" #'consult-line)
 (keymap-global-set "C-x C-r" #'consult-recent-file)
 (keymap-global-set "C-c \\" #'consult-register)
@@ -155,9 +156,11 @@
 (keymap-global-set "C-c =" #'consult-register-store)
 (keymap-global-set "C-x b" #'consult-buffer)
 (keymap-global-set "M-g o" #'consult-outline)
+(keymap-global-set "C-x C-d" #'consult-dir)
 (with-eval-after-load 'vertico
   (require 'consult)
-
+  (setq consult-fontify-max-size 100000)
+  
   ;;Pre-select nearest heading for consult-org-heading and consult-outline using
   ;;vertico
   (defvar consult--previous-point nil
