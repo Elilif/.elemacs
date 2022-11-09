@@ -681,8 +681,7 @@ or equal to scheduled (%s)"
   ;; from: https://stackoverflow.com/questions/21073859/is-there-a-way-
   ;; with-org-capture-templates-to-not-insert-a-line-if-initial-conten
   (defun v-i-or-nothing ()
-    (save-window-excursion
-      (other-window 1)
+    (with-current-buffer (org-capture-get :original-buffer)
       (let ((v-i (plist-get org-store-link-plist :initial))
             (org-src-mode (replace-regexp-in-string
 			               "-mode"
@@ -698,9 +697,9 @@ or equal to scheduled (%s)"
             (concat (format "\n#+begin_%s\n" type)
                     v-i
                     (format "\n#+end_%s\n" type)))))))
+  
   (defun v-i-or-nothing ()
-    (save-window-excursion
-      (other-window 1)
+    (with-current-buffer (org-capture-get :original-buffer)
       (let ((v-i (plist-get org-store-link-plist :initial))
             (org-src-mode (replace-regexp-in-string
 			               "-mode"
@@ -718,8 +717,7 @@ or equal to scheduled (%s)"
                     (format "\n#+end_%s\n" type)))))))
 
   (defun v-a-or-nothing ()
-    (save-window-excursion
-      (other-window 1)
+    (with-current-buffer (org-capture-get :original-buffer)
       (let* ((v-a (plist-get org-store-link-plist :annotation))
              (v-a-empty-p (equal v-a ""))
              (file-name (buffer-file-name (current-buffer))))
