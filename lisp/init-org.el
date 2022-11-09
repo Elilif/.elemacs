@@ -102,6 +102,7 @@
   (setq org-log-into-drawer t)
   (setq org-log-done 'time)
   (setq org-startup-folded t)
+  (setq org-persist-directory "~/.emacs.d/.cache/org-persist/")
   (setq org-cycle-inline-images-display t)
   (setq org-hide-block-startup t)
   (setq org-hide-emphasis-markers t)
