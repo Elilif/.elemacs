@@ -36,8 +36,8 @@
     "Return a list of imperative verbs."
     (let ((file-path imperative-verb-file))
       (with-temp-buffer
-	(insert-file-contents file-path)
-	(split-string (buffer-string) "\n" t))))
+	    (insert-file-contents file-path)
+	    (split-string (buffer-string) "\n" t))))
 
   ;; Parallels `git-commit-style-convention-checks',
   ;; allowing the user to specify which checks they
@@ -68,7 +68,7 @@ conventions are checked."
       (re-search-forward (git-commit-summary-regexp) nil t)
       (let ((summary (match-string 1))
             (second-word))
-	(and
+	    (and
          (or (not (memq 'summary-does-not-end-with-period
                         my-git-commit-style-convention-checks))
              (not (string-match-p "[\\.!\\?;,:]$" summary))
@@ -89,8 +89,8 @@ conventions are checked."
 
 
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
-	git-commit-summary-max-length 50
-	git-commit-fill-column 72)
+	    git-commit-summary-max-length 80
+	    git-commit-fill-column 80)
   (defun mu-magit-kill-buffers ()
     "Restore window configuration and kill all Magit buffers."
     (interactive)
