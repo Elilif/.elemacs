@@ -1351,7 +1351,7 @@ direct title.
   ;; Otherwise, put things flatly in misc folder.
 
   (add-hook 'dired-mode-hook 'org-download-enable)
-  (global-set-key (kbd "C-c l") 'org-store-link)
+  (keymap-global-set "C-c l" 'org-store-link)
   ;; crop in X11 first, and paste within here later
   ;; Use #+ATTR_ORG: :width 300px to customized image display width
   (setq org-image-actual-width nil)

@@ -172,7 +172,7 @@
 (defun eli/open-init-file()
   (interactive)
   (find-file "~/.emacs.d/init.el"))
-(global-set-key (kbd "<f5>") 'eli/open-init-file)
+(keymap-global-set "<f5>" 'eli/open-init-file)
 
 ;; Variables configured via the interactive 'customize' interface
 (when (file-exists-p custom-file)

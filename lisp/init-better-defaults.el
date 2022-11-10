@@ -95,7 +95,7 @@
 					                     try-expand-line
 					                     try-complete-lisp-symbol-partially
 					                     try-complete-lisp-symbol))
-(global-set-key (kbd "s-/") 'hippie-expand)
+(keymap-global-set "s-/" 'hippie-expand)
 
 (setq use-short-answers t)
 
