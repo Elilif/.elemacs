@@ -170,6 +170,9 @@
 	no-byte-compile = flyspell-correct-ido.el
 	no-byte-compile = flyspell-correct-ivy.el
 	no-byte-compile = flyspell-correct-popup.el
+[submodule "goldendict"]
+	path = lib/goldendict
+	url = https://repo.or.cz/goldendict.el.git
 [submodule "grab-x-link"]
 	path = lib/grab-x-link
 	url = git@github.com:xuchunyang/grab-x-link.git

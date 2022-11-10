@@ -76,5 +76,7 @@
                            (string-match "epub" file-name)))))
   (find-file file-name))
 
+(keymap-global-set "C-c h" #'goldendict-dwim)
+
 (provide 'init-spell)
 ;;; init-spell.el ends here.
