@@ -227,8 +227,8 @@ to calculate the decent value of `:ascent'. "
         (setq img (cdr (overlay-get ov 'display)))
         (setq new-img (plist-put img :ascent ascent))
         (overlay-put ov 'display (cons 'image new-img)))))
-    (advice-add 'xenops-math-display-image :after
-                #'eli/xenops-preview-align-baseline)  
+  (advice-add 'xenops-math-display-image :after
+              #'eli/xenops-preview-align-baseline)  
 
   ;; from: https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/
   ;; Justifying-LaTeX-preview-fragments-in-org-mode/
