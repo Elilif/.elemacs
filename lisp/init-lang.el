@@ -114,6 +114,7 @@ instance: \"$4\pi^2 //$\" will be expand into
 
 ;; electric operator 
 (add-hook 'c++-mode-hook #'electric-operator-mode)
+(add-hook 'c-mode-hook #'electric-operator-mode)
 (add-hook 'org-mode-hook #'electric-operator-mode)
 
 (with-eval-after-load 'org
@@ -138,7 +139,8 @@ whose result is LIST."
 (with-eval-after-load 'aggressive-indent
   (add-to-list
    'aggressive-indent-dont-indent-if
-   '(and (derived-mode-p 'c++-mode)
+   '(and (or (derived-mode-p 'c++-mode)
+             (derived-mode-p 'c-mode))
          (null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|while\\|return\\)\\b\\)"
                              (thing-at-point 'line))))))
 
