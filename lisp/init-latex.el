@@ -271,7 +271,8 @@ to calculate the decent value of `:ascent'. "
                                                     cache-file display-image)
     (let ((results '()) 
           (counter -1)
-          (numberp))
+          (numberp)
+          (outline-regexp org-outline-regexp))
       (setq results (cl-loop for (begin .  env) in 
                              (org-element-map (org-element-parse-buffer)
                                  'latex-environment
@@ -311,7 +312,8 @@ to calculate the decent value of `:ascent'. "
                (format "\\setcounter{equation}{%s}\n" numberp)
                latex))))
     (funcall orig-func element latex colors cache-file display-image))
-  (advice-add 'xenops-math-latex-create-image :around #'eli/xenops-renumber-environment))
+  (advice-add 'xenops-math-latex-create-image
+              :around #'eli/xenops-renumber-environment))
 
 (autoload #'mathpix-screenshot "mathpix" nil t)
 (with-eval-after-load 'mathpix
