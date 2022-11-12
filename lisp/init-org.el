@@ -1497,10 +1497,12 @@ direct title.
   (require 'org-anki)
   (setq org-anki-default-deck "Default")
   (defun org-anki-skip ()
-    "Skip headlines with \"noanki\" property.
+    "Skip headlines with \"noanki\" property or with `org-anki-prop-note-id'. 
 Used by `org-anki-skip-function'"
-    (if (string= "t" (org-entry-get nil "NOANKI"))
+    (if (or (string= "t" (org-entry-get nil "NOANKI"))
+            (org-entry-get nil org-anki-prop-note-id))
         (point)))
+  
   (setq org-anki-skip-function #'org-anki-skip)
 
   (defun eli/org-anki-sync-item (item)
