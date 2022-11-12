@@ -1498,6 +1498,13 @@ direct title.
 (with-eval-after-load 'org
   (require 'org-anki)
   (setq org-anki-default-deck "Default")
+  (setq org-anki-model-fields '(("Basic" "Front" "Back")
+                                ("Basic-Français" "Front" "Back")
+                                ("Basic-English" "Front" "Back")
+                                ("Basic (and reversed card)" "Front" "Back")
+                                ("Basic (optional reversed card)" "Front" "Back")
+                                ("NameDescr" "Name" "Descr")
+                                ("Cloze" "Text")))
   (defun org-anki-skip ()
     "Skip headlines with \"noanki\" property or with `org-anki-prop-note-id'. 
 Used by `org-anki-skip-function'"
@@ -1522,45 +1529,43 @@ Used by `org-anki-skip-function'"
   (defmacro eli/org-anki-install (fun-name reg front &optional back)
     `(defun ,(intern (format "org-anki-sync-%s" fun-name)) ()
        (interactive)
-       (save-excursion
-         (save-restriction
-           (org-back-to-heading)
-           (org-narrow-to-subtree)
-           (while (re-search-forward ,reg nil t)
-             (let*
-                 ((org-export-preserve-breaks t)
-                  (front-string (match-string-no-properties ,front))
-                  (back-string (if ,back
-                                   (match-string-no-properties ,back)
-                                 nil))
-                  (front (org-anki--string-to-html (string-clean-whitespace
-                                                    front-string)))
-                  (maybe-id (org-entry-get nil org-anki-prop-note-id))
-                  (back (if ,back
-                            (org-anki--back-post-processing
-                             (org-anki--string-to-html
-                              (string-clean-whitespace
-                               back-string)))
-                          ""))
-                  (tags (org-anki--get-tags))
-                  (deck (save-excursion
-                          (save-restriction
-                            (widen)
-                            (org-anki--find-prop
-                             org-anki-prop-deck org-anki-default-deck))))
-                  (type (org-anki--find-prop
-                         org-anki-note-type org-anki-default-note-type))
-                  (note-start (point))
-                  (card (make-org-anki--note
-                         :maybe-id (if (stringp maybe-id)
-                                       (string-to-number maybe-id))
-                         :front    front
-                         :back     back
-                         :tags     tags
-                         :deck     deck
-                         :type     type
-                         :point    note-start)))
-               (eli/org-anki-sync-item card)))))))
+       (let ((deck (org-anki--find-prop
+                    org-anki-prop-deck org-anki-default-deck))
+             (type (org-anki--find-prop
+                    org-anki-note-type org-anki-default-note-type)))
+         (save-excursion
+           (save-restriction
+             (org-back-to-heading)
+             (org-narrow-to-subtree)
+             (while (re-search-forward ,reg nil t)
+               (let*
+                   ((org-export-preserve-breaks t)
+                    (front-string (match-string-no-properties ,front))
+                    (back-string (if ,back
+                                     (match-string-no-properties ,back)
+                                   nil))
+                    (front (org-anki--string-to-html (string-clean-whitespace
+                                                      front-string)))
+                    (maybe-id (org-entry-get nil org-anki-prop-note-id))
+                    (back (if ,back
+                              (org-anki--back-post-processing
+                               (org-anki--string-to-html
+                                (string-clean-whitespace
+                                 back-string)))
+                            ""))
+                    (tags (org-anki--get-tags))
+                    (note-start (point))
+                    (card (make-org-anki--note
+                           :maybe-id (if (stringp maybe-id)
+                                         (string-to-number maybe-id))
+                           :front    front
+                           :back     back
+                           :tags     tags
+                           :deck     deck
+                           :type     type
+                           :point    note-start)))
+                 (eli/org-anki-sync-item card))))))))
+  
   (eli/org-anki-install "description" (rx bol
                                           (* " ")
                                           "- "
@@ -1571,6 +1576,7 @@ Used by `org-anki-skip-function'"
                                                  (* (** 1 2 " ")
                                                     (* any)
                                                     (? "\n")))) 1 2)
+  
   (eli/org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2)
   
   (defun org-anki-sync-region (beg end)
