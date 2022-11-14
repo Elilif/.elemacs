@@ -844,7 +844,7 @@ with headline set to %l would do."
                                   org-agenda-file-te
                                   (lambda ()
                                     (eli/org-capture-template-goto-today
-                                     "TODO %Y-%m-%d [/]" 5 15 81)))
+                                     "TODO %Y-%m-%d [/]" 5 15 114)))
 	       "[ ] %(v-i-or-nothing-word)%?"
            :prepend t)
 	      ("f" "Français" entry (file "~/Dropbox/org/Français.org")
