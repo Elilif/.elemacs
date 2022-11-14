@@ -33,25 +33,26 @@
 (with-eval-after-load 'cc-mode
   (defun eli/cc-mode-hook ()
     (let* ((file-name (buffer-file-name))
-	   (is-windows (equal 'windows-nt system-type))
-	   (exec-suffix (if is-windows ".exe" ".out"))
-	   (os-sep (if is-windows "\\" "/")))
+	       (is-windows (equal 'windows-nt system-type))
+	       (exec-suffix (if is-windows ".exe" ".out"))
+	       (os-sep (if is-windows "\\" "/")))
       (if file-name
-	  (progn
-	    (setq file-name (file-name-nondirectory file-name))
-	    (let ((out-file (concat (file-name-sans-extension file-name) exec-suffix)))
-	      (setq-local compile-command (format "g++ -std=c++11 -g %s -o %s" file-name out-file)))))))
+	      (progn
+	        (setq file-name (file-name-nondirectory file-name))
+	        (let ((out-file (concat (file-name-sans-extension file-name) exec-suffix)))
+	          (setq-local compile-command (format "g++ -std=c++11 -g %s -o %s" file-name out-file)))))))
   (setq-default c-basic-offset 4)
   (add-hook 'c-mode-common-hook (lambda () (c-set-style "stroustrup")))
   (add-hook 'c-mode-common-hook #'eli/cc-mode-hook)
   (keymap-set c-mode-base-map "(" nil)
-  (keymap-set c-mode-base-map "{" nil))
+  (keymap-set c-mode-base-map "{" nil)
+  (keymap-set c-mode-base-map "C-c C-o" #'ff-find-other-file))
 
 (add-hook 'c-mode-common-hook #'modern-c++-font-lock-global-mode)
-
 (add-hook 'c-mode-hook (lambda () (require 'ccls)))
 (add-hook 'c++-mode-hook (lambda () (require 'ccls)))
 
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (setq gdb-show-main t
       gdb-many-windows t)
 
