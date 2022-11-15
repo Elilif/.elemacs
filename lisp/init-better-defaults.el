@@ -389,7 +389,7 @@ create new one."
 			            ("*WordNut*" :select t :align right :size 0.4)
 			            ("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
 			            (emms-browser-mode :select t :align right :size 0.5)
-			            (org-agenda-mode :select t :same t)
+			            (org-agenda-mode :select t)
 			            ("*Org Select*" :select t :align right :size 0.3)
 			            )))
 (add-hook 'elemacs-first-buffer-hook #'shackle-mode)
