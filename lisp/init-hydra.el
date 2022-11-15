@@ -46,7 +46,7 @@
 (keymap-global-set "C-c ]" #'hydra-skan-user-buffers-next/body)
 (keymap-global-set "C-c n" #'hydra-org-noter/body)
 (keymap-global-set "C-c a" #'hydra-org-agenda/body)
-(keymap-global-set "M-p" #'org-media-note-hydra/body)
+(keymap-global-set "M-[" #'org-media-note-hydra/body)
 
 (pretty-hydra-define hydra-search
   (:color amaranth :exit t :quit-key "q"
