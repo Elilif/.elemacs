@@ -552,25 +552,23 @@
    ))
 (pretty-hydra-define hydra-develop
   (:color amaranth :exit t :quit-key "q"
-	  :pre (progn (setq which-key-inhibit t))
-	  :post (progn (setq which-key-inhibit nil)))
+	      :pre (progn (setq which-key-inhibit t))
+	      :post (progn (setq which-key-inhibit nil)))
   ("LSP"
-   (("p" lsp-ui-peek-find-definitions "peed")
+   (("p" lsp-ui-peek-find-definitions "peek")
     ("i" lsp-ui-imenu "imenu"))
    "Debug"
    (("r" quickrun "quickrun")
     ("s" quickrun-shell "quickrun shell")
-    ("g" gdb "gdb"))
+    ("g" gdb "gdb")
+    ("c" compile))
    ""
    (("t" toggle-debug-on-error)
     ("e" edebug-defun)
     ("l" edebug-remove-instrumentation)
-    ("c" cancel-debug-on-entry)
+    ("n" cancel-debug-on-entry)
     ("o" edebug-on-entry)
-    ("C" edebug-cancel-on-entry)
-    )))
-
-
+    ("N" edebug-cancel-on-entry))))
 
 (provide 'init-hydra)
 ;;; init-hydra.el ends here.
