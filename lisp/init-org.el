@@ -68,7 +68,7 @@
                   (if (re-search-forward "^[ \t]*:END:" limit t)
                       (outline-flag-region start (line-end-position) t)
                     (user-error msg))))))))))
-  
+
   (defun eli/org-return-wrapper (orig &rest args)
     "Wrap `org-return'."
     (if (and (or (not (boundp 'visible-mode)) (not visible-mode))
@@ -81,7 +81,7 @@
           (save-excursion
             (org-newline-and-indent)))
       (apply orig args)))
-  
+
   (advice-add 'org-return
               :around #'eli/org-return-wrapper)
 
@@ -103,6 +103,7 @@
   (setq org-log-done 'time)
   (setq org-startup-folded t)
   (setq org-persist-directory "~/.emacs.d/.cache/org-persist/")
+  (setq org-element-cache-persistent nil)
   (setq org-cycle-inline-images-display t)
   (setq org-hide-block-startup t)
   (setq org-hide-emphasis-markers t)
@@ -122,7 +123,7 @@
          "\\(?:" (org-create-multibrace-regexp "(" ")" org-match-sexp-depth) "\\)"
          "\\|"
          "\\(?:\\*\\|[+-]?[[:alnum:].,\\]*[[:alnum:]]\\)\\)"))
-  
+
   (defun eli/org-do-emphasis-faces (limit)
     "Run through the buffer and emphasize strings."
     (let ((quick-re (format "\\([%s]\\|^\\)\\([~=*/_+]\\)"
@@ -233,7 +234,7 @@ Assume point is at first MARK."
                                    :contents-end contents-end)))))))))))))
   (advice-add 'org-element--parse-generic-emphasis
               :override #'eli/org-element--parse-generic-emphasis)
-  
+
   ;; prevent org emphases from being split by `fill-paragraph'.
   (defun eli/adjust-line-break-point (linebeg)
     (let* ((re "\\([-[:space:]('\"{[:nonascii:]]\\|^\\)\\([~=*/_+]\\)\\(?:[^ ~=*/_+].*?\\|[^ ~=*/_+].*?\n.+?\\)[~=*/_+]")
@@ -259,7 +260,7 @@ Assume point is at first MARK."
 
   ;;; org babel
   (setq org-confirm-babel-evaluate nil)
-  
+
   (setq org-babel-default-header-args
         '((:session . "none")
           (:results . "output replace")
@@ -277,7 +278,7 @@ Assume point is at first MARK."
                                  (shell . t)
                                  (C . t)
                                  (latex . t)))
-  
+
   ;; (defun eli/hide-org-block-begin-line (orig from to flag spec)
   ;;   (if (eq spec 'org-hide-block)
   ;;       (let* ((beg-of-line (line-beginning-position))
@@ -288,7 +289,7 @@ Assume point is at first MARK."
   ;;         (funcall orig beg to flag spec))
   ;;     (funcall orig from to flag spec)))
   ;; (advice-add 'org-flag-region :around #'eli/hide-org-block-begin-line)
-  
+
 
   (setq org-startup-with-inline-images t)
   ;; renumbering and sorting footnotes automatically after each deletion
@@ -461,7 +462,7 @@ or equal to scheduled (%s)"
                                               (number-to-string sum) ")")
                                       'face 'mindre-faded)
                           'field t))))
-  
+
   (defun org-habit-insert-consistency-graphs (&optional line)
     "Insert consistency graph for any habitual tasks."
     (let ((inhibit-read-only t)
@@ -540,13 +541,13 @@ or equal to scheduled (%s)"
         (recenter-top-bottom 1)
         (forward-line))))
   (advice-add 'org-agenda-clock-goto :around #'eli/org-agenda-goto-started-task)
-  
-  
+
+
   (advice-add 'org-agenda-log-mode
               :after (lambda (&rest _arg) (goto-char (point-min))))
   (advice-add 'org-agenda-redo-all
               :after (lambda (&rest _arg) (goto-char (point-min))))
-  
+
 
 
   ;; custom org agenda view
@@ -697,7 +698,7 @@ or equal to scheduled (%s)"
             (concat (format "\n#+begin_%s\n" type)
                     v-i
                     (format "\n#+end_%s\n" type)))))))
-  
+
   (defun v-i-or-nothing ()
     (with-current-buffer (org-capture-get :original-buffer)
       (let ((v-i (plist-get org-store-link-plist :initial))
@@ -1121,8 +1122,8 @@ References from FILE are excluded."
 		   (file+head "references/%<%Y%m%d%H%M%S>-${title}.org" "#+title: ${title}\n")
 		   :unnarrowed t)))
   (run-with-idle-timer 15 nil
-	           #'org-roam-db-autosync-enable)
-  
+	                   #'org-roam-db-autosync-enable)
+
   (with-eval-after-load 'org-roam
     ;; Codes blow are used to general a hierachy
     ;; for title nodes that under a file
@@ -1172,7 +1173,7 @@ direct title.
 				                    :and (= type "id")]
 			               (org-roam-node-id node)))))
 	    (format "[%d]" count)))
-    
+
     (cl-defmethod org-roam-node-backlinkscount-number ((node org-roam-node))
       "Access slot \"backlinks\" of org-roam-node struct CL-X. This
      is identical to `org-roam-node-backlinkscount' with the
@@ -1190,7 +1191,7 @@ direct title.
     (setq org-roam-node-display-template
           (concat "${type:15} ${doom-hierarchy:120} ${backlinkscount:6}"
                   (propertize "${tags:*}" 'face 'org-tag))))
-  
+
   (defun eli/org-roam-node-sort-by-backlinks (completion-a completion-b)
     "Sorting function for org-roam that sorts the list of nodes by
    the number of backlinks. This is the sorting function in
@@ -1238,7 +1239,7 @@ direct title.
     ("i" org-roam-node-insert)
     ("s" embark-collect)
     ("b" eli/org-roam-backlinks-node-read))
-  
+
   (add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
 
   (defun consult-org-heading-insert-backlink (target)
@@ -1264,7 +1265,7 @@ direct title.
                              (replace-regexp-in-string "\\*+ " "" headline)
                              "/")))))
       (insert (format "[[%s]]" headline-name))))
-  
+
   (embark-define-keymap embark-org-heading-map
     "Keymap for Embark heading actions."
     ("i" embark-insert)
@@ -1291,7 +1292,6 @@ direct title.
 	    org-roam-ui-open-on-start t))
 
 ;; clock
-
 (with-eval-after-load 'embark
   (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
 (with-eval-after-load 'org
@@ -1395,7 +1395,7 @@ direct title.
                (new-string (replace-regexp-in-string "\n" "" new-string)))
           new-string)
       string))
-  
+
   (advice-add 'filter-buffer-substring :filter-return #'eli/unfill-string)
 
   ;; movie rating
@@ -1511,7 +1511,7 @@ Used by `org-anki-skip-function'"
     (if (or (string= "t" (org-entry-get nil "NOANKI"))
             (org-entry-get nil org-anki-prop-note-id))
         (point)))
-  
+
   (setq org-anki-skip-function #'org-anki-skip)
 
   (defun eli/org-anki-sync-item (item)
@@ -1525,7 +1525,7 @@ Used by `org-anki-skip-function'"
        (org-anki--report-error
         "Couldn't update note, received: %s"
         the-error))))
-  
+
   (defmacro eli/org-anki-install (fun-name reg front &optional back)
     `(defun ,(intern (format "org-anki-sync-%s" fun-name)) ()
        (interactive)
@@ -1565,7 +1565,7 @@ Used by `org-anki-skip-function'"
                            :type     type
                            :point    note-start)))
                  (eli/org-anki-sync-item card))))))))
-  
+
   (eli/org-anki-install "description" (rx bol
                                           (* " ")
                                           "- "
@@ -1576,9 +1576,9 @@ Used by `org-anki-skip-function'"
                                                  (* (** 1 2 " ")
                                                     (* any)
                                                     (? "\n")))) 1 2)
-  
+
   (eli/org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2)
-  
+
   (defun org-anki-sync-region (beg end)
     (interactive "r")
     (let* ((org-export-preserve-breaks t)
@@ -1618,7 +1618,7 @@ Used by `org-anki-skip-function'"
       (deactivate-mark)))
 
   (keymap-global-set "<f12>" #'org-anki-sync-region)
-  
+
   (defalias 'org-anki-sync-word
     (kmacro "C-u <f12> C-s-k \\(.*\\)\\(?:：\\|:\\)\\(\\(?:.* C-q C-j ?\\)*\\) <return> SPC 的语境 <return> <return> Words <return>"))
 
@@ -1659,7 +1659,7 @@ Used by `org-anki-skip-function'"
                        ("xelatex -interaction nonstopmode -output-directory %o %f")
                        :image-converter
                        ("convert -density %D -trim -antialias %f -quality 100 %O"))))
-  
+
   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n")
   (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
   (setq org-format-latex-options
@@ -1676,7 +1676,7 @@ Used by `org-anki-skip-function'"
                     beg))))
       (apply orig-fun beg end _args)))
   (advice-add 'org--make-preview-overlay :around #'eli/org-preview-show-label)
-  
+
   (setq org-latex-src-block-backend 'minted)
   (setq org-latex-minted-options '(("breaklines")
                                    ("bgcolor" "bg")))
@@ -1817,7 +1817,7 @@ font-lock."
 						                               (line-end-position)))))))
 	           (cl-pushnew (cons (match-string-no-properties 1) context)
 			               labels))))
-	      
+
 	      ;; reverse so they are in the order we find them.
 	      (setq
 	       org-ref-buffer-chars-modified-tick (buffer-chars-modified-tick)
@@ -1854,17 +1854,17 @@ font-lock."
 	            (lambda (el)
 	              (let ((el-type (org-element-property :type el))
                         (el-name (org-element-property :name el)))
-                   (cond
-                   ((and (string= element-type el-type)
-                         (string= element-name el-name))
-                    (setq indicator t)
-                    (cl-incf counter))
-                   ((and (not indicator)
-                         (or (string= element-type el-type)
-                             (and (member element-type '("theorem" "lemma"))
-                                  (member el-type '("theorem" "lemma"))))
-                         (not (string= element-name el-name)))
-                    (cl-incf counter)))))
+                    (cond
+                     ((and (string= element-type el-type)
+                           (string= element-name el-name))
+                      (setq indicator t)
+                      (cl-incf counter))
+                     ((and (not indicator)
+                           (or (string= element-type el-type)
+                               (and (member element-type '("theorem" "lemma"))
+                                    (member el-type '("theorem" "lemma"))))
+                           (not (string= element-name el-name)))
+                      (cl-incf counter)))))
 	            info)))))
   (advice-add 'org-export-get-ordinal :around
               #'eli/org-export-get-special-block-ordinal)
@@ -1877,7 +1877,7 @@ font-lock."
       (funcall orig special-block new-contents info)))
   (advice-add 'org-html-special-block :around
               #'eli/org-html-special-block-filter)
-  
+
   (require 'ox-pandoc)
   (setq org-pandoc-options-for-docx '((standalone . nil)))
   (defun org-pandoc-link (link contents info)
@@ -1953,14 +1953,14 @@ holding contextual information."
 
        ;; Otherwise, fallback to standard org-mode link format
        ((org-element-link-interpreter link contents)))))
-  
+
   (defun eli/strip-ws-maybe (text _backend _info)
     (let* ((text (replace-regexp-in-string
                   "\\(\\cc\\) *\n *\\(\\cc\\)"
                   "\\1\\2" text))) ;; remove whitespace from line break
       text))
   (add-to-list 'org-export-filter-paragraph-functions #'eli/strip-ws-maybe)
-  
+
   (with-eval-after-load 'org-inline-pdf
     (defun eli/org-latex-filter-pdf (backend)
       (when (org-export-derived-backend-p backend 'latex)
@@ -2002,7 +2002,7 @@ holding contextual information."
                       :collection "material" :font-family "Cascadia Mono"
                       :font-size 11 :font-weight regular))
   (setq svg-tag-action-at-point 'edit)
-  
+
   (setq svg-lib-icon-collections
         '(("bootstrap" .
            "https://icons.getbootstrap.com/assets/icons/%s.svg")
@@ -2014,7 +2014,7 @@ holding contextual information."
            "https://raw.githubusercontent.com/primer/octicons/master/icons/%s-24.svg")
           ("boxicons" .
            "https://boxicons.com/static/img/svg/regular/bx-%s.svg")))
-  
+
   (defun svg-lib-tag (label &optional style &rest args)
     "Create an image displaying LABEL in a rounded box using given STYLE
 and style elements ARGS."
@@ -2040,7 +2040,7 @@ and style elements ARGS."
            (font-size   (plist-get style :font-size))
            (font-family (plist-get style :font-family))
            (font-weight (plist-get style :font-weight))
-           
+
            ;; use `fixed-pitch' while in `mixed-pitch-mode'
            (txt-char-width  (window-font-width nil 'fixed-pitch))
            (txt-char-height (window-font-height nil 'fixed-pitch))
@@ -2069,7 +2069,7 @@ and style elements ARGS."
            (text-x     (if crop-left  (- text-x (/ stroke 2)) text-x))
            (tag-width  (if crop-right (+ tag-width txt-char-width) tag-width))
            (text-x     (if crop-right (+ text-x (/ stroke 2)) text-x))
-           
+
            (svg (svg-create svg-width svg-height)))
 
       (if (>= stroke 0.25)
@@ -2082,7 +2082,7 @@ and style elements ARGS."
                 :font-family font-family :font-weight font-weight
                 :font-size font-size :fill foreground :x text-x :y  text-y)
       (svg-lib--image svg :ascent 'center)))
-  
+
   (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
   (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
   (defconst day-re "[A-Za-z]\\{3\\}\\(?: [.+]?\\+[0-9]+[dwmy]\\)?")
@@ -2118,7 +2118,7 @@ and style elements ARGS."
           ;; ;; Org tags
           ;; (":\\([A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag))))
           ;; (":\\([A-Za-z0-9]+[ \-]\\)" . ((lambda (tag) tag)))
-          
+
           ;; Task priority
           ("\\[#[A-Z]\\]" . ( (lambda (tag)
                                 (svg-tag-make tag :face 'org-priority 
@@ -2132,7 +2132,7 @@ and style elements ARGS."
           ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
                                             (svg-progress-count
                                              (substring tag 1 -1)))))
-          
+
           ;; TODO / DONE
           ("\\** \\(TODO\\)" . ((lambda (tag)
                                   (svg-tag-make "TODO" :face 'org-todo
@@ -2177,7 +2177,7 @@ and style elements ARGS."
                                                       tag
                                                       :end -1
                                                       :crop-left t))))
-          
+
           ;; Active date (with or without day name, with or without time)
           (,(format "\\(<%s>\\)" date-re) .
            ((lambda (tag)
@@ -2205,11 +2205,11 @@ and style elements ARGS."
               (svg-tag-make tag :end -1 :inverse t
                             :crop-left t :margin 0 :face 'org-date
                             :ascent 14))))))
-  
+
   (add-hook 'org-mode-hook (lambda ()
                              (make-local-variable 'font-lock-extra-managed-props)
                              (svg-tag-mode)))
-  
+
   (defun eli/org-agenda-show-svg ()
     (let* ((case-fold-search nil)
            (keywords (mapcar #'svg-tag--build-keywords svg-tag--active-tags))
