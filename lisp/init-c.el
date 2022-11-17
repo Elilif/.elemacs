@@ -53,20 +53,22 @@
 (add-hook 'c++-mode-hook (lambda () (require 'ccls)))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-(setq gdb-show-main t
-      gdb-many-windows t)
 
-(defun gdb-non-stop-handler ()
-  (goto-char (point-min))
-  (if (re-search-forward "No symbol" nil t)
-      (progn
-	(message
-         "This version of GDB doesn't support non-stop mode.  Turning it off.")
-	(setq gdb-non-stop nil)
-	(setq gdb-supports-non-stop nil))
-    (setq gdb-supports-non-stop t)
-    (gdb-input "-gdb-set mi-async 1" 'ignore)
-    (gdb-input "-list-target-features" 'gdb-check-target-async)))
+(with-eval-after-load 'gdb-mi
+  (setq gdb-show-main t
+        gdb-many-windows t)
+  
+  (defun gdb-non-stop-handler ()
+    (goto-char (point-min))
+    (if (re-search-forward "No symbol" nil t)
+        (progn
+	      (message
+           "This version of GDB doesn't support non-stop mode.  Turning it off.")
+	      (setq gdb-non-stop nil)
+	      (setq gdb-supports-non-stop nil))
+      (setq gdb-supports-non-stop t)
+      (gdb-input "-gdb-set mi-async 1" 'ignore)
+      (gdb-input "-list-target-features" 'gdb-check-target-async))))
 
 
 
