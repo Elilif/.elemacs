@@ -43,18 +43,18 @@
       (sp-local-pair "/" "/" :unless '(sp-org-point-after-left-square-bracket-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
       (sp-local-pair "*" "*" ;;sp-point-after-word-p
                      :unless '(sp-point-at-bol-p sp-in-math-p)
-                     :post-handlers '(("SPC"))
+                     :post-handlers '(("[d1]" "SPC"))
                      :skip-match 'sp--org-skip-asterisk)
       (sp-local-pair "=" "=" :unless '(sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-      (sp-local-pair "_" "_" :unless '(sp-in-math-p))
+      (sp-local-pair "_" "_" :unless '(sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
       (sp-local-pair "~" "~" :unless '(sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))
   
   (define-advice show-paren-function (:around (fn) fix-show-paren-function)
     "Highlight enclosing parens."
     (cond ((looking-at-p "\\s(") (funcall fn))
-	  (t (save-excursion
-	       (ignore-errors (backward-up-list))
-	       (funcall fn))))))
+	      (t (save-excursion
+	           (ignore-errors (backward-up-list))
+	           (funcall fn))))))
 
 (defvar mcfly-commands
   '(consult-line
