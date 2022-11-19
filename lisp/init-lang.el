@@ -123,14 +123,18 @@ instance: \"$4\pi^2 //$\" will be expand into
 
 This function is a advice for `electric-operator-get-rules-list',
 whose result is LIST."
-    (if (and (eq major-mode 'org-mode)
-             (texmathp))
-        (if (electric-operator--latex-in-math?)
-            (electric-operator-get-rules-trie-for-mode 'latex-math)
-          (if electric-operator-enable-in-docs
-              (electric-operator-get-rules-trie-for-mode 'text-mode)
-            (make-electric-operator--trie)))
-      list))
+    (cond  ((and (eq major-mode 'org-mode)
+                 (texmathp))
+            (if (electric-operator--latex-in-math?)
+                (electric-operator-get-rules-trie-for-mode 'latex-math)
+              (if electric-operator-enable-in-docs
+                  (electric-operator-get-rules-trie-for-mode 'text-mode)
+                (make-electric-operator--trie))))
+           ((eq major-mode 'org-mode)
+            nil)
+           (t
+            list)))
+  
   (advice-add 'electric-operator-get-rules-list :filter-return
               #'eli/filter-electric-operator-get-rules-list))
 
