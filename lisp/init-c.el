@@ -53,10 +53,24 @@
 (add-hook 'c++-mode-hook (lambda () (require 'ccls)))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))
 
 (with-eval-after-load 'gdb-mi
   (setq gdb-show-main t
         gdb-many-windows t)
+  
+  (defun eli/reset-gud-gdb-history (&rest _args)
+    (when (eq this-command 'gdb)
+      (let* ((out-file (file-name-nondirectory
+                        (file-name-with-extension (buffer-file-name)
+                                                  "out")))
+             (gdb-cmdline (concat gud-gdb-command-name
+                                  " "
+                                  out-file)))
+        (unless (string= gdb-cmdline (car gud-gdb-history))
+          (push gdb-cmdline gud-gdb-history)))))
+  
+  (advice-add 'gud-query-cmdline :before #'eli/reset-gud-gdb-history)
   
   (defun gdb-non-stop-handler ()
     (goto-char (point-min))
