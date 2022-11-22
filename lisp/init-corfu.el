@@ -43,7 +43,7 @@
 ;; use `all-the-icons' to show icons
 (with-eval-after-load 'corfu
   (require 'all-the-icons)
-  
+
   (defvar kind-all-the-icons--cache nil
     "The cache of styled and padded label (text or icon).
 An alist.")

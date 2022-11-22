@@ -200,9 +200,6 @@
 [submodule "js2-mode"]
 	path = lib/js2-mode
 	url = git@github.com:mooz/js2-mode.git
-[submodule "kind-icon"]
-	path = lib/kind-icon
-	url = https://github.com/jdtsmith/kind-icon
 [submodule "kv"]
 	path = lib/kv
 	url = git@github.com:nicferrier/emacs-kv.git
