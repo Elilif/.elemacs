@@ -336,7 +336,9 @@ Assume point is at first MARK."
 
 (with-eval-after-load 'org
   (require 'org-protocol)
-  (server-start))
+  (require 'server)
+  (unless (server-running-p)
+    (server-start)))
 
 ;;; habits
 (with-eval-after-load 'org
