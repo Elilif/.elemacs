@@ -277,9 +277,10 @@
 	url = git@github.com:oantolin/orderless.git
 [submodule "org"]
 	path = lib/org
-	url = git@github.com:emacsmirror/org.git
-	build-step = make compile
+	url = git://git.savannah.gnu.org/emacs/org-mode.git
+    build-step = make install
     build-step = borg-update-autoloads
+    info-path = doc
 	load-path = lisp
     load-path = etc
 [submodule "org-anki"]
