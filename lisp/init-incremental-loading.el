@@ -38,7 +38,7 @@
   broken up into:
 
     (elemacs-load-packages-incrementally
-     '(calendar find-func format-spec org-macs org-compat
+     \='(calendar find-func format-spec org-macs org-compat
        org-faces org-entities org-list org-pcomplete org-src
        org-footnote org-macro ob org org-clock org-agenda
        org-capture))
@@ -50,12 +50,12 @@
   `doom-incremental-first-idle-timer' to nil. Incremental loading does not occur
   in daemon sessions (they are loaded immediately at startup).")
 
-(defvar elemacs-incremental-first-idle-timer 2.0
+(defvar elemacs-incremental-first-idle-timer 0.5
   "How long (in idle seconds) until incremental loading starts.
 
  Set this to nil to disable incremental loading.")
 
-(defvar elemacs-incremental-idle-timer 1.0
+(defvar elemacs-incremental-idle-timer 0.5
   "How long (in idle seconds) in between incrementally loading packages.")
 
 (defvar elemacs-incremental-load-immediately (daemonp)
@@ -64,15 +64,15 @@
 (defun elemacs-load-packages-incrementally (packages &optional now)
   "Registers PACKAGES to be loaded incrementally.
 
-  If NOW is non-nil, load PACKAGES incrementally, in `doom-incremental-idle-timer'
-  intervals."
+  If NOW is non-nil, load PACKAGES incrementally, in
+`doom-incremental-idle-timer' intervals."
   (if (not now)
       (setq elemacs-incremental-packages (append elemacs-incremental-packages packages ))
     (while packages
       (let* ((gc-cons-threshold most-positive-fixnum)
              (req (pop packages)))
         (unless (featurep req)
-          (message "Incrementally loading %s" req)
+          ;; (message "Incrementally loading %s" req)
           (condition-case-unless-debug e
               (or (not (while-no-input
                          ;; If `default-directory' is a directory that doesn't exist
@@ -107,7 +107,7 @@ If this is a daemon session, load them all immediately instead."
 
 (add-hook 'emacs-startup-hook #'elemacs-load-packages-incrementally-h)
 (elemacs-load-packages-incrementally
- '(borg calendar find-func format-spec org-macs org-compat
+ '(borg init-hydra calendar find-func format-spec org-macs org-compat
 	    org-faces org-entities org-list org-pcomplete org-src
 	    org-footnote org-macro ob org org-clock org-agenda
 	    org-capture dired-x ispell all-the-icons mu4e embark emms-setup org-roam
