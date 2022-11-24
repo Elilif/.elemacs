@@ -61,6 +61,7 @@
     consult-outline
     consult-git-grep
     consult-ripgrep
+    eli/consult-git-grep
     my-search-with-chrome))
 
 (defvar mcfly-back-commands

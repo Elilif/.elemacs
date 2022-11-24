@@ -57,9 +57,12 @@
     ("d" eli/dict-search "search Dicts"))
    "Deft"
    (("n" notdeft "notdeft"))
+   "info"
+   (("o" eli/consult-ripgrep-org-info "org info")
+    ("l" eli/consult-ripgrep-elisp-info "elisp info")
+    ("e" eli/consult-ripgrep-emacs-info "emacs info"))
    "rg"
-   (("g" consult-git-grep)
-    ("o" eli/consult-ripgrep-org "org info"))
+   (("g" eli/consult-git-grep))
    "Google"
    (("s" my-search-with-chrome))))
 
@@ -175,13 +178,13 @@
 
 (pretty-hydra-define hydra-org
   (:color amaranth :exit t :quit-key "q"
-	  :pre
-	  (progn (setq which-key-inhibit t))
-	  :post (progn (setq which-key-inhibit nil) ))
+	      :pre
+	      (progn (setq which-key-inhibit t))
+	      :post (progn (setq which-key-inhibit nil) ))
   ("Basic"
-    (("h" org-mode "org mode")
+   (("h" org-mode "org mode")
     ("j" consult-org-heading "headings")
-    ("f" my/consult-org-file "agenda filter"))
+    ("f" eli/consult-org-file "agenda filter"))
    "Org link"
    (("li" grab-x-link-chromium-insert-link "insert web link")
     ("lo" grab-x-link-chromium-insert-org-link "insert org link")

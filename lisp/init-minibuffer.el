@@ -195,18 +195,55 @@ Used to preselect nearest headings and imenu items.")
                                point-pos)))
                          (length vertico--candidates))))))
     (setq consult--previous-point nil))
+
+  (defun eli/consult-git-grep ()
+    "Search with git grep for files in current git dir. "
+    (interactive)
+    (consult-git-grep (vc-root-dir)))
   
-  (defun my/consult-org-file (&optional match)
+  (defun eli/consult-org-file (&optional match)
+    "Jump to an Org heading.
+
+MATCH is as in org-map-entries and determine which
+entries are offered."
     (interactive)
     (consult-org-heading match '(list org-agenda-file-inbox org-agenda-file-habit org-agenda-file-projects)))
   
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
+  (defmacro eli/consult-ripgrep-single-file-install (fun-name file-path)
+    `(defun ,(intern (format "eli/consult-ripgrep-%s" fun-name)) ()
+       "Call `consult-ripgrep' for the current buffer (a single file)."
+       (interactive)
+       (let ((consult-project-function (lambda (x) nil))
+             (consult-ripgrep-args
+              (concat "rg "
+                      "--null "
+                      "--line-buffered "
+                      "--color=never "
+                      "--line-number "
+                      "--smart-case "
+                      "--no-heading "
+                      "--max-columns=1000 "
+                      "--max-columns-preview "
+                      "--with-filename "
+                      ,(shell-quote-argument file-path))))
+         (consult-ripgrep))))
+  
+  (eli/consult-ripgrep-single-file-install "org-info" "/usr/local/share/info/org.info")
+  (eli/consult-ripgrep-single-file-install "emacs-info" "/usr/local/share/info/emacs.info")
+  (eli/consult-ripgrep-single-file-install "elisp-info" "/usr/local/share/info/elisp.info")
+  
+  (setq consult-preview-excluded-files '("/usr/local/share/info/org.info"
+                                         "/usr/local/share/info/emacs.info"
+                                         "/usr/local/share/info/elisp.info"))
+  
+
   (consult-customize
    consult-theme
    :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep my/consult-org-file
+   consult-ripgrep consult-git-grep consult-grep eli/consult-org-file
    consult-bookmark consult-recent-file consult-xref consult-org-heading
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
