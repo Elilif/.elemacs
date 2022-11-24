@@ -107,9 +107,6 @@ conventions are checked."
 ;;                           'magit-insert-stashes
 ;;                           'append))
 
-(elemacs-load-packages-incrementally
- '(dash f s with-editor package eieio transient git-commit))
-
 (with-eval-after-load 'magit
   (setq magit-todos-auto-group-items 3)
   (with-eval-after-load 'magit

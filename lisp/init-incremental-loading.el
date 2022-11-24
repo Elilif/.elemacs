@@ -118,6 +118,10 @@ If this is a daemon session, load them all immediately instead."
  '(image-mode pdf-macs pdf-util pdf-info pdf-cache jka-compr
               pdf-view pdf-annot pdf-tools pdf-occur org-noter org-refile))
 
+;; vc
+(elemacs-load-packages-incrementally
+ '(dash f s with-editor package eieio transient git-commit))
+
 (defvar elemacs-first-input-hook nil
   "Transient hooks run before the first user input.")
 (put 'elemacs-first-input-hook 'permanent-local t)
