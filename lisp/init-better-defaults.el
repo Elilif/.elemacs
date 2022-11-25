@@ -541,6 +541,52 @@ BUFFER is a string, the name of a buffer."
 ;; another choice is `info-pretty-mode'
 (add-hook 'Info-mode-hook #'variable-pitch-mode)
 
+;; copy info url
+(defvar eli/Info-url-alist
+  '(("org" . "https://orgmode.org/manual/")
+    ("emacs" . "https://www.gnu.org/software/emacs/manual/html_node/emacs/")
+    ("elisp" . "https://www.gnu.org/software/emacs/manual/html_node/elisp/"))
+  "Official manual URL for `eli/Info-url-for-node'.")
+
+(defun eli/Info-url-for-node (node)
+  "Return a URL for NODE.
+
+NODE should be a string on the form \"(manual)Node\"."
+  (unless (string-match "\\`(\\(.+\\))\\(.+\\)\\'" node)
+    (error "Invalid node name %s" node))
+  (let ((manual (match-string 1 node))
+        (node (match-string 2 node)))
+    ;; Encode a bunch of characters the way that makeinfo does.
+    (setq node
+          (mapconcat (lambda (ch)
+                       (if (or (< ch 32)        ; ^@^A-^Z^[^\^]^^^-
+                               (<= 33 ch 47)    ; !"#$%&'()*+,-./
+                               (<= 58 ch 64)    ; :;<=>?@
+                               (<= 91 ch 96)    ; [\]_`
+                               (<= 123 ch 127)) ; {|}~ DEL
+                           (format "_00%x" ch)
+                         (char-to-string ch)))
+                     node
+                     ""))
+    (concat (cdr (assoc manual Info-special-url-format #'equal))
+            (url-hexify-string (string-replace " " "-" node))
+            ".html")))
+
+(defun eli/Info-copy-node-url (node)
+  "Put the online url of the current Info NODE into the kill ring.
+
+By default, go to the current Info node."
+  (interactive (list (Info-read-node-name
+                      "Go to node (default current page): " Info-current-node))
+               Info-mode)
+  (kill-new
+   (eli/Info-url-for-node (format "(%s)%s" (file-name-sans-extension
+                                            (file-name-nondirectory
+                                             Info-current-file))
+                                  node))))
+
+(keymap-set Info-mode-map "C" #'eli/Info-copy-node-url)
+
 ;;; better movement
 (keymap-global-set "C-a" #'mwim-beginning)
 (keymap-global-set "C-e" #'mwim-end)
