@@ -238,6 +238,9 @@
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "markmacro"]
+	path = lib/markmacro
+	url = git@github.com:Elilif/markmacro.git
 [submodule "mathpix"]
 	path = lib/mathpix
 	url = git@github.com:jethrokuan/mathpix.el.git
