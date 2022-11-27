@@ -622,6 +622,19 @@ By default, go to the current Info node."
 ;;; smart-mark
 (add-hook 'elemacs-first-input-hook #'smart-mark-mode)
 
+;;; keyfreq
+(with-eval-after-load 'hydra
+  (setq keyfreq-file "~/.emacs.d/.emacs.keyfreq")
+  (setq keyfreq-file-lock "~/.emacs.d/.emacs.keyfreq.lock")
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1)
+  (setq keyfreq-excluded-commands
+        '(self-insert-command
+          forward-char
+          backward-char
+          previous-line
+          next-line)))
+
 ;;; ace window
 (keymap-global-set "M-o" #'ace-window)
 (with-eval-after-load 'ace

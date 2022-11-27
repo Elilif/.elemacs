@@ -200,6 +200,9 @@
 [submodule "js2-mode"]
 	path = lib/js2-mode
 	url = git@github.com:mooz/js2-mode.git
+[submodule "keyfreq"]
+	path = lib/keyfreq
+	url = git@github.com:dacap/keyfreq.git
 [submodule "kv"]
 	path = lib/kv
 	url = git@github.com:nicferrier/emacs-kv.git
