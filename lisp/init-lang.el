@@ -59,7 +59,7 @@
              (eq requirement result)))))
 
   ;; Try after every insertion
-  (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets)
+  (add-hook 'post-self-insert-hook #'my/yas-try-expanding-auto-snippets)
   (defun eli/latex-smart-kill ()
     "Kill equations, numbers or something else before point in latex math mode.
 
