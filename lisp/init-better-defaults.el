@@ -642,5 +642,58 @@ By default, go to the current Info node."
         aw-dispatch-always nil
         aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
+;;; edit
+(with-eval-after-load 'hydra
+  (require 'markmacro)
+  (global-set-key (kbd "s-<") 'markmacro-apply-all)
+  (global-set-key (kbd "s->") 'markmacro-apply-all-except-first)
+
+  (defun markmacro-swap-region ()
+    "Swap region and secondary selection."
+    (interactive)
+    (let* ((rbeg (region-beginning))
+           (rend (region-end))
+           (region-str (when (region-active-p) (buffer-substring-no-properties rbeg rend)))
+           (sel-str  (with-current-buffer (overlay-buffer mouse-secondary-overlay)
+                       (buffer-substring-no-properties
+                        (overlay-start mouse-secondary-overlay)
+                        (overlay-end mouse-secondary-overlay))))
+           (next-marker (make-marker)))
+      (when region-str (delete-region rbeg rend))
+      (when sel-str (insert sel-str))
+      (move-marker next-marker (point))
+      (with-current-buffer (overlay-buffer mouse-secondary-overlay)
+        (goto-char (overlay-start mouse-secondary-overlay))
+        (delete-region (overlay-start mouse-secondary-overlay) (overlay-end mouse-secondary-overlay))
+        (insert (or region-str "")))
+      (when (overlayp mouse-secondary-overlay)
+        (delete-overlay mouse-secondary-overlay))
+      (setq mouse-secondary-start next-marker)
+      (deactivate-mark t)))
+
+
+  (defun eli/speed-up-kmacro (_args)
+    (smartparens-mode -1)
+    (remove-hook 'post-self-insert-hook
+                 #'my/yas-try-expanding-auto-snippets)
+    (winner-mode -1)
+    (hungry-delete-mode -1)
+    (flyspell-mode -1)
+    (corfu-mode -1)
+    (font-lock-mode -1))
+  (advice-add 'kmacro-start-macro :before #'eli/speed-up-kmacro)
+
+  (defun eli/speed-up-kmacro-recover ()
+    (smartparens-mode 1)
+    (add-hook 'post-self-insert-hook
+              #'my/yas-try-expanding-auto-snippets)
+    (winner-mode 1)
+    (hungry-delete-mode 1)
+    (flyspell-mode 1)
+    (corfu-mode 1)
+    (font-lock-mode 1))
+  
+  (advice-add 'markmacro-exit :after #'eli/speed-up-kmacro-recover))
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
