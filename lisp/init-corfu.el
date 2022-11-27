@@ -140,22 +140,23 @@ function to the relevant margin-formatters list."
 (add-to-list 'completion-at-point-functions #'cape-file)
 
 ;; cape-yasnippet
-(add-hook 'emacs-lisp-mode-hook
-		  (lambda ()
-            (setq-local completion-at-point-functions
-			            (list (cape-super-capf
-                               #'cape-yasnippet
-					           #'elisp-completion-at-point)
-                              t))))
+(with-eval-after-load 'yasnippet
+  (add-hook 'emacs-lisp-mode-hook
+		    (lambda ()
+              (setq-local completion-at-point-functions
+			              (list (cape-super-capf
+                                 #'cape-yasnippet
+					             #'elisp-completion-at-point)
+                                t))))
 
-(defun cape-yasnippet--lsp ()
-  "Create a super capf to include snippets in LSP completion."
-  (setq-local completion-at-point-functions
-              (list (cape-super-capf
-                     #'lsp-completion-at-point
-                     #'cape-yasnippet)
-                    t)))
-(add-hook 'lsp-completion-mode-hook #'cape-yasnippet--lsp)
+  (defun cape-yasnippet--lsp ()
+    "Create a super capf to include snippets in LSP completion."
+    (setq-local completion-at-point-functions
+                (list (cape-super-capf
+                       #'lsp-completion-at-point
+                       #'cape-yasnippet)
+                      t)))
+  (add-hook 'lsp-completion-mode-hook #'cape-yasnippet--lsp))
 
 (provide 'init-corfu)
 ;;; init-corfu.el ends here.
