@@ -283,10 +283,6 @@
   (setq popwin:popup-window-position 'right)
   (setq popwin:popup-window-width 80))
 
-(with-eval-after-load 'multiple-cursors
-  (setq mc/always-run-for-all nil)
-  (setq mc/insert-numbers-default 1))
-
 (keymap-global-set "C-x C-b"  #'ibuffer)
 (setq ibuffer-saved-filter-groups
       (quote (("default"

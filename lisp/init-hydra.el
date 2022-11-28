@@ -157,8 +157,8 @@
 
 (pretty-hydra-define hydra-emacs
   (:color amaranth :exit t :quit-key "q"
-	  :pre (progn (setq which-key-inhibit t))
-	  :post (progn (setq which-key-inhibit nil) ))
+	      :pre (progn (setq which-key-inhibit t))
+	      :post (progn (setq which-key-inhibit nil) ))
   ("basic"
    (("E" eval-buffer)
     ("f" (let ((default-directory "~/.emacs.d/lisp/"))
@@ -169,9 +169,6 @@
    (("bs" bookmark-set "set bookmark")
     ("bj" consult-bookmark "jump bookmark")
     ("bd" bookmark-delete "delete bookmark"))
-   "edit"
-   (("ed" mc/mark-all-dwim "mark all dwim")
-    ("ee" mc/edit-lines "elit lines"))
    "treemacs"
    (("t" treemacs "treemacs"))
    ))

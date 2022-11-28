@@ -269,9 +269,6 @@
 [submodule "mu4e-alert"]
 	path = lib/mu4e-alert
 	url = git@github.com:xzz53/mu4e-alert.git
-[submodule "multiple-cursors"]
-	path = lib/multiple-cursors
-	url = git@github.com:magnars/multiple-cursors.el.git
 [submodule "mwim"]
 	path = lib/mwim
 	url = git@github.com:alezost/mwim.el.git
