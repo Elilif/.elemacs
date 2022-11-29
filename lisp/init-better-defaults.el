@@ -641,32 +641,18 @@ By default, go to the current Info node."
 
 ;;; edit
 (with-eval-after-load 'hydra
-  (require 'markmacro)
-  (global-set-key (kbd "s-<") 'markmacro-apply-all)
-  (global-set-key (kbd "s->") 'markmacro-apply-all-except-first)
-
-  (defun markmacro-swap-region ()
-    "Swap region and secondary selection."
-    (interactive)
-    (let* ((rbeg (region-beginning))
-           (rend (region-end))
-           (region-str (when (region-active-p) (buffer-substring-no-properties rbeg rend)))
-           (sel-str  (with-current-buffer (overlay-buffer mouse-secondary-overlay)
-                       (buffer-substring-no-properties
-                        (overlay-start mouse-secondary-overlay)
-                        (overlay-end mouse-secondary-overlay))))
-           (next-marker (make-marker)))
-      (when region-str (delete-region rbeg rend))
-      (when sel-str (insert sel-str))
-      (move-marker next-marker (point))
-      (with-current-buffer (overlay-buffer mouse-secondary-overlay)
-        (goto-char (overlay-start mouse-secondary-overlay))
-        (delete-region (overlay-start mouse-secondary-overlay) (overlay-end mouse-secondary-overlay))
-        (insert (or region-str "")))
-      (when (overlayp mouse-secondary-overlay)
-        (delete-overlay mouse-secondary-overlay))
-      (setq mouse-secondary-start next-marker)
-      (deactivate-mark t)))
+  (setq markmacro-secondary-region-mark-cursors-type 'symbol)
+  (keymap-global-set "s-=" 'markmacro-apply-all)
+  (keymap-global-set "s--" 'kmacro-start-macro)
+  (keymap-global-set "s-w" 'markmacro-mark-words)
+  (keymap-global-set "s-l" 'markmacro-mark-lines)
+  (keymap-global-set "C-r" 'rectangle-mark-mode)
+  (keymap-global-set "s-g" 'markmacro-secondary-region-set)
+  (keymap-global-set "s-a" 'markmacro-secondary-region-mark-cursors)
+  (keymap-global-set "s-s" 'markmacro-swap-region)
+  (keymap-global-set "s-f" #'markmacro-mark-current-or-next-target)
+  (keymap-global-set "s-b" #'markmacro-mark-current-or-previous-target)
+  (keymap-global-set "s-u" #'markmacro-unmark-current-target)
 
 
   (defun eli/speed-up-kmacro (_args)
@@ -676,6 +662,7 @@ By default, go to the current Info node."
     (winner-mode -1)
     (hungry-delete-mode -1)
     (flyspell-mode -1)
+    (aggressive-indent-mode -1)
     (corfu-mode -1)
     (font-lock-mode -1))
   (advice-add 'kmacro-start-macro :before #'eli/speed-up-kmacro)
@@ -686,11 +673,22 @@ By default, go to the current Info node."
               #'my/yas-try-expanding-auto-snippets)
     (winner-mode 1)
     (hungry-delete-mode 1)
+    (aggressive-indent-mode 1)
     (flyspell-mode 1)
     (corfu-mode 1)
     (font-lock-mode 1))
   
+  (advice-add 'kmacro-keyboard-quit :after #'eli/speed-up-kmacro-recover)
   (advice-add 'markmacro-exit :after #'eli/speed-up-kmacro-recover))
+
+
+(with-eval-after-load 'rect
+  (keymap-set rectangle-mark-mode-map "M-w" #'copy-rectangle-as-kill)
+  (keymap-set rectangle-mark-mode-map "C-w" #'kill-rectangle)
+  (keymap-set rectangle-mark-mode-map "C-d" #'delete-rectangle)
+  (keymap-set rectangle-mark-mode-map "C-w" #'kill-rectangle)
+  (keymap-set rectangle-mark-mode-map "M-d" #'delete-whitespace-rectangle))
+
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
