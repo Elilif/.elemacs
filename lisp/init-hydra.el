@@ -42,6 +42,7 @@
 (keymap-global-set "C-c j" #'hydra-roam/body)
 (keymap-global-set "C-c i" #'hydra-insert/body)
 (keymap-global-set "C-c p" #'hydra-move/body)
+(keymap-global-set "s-r" #'hydra-rectangle/body)
 (keymap-global-set "C-c [" #'hydra-skan-user-buffers-prev/body)
 (keymap-global-set "C-c ]" #'hydra-skan-user-buffers-next/body)
 (keymap-global-set "C-c n" #'hydra-org-noter/body)
@@ -67,22 +68,20 @@
    (("s" my-search-with-chrome))))
 
 (pretty-hydra-define hydra-edit
-  (:color amaranth :exit t :quit-key "q"
-	  :pre (progn (setq which-key-inhibit t))
-	  :post (progn (setq which-key-inhibit nil)))
-  ("multiple cursors"
-   (("l" mc/edit-lines "edit-lines")
-    ("a" mc/mark-all-like-this-dwim "this dwim")
-    ("s" set-rectangular-region-anchor "set mc")
-    ("N" mc/insert-numbers "insert numbers")
-    ("p" mc/mark-previous-like-this "previous")
-    ("n" mc/mark-next-like-this "next"))
-   "multiple cursors"
-   (("w" mc/mark-all-words-like-this "words")
-    ("t" mc/mark-all-like-this "all")
-    ("d" mc/mark-all-symbols-like-this "symbols"))
-   "Format"
-   (("f" smart-align "align"))))
+  (:color amaranth :exit t
+	      :pre (progn (setq which-key-inhibit t))
+	      :post (progn (setq which-key-inhibit nil)))
+  ("Format"
+   (("f" smart-align "align"))
+   "Beacon"
+   (("w" markmacro-mark-words "mark words")
+    ("l" markmacro-mark-lines "mark lines")
+    ("k" rectangle-mark-mode "mark rectangle"))
+   ""
+   (("g" markmacro-secondary-region-set)
+    ("j" markmacro-secondary-region-mark-cursors)
+    ("s" markmacro-swap-region))
+   ))
 
 (pretty-hydra-define hydra-move
   (:color amaranth :exit t :quit-key "q"
@@ -569,6 +568,24 @@
     ("n" cancel-debug-on-entry)
     ("o" edebug-on-entry)
     ("N" edebug-cancel-on-entry))))
+
+(pretty-hydra-define hydra-rectangle
+  (:color amaranth :exit t
+	      :pre (progn (setq which-key-inhibit t))
+	      :post (progn (setq which-key-inhibit nil)))
+  ("rectangle"
+   (("k" kill-rectangle)
+    ("w" copy-rectangle-as-kill)
+    ("d" delete-rectangle)
+    ("y" yank-rectangle)
+    ("SPC" rectangle-mark-mode))
+   ""
+   (("o" open-rectangle)
+    ("n" rectangle-number-lines)
+    ("c" clear-rectangle)
+    ("l" delete-whitespace-rectangle)
+    ("i" string-rectangle)
+    ("s" string-insert-rectangle))))
 
 (provide 'init-hydra)
 ;;; init-hydra.el ends here.
