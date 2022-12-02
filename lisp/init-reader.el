@@ -67,7 +67,7 @@
 
 (with-eval-after-load 'org-noter
   (setq org-noter-auto-save-last-location t)
-  (setq org-noter-doc-split-fraction '(0.52 0.48))
+  (setq org-noter-doc-split-fraction '(0.65 0.35))
   (setq org-noter-notes-search-path '("~/Dropbox/org/roam"))
   (setq org-noter-always-create-frame t)
 
@@ -84,7 +84,7 @@
           (overlay-put hl-ov 'face 'mindre-keyword)
           (overlay-put hl-ov 'org-noter-current-hl t))
         (org-cycle-hide-drawers 'all))))
-    
+  
   (advice-add #'org-noter--focus-notes-region
               :after #'eli/org-noter-set-highlight)
   (advice-add #'org-noter-insert-note
