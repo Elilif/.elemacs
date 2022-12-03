@@ -657,26 +657,22 @@ By default, go to the current Info node."
 
   (defun eli/speed-up-kmacro (_args)
     (smartparens-mode -1)
-    (remove-hook 'post-self-insert-hook
-                 #'my/yas-try-expanding-auto-snippets)
     (winner-mode -1)
     (hungry-delete-mode -1)
-    (flyspell-mode -1)
     (aggressive-indent-mode -1)
     (corfu-mode -1)
-    (font-lock-mode -1))
+    (font-lock-mode -1)
+    (remove-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets))
   (advice-add 'kmacro-start-macro :before #'eli/speed-up-kmacro)
 
   (defun eli/speed-up-kmacro-recover ()
     (smartparens-mode 1)
-    (add-hook 'post-self-insert-hook
-              #'my/yas-try-expanding-auto-snippets)
     (winner-mode 1)
     (hungry-delete-mode 1)
     (aggressive-indent-mode 1)
-    (flyspell-mode 1)
     (corfu-mode 1)
-    (font-lock-mode 1))
+    (font-lock-mode 1)
+    (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets))
   
   (advice-add 'kmacro-keyboard-quit :after #'eli/speed-up-kmacro-recover)
   (advice-add 'markmacro-exit :after #'eli/speed-up-kmacro-recover))
