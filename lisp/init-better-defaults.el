@@ -689,6 +689,6 @@ By default, go to the current Info node."
   (keymap-set rectangle-mark-mode-map "C-w" #'kill-rectangle)
   (keymap-set rectangle-mark-mode-map "M-d" #'delete-whitespace-rectangle))
 
-
+(add-hook 'elemacs-first-file-hook #'pixel-scroll-precision-mode)
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
