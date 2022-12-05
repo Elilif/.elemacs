@@ -82,19 +82,36 @@
                            ("http" . "127.0.0.1:7890")
                            ("https" . "127.0.0.1:7890")
                            ;; ("socks5" . "127.0.0.1:7891")
-			   ))
+			               ))
 
 ;; improve hippie-expand
-(setq hippie-expand-try-functions-list '(try-expand-dabbrev
-					                     try-expand-dabbrev-all-buffers
-					                     try-expand-dabbrev-from-kill
-					                     try-complete-file-name-partially
-					                     try-complete-file-name
-					                     try-expand-all-abbrevs
-					                     try-expand-list
-					                     try-expand-line
-					                     try-complete-lisp-symbol-partially
-					                     try-complete-lisp-symbol))
+(with-eval-after-load 'expand-region
+  (defmacro org-fold-core-save-visibility (use-markers &rest body)
+    "Save and restore folding state around BODY.
+If USE-MARKERS is non-nil, use markers for the positions.  This
+means that the buffer may change while running BODY, but it also
+means that the buffer should stay alive during the operation,
+because otherwise all these markers will point to nowhere."
+    (declare (debug (form body)) (indent 1))
+    (org-with-gensyms (regions)
+      `(let* ((,regions ,(org-fold-core-get-regions :with-markers use-markers)))
+         (unwind-protect (progn ,@body)
+           (org-fold-core-regions ,regions :override nil :clean-markers t)))))
+  (defun er/save-org-mode-excursion (action)
+    "Save outline visibility while expanding in org-mode"
+    (org-save-outline-visibility t
+      (funcall action)))
+  
+  (setq hippie-expand-try-functions-list '(try-expand-dabbrev
+					                       try-expand-dabbrev-all-buffers
+					                       try-expand-dabbrev-from-kill
+					                       try-complete-file-name-partially
+					                       try-complete-file-name
+					                       try-expand-all-abbrevs
+					                       try-expand-list
+					                       try-expand-line
+					                       try-complete-lisp-symbol-partially
+					                       try-complete-lisp-symbol)))
 (keymap-global-set "s-/" 'hippie-expand)
 
 (setq use-short-answers t)
