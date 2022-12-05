@@ -2231,5 +2231,95 @@ and style elements ARGS."
         (setq keyword (car keywords)))))
   (add-hook 'org-agenda-finalize-hook #'eli/org-agenda-show-svg))
 
+
+;; better list format
+(with-eval-after-load 'org
+  (defun org-list-struct-fix-bul (struct prevs)
+    "Verify and correct bullets in STRUCT.
+PREVS is the alist of previous items, as returned by
+`org-list-prevs-alist'.
+
+This function modifies STRUCT."
+    (let ((case-fold-search nil)
+	      (fix-bul
+	       ;; Set bullet of ITEM in STRUCT, depending on the type of
+	       ;; first item of the list, the previous bullet and counter
+	       ;; if any.
+	       (lambda (item)
+	         (let* ((prev (org-list-get-prev-item item struct prevs))
+		            (prev-bul (and prev (org-list-get-bullet prev struct)))
+		            (counter (org-list-get-counter item struct))
+		            (bullet (org-list-get-bullet item struct))
+		            (alphap (and (not prev)
+			                     (org-list-use-alpha-bul-p item struct prevs))))
+	           (org-list-set-bullet
+	            item struct
+	            (org-list-bullet-string
+	             (cond
+		          ;; Alpha counter in alpha list: use counter.
+		          ((and prev counter
+		                (string-match "[a-zA-Z]" counter)
+		                (string-match "[a-zA-Z]" prev-bul))
+		           ;; Use cond to be sure `string-match' is used in
+		           ;; both cases.
+		           (let ((real-count
+			              (cond
+			               ((string-match "[a-z]" prev-bul) (downcase counter))
+			               ((string-match "[A-Z]" prev-bul) (upcase counter)))))
+		             (replace-match real-count nil nil prev-bul)))
+		          ;; Num counter in a num list: use counter.
+		          ((and prev counter
+		                (string-match "[0-9]+" counter)
+		                (string-match "[0-9]+" prev-bul))
+		           (replace-match counter nil nil prev-bul))
+		          ;; No counter: increase, if needed, previous bullet.
+		          (prev
+		           (org-list-inc-bullet-maybe (org-list-get-bullet prev struct)))
+		          ;; Alpha counter at first item: use counter.
+		          ((and counter (org-list-use-alpha-bul-p item struct prevs)
+		                (string-match "[A-Za-z]" counter)
+		                (string-match "[A-Za-z]" bullet))
+		           (let ((real-count
+			              (cond
+			               ((string-match "[a-z]" bullet) (downcase counter))
+			               ((string-match "[A-Z]" bullet) (upcase counter)))))
+		             (replace-match real-count nil nil bullet)))
+		          ;; Num counter at first item: use counter.
+		          ((and counter
+		                (string-match "[0-9]+" counter)
+		                (string-match "[0-9]+" bullet))
+		           (replace-match counter nil nil bullet))
+		          ;; First bullet is alpha uppercase: use "A".
+		          ((and alphap (string-match "[A-Z]" bullet))
+		           (replace-match "A" nil nil bullet))
+		          ;; First bullet is alpha lowercase: use "a".
+		          ((and alphap (string-match "[a-z]" bullet))
+		           (replace-match "a" nil nil bullet))
+		          ;; First bullet is num: use "1".
+		          ((string-match "\\([0-9]+\\|[A-Za-z]\\)" bullet)
+		           ;; (replace-match "1" nil nil bullet))
+                   (replace-match (format (format "%%0%dd" (1+ (log (length struct) 10))) 1) nil nil bullet))
+		          ;; Not an ordered list: keep bullet.
+		          (t bullet))))))))
+      (mapc fix-bul (mapcar #'car struct))))
+
+  (defun org-list-inc-bullet-maybe (bullet)
+    "Increment BULLET if applicable."
+    (let ((case-fold-search nil))
+      (cond
+       ;; Num bullet: increment it.
+       ((string-match "[0-9]+" bullet)
+        (replace-match
+         ;; (number-to-string (1+ (string-to-number (match-string 0 bullet))))
+         (format (format "%%0%dd" (length (match-string 0 bullet)))
+                 (1+ (string-to-number (match-string 0 bullet))))
+         nil nil bullet))
+       ;; Alpha bullet: increment it.
+       ((string-match "[A-Za-z]" bullet)
+        (replace-match
+         (char-to-string (1+ (string-to-char (match-string 0 bullet))))
+         nil nil bullet))
+       ;; Unordered bullet: leave it.
+       (t bullet)))))
 (provide 'init-org)
 ;;; init-org.el ends here.
