@@ -912,7 +912,7 @@ with headline set to %l would do."
 
   (with-eval-after-load 'org-agenda
     ;; 每小时同步一次appt,并且现在就开始同步
-    (run-with-idle-timer 30 nil
+    (run-with-idle-timer 10 nil
                          (lambda ()
                            (run-with-timer 0 3600 #'org-agenda-to-appt t)))
     ;; 提前半小时提醒
