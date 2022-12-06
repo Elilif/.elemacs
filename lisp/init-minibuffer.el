@@ -69,15 +69,18 @@
     (interactive)
     (let ((default-directory "~/Documents/org-images/"))
       (call-interactively 'find-file)))
+
+  (defun eli/remove-image-preview-hook ()
+    (remove-hook 'post-command-hook #'eli/image-preview)
+    (posframe-delete-all)
+    (remove-hook 'minibuffer-exit-hook #'eli/remove-image-preview-hook))
   
   (advice-add 'eli/select-images
-              :before (lambda (&rest _args)
-                        (add-hook 'post-command-hook #'eli/image-preview)))
-
-  (add-hook 'minibuffer-exit-hook
-            (lambda ()
-              (remove-hook 'post-command-hook #'eli/image-preview)
-              (posframe-delete-all))))
+              :before
+              (lambda (&rest _args)
+                (add-hook 'post-command-hook #'eli/image-preview)
+                (add-hook 'minibuffer-exit-hook #'eli/remove-image-preview-hook)))
+  )
 
 (with-eval-after-load 'embark
   (require 'embark-consult))
