@@ -176,6 +176,9 @@
 [submodule "grab-x-link"]
 	path = lib/grab-x-link
 	url = git@github.com:xuchunyang/grab-x-link.git
+[submodule "graphql"]
+	path = lib/graphql
+	url = git@github.com:vermiculus/graphql.el.git
 [submodule "helpful"]
 	path = lib/helpful
 	url = git@github.com:Wilfred/helpful.git
@@ -209,9 +212,15 @@
 [submodule "ledger-mode"]
 	path = lib/ledger-mode
 	url = git@github.com:ledger/ledger-mode.git
+[submodule "leetcode"]
+	path = lib/leetcode
+	url = git@github.com:Elilif/leetcode.el.git
 [submodule "link-hint"]
 	path = lib/link-hint
 	url = git@github.com:noctuid/link-hint.el.git
+[submodule "log4e"]
+	path = lib/log4e
+	url = git@github.com:aki2o/log4e.git
 [submodule "lsp-latex"]
 	path = lib/lsp-latex
 	url = git@github.com:ROCKTAKEY/lsp-latex.git

@@ -148,5 +148,25 @@ whose result is LIST."
          (null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|while\\|return\\)\\b\\)"
                              (thing-at-point 'line))))))
 
+(with-eval-after-load 'leetcode
+  (setq leetcode-prefer-language "cpp"
+        leetcode-save-solutions t)
+  (keymap-set leetcode--problems-mode-map "q" #'leetcode-quit)
+
+  (defun eli/leetcode-kill-problems-buffer ()
+    "Close and delete leetcode related buffers and windows."
+    (interactive)
+    (mapc (lambda (title)
+            (leetcode--kill-buff-and-delete-window
+             (get-buffer (leetcode--get-code-buffer-name title)))
+            (let* ((slug-title (leetcode--slugify-title title))
+                   (problem (leetcode--get-problem slug-title))
+                   (problem-id (leetcode-problem-id problem)))
+              (leetcode--kill-buff-and-delete-window (get-buffer (leetcode--detail-buffer-name problem-id)))
+              (leetcode--kill-buff-and-delete-window (get-buffer (leetcode--result-buffer-name problem-id)))
+              (leetcode--kill-buff-and-delete-window (get-buffer (leetcode--testcase-buffer-name problem-id)))))
+          leetcode--problem-titles)
+    (setq leetcode--problem-titles nil)))
+
 (provide 'init-lang)
 ;;; init-lang.el ends here.
