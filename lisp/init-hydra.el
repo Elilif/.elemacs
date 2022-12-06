@@ -550,7 +550,7 @@
     ("f"  eli/emms-filter "filter"))
    ))
 (pretty-hydra-define hydra-develop
-  (:color amaranth :exit t :quit-key "q"
+  (:color amaranth :exit t
 	      :pre (progn (setq which-key-inhibit t))
 	      :post (progn (setq which-key-inhibit nil)))
   ("LSP"
@@ -567,7 +567,11 @@
     ("l" edebug-remove-instrumentation)
     ("n" cancel-debug-on-entry)
     ("o" edebug-on-entry)
-    ("N" edebug-cancel-on-entry))))
+    ("N" edebug-cancel-on-entry))
+   "leetcode"
+   (("k" eli/leetcode-kill-problems-buffer)
+    ("d" leetcode))
+   ))
 
 (pretty-hydra-define hydra-rectangle
   (:color amaranth :exit t
