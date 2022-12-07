@@ -215,41 +215,41 @@ entries are offered."
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
-  (defmacro eli/consult-ripgrep-single-file-install (fun-name file-path)
-    `(defun ,(intern (format "eli/consult-ripgrep-%s" fun-name)) ()
-       "Call `consult-ripgrep' for the current buffer (a single file)."
-       (interactive)
-       (let ((consult-project-function (lambda (x) nil))
-             (consult-ripgrep-args
-              (concat "rg "
-                      "--null "
-                      "--line-buffered "
-                      "--color=never "
-                      "--line-number "
-                      "--smart-case "
-                      "--no-heading "
-                      "--max-columns=1000 "
-                      "--max-columns-preview "
-                      "--with-filename "
-                      ,(shell-quote-argument file-path))))
-         (consult-ripgrep))))
-  
-  (eli/consult-ripgrep-single-file-install "org-info" "/usr/local/share/info/org.info")
-  (eli/consult-ripgrep-single-file-install "emacs-info" "/usr/local/share/info/emacs.info")
-  (eli/consult-ripgrep-single-file-install "elisp-info" "/usr/local/share/info/elisp.info")
+  (defun eli/consult-ripgrep-single-file (file-path)
+    "Search single file use `consult-ripgrep'."
+    (interactive)
+    (let ((consult-project-function (lambda (x) nil))
+          (consult-ripgrep-args
+           (concat "rg "
+                   "--null "
+                   "--line-buffered "
+                   "--color=never "
+                   "--line-number "
+                   "--smart-case "
+                   "--no-heading "
+                   "--max-columns=1000 "
+                   "--max-columns-preview "
+                   "--with-filename "
+                   (shell-quote-argument file-path))))
+      (consult-ripgrep)))
   
   (setq consult-preview-excluded-files '("/usr/local/share/info/org.info"
                                          "/usr/local/share/info/emacs.info"
                                          "/usr/local/share/info/elisp.info"))
+
+  (defun eli/consult-git-ripgrep (dir)
+    (interactive
+     (list (read-directory-name "Select directory: " "~/.emacs.d/lib/")))
+    (consult-ripgrep dir))
   
 
   (consult-customize
    consult-theme
    :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep eli/consult-org-file
+   consult-ripgrep consult-git-grep consult-grep eli/consult-org-file 
    consult-bookmark consult-recent-file consult-xref consult-org-heading
    consult--source-bookmark consult--source-recent-file
-   consult--source-project-recent-file
+   consult--source-project-recent-file eli/consult-git-ripgrep
    :preview-key (kbd "M-.")))
 
 (add-hook 'minibuffer-setup-hook 'savehist-mode)
