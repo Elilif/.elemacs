@@ -170,6 +170,12 @@
 	no-byte-compile = flyspell-correct-ido.el
 	no-byte-compile = flyspell-correct-ivy.el
 	no-byte-compile = flyspell-correct-popup.el
+[submodule "forge"]
+	path = lib/forge
+	url = git@github.com:magit/forge.git
+[submodule "ghub"]
+	path = lib/ghub
+	url = git@github.com:magit/ghub.git
 [submodule "goldendict"]
 	path = lib/goldendict
 	url = https://repo.or.cz/goldendict.el.git
@@ -423,6 +429,9 @@
 [submodule "transient"]
 	path = lib/transient
 	url = git@github.com:magit/transient.git
+[submodule "treepy"]
+	path = lib/treepy
+	url = git@github.com:volrath/treepy.el.git
 [submodule "vertico"]
 	path = lib/vertico
 	url = git@github.com:minad/vertico.git
@@ -453,6 +462,9 @@
 [submodule "xenops"]
 	path = lib/xenops
 	url = git@github.com:dandavison/xenops.git
+[submodule "yaml"]
+	path = lib/yaml
+	url = git@github.com:zkry/yaml.el.git
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = git@github.com:joaotavora/yasnippet.git
