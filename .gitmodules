@@ -33,8 +33,9 @@
 	build-step = ./autogen.sh
 	build-step = ./configure
 	build-step = make
-	build-step = make install
-    build-step = "(borg-update-autoloads \"auctex\")"
+	build-step = sudo make install
+    build-step = borg-byte-compile
+    build-step = borg-update-autoloads
 	info-path = doc    
 [submodule "auto-save"]
 	path = lib/auto-save
@@ -243,6 +244,11 @@
 	path = lib/magit
 	url = git@github.com:magit/magit.git
     no-byte-compile = lisp/magit-libgit.el
+    build-step = make
+    build-step = sudo make install-info
+    build-step = borg-byte-compile
+    build-step = borg-update-autoloads
+    info-path = docs
 [submodule "magit-todos"]
 	path = lib/magit-todos
 	url = git@github.com:alphapapa/magit-todos.git
