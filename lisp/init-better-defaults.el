@@ -96,7 +96,7 @@ because otherwise all these markers will point to nowhere."
     (org-with-gensyms (regions)
       `(let* ((,regions ,(org-fold-core-get-regions :with-markers use-markers)))
          (unwind-protect (progn ,@body)
-           (org-fold-core-regions ,regions :override nil :clean-markers t)))))
+           (org-fold-core-regions ,regions :override nil :clean-markers nil)))))
   (defun er/save-org-mode-excursion (action)
     "Save outline visibility while expanding in org-mode"
     (org-save-outline-visibility t
