@@ -41,6 +41,7 @@
             ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
             ;; (add-hook 'before-save-hook #'lsp-organize-imports t t)
             ))
+(setq lsp-keymap-prefix nil)
 (with-eval-after-load 'lsp-mode
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
@@ -51,21 +52,21 @@
   (setenv "LSP_USE_PLISTS" "true")
   
   (setq lsp-completion-provider :none
-	lsp-keep-workspace-alive nil
-	lsp-signature-auto-activate nil
-	lsp-modeline-code-actions-enable nil
-	lsp-modeline-diagnostics-enable nil
-	lsp-modeline-workspace-status-enable nil
-	lsp-headerline-breadcrumb-enable t
+	    lsp-keep-workspace-alive nil
+	    lsp-signature-auto-activate nil
+	    lsp-modeline-code-actions-enable nil
+	    lsp-modeline-diagnostics-enable nil
+	    lsp-modeline-workspace-status-enable nil
+	    lsp-headerline-breadcrumb-enable t
 
-	lsp-enable-file-watchers nil
-	lsp-enable-folding nil
-	lsp-enable-symbol-highlighting t
-	lsp-enable-text-document-color t
+	    lsp-enable-file-watchers nil
+	    lsp-enable-folding nil
+	    lsp-enable-symbol-highlighting t
+	    lsp-enable-text-document-color t
 
-	lsp-enable-indentation nil
-	lsp-enable-on-type-formatting nil
-	lsp-lens-enable nil)
+	    lsp-enable-indentation nil
+	    lsp-enable-on-type-formatting nil
+	    lsp-lens-enable nil)
 
   (add-to-list 'lsp-language-id-configuration '(snippet-mode . "plaintext")))
 
