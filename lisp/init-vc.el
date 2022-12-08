@@ -112,6 +112,29 @@ conventions are checked."
   (with-eval-after-load 'magit
     (magit-todos-mode)))
 
+;; forge
+(with-eval-after-load 'magit
+  (require 'forge))
+
+(with-eval-after-load 'magit
+  ;; to use `org-protocol-git-clone', copy the following code then save it as a
+  ;; bookmark:
+  ;; javascript:location.href='org-protocol://git-clone?url=%27 + encodeURIComponent(window.getSelection());
+  ;; (require 'org-protocol)
+  (setq org-protocol-protocol-alist
+        '(("git-clone"
+           :protocol "git-clone"
+           :function org-protocol-git-clone)))
+
+  (defvar org-protocol-git-clone-directory "~/test/"
+    "Default directory for `org-protocol-git-clone'.")
+  (setq magit-clone-set-remote.pushDefault t)
+
+  (defun org-protocol-git-clone (info)
+    "Process an org-protocol://git-clone style url with INFO."
+    (let ((url (plist-get info :url)))
+      (magit-clone-internal url org-protocol-git-clone-directory nil))
+    nil))
 
 (provide 'init-vc)
 ;;; init-vc.el ends here.
