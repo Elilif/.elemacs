@@ -89,8 +89,8 @@ conventions are checked."
 
 
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
-	    git-commit-summary-max-length 80
-	    git-commit-fill-column 80)
+	    git-commit-summary-max-length 50
+	    git-commit-fill-column 72)
   (defun mu-magit-kill-buffers ()
     "Restore window configuration and kill all Magit buffers."
     (interactive)
