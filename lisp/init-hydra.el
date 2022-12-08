@@ -59,9 +59,9 @@
    "Deft"
    (("n" notdeft "notdeft"))
    "info"
-   (("o" eli/consult-ripgrep-org-info "org info")
-    ("l" eli/consult-ripgrep-elisp-info "elisp info")
-    ("e" eli/consult-ripgrep-emacs-info "emacs info"))
+   (("o" (eli/consult-ripgrep-single-file "/usr/local/share/info/org.info") "org info")
+    ("l" (eli/consult-ripgrep-single-file "/usr/local/share/info/elisp.info") "elisp info")
+    ("e" (eli/consult-ripgrep-single-file "/usr/local/share/info/emacs.info") "emacs info"))
    "rg"
    (("g" eli/consult-git-grep))
    "Google"
