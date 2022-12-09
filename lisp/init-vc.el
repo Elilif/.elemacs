@@ -126,7 +126,7 @@ conventions are checked."
            :protocol "git-clone"
            :function org-protocol-git-clone)))
 
-  (defvar org-protocol-git-clone-directory "~/test/"
+  (defvar org-protocol-git-clone-directory "~/src/Clone"
     "Default directory for `org-protocol-git-clone'.")
   (setq magit-clone-set-remote.pushDefault t)
 
