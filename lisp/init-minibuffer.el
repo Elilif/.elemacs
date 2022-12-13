@@ -155,13 +155,20 @@
 (keymap-global-set "C-s" #'consult-line)
 (keymap-global-set "C-x C-r" #'consult-recent-file)
 (keymap-global-set "C-c \\" #'consult-register)
-(keymap-global-set "C-c -" #'consult-register-load)
-(keymap-global-set "C-c =" #'consult-register-store)
-(keymap-global-set "C-x b" #'consult-buffer)
+(keymap-global-set "C-c -" #'consult-register-store)
+(keymap-global-set "C-c =" #'consult-register-load)
+(keymap-global-set "C-x b" #'eli/consult-buffer)
 (keymap-global-set "M-g o" #'consult-outline)
 (keymap-global-set "C-x C-d" #'consult-dir)
 (with-eval-after-load 'vertico
   (require 'consult)
+
+  (defun eli/consult-buffer()
+    (interactive)
+    (consult-buffer)
+    (when (member (prefix-numeric-value current-prefix-arg) '(4 16 64))
+      (delete-other-windows)))
+  
   (setq consult-fontify-max-size 100000)
   
   ;;Pre-select nearest heading for consult-org-heading and consult-outline using
