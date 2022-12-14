@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: leetcode
+# key: leet
+# --
+#include <$0
+
+using namespace std;
