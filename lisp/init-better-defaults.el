@@ -160,12 +160,12 @@ because otherwise all these markers will point to nowhere."
   (interactive (list (read-char "char: " t)))
   (let ((avy-all-windows nil))
     (avy-with avy-goto-char
-	      (avy--process
-	       (avy--regex-candidates
+	  (avy-process
+	   (avy--regex-candidates
 		(regexp-quote (string char))
 		(line-beginning-position -1)
 		(line-end-position 3))
-	       (avy--style-fn avy-style)))))
+	   (avy--style-fn avy-style)))))
 (keymap-global-set "C-:" #'avy-goto-char-in-line)
 (keymap-global-set "C-'" #'avy-goto-char)
 (keymap-global-set "C-\"" #'avy-goto-char-near-point)
