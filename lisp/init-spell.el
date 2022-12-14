@@ -58,7 +58,7 @@
 (defun eli/dict-search ()
   (interactive)
   (let ((BASEDIR "~/Documents/txtdict/")
-	    (INIT-INPUT))
+	    (INIT-INPUT nil))
     (consult-ripgrep BASEDIR INIT-INPUT)))
 
 (defun eli/te-search ()
