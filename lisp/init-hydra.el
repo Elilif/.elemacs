@@ -65,7 +65,8 @@
    "rg"
    (("g" eli/consult-git-grep))
    "Google"
-   (("s" my-search-with-chrome))))
+   (("s" my-search-with-chrome)
+    ("h" github-copy-reference-url-at-point))))
 
 (pretty-hydra-define hydra-edit
   (:color amaranth :exit t
