@@ -704,5 +704,9 @@ By default, go to the current Info node."
 (add-hook 'elemacs-first-file-hook #'pixel-scroll-precision-mode)
 (setq scroll-preserve-screen-position 'always)
 
+(with-eval-after-load 'keycast
+  (setq keycast-mode-line-insert-after '(:eval (mood-line-segment-misc-info)))
+  (setq keycast-mode-line-format "%1s%k%c%R"))
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
