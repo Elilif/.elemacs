@@ -151,7 +151,8 @@ whose result is LIST."
 (with-eval-after-load 'leetcode
   (setq leetcode-prefer-language "cpp"
         leetcode-save-solutions t)
-  (keymap-set leetcode--problems-mode-map "q" #'leetcode-quit)
+  (keymap-set leetcode--problems-mode-map "Q" #'leetcode-quit)
+  (keymap-set leetcode--problems-mode-map "D" #'leetcode-daily)
 
   (defun eli/leetcode-kill-problems-buffer ()
     "Close and delete leetcode related buffers and windows."
