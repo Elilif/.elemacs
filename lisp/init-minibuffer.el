@@ -245,10 +245,13 @@ entries are offered."
                                          "/usr/local/share/info/elisp.info"))
 
   (defun eli/consult-git-ripgrep (dir)
+    "Search single file use `consult-ripgrep'."
     (interactive
      (list (read-directory-name "Select directory: " "~/.emacs.d/lib/")))
-    (consult-ripgrep dir))
-  
+    (let ((consult-project-function (lambda (x) nil))
+          (consult-ripgrep-args (string-replace "." "-g *.el ."
+                                                consult-ripgrep-args)))
+      (consult-ripgrep dir)))
 
   (consult-customize
    consult-theme
