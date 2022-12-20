@@ -333,6 +333,7 @@ because otherwise all these markers will point to nowhere."
 (keymap-global-set "C-h f" #'helpful-callable)
 (keymap-global-set "C-h v" #'helpful-variable)
 (keymap-global-set "C-h k" #'helpful-key)
+(keymap-global-set "C-h o" #'helpful-symbol)
 (with-eval-after-load 'helpful
   (setq helpful-max-buffers 2)
   ;; from: https://d12frosted.io/posts/2019-06-26-emacs-helpful.html
