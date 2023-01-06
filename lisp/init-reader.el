@@ -125,7 +125,38 @@
                lines)))
 
   (keymap-set org-noter-notes-mode-map "M-["
-              #'eli/org-noter-scroll-down-other-window))
+              #'eli/org-noter-scroll-down-other-window)
+
+  ;; custom for org-anki
+  (defun eli/org-noter--insert-heading (level title &optional newlines-number location)
+    "Insert a new heading at LEVEL with TITLE.
+The point will be at the start of the contents, after any
+properties, by a margin of NEWLINES-NUMBER."
+    (setq newlines-number (or newlines-number 1))
+    (org-insert-heading nil t)
+    (let* ((initial-level (org-element-property :level (org-element-at-point)))
+           (changer (if (> level initial-level) 'org-do-demote 'org-do-promote))
+           (number-of-times (abs (- level initial-level))))
+      (dotimes (_ number-of-times) (funcall changer))
+      (insert (org-trim (replace-regexp-in-string "\n" " " title)))
+
+      (org-end-of-subtree)
+      (unless (bolp) (insert "\n"))
+      (org-N-empty-lines-before-current (1- newlines-number))
+
+      (when location
+        (org-entry-put nil org-noter-property-note-location (org-noter--pretty-print-location location))
+        ;; custom for org-anki
+        (when (member (prefix-numeric-value current-prefix-arg) '(4))
+          (org-entry-put nil "NOANKI" "t"))
+
+        (when org-noter-doc-property-in-notes
+          (org-noter--with-valid-session
+           (org-entry-put nil org-noter-property-doc-file (org-noter--session-property-text session))
+           (org-entry-put nil org-noter--property-auto-save-last-location "nil"))))
+
+      (run-hooks 'org-noter-insert-heading-hook)))
+  (advice-add 'org-noter--insert-heading :override #'eli/org-noter--insert-heading))
 
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (with-eval-after-load 'nov
