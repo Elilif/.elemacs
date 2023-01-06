@@ -87,8 +87,8 @@
   
   (advice-add #'org-noter--focus-notes-region
               :after #'eli/org-noter-set-highlight)
-  (advice-add #'org-noter-insert-note
-              :after #'eli/org-noter-set-highlight)
+  
+  (add-hook 'org-noter-insert-heading-hook #'eli/org-noter-set-highlight)
   
   (defun eli/org-noter-back-to-current-window (orig-fun)
     (save-selected-window
