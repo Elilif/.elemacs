@@ -313,7 +313,31 @@ to calculate the decent value of `:ascent'. "
                latex))))
     (funcall orig-func element latex colors cache-file display-image))
   (advice-add 'xenops-math-latex-create-image
-              :around #'eli/xenops-renumber-environment))
+              :around #'eli/xenops-renumber-environment)
+
+  ;; for pseudocode
+  (add-to-list 'xenops-elements '(algorithm
+                                  (:delimiters
+                                   ("^[ 	]*\\\\begin{algorithm}" "^[ 	]*\\\\end{algorithm}"))
+                                  (:parser . xenops-math-parse-algorithm-at-point)
+                                  (:handlers . block-math)))
+
+  (defun xenops-math-parse-algorithm-at-point ()
+    "Parse algorithm element at point."
+    (xenops-parse-element-at-point 'algorithm))
+
+  (defun xenops-math-parse-element-at-point ()
+    "Parse any math element at point."
+    (or (xenops-math-parse-inline-element-at-point)
+        (xenops-math-parse-block-element-at-point)
+        (xenops-math-parse-table-at-point)
+        (xenops-math-parse-algorithm-at-point)))
+
+  (defun xenops-math-block-delimiter-lines-regexp ()
+    "A regexp matching the start or end line of any block math element."
+    (format "\\(%s\\)"
+            (s-join "\\|"
+                    (apply #'append (xenops-elements-get-for-types '(block-math table algorithm) :delimiters))))))
 
 (autoload #'mathpix-screenshot "mathpix" nil t)
 (with-eval-after-load 'mathpix
