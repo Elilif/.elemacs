@@ -166,7 +166,7 @@
         xenops-math-latex-max-tasks-in-flight 16
         xenops-auctex-electric-insert-commands nil)
   (defun eli/change-xenops-latex-header (orig &rest args)
-    (let ((org-format-latex-header "\\documentclass[dvisvgm,preview]{standalone}\n\\usepackage{arev}\n\\usepackage{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]"))
+    (let ((org-format-latex-header "\\documentclass[dvisvgm,preview]{standalone}\n\\usepackage{arev}\n\\usepackage[ruled,linesnumbered]{algorithm2e}\n\\usepackage{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]"))
       (apply orig args)))
   (advice-add 'xenops-math-latex-make-latex-document :around #'eli/change-xenops-latex-header)
   (advice-add 'xenops-math-file-name-static-hash-data :around #'eli/change-xenops-latex-header)
@@ -315,7 +315,7 @@ to calculate the decent value of `:ascent'. "
   (advice-add 'xenops-math-latex-create-image
               :around #'eli/xenops-renumber-environment)
 
-  ;; for pseudocode
+  ;; pseudocode
   (add-to-list 'xenops-elements '(algorithm
                                   (:delimiters
                                    ("^[ 	]*\\\\begin{algorithm}" "^[ 	]*\\\\end{algorithm}"))
@@ -337,7 +337,29 @@ to calculate the decent value of `:ascent'. "
     "A regexp matching the start or end line of any block math element."
     (format "\\(%s\\)"
             (s-join "\\|"
-                    (apply #'append (xenops-elements-get-for-types '(block-math table algorithm) :delimiters))))))
+                    (apply #'append (xenops-elements-get-for-types '(block-math table algorithm) :delimiters)))))
+
+
+  ;; html export
+  (defun eli/org-html-export-replace-algorithm-with-image (backend)
+    "Replace algorithms in LaTeX with the corresponding images.
+
+BACKEND is the back-end currently used, see `org-export-before-parsing-functions'"
+    (when (org-export-derived-backend-p backend 'html)
+      (let ((end (point-max)))
+        (org-with-point-at (point-min)
+          (let* ((case-fold-search t)
+                 (algorithm-re "^[ 	]*\\\\begin{algorithm}"))
+            (while (re-search-forward algorithm-re end t)
+              (let* ((el (xenops-math-parse-algorithm-at-point))
+                     (cache-file (abbreviate-file-name
+                                  (xenops-math-get-cache-file el)))
+                     (begin (plist-get el :begin))
+                     (end (plist-get el :end)))
+                (delete-region begin end)
+                (insert (concat "[[" cache-file "]]")))))))))
+  (add-to-list 'org-export-before-parsing-functions
+               #'eli/org-html-export-replace-algorithm-with-image))
 
 (autoload #'mathpix-screenshot "mathpix" nil t)
 (with-eval-after-load 'mathpix
