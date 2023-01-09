@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \Return
+# key: rt
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithm
+# --
+\Return 

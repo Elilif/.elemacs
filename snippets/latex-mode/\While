@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: \While
+# key:wl
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithm
+# --
+\While{$1}{
+$0
+}

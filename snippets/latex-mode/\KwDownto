@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \KwDownto
+# key: dt
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithm
+# --
+\KwDownto 

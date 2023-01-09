@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: \If
+# key: If
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithm
+# --
+\If{$1}{
+$0
+}

@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: \eIf
+# key: eif
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithm
+# --
+\eIf{$1}{
+$2
+}{
+$0
+}

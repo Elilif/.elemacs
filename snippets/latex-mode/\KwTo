@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \KwTo
+# key: kt
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithm
+# --
+\KwTo 

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: algo
+# key: algo
+# --
+\begin{algorithm}[H]
+$0
+\end{algorithm}
