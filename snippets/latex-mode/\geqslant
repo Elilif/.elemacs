@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \geqslant
+# key: geq
+# condition: (and (texmathp) (quote auto))
+# group: math
+# --
+\\geqslant

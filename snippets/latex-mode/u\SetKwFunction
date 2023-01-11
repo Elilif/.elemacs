@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: u\SetKwFunction
+# key: ufn
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithm
+# --
+\SetKwFunction{$1}{\textsc{$2}}
+$0

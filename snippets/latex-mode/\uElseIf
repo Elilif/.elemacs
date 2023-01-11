@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: \uElseIf
+# key: ueif
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithmut
+# --
+\\uElseIf{$1}{
+$0
+}

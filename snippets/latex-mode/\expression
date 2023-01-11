@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \expression
+# key: ep
+# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# group: algorithm
+# --
+`(if (eq major-mode 'org-mode) "\\(" "$")`$0`(if (eq major-mode 'org-mode) "\\)" "$")`\\;
