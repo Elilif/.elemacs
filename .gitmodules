@@ -456,6 +456,9 @@
 	build-step = cd build && cmake .. && make
 	build-step = borg-byte-compile
     build-step = borg-update-autoloads
+[submodule "websocket"]
+	path = lib/websocket
+	url = git@github.com:ahyatt/emacs-websocket.git
 [submodule "wgrep"]
 	path = lib/wgrep
 	url = git@github.com:mhayashi1120/Emacs-wgrep.git
