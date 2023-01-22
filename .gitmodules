@@ -126,6 +126,7 @@
 	path = lib/emacsql
 	url = git@github.com:skeeto/emacsql.git
     no-byte-compile = emacsql-pg.el
+    no-byte-compile = emacsql-sqlite-module.el
 [submodule "embark"]
 	path = lib/embark
 	url = git@github.com:oantolin/embark.git
@@ -342,6 +343,8 @@
 	url = https://github.com/akirak/org-reverse-datetree.git
 [submodule "org-roam"]
 	path = lib/org-roam
+    load-path = .
+    load-path = extensions
 	url = git@github.com:org-roam/org-roam.git
 [submodule "org-roam-ui"]
 	path = lib/org-roam-ui
