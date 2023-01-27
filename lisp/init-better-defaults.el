@@ -589,6 +589,13 @@ BUFFER is a string, the name of a buffer."
       (kill-buffer orig-buffer))))
 
 (with-eval-after-load 'info
+  ;; add package info
+  (with-eval-after-load 'borg
+    (info-initialize)
+    (borg-do-drones (drone)
+      (dolist (dir (borg-info-path drone))
+        (push  dir Info-directory-list))))
+  
   ;; copy info url
   (defvar eli/Info-url-alist
     '(("org" . "https://orgmode.org/manual/")
