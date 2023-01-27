@@ -557,6 +557,37 @@ BUFFER is a string, the name of a buffer."
 
 ;; another choice is `info-pretty-mode'
 (add-hook 'Info-mode-hook #'variable-pitch-mode)
+(defun info-elisp-manual ()
+  "Display the Emacs manual in Info mode."
+  (interactive)
+  (info "elisp"))
+(keymap-global-set "C-h E" #'info-elisp-manual)
+
+(with-eval-after-load 'consult
+  (defun eli/Info-open ()
+    "Open Info in the current info file."
+    (interactive)
+    (when-let* ((case-fold-search t)
+                (orig-buffer (current-buffer))
+                (filename (buffer-file-name orig-buffer))
+                (base-filename (file-name-base filename))
+                (node-index
+                 (progn
+                   (re-search-backward "^[0-9]\\{1,2\\}\\.\\(?:\\([0-9]+\\)\\|[0-9]\\{1,2\\}\\.\\([0-9]+\\)\\) .*\n[-=*.]+" nil t)
+                   (or (match-string-no-properties 1)
+                       (match-string-no-properties 2))))
+                (index-name
+                 (progn
+                   (re-search-backward (concat
+                                        "\\* menu:\n\n\\(?:.*\n\\(?:[^*].*\n\\)?\\)\\{"
+                                        (number-to-string
+                                         (- (string-to-number node-index) 1))
+                                        "\\}\\* \\(.*\\)::")
+                                       nil t)
+                   (match-string-no-properties 1))))
+      (Info-find-node base-filename (or index-name node-fullname) nil nil t)
+      (kill-buffer orig-buffer))))
+
 (with-eval-after-load 'info
   ;; copy info url
   (defvar eli/Info-url-alist
