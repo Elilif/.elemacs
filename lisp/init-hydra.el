@@ -59,11 +59,10 @@
    "Deft"
    (("n" notdeft "notdeft"))
    "info"
-   (("o" (eli/consult-ripgrep-single-file "/usr/local/share/info/org.info") "org info")
-    ("l" (eli/consult-ripgrep-single-file "/usr/local/share/info/elisp.info") "elisp info")
-    ("e" (eli/consult-ripgrep-single-file "/usr/local/share/info/emacs.info") "emacs info"))
+   (("i" eli/info-search))
    "rg"
-   (("g" eli/consult-git-grep))
+   (("g" eli/consult-git-grep)
+    ("r" eli/consult-git-ripgrep))
    "Google"
    (("s" my-search-with-chrome)
     ("h" github-copy-reference-url-at-point))))
@@ -129,22 +128,21 @@
 
 (pretty-hydra-define hydra-roam
   (:color amaranth :exit t :quit-key "q"
-	  :pre (progn (setq which-key-inhibit t))
-	  :post (progn (setq which-key-inhibit nil) ))
+	      :pre (progn (setq which-key-inhibit t))
+	      :post (progn (setq which-key-inhibit nil) ))
   ("Roam"
    (("l" org-roam-buffer-toggle "toggle roam buffer")
     ("f" org-roam-node-find "find roam node")
     ("n" org-id-get-create "create roam id")
     ("i" org-roam-node-insert "insert roam node")
-    ("s" helm-org-roam-files-headings "search headings")
+    ("s" eli/consult-org-roam-heading "search headings")
     ("w" org-roam-refile "refile roam node"))
    "Roam"
    (("c" org-roam-dailies-capture-today "roam capture")
     ("ra" org-roam-ref-add "add refs")
     ("rd" org-roam-ref-remove "remove a ref")
     ("t" org-roam-tag-add "add tags")
-    ("v" org-roam-tag-remove "remove a tag")
-    ("h" yuchen/helm-org-run-marked-heading-id-link "insert a headline"))
+    ("v" org-roam-tag-remove "remove a tag"))
    "Roam"
    (("dd" org-roam-dailies-goto-today "today")
     ("df" org-roam-dailies-goto-date "goto date")

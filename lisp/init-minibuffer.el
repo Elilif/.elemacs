@@ -239,10 +239,6 @@ entries are offered."
                    "--with-filename "
                    (shell-quote-argument file-path))))
       (consult-ripgrep)))
-  
-  (setq consult-preview-excluded-files '("/usr/local/share/info/org.info"
-                                         "/usr/local/share/info/emacs.info"
-                                         "/usr/local/share/info/elisp.info"))
 
   (defun eli/consult-git-ripgrep (dir)
     "Search single file use `consult-ripgrep'."
