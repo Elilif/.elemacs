@@ -37,9 +37,6 @@
     build-step = borg-byte-compile
     build-step = borg-update-autoloads
 	info-path = doc    
-[submodule "auto-save"]
-	path = lib/auto-save
-	url = https://github.com/manateelazycat/auto-save
 [submodule "auto-yasnippet"]
 	path = lib/auto-yasnippet
 	url = git@github.com:abo-abo/auto-yasnippet.git
@@ -426,6 +423,9 @@
 [submodule "string-inflection"]
 	path = lib/string-inflection
 	url = git@github.com:akicho8/string-inflection.git
+[submodule "super-save"]
+	path = lib/super-save
+	url = git@github.com:bbatsov/super-save.git
 [submodule "svg-lib"]
 	path = lib/svg-lib
 	url = git@github.com:rougier/svg-lib.git
