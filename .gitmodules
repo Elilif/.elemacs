@@ -246,7 +246,6 @@
 	url = git@github.com:magit/magit.git
     no-byte-compile = lisp/magit-libgit.el
     build-step = make
-    build-step = sudo make install-info
     build-step = borg-byte-compile
     build-step = borg-update-autoloads
     info-path = docs
