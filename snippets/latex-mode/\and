@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: \and
 # key: ad
-# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# condition: (and (eli/tex-algorithm-p) (quote auto))
 # group: algorithm
 # --
 {\bf and}

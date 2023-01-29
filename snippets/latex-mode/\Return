@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: \Return
 # key: rt
-# condition: (and (xenops-math-parse-algorithm-at-point) (quote auto))
+# condition: (and (eli/tex-algorithm-p) (quote auto))
 # group: algorithm
 # --
 \Return 
