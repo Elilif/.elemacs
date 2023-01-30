@@ -114,27 +114,67 @@ conventions are checked."
 
 ;; forge
 (with-eval-after-load 'magit
-  (require 'forge))
+  (require 'forge)
+  (setq forge-owned-accounts '(("eli" . (remote-name "personal")))))
 
 (with-eval-after-load 'magit
   ;; to use `org-protocol-git-clone', copy the following code then save it as a
   ;; bookmark:
   ;; javascript:location.href='org-protocol://git-clone?url=%27 + encodeURIComponent(window.getSelection());
   ;; (require 'org-protocol)
-  (setq org-protocol-protocol-alist
-        '(("git-clone"
-           :protocol "git-clone"
-           :function org-protocol-git-clone)))
+  (add-to-list 'org-protocol-protocol-alist
+               '("git-clone"
+                 :protocol "git-clone"
+                 :function org-protocol-git-clone))
 
-  (defvar org-protocol-git-clone-directory "~/src/Clone"
-    "Default directory for `org-protocol-git-clone'.")
+  (setq magit-clone-default-directory (expand-file-name (expand-file-name "src/Clone/" (getenv "HOME"))))
   (setq magit-clone-set-remote.pushDefault t)
 
   (defun org-protocol-git-clone (info)
     "Process an org-protocol://git-clone style url with INFO."
-    (let ((url (plist-get info :url)))
-      (magit-clone-internal url org-protocol-git-clone-directory nil))
-    nil))
+    (require 'magit-clone)
+    (when-let ((url (plist-get info :url)))
+      (magit-clone-regular url magit-clone-default-directory nil))
+    nil)
+
+  ;; from: https://github.com/ksqsf/emacs-config/blob/master/modules/prelude-git.el
+  (defun github-parse-remote-url (remote)
+    "Parse a git remote hosted on github to a (user,repo) pair.
+This function returns nil if it cannot parse REMOTE."
+    (let ((ssh-regexp "git@github\\.com:\\(.*\\)/\\(.*\\)\\.git")
+          (https-regexp "https://github.com/\\(.*\\)/\\(.*\\)\\.git"))
+      (let ((maybe-ssh (string-match ssh-regexp remote)))
+        (if maybe-ssh
+            (cons (match-string-no-properties 1 remote) (match-string-no-properties 2 remote))
+          (let ((maybe-https (string-match https-regexp remote)))
+            (if maybe-https
+                (cons (match-string-no-properties 1 remote) (match-string-no-properties 2 remote))
+              nil))))))
+
+  (defun github-copy-reference-url-at-point ()
+    "Copy a link to the current line on the GitHub Web interface."
+    (interactive)
+    (save-buffer)
+    (let* ((remote (magit-get-remote))
+           (remote-url (magit-git-str "remote" "get-url" remote))
+           (commit (magit-rev-parse "--short" "HEAD"))
+           (user/repo (github-parse-remote-url remote-url))
+           (relative-path (file-relative-name buffer-file-name
+                                              (vc-git-root buffer-file-name)))
+           (locator (if (use-region-p)
+                        (format "L%d,L%d"
+                                (line-number-at-pos (use-region-beginning))
+                                (line-number-at-pos (use-region-end)))
+                      (format "L%d" (line-number-at-pos))))
+           (url (if (member (prefix-numeric-value current-prefix-arg) '(4 16 64))
+                    (format "https://github.com/%s/%s/blob/%s/%s#%s"
+                            (car user/repo) (cdr user/repo) commit
+                            relative-path locator)
+                  (format "https://github.com/%s/%s"
+                          (car user/repo) (cdr user/repo)))))
+      (kill-new url)
+      (browse-url url)
+      (message "Open %s" url))))
 
 (provide 'init-vc)
 ;;; init-vc.el ends here.
