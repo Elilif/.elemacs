@@ -1987,7 +1987,7 @@ holding contextual information."
                                                          "\\\\includepdf[pages=%s]{%s}"
                                                          page-num path)
                                             link-start))))))))
-    (add-to-list 'org-export-before-parsing-hook #'eli/org-latex-filter-pdf)))
+    (add-to-list 'org-export-before-parsing-functions #'eli/org-latex-filter-pdf)))
 
 
 ;;; mixed pitch mode
