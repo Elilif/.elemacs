@@ -1765,6 +1765,39 @@ The label should always be in group 1.")
   "Buffer-local cache variable for labels.")
 (defvar-local org-ref-buffer-chars-modified-tick nil
   "Buffer-local variable to hold `buffer-chars-modified-tick'.")
+(defvar org-ref-label-annot-cache nil
+  "Store the value of `org-ref-label-cache'.
+
+ used by `eli/org-ref-label-annotation'.")
+
+(defun eli/org-ref-label-annotation (candidate)
+  (let ((plist (cdr (assoc candidate org-ref-label-annot-cache))))
+    (concat (truncate-string-to-width (propertize (plist-get plist :title)
+                                                  'face 'mindre-keyword)
+                                      70 nil 32)
+            (truncate-string-to-width (propertize (plist-get plist :type)
+                                                  'face 'mindre-faded)
+                                      70 nil 32))))
+
+(defun eli/org-ref-insert-ref-link ()
+  "Completion function for a ref link."
+  (interactive)
+  (let* ((completion-extra-properties '(:annotation-function
+                                        eli/org-ref-label-annotation))
+         (label (completing-read "Choose: " (org-ref-get-labels)))
+         (label-trim (string-trim label))
+         (plist (cdr (assoc label org-ref-label-cache)))
+         (result  (pcase (plist-get plist :type)
+                    ("ID"
+                     (cons (concat "id:" label-trim)
+                           (plist-get plist :title)))
+                    ("CUSTOM_ID"
+                     (cons (concat "#" label-trim)
+                           (plist-get plist :title)))
+                    ("latex-environment"
+                     (cons label-trim
+                           label-trim)))))
+    (insert (format "[[%s][%s]]" (car result) (cdr result)))))
 
 (defun org-ref-get-labels ()
   "Return a list of referenceable labels in the document.
@@ -1796,49 +1829,29 @@ font-lock."
 	        (rx (string-join org-ref-ref-label-regexps "\\|"))
 	        (labels '())
 	        oe ;; org-element
-	        context
-	        data)
+	        data
+            id)
 	    (save-excursion
 	      (org-with-wide-buffer
 	       (goto-char (point-min))
 	       (while (re-search-forward rx nil t)
 	         (save-match-data
-	           ;; Here we try to get some relevant context for different things you
-	           ;; might reference.
 	           (setq oe (org-element-context)
-		             context (string-trim
-			                  (pcase (car oe)
-				                ('latex-environment
-                                 (buffer-substring
-						          (org-element-property :begin oe)
-						          (org-element-property :end oe)))
-				                ;; figure
-				                ('paragraph (buffer-substring
-					                         (org-element-property :begin oe)
-					                         (org-element-property :end oe)))
-				                ('table (buffer-substring
-					                     (org-element-property :begin oe)
-					                     (org-element-property :end oe)))
-				                ;; Headings fall here.
-				                (_ (buffer-substring (line-beginning-position)
-						                             (line-end-position)))))))
-	         (cl-pushnew (cons (match-string-no-properties 1) context)
-			             labels))))
+                     id (match-string-no-properties 1)
+                     data (list
+                           :title (if (equal (car oe) 'latex-environment)
+                                      ""
+                                    (org-element-property :raw-value (org-element-lineage oe '(headline))))
+                           :type (or (org-element-property :key oe)
+                                     (symbol-name (car oe))))))
+	         (cl-pushnew (cons (truncate-string-to-width id 70 nil 32) data) labels))))
 
 	    ;; reverse so they are in the order we find them.
 	    (setq
 	     org-ref-buffer-chars-modified-tick (buffer-chars-modified-tick)
-	     org-ref-label-cache (delete-dups (reverse labels))))
-
-    ;; retrieve the cached data
-    org-ref-label-cache))
-
-(defun eli/org-ref-insert-ref-link ()
-  "Completion function for a ref link."
-  (interactive)
-  (insert (let ((label))
-            (setq label (completing-read "label: " (org-ref-get-labels)))
-            (format "[[%s]]" label))))
+	     org-ref-label-cache (delete-dups (reverse labels)))))
+  ;; retrieve the cached data
+  (setq org-ref-label-annot-cache org-ref-label-cache))
 
 ;;; org exporting config
 ;; pandoc support
