@@ -1502,6 +1502,19 @@ direct title.
 
 ;;; anki integration
 (with-eval-after-load 'org
+  (add-to-list 'org-fold-show-context-detail '(empty-headline . minimal))
+  (defun eli/org-show-empty-headline ()
+    "Display all empty headlines in current buffer."
+    (interactive)
+    (org-set-startup-visibility)
+    (let ((count 0))
+      (org-map-entries
+       (lambda ()
+         (unless (org-element-property :robust-begin (org-element-headline-parser))
+           (org-fold-show-context 'empty-headline)
+           (setq count (1+ count)))))
+      (message "There are %d Questions remain to be solved." count)))
+  
   (require 'org-anki)
   (setq org-anki-default-deck "Default")
   (setq org-anki-model-fields '(("Basic" "Front" "Back")
