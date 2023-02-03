@@ -30,9 +30,11 @@
 
 ;;; Code:
 
-(add-hook 'org-mode-hook #'flyspell-mode)
+
+;; (add-hook 'org-mode-hook #'flyspell-mode)
+;; (add-hook 'text-mode-hook #'flyspell-mode)
+;; (add-hook 'emacs-lisp-mode-hook #'flyspell-prog-mode)
 (add-hook 'text-mode-hook #'flyspell-mode)
-(add-hook 'emacs-lisp-mode-hook #'flyspell-prog-mode)
 (with-eval-after-load 'flyspell
   (setq flyspell-mark-duplications-flag nil
         flyspell-issue-message-flag nil))
