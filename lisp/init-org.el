@@ -2037,6 +2037,8 @@ holding contextual information."
 
 (with-eval-after-load 'org
   (require 'svg-tag-mode)
+  (advice-add 'svg-tag-mode-on :around #'suppress-messages)
+  (advice-add 'svg-tag-mode-off :around #'suppress-messages)
   (setq svg-lib-style-default
         '(:background "#F5F5F5" :foreground "#37474f" :padding 0.5 :margin 0
                       :stroke 2 :radius 5 :alignment 0.5 :width 20 :height 0.9

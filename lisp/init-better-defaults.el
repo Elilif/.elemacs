@@ -724,5 +724,24 @@ By default, go to the current Info node."
   (setq keycast-mode-line-insert-after '(:eval (mood-line-segment-misc-info)))
   (setq keycast-mode-line-format "%1s%k%c%R"))
 
+
+;;; midnight
+(defun suppress-messages (func &rest args)
+  (cl-letf (((symbol-function 'message)
+             (lambda (&rest args) nil)))
+    (apply func args)))
+(with-eval-after-load 'org
+  (require 'midnight)
+  (advice-add 'clean-buffer-list :around #'suppress-messages)
+  (setq clean-buffer-list-delay-general 0.1
+        clean-buffer-list-delay-special 3600)
+  (setq clean-buffer-list-kill-buffer-names
+        (append clean-buffer-list-kill-buffer-names
+                '("*elfeed-log*" "*Org Clock*" "*Backtrace*")))
+  (setq clean-buffer-list-kill-regexps
+        (append clean-buffer-list-kill-regexps
+                '("\\*Outline.*\\*" "\\*.*Profiler-Report.*\\*")))
+  (run-with-idle-timer 60 t #'clean-buffer-list))
+
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
