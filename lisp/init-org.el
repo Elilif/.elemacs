@@ -1524,6 +1524,7 @@ direct title.
                                 ("Basic (optional reversed card)" "Front" "Back")
                                 ("NameDescr" "Name" "Descr")
                                 ("Cloze" "Text")))
+  
   (defun org-anki-skip ()
     "Skip headlines with \"noanki\" property or with `org-anki-prop-note-id'. 
 Used by `org-anki-skip-function'"
@@ -1532,6 +1533,14 @@ Used by `org-anki-skip-function'"
         (point)))
 
   (setq org-anki-skip-function #'org-anki-skip)
+
+  ;; speed up org-anki
+  (defun eli/org-anki-around (orig &rest args)
+    (let ((org-mode-hook nil))
+      (apply orig args)))
+  
+  (advice-add 'org-anki-sync-all :around #'eli/org-anki-around)
+  (advice-add 'org-anki-delete-all :around #'eli/org-anki-around)
 
   (defun eli/org-anki-sync-item (item)
     (org-anki-connect-request
