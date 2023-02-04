@@ -106,6 +106,7 @@
   (setq org-use-fast-todo-selection 'expert)
   (setq org-log-into-drawer t)
   (setq org-log-done 'time)
+  (setq org-custom-properties '("CUSTOM_ID"))
   (setq org-startup-folded t)
   (setq org-cycle-inline-images-display t)
   (setq org-hide-block-startup t)
