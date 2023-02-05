@@ -1499,6 +1499,45 @@ direct title.
 (with-eval-after-load 'org
   (require 'org-link-edit)
   (add-hook 'org-mode-hook #'org-media-note-mode)
+  (defvar org-media-note-edit-commands '(org-self-insert-command
+                                         hungry-delete-backward))
+
+  (defun eli/org-media-note-auto-pause ()
+    "Pause the vedio when taking notes. "
+    (cond
+     ((not mpv--process)
+      (remove-hook 'pre-command-hook #'eli/org-media-note-auto-pause t))
+     ((member this-command org-media-note-edit-commands)
+      (mpv-pause)
+      (remove-hook 'pre-command-hook #'eli/org-media-note-auto-pause t))))
+
+  (advice-add 'org-media-note-play-online-video :after
+              (lambda ()
+                (add-hook 'pre-command-hook #'eli/org-media-note-auto-pause nil t)))
+
+  (defun eli/org-media-note-vedio-pause ()
+    (interactive)
+    (when mpv--process
+      (mpv-pause)
+      (add-hook 'pre-command-hook #'eli/org-media-note-auto-pause nil t)))
+  
+  (keymap-set org-mode-map "s-[" #'eli/org-media-note-vedio-pause)
+
+  (defvar eli/org-media-note-link-alist '(("法语" . "https://www.bilibili.com/video/BV1fV411m7nj")))
+  
+  (defun eli/org-media-note-play-online-video ()
+    "Open online media file in mpv."
+    (interactive)
+    (let* ((completion-extra-properties '(:annotation-function eli/completion-annotation-function))
+           (video-url (elemacs-completing-read "Url to play: " eli/org-media-note-link-alist)))
+      (org-media-note--mpv-play-online-video video-url)))
+
+  (defun eli/completion-annotation-function (completion)
+    (let ((annot (alist-get completion eli/org-media-note-link-alist nil nil 'string=)))
+      (concat
+       (propertize (string-pad annot 145 nil t)
+                   'face 'shadow))))
+  
   (setq org-media-note-screenshot-image-dir "~/Documents/org-images/"))
 
 ;;; anki integration

@@ -445,7 +445,7 @@
    (("n" org-noter "noter")
     ("c" org-noter-create-skeleton "create skeleton"))
    "Media note"
-   (("p" org-media-note-play-online-video "online video")
+   (("p" eli/org-media-note-play-online-video "online video")
     ("e" org-media-note-hydra/body "media note"))
    "PDF Annotation"
    (("l" pdf-annot-list-annotations "list annotations"))
