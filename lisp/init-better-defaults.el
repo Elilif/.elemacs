@@ -741,7 +741,22 @@ By default, go to the current Info node."
   (setq clean-buffer-list-kill-regexps
         (append clean-buffer-list-kill-regexps
                 '("\\*Outline.*\\*" "\\*.*Profiler-Report.*\\*")))
-  (run-with-idle-timer 60 t #'clean-buffer-list))
+  (run-with-idle-timer 30 t #'clean-buffer-list))
+
+(defun elemacs-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
+  "Calls `completing-read' but returns the value from COLLECTION.
+
+Simple wrapper around the `completing-read' function that assumes
+the collection is either an alist, or a hash-table, and returns
+the _value_ of the choice, not the selected choice. "
+  (cl-flet ((assoc-list-p (obj) (and (listp obj) (consp (car obj)))))
+    (let* ((choice
+            (completing-read prompt collection predicate require-match initial-input hist def inherit-input-method))
+           (results (cond
+                     ((hash-table-p collection) (gethash choice collection))
+                     ((assoc-list-p collection) (alist-get choice collection def nil 'equal))
+                     (t                         choice))))
+      (if (listp results) (first results) results))))
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.
