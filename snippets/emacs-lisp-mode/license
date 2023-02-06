@@ -6,10 +6,10 @@
   (string-match "init\\-\\(.*\\)\\.el" (buffer-name))
   (match-string 1 (buffer-name)))` configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2019-2021 by Eli
+;; Copyright (C) 2023-2023 by Eli
 
 ;; Author: Eli <eli.q.qian@gmail.com>
-;; URL: https://github.com/Elilif/.emacs.d
+;; URL: https://github.com/Elilif/elemacs
 
 ;; This file is not part of GNU Emacs.
 ;;
