@@ -30,7 +30,6 @@
 
 ;;; Code:
 
-
 (defvar elemacs-incremental-packages '(t)
   "A list of packages to load incrementally after startup. Any large packages
   here may cause noticeable pauses, so it's recommended you break them up into
@@ -43,52 +42,47 @@
        org-footnote org-macro ob org org-clock org-agenda
        org-capture))
 
-  This is already done by the lang/org module, however.
+  Incremental loading does not occur in daemon sessions (they are
+  loaded immediately at startup).")
 
-  If you want to disable incremental loading altogether, either remove
-  `doom-load-packages-incrementally-h' from `emacs-startup-hook' or set
-  `doom-incremental-first-idle-timer' to nil. Incremental loading does not occur
-  in daemon sessions (they are loaded immediately at startup).")
-
-(defvar elemacs-incremental-first-idle-timer 0.5
+(defvar elemacs-incremental-first-idle-timer (if (daemonp) 0 0.5)
   "How long (in idle seconds) until incremental loading starts.
 
- Set this to nil to disable incremental loading.")
+ Set this to nil to disable incremental loading. Set this to 0 to
+load all incrementally deferred packages immediately at
+`emacs-startup-hook'.")
 
 (defvar elemacs-incremental-idle-timer 0.5
   "How long (in idle seconds) in between incrementally loading packages.")
 
-(defvar elemacs-incremental-load-immediately (daemonp)
-  "If non-nil, load all incrementally deferred packages immediately at startup.")
-
 (defun elemacs-load-packages-incrementally (packages &optional now)
   "Registers PACKAGES to be loaded incrementally.
 
-  If NOW is non-nil, load PACKAGES incrementally, in
-`doom-incremental-idle-timer' intervals."
-  (if (not now)
-      (setq elemacs-incremental-packages (append elemacs-incremental-packages packages ))
-    (while packages
-      (let* ((gc-cons-threshold most-positive-fixnum)
-             (req (pop packages)))
-        (unless (featurep req)
-          ;; (message "Incrementally loading %s" req)
+If NOW is non-nil, load PACKAGES incrementally,
+in `elemacs-incremental-idle-timer' intervals."
+  (let ((gc-cons-threshold most-positive-fixnum))
+    (if (not now)
+        (cl-callf append elemacs-incremental-packages packages)
+      (while packages
+        (let ((req (pop packages)))
           (condition-case-unless-debug e
-              (or (not (while-no-input
-                         ;; If `default-directory' is a directory that doesn't exist
-                         ;; or is unreadable, Emacs throws up file-missing errors, so
-                         ;; we set it to a directory we know exists and is readable.
-                         (let ((default-directory user-emacs-directory)
-                               (inhibit-message t)
-                               file-name-handler-alist)
-                           (require req nil t))
-                         nil))
+              (or (not
+                   (while-no-input
+                     ;; (message "Loading %s (%d left)" req (length packages))
+                     ;; If `default-directory' doesn't exist or is
+                     ;; unreadable, Emacs throws file errors.
+                     (let ((default-directory user-emacs-directory)
+                           (inhibit-message t)
+                           (file-name-handler-alist
+                            (list (rassq 'jka-compr-handler file-name-handler-alist))))
+                       (require req nil t)
+                       nil)))
                   (push req packages))
             (error
-             (message "Failed to load %S package incrementally, because: %s"
-                      req e)))
-          (if (not packages)
-              (message "Finished incremental loading")
+             (message "Error: failed to incrementally load %S because: %s" req e)
+             (setq packages nil)))
+          (if (null packages)
+              (message "Incrementally loading finished!")
             (run-with-idle-timer elemacs-incremental-idle-timer
                                  nil #'elemacs-load-packages-incrementally
                                  packages t)
@@ -98,14 +92,15 @@
   "Begin incrementally loading packages in `elemacs-incremental-packages'.
 
 If this is a daemon session, load them all immediately instead."
-  (if elemacs-incremental-load-immediately
-      (mapc #'require (cdr elemacs-incremental-packages))
-    (when (numberp elemacs-incremental-first-idle-timer)
+  (when (numberp elemacs-incremental-first-idle-timer)
+    (if (zerop elemacs-incremental-first-idle-timer)
+        (mapc #'require (cdr elemacs-incremental-packages))
       (run-with-idle-timer elemacs-incremental-first-idle-timer
                            nil #'elemacs-load-packages-incrementally
                            (cdr elemacs-incremental-packages) t))))
 
 (add-hook 'emacs-startup-hook #'elemacs-load-packages-incrementally-h)
+
 (elemacs-load-packages-incrementally
  '(borg init-hydra calendar find-func format-spec org-macs org-compat
 	    org-faces org-entities org-list org-pcomplete org-src
