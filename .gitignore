@@ -26,3 +26,8 @@ nov-places
 /epkgs/
 /etc/
 *.elc
+network-security.data
+projects
+tramp
+forge-database.sqlite
+.emacs.keyfreq
