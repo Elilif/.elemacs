@@ -43,7 +43,7 @@
 (setq user-emacs-directory "~/.emacs.d/")
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 
-(setq custom-file (locate-user-emacs-file "custom.el"))
+(require 'init-benchmarking)
 
 ;; (eval-and-compile ; `borg'
 ;;   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
@@ -137,7 +137,7 @@
       (borg-initialize)
       (lld-collect-autoloads file))))
 
-(require 'init-benchmarking)
+
 (require 'init-incremental-loading)
 (require 'init-better-defaults)
 (require 'init-ui)
@@ -171,10 +171,6 @@
   (interactive)
   (find-file "~/.emacs.d/init.el"))
 (keymap-global-set "<f5>" 'eli/open-init-file)
-
-;; Variables configured via the interactive 'customize' interface
-(when (file-exists-p custom-file)
-  (load custom-file))
 
 (provide 'init)
 ;;; init.el ends here.
