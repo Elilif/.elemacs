@@ -62,7 +62,8 @@
    (("i" eli/info-search))
    "rg"
    (("g" eli/consult-git-grep)
-    ("r" eli/consult-git-ripgrep))
+    ("r" eli/consult-git-ripgrep)
+    ("e" (eli/consult-git-ripgrep "~/.emacs.d/lib/") "lib"))
    "Google"
    (("s" my-search-with-chrome)
     ("h" github-copy-reference-url-at-point))))
@@ -218,7 +219,8 @@
     ("al" org-anki-sync-description "description lists")
     ("ap" org-anki-sync-poem "poem")
     ("aw" org-anki-sync-word "word")
-    ("ar" org-anki-sync-region "region"))
+    ("ar" org-anki-sync-region "region")
+    ("s" eli/org-show-empty-headline "show empty headline"))
    "blog"
    (("bp" org-publish)
     ("ba" (org-publish "eli's blog" t) "publish all blogs")
@@ -445,7 +447,7 @@
    (("n" org-noter "noter")
     ("c" org-noter-create-skeleton "create skeleton"))
    "Media note"
-   (("p" eli/org-media-note-play-online-video "online video")
+   (("p" org-media-note-play-online-video "online video")
     ("e" org-media-note-hydra/body "media note"))
    "PDF Annotation"
    (("l" pdf-annot-list-annotations "list annotations"))
