@@ -66,7 +66,8 @@
 
 	    lsp-enable-indentation nil
 	    lsp-enable-on-type-formatting nil
-	    lsp-lens-enable nil)
+	    lsp-lens-enable nil
+        lsp-idle-delay 3)
 
   (add-to-list 'lsp-language-id-configuration '(snippet-mode . "plaintext")))
 
