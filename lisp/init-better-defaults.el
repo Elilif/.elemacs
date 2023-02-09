@@ -85,7 +85,7 @@
 			               ))
 
 ;; improve hippie-expand
-(with-eval-after-load 'the-org-mode-expansions
+(with-eval-after-load 'org
   (defmacro org-fold-core-save-visibility (use-markers &rest body)
     "Save and restore folding state around BODY.
 If USE-MARKERS is non-nil, use markers for the positions.  This
@@ -96,8 +96,9 @@ because otherwise all these markers will point to nowhere."
     (org-with-gensyms (regions)
       `(let* ((,regions ,(org-fold-core-get-regions :with-markers use-markers)))
          (unwind-protect (progn ,@body)
-           (org-fold-core-regions ,regions :override nil :clean-markers nil)))))
+           (org-fold-core-regions ,regions :override nil :clean-markers nil))))))
 
+(with-eval-after-load 'the-org-mode-expansions
   (defun er/save-org-mode-excursion (action)
     "Save outline visibility while expanding in org-mode"
     (org-fold-core-save-visibility t
