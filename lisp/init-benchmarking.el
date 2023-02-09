@@ -1,5 +1,6 @@
 ;;; init-benchmarking.el --- Measure startup and require times -*- lexical-binding: t -*-
 ;;; Commentary:
+;;; https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el
 ;;; Code:
 
 (defun sanityinc/time-subtract-millis (b a)
@@ -72,10 +73,6 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
 (add-hook 'after-init-hook 'sanityinc/show-init-time)
-
-(require 'benchmark-init)
-(add-hook 'after-init-hook 'benchmark-init/deactivate)
-
 
 (provide 'init-benchmarking)
 ;;; init-benchmarking.el ends here
