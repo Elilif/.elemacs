@@ -443,11 +443,6 @@
 [submodule "treepy"]
 	path = lib/treepy
 	url = git@github.com:volrath/treepy.el.git
-[submodule "vertico"]
-	path = lib/vertico
-	url = git@github.com:minad/vertico.git
-    load-path = .
-    load-path = extensions
 [submodule "visual-fill-column"]
 	path = lib/visual-fill-column
 	url = git@github.com:emacsmirror/visual-fill-column.git
