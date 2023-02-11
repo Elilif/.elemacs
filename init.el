@@ -50,6 +50,13 @@
 ;;   (require 'borg)
 ;;   (borg-initialize))
 (eval-and-compile ; `borg'
+
+  (defun elemacs/borg-clean (clone)
+    (let* ((path (borg--expand-load-path clone nil))
+           (file (expand-file-name (format "%s-autoloads.el" clone) (car path))))
+	  (delete-file file)))
+  (advice-add 'borg-clean :after #'elemacs/borg-clean)
+  
   (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
   (setq borg-compile-function #'borg-byte+native-compile-async)
 
