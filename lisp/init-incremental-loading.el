@@ -168,11 +168,13 @@ HOOK-VAR is triggered, it is reset to nil.
 HOOK-VAR is a quoted hook.
 TRIGGER-HOOK is a list of quoted hooks and/or sharp-quoted functions."
   (dolist (hook trigger-hooks)
-    (let ((fn (intern (format "%s-init-on-%s-h" hook-var hook))))
+    (let ((fn (make-symbol (format "%s-init-on-%s-h" hook-var hook)))
+          running-p)
       (fset
        fn (lambda (&rest _)
             ;; Only trigger this after Emacs has initialized.
             (when (and after-init-time
+                       (not running-p)
                        (or (daemonp)
                            ;; In some cases, hooks may be lexically unset to
                            ;; inhibit them during expensive batch operations on
@@ -181,6 +183,7 @@ TRIGGER-HOOK is a list of quoted hooks and/or sharp-quoted functions."
                            ;; hook wasn't invoked interactively.
                            (and (boundp hook)
                                 (symbol-value hook))))
+              (setq running-p t)
               (elemacs-run-hooks hook-var)
               (set hook-var nil))))
       (cond ((daemonp)
