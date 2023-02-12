@@ -145,6 +145,8 @@
                             (get-pos-property (point) 'org-emphasis)))
                      ;; Do not match in latex fragments.
                      (not (texmathp))
+                     (not (when (functionp 'xenops-math-parse-algorithm-at-point)
+                            (xenops-math-parse-algorithm-at-point)))
                      ;; Do not match in Drawer.
                      (not (org-match-line
                            "^[ 	]*:\\(\\(?:\\w\\|[-_]\\)+\\):[ 	]*"))
@@ -276,7 +278,7 @@ Assume point is at first MARK."
           (:tangle . "no")))
   (setq org-babel-load-languages '((emacs-lisp . t)
                                    (shell . t)
-                                   (C. t)
+                                   (C . t)
                                    (latex . t)))
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((emacs-lisp . t)
@@ -303,7 +305,7 @@ Assume point is at first MARK."
     (if (org-get-todo-state)
 	    "STARTED"))
   (setq org-footnote-auto-adjust t)
-  (setq org-clock-in-switch-to-state `eli/clock-in-to-nest)
+  (setq org-clock-in-switch-to-state 'eli/clock-in-to-nest)
   (setq org-clock-mode-line-total 'today)
   (setq org-clock-out-remove-zero-time-clocks t)
   (setq org-clock-continuously t)
@@ -657,7 +659,6 @@ or equal to scheduled (%s)"
 ;; org capture
 (with-eval-after-load 'org
   (setq org-agenda-dir "~/Dropbox/org")
-  (setq org-directory "~/Dropbox/org")
 
   (setq org-agenda-file-inbox (expand-file-name "inbox.org" org-agenda-dir))
   (setq org-agenda-file-projects
@@ -1058,57 +1059,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 	          #'org-roam-reflinks-section
 	          #'org-roam-unlinked-references-section
 	          ))
-  (defun org-roam-unlinked-references-section (node)
-    "The unlinked references section for NODE.
-References from FILE are excluded."
-    (when (and (executable-find "rg")
-               (org-roam-node-title node)
-               (not (string-match "PCRE2 is not available"
-                                  (shell-command-to-string
-                                   "rg --pcre2-version"))))
-      (let* ((titles (cons (org-roam-node-title node)
-                           (org-roam-node-aliases node)))
-             (rg-command (concat "rg -L -o --vimgrep -P -i "
-                                 (mapconcat (lambda (glob) (concat "-g " glob))
-                                            (org-roam--list-files-search-globs
-                                             org-roam-file-extensions)
-                                            " ")
-                                 (format " '\\[([^[]]++|(?R))*\\]%s' "
-                                         (mapconcat
-                                          (lambda (title)
-                                            (format "|(\\b%s\\b)"
-                                                    (shell-quote-argument
-                                                     title)))
-                                          titles ""))
-                                 org-roam-directory))
-             (results (split-string (shell-command-to-string rg-command) "\n"))
-             f row col match)
-        (magit-insert-section (unlinked-references)
-          (magit-insert-heading "Unlinked References:")
-          (dolist (line results)
-            (save-match-data
-              (when (string-match org-roam-unlinked-references-result-re line)
-                (setq f (match-string 1 line)
-                      row (string-to-number (match-string 2 line))
-                      col (string-to-number (match-string 3 line))
-                      match (match-string 4 line))
-                (when (and match
-                           (not (file-equal-p (org-roam-node-file node) f))
-                           (member (downcase match) (mapcar #'downcase titles)))
-                  (magit-insert-section section (org-roam-grep-section)
-                    (oset section file f)
-                    (oset section row row)
-                    (oset section col col)
-                    (insert (propertize (format "%s:%s:%s"
-                                                (truncate-string-to-width
-                                                 (file-name-base f) 15 nil nil t)
-                                                row col)
-                                        'font-lock-face 'org-roam-dim)
-                            " "
-                            (org-roam-fontify-like-in-org-mode
-                             (org-roam-unlinked-references-preview-line f row))
-                            "\n"))))))
-          (insert ?\n)))))
+  
   (setq org-roam-completion-everywhere t)
 
   (setq org-roam-dailies-capture-templates
@@ -1241,11 +1192,10 @@ direct title.
            (backlink (eli/org-roam-backlinks--read-node-backlinks node)))
       (find-file (org-roam-node-file backlink))))
 
-  (embark-define-keymap embark-org-roam-map
-    "Keymap for Embark org roam actions."
-    ("i" org-roam-node-insert)
-    ("s" embark-collect)
-    ("b" eli/org-roam-backlinks-node-read))
+  (defvar-keymap embark-org-roam-map
+	"i" #'org-roam-node-insert
+	"s" #'embark-collect
+	"b" #'eli/org-roam-backlinks-node-read)
 
   (add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
 
@@ -1394,8 +1344,10 @@ direct title.
        (format "echo \"%s\" | pandoc --from=html --to=plain" string))))
 
   (defun eli/unfill-string (string)
-    (if (and (memq major-mode '(org-mode mu4e-view-mode
-                                         elfeed-show-mode nov-mode))
+    (if (and (memq major-mode '(org-mode
+                                mu4e-view-mode
+                                Info-mode
+                                elfeed-show-mode nov-mode))
              (member (prefix-numeric-value current-prefix-arg) '(4 16 64)))
         (let* ((new-string (replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 "
                                                      (eli/formatted-copy string)))
@@ -1499,8 +1451,7 @@ direct title.
 (with-eval-after-load 'org
   (require 'org-link-edit)
   (add-hook 'org-mode-hook #'org-media-note-mode)
-  (defvar org-media-note-edit-commands '(org-self-insert-command
-                                         hungry-delete-backward))
+  (defvar org-media-note-edit-commands '(org-self-insert-command))
 
   (defun eli/org-media-note-auto-pause ()
     "Pause the vedio when taking notes. "
@@ -1522,21 +1473,6 @@ direct title.
       (add-hook 'pre-command-hook #'eli/org-media-note-auto-pause nil t)))
   
   (keymap-set org-mode-map "s-[" #'eli/org-media-note-vedio-pause)
-
-  (defvar eli/org-media-note-link-alist '(("法语" . "https://www.bilibili.com/video/BV1fV411m7nj")))
-  
-  (defun eli/org-media-note-play-online-video ()
-    "Open online media file in mpv."
-    (interactive)
-    (let* ((completion-extra-properties '(:annotation-function eli/completion-annotation-function))
-           (video-url (elemacs-completing-read "Url to play: " eli/org-media-note-link-alist)))
-      (org-media-note--mpv-play-online-video video-url)))
-
-  (defun eli/completion-annotation-function (completion)
-    (let ((annot (alist-get completion eli/org-media-note-link-alist nil nil 'string=)))
-      (concat
-       (propertize (string-pad annot 145 nil t)
-                   'face 'shadow))))
   
   (setq org-media-note-screenshot-image-dir "~/Documents/org-images/"))
 
@@ -1840,7 +1776,7 @@ The label should always be in group 1.")
  used by `eli/org-ref-label-annotation'.")
 
 (defun eli/org-ref-label-annotation (candidate)
-  (let ((plist (cdr (assoc candidate org-ref-label-annot-cache))))
+  (let ((plist (alist-get candidate org-ref-label-annot-cache nil nil #'string=)))
     (concat (truncate-string-to-width (propertize (plist-get plist :title)
                                                   'face 'mindre-keyword)
                                       70 nil 32)
@@ -1855,7 +1791,7 @@ The label should always be in group 1.")
                                         eli/org-ref-label-annotation))
          (label (completing-read "Choose: " (org-ref-get-labels)))
          (label-trim (string-trim label))
-         (plist (cdr (assoc label org-ref-label-cache)))
+         (plist (alist-get label org-ref-label-cache nil nil #'string=))
          (result  (pcase (plist-get plist :type)
                     ("ID"
                      (cons (concat "id:" label-trim)
@@ -1910,7 +1846,8 @@ font-lock."
                      data (list
                            :title (if (equal (car oe) 'latex-environment)
                                       ""
-                                    (org-element-property :raw-value (org-element-lineage oe '(headline))))
+                                    (or (org-element-property :raw-value (org-element-lineage oe '(headline)))
+                                        (file-name-base (buffer-file-name))))
                            :type (or (org-element-property :key oe)
                                      (symbol-name (car oe))))))
 	         (cl-pushnew (cons (truncate-string-to-width id 70 nil 32) data) labels))))
