@@ -40,12 +40,12 @@
   (require 'lib-org-media-note)
   (require 'lib-appt)
   (require 'lib-org-roam)
+  (require 'lib-org)
   )
 
 ;;;; org better than default
 (setup org
-  (:when-loaded
-	(require 'lib-org))
+  (:also-load lib-org)
   (:hooks org-cycle-hook org-cycle-hide-drawers
 		  org-after-todo-statistics-hook eli/org-summary-todo)
   (:advice org-cycle-hide-drawers :override elemacs/org-cycle-hide-drawers
@@ -97,8 +97,7 @@
   (:hook
    org-indent-mode
    auto-fill-mode
-   org-appear-mode
-   org-pdftools-setup-link)
+   org-appear-mode)
   (:bind "C-c l" org-store-link
 		 "C-c c" org-capture
 		 "<f8>" eli/rating
@@ -170,8 +169,7 @@
 
 ;;;; org-capture
 (setup org-capture
-  (:when-loaded
-	(require 'lib-org-capture))
+  (:also-load lib-org-capture)
   (:option*
    org-agenda-dir "~/Dropbox/org"
    org-agenda-file-inbox (expand-file-name "inbox.org" org-agenda-dir)
@@ -348,9 +346,8 @@
 ;;;; org-habit
 (setup org-habit
   (:with-feature org
-	(:also-load org-habit))
-  (:when-loaded
-	(require 'lib-org-habit))
+	(:also-load org-habit
+				lib-org-habit))
   (:option*
    org-habit-graph-column 1
    org-habit-preceding-days 10
@@ -391,8 +388,7 @@
   (:hook-into org-mode))
 ;;;; org-roam
 (setup org-roam
-  (:when-loaded
-	(require 'lib-org-roam))
+  (:also-load lib-org-roam)
   (:option*
    org-roam-directory "~/Dropbox/org/roam/"
    org-roam-db-gc-threshold most-positive-fixnum
@@ -487,6 +483,7 @@
 	"<f10>" org-clock-convenience-fill-gap-both))
 ;;;; org-download
 (setup org-download
+  (:incremental-loading org-download)
   (:option*
    org-download-method 'directory
    org-download-image-dir "~/Documents/org-images"
@@ -518,9 +515,8 @@
    appt-disp-window-function #'appt-disp-window-and-notification))
 ;;;; org-media note
 (setup org-media-note
-  (:also-load org-link-edit)
-  (:when-loaded
-	(require 'org-media-note))
+  (:also-load org-link-edit
+			  lib-org-media-note)
   (:advice
    org-media-note-play-online-video :after
    (lambda ()
@@ -531,8 +527,7 @@
    org-media-note-screenshot-image-dir "~/Documents/org-images/"))
 ;;;; org-anki
 (setup org-anki
-  (:when-loaded
-	(require 'lib-org-anki))
+  (:also-load lib-org-anki)
   (:option*
    org-fold-show-context-detail '((empty-headline . minimal)
 								  (agenda . local)
@@ -645,12 +640,10 @@
    org--make-preview-overlay :around eli/org-preview-show-label))
 ;;;; org simple ref
 (setup org
-  (:when-loaded
-	(require 'lib-org-simple-ref)))
+  (:also-load lib-org-simple-ref))
 ;;;; org export
 (setup ox
-  (:when-loaded
-	(require 'lib-ox))
+  (:also-load lib-ox)
   (:option*
    org-html-html5-fancy t
    org-html-doctype "html5"
@@ -673,8 +666,7 @@
 (setup svg-tag-mode
   (:after org
 	(require 'svg-tag-mode))
-  (:when-loaded
-	(require 'lib-svg-tag-mode))
+  (:also-load lib-svg-tag-mode)
   (:advice
    svg-tag-mode-on :around suppress-messages
    svg-tag-mode-off :around suppress-messages)

@@ -1,6 +1,9 @@
 [submodule "aggressive-indent"]
 	path = site-lisp/aggressive-indent
 	url = https://github.com/Malabarba/aggressive-indent-mode
+[submodule "aio"]
+	path = site-lisp/aio
+	url = https://github.com/skeeto/emacs-aio
 [submodule "alert"]
 	path = site-lisp/alert
 	url = https://github.com/jwiegley/alert
@@ -19,6 +22,14 @@
 [submodule "avy"]
 	path = site-lisp/avy
 	url = https://github.com/abo-abo/avy
+[submodule "biblio"]
+	path = site-lisp/biblio
+	url = https://github.com/cpitclaudel/biblio.el
+[submodule "bibtex-completion"]
+	path = site-lisp/bibtex-completion
+	url = https://github.com/tmalsburg/helm-bibtex
+	no-byte-compile = helm-bibtex.el
+    no-byte-compile = ivy-bibtex.el
 [submodule "borg"]
 	path = site-lisp/borg
 	url = git@github.com:emacscollective/borg.git
@@ -28,6 +39,18 @@
 [submodule "cape"]
 	path = site-lisp/cape
 	url = https://github.com/minad/cape
+[submodule "cdlatex"]
+	path = site-lisp/cdlatex
+	url = https://github.com/cdominik/cdlatex
+[submodule "citar"]
+	path = site-lisp/citar
+	url = https://github.com/emacs-citar/citar
+[submodule "citar-org-roam"]
+	path = site-lisp/citar-org-roam
+	url = https://github.com/emacs-citar/citar-org-roam
+[submodule "citeproc"]
+	path = site-lisp/citeproc
+	url = https://github.com/andras-simonyi/citeproc-el
 [submodule "closql"]
 	path = site-lisp/closql
 	url = git@github.com:emacscollective/closql.git
@@ -75,6 +98,9 @@
 	path = site-lisp/emacsql
 	url = git@github.com:skeeto/emacsql.git
 	no-byte-compile = emacsql-pg.el
+[submodule "embark"]
+	path = site-lisp/embark
+	url = https://github.com/oantolin/embark
 [submodule "epkg"]
 	path = site-lisp/epkg
 	url = git@github.com:emacscollective/epkg.git
@@ -96,9 +122,15 @@
 [submodule "ghub"]
 	path = site-lisp/ghub
 	url = https://github.com/magit/ghub
+[submodule "graphql"]
+	path = site-lisp/graphql
+	url = https://github.com/vermiculus/graphql.el
 [submodule "helpful"]
 	path = site-lisp/helpful
 	url = https://github.com/Wilfred/helpful
+[submodule "hide-mode-line"]
+	path = site-lisp/hide-mode-line
+	url = https://github.com/hlissner/emacs-hide-mode-line
 [submodule "hl-todo"]
 	path = site-lisp/hl-todo
 	url = https://github.com/tarsius/hl-todo
@@ -111,6 +143,9 @@
 [submodule "hydra"]
 	path = site-lisp/hydra
 	url = https://github.com/abo-abo/hydra
+[submodule "js2-mode"]
+	path = site-lisp/js2-mode
+	url = https://github.com/mooz/js2-mode
 [submodule "leetcode"]
 	path = site-lisp/leetcode
 	url = https://github.com/Elilif/leetcode.el
@@ -120,6 +155,9 @@
 [submodule "llama"]
 	path = site-lisp/llama
 	url = https://git.sr.ht/~tarsius/llama
+[submodule "log4e"]
+	path = site-lisp/log4e
+	url = https://github.com/aki2o/log4e
 [submodule "lsp-mode"]
 	path = site-lisp/lsp-mode
 	url = https://github.com/emacs-lsp/lsp-mode
@@ -180,6 +218,9 @@
 [submodule "org-anki"]
 	path = site-lisp/org-anki
 	url = https://github.com/eyeinsky/org-anki
+[submodule "org-appear"]
+	path = site-lisp/org-appear
+	url = https://github.com/awth13/org-appear
 [submodule "org-clock-convenience"]
 	path = site-lisp/org-clock-convenience
 	url = https://github.com/dfeich/org-clock-convenience
@@ -189,6 +230,13 @@
 [submodule "org-mru-clock"]
 	path = site-lisp/org-mru-clock
 	url = https://github.com/unhammer/org-mru-clock
+[submodule "org-noter"]
+	path = site-lisp/org-noter
+	url = https://github.com/weirdNox/org-noter
+[submodule "org-pdftools"]
+	path = site-lisp/org-pdftools
+	url = https://github.com/fuxialexander/org-pdftools
+	no-byte-compile = org-noter-pdftools.el
 [submodule "org-roam"]
 	path = site-lisp/org-roam
 	url = https://github.com/org-roam/org-roam
@@ -206,9 +254,17 @@
 [submodule "ox-pandoc"]
 	path = site-lisp/ox-pandoc
 	url = https://github.com/emacsorphanage/ox-pandoc
+[submodule "parsebib"]
+	path = site-lisp/parsebib
+	url = https://github.com/joostkremers/parsebib
 [submodule "pcre2el"]
 	path = site-lisp/pcre2el
 	url = https://github.com/joddie/pcre2el
+[submodule "pdf-tools"]
+	path = site-lisp/pdf-tools
+	url = https://github.com/vedang/pdf-tools
+	load-path = .
+	load-path = lisp
 [submodule "pinyinlib"]
 	path = site-lisp/pinyinlib
 	url = https://github.com/Elilif/pinyinlib.el
@@ -224,6 +280,9 @@
 [submodule "promise"]
 	path = site-lisp/promise
 	url = https://github.com/chuntaro/emacs-promise
+[submodule "queue"]
+	path = site-lisp/queue
+	url = git@github.com:emacsmirror/queue.git
 [submodule "rainbow-delimiters"]
 	path = site-lisp/rainbow-delimiters
 	url = https://github.com/Fanael/rainbow-delimiters
@@ -236,6 +295,9 @@
 [submodule "s"]
 	path = site-lisp/s
 	url = https://github.com/magnars/s.el
+[submodule "saveplace-pdf-view"]
+	path = site-lisp/saveplace-pdf-view
+	url = https://github.com/nicolaisingh/saveplace-pdf-view
 [submodule "setup"]
 	path = site-lisp/setup
 	url = git@github.com:emacsmirror/setup.git
@@ -245,12 +307,18 @@
 [submodule "simple-httpd"]
 	path = site-lisp/simple-httpd
 	url = https://github.com/skeeto/emacs-web-server
+[submodule "skewer-mode"]
+	path = site-lisp/skewer-mode
+	url = https://github.com/skeeto/skewer-mode
 [submodule "smartparens"]
 	path = site-lisp/smartparens
 	url = https://github.com/Fuco1/smartparens
 [submodule "spinner"]
 	path = site-lisp/spinner
 	url = https://github.com/Malabarba/spinner.el
+[submodule "string-inflection"]
+	path = site-lisp/string-inflection
+	url = https://github.com/akicho8/string-inflection
 [submodule "super-save"]
 	path = site-lisp/super-save
 	url = https://github.com/bbatsov/super-save
@@ -260,6 +328,9 @@
 [submodule "svg-tag-mode"]
 	path = site-lisp/svg-tag-mode
 	url = https://github.com/rougier/svg-tag-mode
+[submodule "tablist"]
+	path = site-lisp/tablist
+	url = https://github.com/politza/tablist
 [submodule "treepy"]
 	path = site-lisp/treepy
 	url = https://github.com/volrath/treepy.el

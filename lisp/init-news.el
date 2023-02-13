@@ -34,7 +34,8 @@
   (require 'elfeed)
   (require 'elfeed-score)
   (require 'mu4e)
-  (require 'mu4e-view))
+  (require 'mu4e-view)
+  (require 'lib-elfeed))
 
 (defvar mu4e~view-link-map)
 (defvar mu4e~view-beginning-of-url-regexp)

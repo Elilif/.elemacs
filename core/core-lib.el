@@ -35,6 +35,14 @@
              (lambda (&rest _args) nil)))
     (apply func args)))
 
+;;;###autoload
+(defun eli/open-init-file()
+  (interactive)
+  (find-file (concat user-emacs-directory "init.el")))
+
+(keymap-global-set "<f5>" 'eli/open-init-file)
+
+;;;###autoload
 (defun my-search-with-chrome ()
   "search with chrome."
   (interactive)
@@ -43,10 +51,13 @@
 			            (url-hexify-string target)))))
 
 ;; insert key-sequence
+
+;;;###autoload
 (defun eli/insert-key-sequence ()
   (interactive)
   (insert (key-description
            (read-key-sequence-vector "Press a keystrokes:"))))
+
 
 (defun elemacs-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
   "Calls `completing-read' but returns the value from COLLECTION.

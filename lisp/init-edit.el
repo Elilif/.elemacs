@@ -116,7 +116,7 @@
   (:when-loaded
 	(require 'lib-smartparens))
   (:once (list :hooks 'find-file-hook 'prog-mode-hook 'org-mode-hook)
-    (:once (list :before 'pre-command-hook)
+    (:once (list :hooks 'pre-command-hook)
 	  (smartparens-global-mode)))
   (:also-load smartparens-config)
   (:when-loaded
@@ -125,14 +125,14 @@
     (sp-pair "“" "”"))
   (:after smartparens-org
     (sp-with-modes 'org-mode
-      (sp-local-pair "/" "/" :unless '(sp-org-point-after-left-square-bracket-p sp-in-math-p sp-in-algorithm-p) :post-handlers '(("[d1]" "SPC")))
-      (sp-local-pair "*" "*" ;;sp-point-after-word-p
-                     :unless '(sp-point-at-bol-p sp-in-math-p sp-in-algorithm-p)
-                     :post-handlers '(("[d1]" "SPC"))
-                     :skip-match 'sp--org-skip-asterisk)
-      (sp-local-pair "=" "=" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-      (sp-local-pair "_" "_" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-      (sp-local-pair "~" "~" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))  
+	  (sp-local-pair "/" "/" :unless '(sp-org-point-after-left-square-bracket-p sp-in-math-p sp-in-algorithm-p) :post-handlers '(("[d1]" "SPC")))
+	  (sp-local-pair "*" "*" ;;sp-point-after-word-p
+					 :unless '(sp-point-at-bol-p sp-in-math-p sp-in-algorithm-p)
+					 :post-handlers '(("[d1]" "SPC"))
+					 :skip-match 'sp--org-skip-asterisk)
+	  (sp-local-pair "=" "=" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
+	  (sp-local-pair "_" "_" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
+	  (sp-local-pair "~" "~" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))  
   (:advice show-paren-function :around fix-show-paren-function))
 
 

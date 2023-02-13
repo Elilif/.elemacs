@@ -125,7 +125,7 @@
       (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))))
 
 
-;;;; Corfu config
+;;;; corfu config
 (setup corfu
   (:once (list :hooks 'prog-mode-hook)
     (global-corfu-mode)
@@ -144,6 +144,19 @@
 (setup cape
   (:after corfu
     (add-to-list 'completion-at-point-functions #'cape-file)))
+;;;; embark
+(setup embark
+  (:once (list :before 'hydra-bibtex/body)
+	(require 'embark)
+	(require 'all-the-icons))
+  (:also-load lib-embark
+			  embark-consult)
+  (:global
+   "C-." embark-act
+   "M-." embark-dwim
+   "C-h B" embark-bindings)
+  (:option
+   prefix-help-command #'embark-prefix-help-command))
 
 ;;;; provide
 (provide 'init-completion)

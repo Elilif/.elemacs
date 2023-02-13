@@ -38,11 +38,10 @@
 (add-to-list 'load-path (concat user-emacs-directory "core"))
 (add-to-list 'load-path (concat user-emacs-directory "lib"))
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
-
-;;;; Borg
+;;;; Benchmark
 (require 'core-benchmarking)
 
-
+;;;; Borg
 ;; (eval-and-compile ; `borg'
 ;;   (add-to-list 'load-path (expand-file-name "site-lisp/borg" user-emacs-directory))
 ;;   ;; (add-to-list 'load-path "~/.emacs.d/lib/borg")
@@ -144,10 +143,10 @@
   (lld-initialize))
 
 
+
+;;;; Core
 (let ((gc-cons-threshold most-positive-fixnum)
       (file-name-handler-alist nil))
-  
-;;;; Core
   (require 'core-incremental-loading)
   (require 'core-setup)
   (require 'core-lib)
@@ -163,10 +162,13 @@
   (require 'init-info)
   (require 'init-edit)
   (require 'init-misc)
-  
+
+  ;; (require 'init-lang)
   ;; (require 'init-news)  
   ;; (require 'init-org)
-  
+  ;; (require 'init-pdf)
+  ;; (require 'init-bib)
+
   )
 
 (once (list :hooks 'find-file-hook 'consult-dir 'consult-bookmark)
@@ -180,8 +182,14 @@
 						org-faces org-entities org-list org-pcomplete org-src
 						org-footnote org-macro ob org org-clock org-agenda
 						org-capture)
-  (once (list :before 'hydra-org-agenda/body 'hydra-org/body 'consult-recent-file)
+  (:once (list :before 'hydra-org-agenda/body 'hydra-org/body
+			   'citar-open)
 	(require 'init-org)))
+
+(setup reader
+  (:once (list :before 'hydra-bibtex/body)
+	(require 'init-pdf)
+	(require 'init-bib)))
 
 
 ;;; init.el ends here.

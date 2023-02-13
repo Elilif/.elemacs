@@ -81,7 +81,7 @@
 (setq initial-frame-alist '((fullscreen . maximized)))
 
 (setup delsel
-  (:once (list :hooks 'hungry-delete-backward 'backward-delete-char-untabify)
+  (:once (list :hooks 'pre-command-hook)
     (delete-selection-mode 1)))
 
 (setup hl-line
