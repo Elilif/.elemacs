@@ -53,6 +53,8 @@
 ;; pdf cache setting
 (setq image-cache-eviction-delay 60)
 
+(setq save-interprogram-paste-before-kill t)
+
 (setq word-wrap-by-category t)
 
 (setq help-at-pt-display-when-idle t)
