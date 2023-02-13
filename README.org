@@ -1,35 +1,9 @@
-* My personal emacs config
+* Elemacs (Working in progress)
 #+attr_org: :width 800px
 [[./screenshots/org-mode.png]]
+
+
+#+attr_org: :width 800px
+[[file:../Documents/org-images/2023-02-13_21-36-06_screenshot.png]]
 * Contents
--  [[#introduction-to-elemacs][Introduction to elemacs]]
--  [[#installation][Installation]]
--  [[#rudimentary-configuration][Rudimentary configuration]]
--  [[#packages][Packages]]
--  [[#applications][Applications]]
--  [[#languages][Languages]]
-* Introduction to elemacs
-:PROPERTIES:
-:CUSTOM_ID: introduction-to-elemacs
-:END:
-* Installation
-:PROPERTIES:
-:CUSTOM_ID: installation
-:END:
-* Rudimentary configuration
-:PROPERTIES:
-:CUSTOM_ID: rudimentary-configuration
-:END:
-* Packages
-:PROPERTIES:
-:CUSTOM_ID: packages
-:END:
-* Applications 
-:PROPERTIES:
-:CUSTOM_ID: applications
-:END:
-* Languages 
-:PROPERTIES:
-:CUSTOM_ID: languages
-:END:
 
