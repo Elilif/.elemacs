@@ -1,0 +1,292 @@
+[submodule "aggressive-indent"]
+	path = site-lisp/aggressive-indent
+	url = https://github.com/Malabarba/aggressive-indent-mode
+[submodule "alert"]
+	path = site-lisp/alert
+	url = https://github.com/jwiegley/alert
+[submodule "all-the-icons"]
+	path = site-lisp/all-the-icons
+	url = https://github.com/domtronn/all-the-icons.el
+[submodule "all-the-icons-dired"]
+	path = site-lisp/all-the-icons-dired
+	url = https://github.com/wyuenho/all-the-icons-dired
+[submodule "all-the-icons-ibuffer"]
+	path = site-lisp/all-the-icons-ibuffer
+	url = https://github.com/seagle0128/all-the-icons-ibuffer
+[submodule "async"]
+	path = site-lisp/async
+	url = https://github.com/jwiegley/emacs-async
+[submodule "avy"]
+	path = site-lisp/avy
+	url = https://github.com/abo-abo/avy
+[submodule "borg"]
+	path = site-lisp/borg
+	url = git@github.com:emacscollective/borg.git
+[submodule "cal-china-x"]
+	path = site-lisp/cal-china-x
+	url = https://github.com/xwl/cal-china-x
+[submodule "cape"]
+	path = site-lisp/cape
+	url = https://github.com/minad/cape
+[submodule "closql"]
+	path = site-lisp/closql
+	url = git@github.com:emacscollective/closql.git
+[submodule "compat"]
+	path = site-lisp/compat
+	url = https://git.sr.ht/~pkal/compat
+[submodule "consult"]
+	path = site-lisp/consult
+	url = https://github.com/minad/consult
+	no-byte-compile	= consult-icomplete.el
+[submodule "consult-dir"]
+	path = site-lisp/consult-dir
+	url = https://github.com/karthink/consult-dir
+[submodule "corfu"]
+	path = site-lisp/corfu
+	url = https://github.com/minad/corfu
+[submodule "dash"]
+	path = site-lisp/dash
+	url = https://github.com/magnars/dash.el
+[submodule "deferred"]
+	path = site-lisp/deferred
+	url = https://github.com/kiwanami/emacs-deferred
+[submodule "diredfl"]
+	path = site-lisp/diredfl
+	url = https://github.com/purcell/diredfl
+[submodule "electric-operator"]
+	path = site-lisp/electric-operator
+	url = https://github.com/davidshepherd7/electric-operator
+[submodule "elfeed"]
+	path = site-lisp/elfeed
+	url = https://github.com/skeeto/elfeed
+[submodule "elfeed-goodies"]
+	path = site-lisp/elfeed-goodies
+	url = https://github.com/Elilif/elfeed-goodies
+[submodule "elfeed-org"]
+	path = site-lisp/elfeed-org
+	url = https://github.com/remyhonig/elfeed-org
+[submodule "elfeed-score"]
+	path = site-lisp/elfeed-score
+	url = https://github.com/sp1ff/elfeed-score
+[submodule "elisp-refs"]
+	path = site-lisp/elisp-refs
+	url = https://github.com/Wilfred/elisp-refs
+[submodule "emacsql"]
+	path = site-lisp/emacsql
+	url = git@github.com:skeeto/emacsql.git
+	no-byte-compile = emacsql-pg.el
+[submodule "epkg"]
+	path = site-lisp/epkg
+	url = git@github.com:emacscollective/epkg.git
+[submodule "ess"]
+	path = site-lisp/ess
+	url = https://github.com/emacs-ess/ESS
+[submodule "ess-smart-equals"]
+	path = site-lisp/ess-smart-equals
+	url = https://github.com/genovese/ess-smart-equals
+[submodule "expand-region"]
+	path = site-lisp/expand-region
+	url = https://github.com/magnars/expand-region.el
+[submodule "f"]
+	path = site-lisp/f
+	url = https://github.com/rejeep/f.el
+[submodule "forge"]
+	path = site-lisp/forge
+	url = https://github.com/magit/forge
+[submodule "ghub"]
+	path = site-lisp/ghub
+	url = https://github.com/magit/ghub
+[submodule "helpful"]
+	path = site-lisp/helpful
+	url = https://github.com/Wilfred/helpful
+[submodule "hl-todo"]
+	path = site-lisp/hl-todo
+	url = https://github.com/tarsius/hl-todo
+[submodule "ht"]
+	path = site-lisp/ht
+	url = https://github.com/Wilfred/ht.el
+[submodule "hungry-delete"]
+	path = site-lisp/hungry-delete
+	url = https://github.com/nflath/hungry-delete
+[submodule "hydra"]
+	path = site-lisp/hydra
+	url = https://github.com/abo-abo/hydra
+[submodule "leetcode"]
+	path = site-lisp/leetcode
+	url = https://github.com/Elilif/leetcode.el
+[submodule "link-hint"]
+	path = site-lisp/link-hint
+	url = https://github.com/noctuid/link-hint.el
+[submodule "llama"]
+	path = site-lisp/llama
+	url = https://git.sr.ht/~tarsius/llama
+[submodule "lsp-mode"]
+	path = site-lisp/lsp-mode
+	url = https://github.com/emacs-lsp/lsp-mode
+[submodule "lsp-ui"]
+	path = site-lisp/lsp-ui
+	url = https://github.com/emacs-lsp/lsp-ui
+[submodule "magit"]
+	path = site-lisp/magit
+	url = https://github.com/magit/magit
+	no-byte-compile = lisp/magit-libgit.el
+[submodule "magit-todos"]
+	path = site-lisp/magit-todos
+	url = https://github.com/alphapapa/magit-todos
+[submodule "major-mode-hydra"]
+	path = site-lisp/major-mode-hydra
+	url = https://github.com/jerrypnz/major-mode-hydra.el
+	no-byte-compile	= major-mode-hydra.el
+[submodule "marginalia"]
+	path = site-lisp/marginalia
+	url = https://github.com/minad/marginalia
+[submodule "markdown-mode"]
+	path = site-lisp/markdown-mode
+	url = https://github.com/jrblevin/markdown-mode
+[submodule "mindre-theme"]
+	path = site-lisp/mindre-theme
+	url = https://github.com/Elilif/mindre-theme
+[submodule "mixed-pitch"]
+	path = site-lisp/mixed-pitch
+	url = https://gitlab.com/jabranham/mixed-pitch
+[submodule "modern-cpp-font-lock"]
+	path = site-lisp/modern-cpp-font-lock
+	url = https://github.com/ludwigpacifici/modern-cpp-font-lock
+[submodule "mood-line"]
+	path = site-lisp/mood-line
+	url = https://github.com/Elilif/mood-line
+[submodule "mpv"]
+	path = site-lisp/mpv
+	url = https://github.com/kljohann/mpv.el
+[submodule "mu4e"]
+	path = site-lisp/mu4e
+	url = https://github.com/djcb/mu
+	build-step = ./autogen.sh && make
+    load-path = build/mu4e
+[submodule "mu4e-alert"]
+	path = site-lisp/mu4e-alert
+	url = https://github.com/xzz53/mu4e-alert
+[submodule "mwim"]
+	path = site-lisp/mwim
+	url = https://github.com/alezost/mwim.el
+[submodule "once"]
+	path = site-lisp/once
+	url = https://github.com/emacs-magus/once
+	load-path = .
+	load-path = once-setup
+[submodule "orderless"]
+	path = site-lisp/orderless
+	url = https://github.com/oantolin/orderless
+[submodule "org-anki"]
+	path = site-lisp/org-anki
+	url = https://github.com/eyeinsky/org-anki
+[submodule "org-clock-convenience"]
+	path = site-lisp/org-clock-convenience
+	url = https://github.com/dfeich/org-clock-convenience
+[submodule "org-media-note"]
+	path = site-lisp/org-media-note
+	url = https://github.com/yuchen-lea/org-media-note
+[submodule "org-mru-clock"]
+	path = site-lisp/org-mru-clock
+	url = https://github.com/unhammer/org-mru-clock
+[submodule "org-roam"]
+	path = site-lisp/org-roam
+	url = https://github.com/org-roam/org-roam
+	load-path = .
+    load-path = extensions
+[submodule "org-roam-ui"]
+	path = site-lisp/org-roam-ui
+	url = https://github.com/org-roam/org-roam-ui
+[submodule "org-superstar"]
+	path = site-lisp/org-superstar
+	url = https://github.com/integral-dw/org-superstar-mode
+[submodule "outli"]
+	path = site-lisp/outli
+	url = https://github.com/jdtsmith/outli
+[submodule "ox-pandoc"]
+	path = site-lisp/ox-pandoc
+	url = https://github.com/emacsorphanage/ox-pandoc
+[submodule "pcre2el"]
+	path = site-lisp/pcre2el
+	url = https://github.com/joddie/pcre2el
+[submodule "pinyinlib"]
+	path = site-lisp/pinyinlib
+	url = https://github.com/Elilif/pinyinlib.el
+[submodule "popper"]
+	path = site-lisp/popper
+	url = https://github.com/karthink/popper
+[submodule "popwin"]
+	path = site-lisp/popwin
+	url = https://github.com/emacsorphanage/popwin
+[submodule "powerline"]
+	path = site-lisp/powerline
+	url = https://github.com/milkypostman/powerline
+[submodule "promise"]
+	path = site-lisp/promise
+	url = https://github.com/chuntaro/emacs-promise
+[submodule "rainbow-delimiters"]
+	path = site-lisp/rainbow-delimiters
+	url = https://github.com/Fanael/rainbow-delimiters
+[submodule "request"]
+	path = site-lisp/request
+	url = https://github.com/tkf/emacs-request
+[submodule "rime"]
+	path = site-lisp/rime
+	url = https://github.com/DogLooksGood/emacs-rime
+[submodule "s"]
+	path = site-lisp/s
+	url = https://github.com/magnars/s.el
+[submodule "setup"]
+	path = site-lisp/setup
+	url = git@github.com:emacsmirror/setup.git
+[submodule "shackle"]
+	path = site-lisp/shackle
+	url = https://depp.brause.cc/shackle.git
+[submodule "simple-httpd"]
+	path = site-lisp/simple-httpd
+	url = https://github.com/skeeto/emacs-web-server
+[submodule "smartparens"]
+	path = site-lisp/smartparens
+	url = https://github.com/Fuco1/smartparens
+[submodule "spinner"]
+	path = site-lisp/spinner
+	url = https://github.com/Malabarba/spinner.el
+[submodule "super-save"]
+	path = site-lisp/super-save
+	url = https://github.com/bbatsov/super-save
+[submodule "svg-lib"]
+	path = site-lisp/svg-lib
+	url = https://github.com/rougier/svg-lib
+[submodule "svg-tag-mode"]
+	path = site-lisp/svg-tag-mode
+	url = https://github.com/rougier/svg-tag-mode
+[submodule "treepy"]
+	path = site-lisp/treepy
+	url = https://github.com/volrath/treepy.el
+[submodule "vertico"]
+	path = site-lisp/vertico
+	url = https://github.com/minad/vertico
+	load-path = .
+	load-path = extensions
+[submodule "visual-fill-column"]
+	path = site-lisp/visual-fill-column
+	url = git@github.com:emacsmirror/visual-fill-column.git
+[submodule "vterm"]
+	path = site-lisp/vterm
+	url = https://github.com/akermu/emacs-libvterm
+	build-step = mkdir -p build
+	build-step = cd build && cmake .. && make
+	build-step = borg-byte-compile
+    build-step = borg-update-autoloads
+[submodule "websocket"]
+	path = site-lisp/websocket
+	url = https://github.com/ahyatt/emacs-websocket
+[submodule "with-editor"]
+	path = site-lisp/with-editor
+	url = https://github.com/magit/with-editor
+[submodule "yaml"]
+	path = site-lisp/yaml
+	url = https://github.com/zkry/yaml.el
+[submodule "yasnippet"]
+	path = site-lisp/yasnippet
+	url = https://github.com/joaotavora/yasnippet

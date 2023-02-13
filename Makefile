@@ -1,4 +1,4 @@
-DRONES_DIR = $(shell git config "borg.drones-directory" || echo "lib")
+DRONES_DIR = $(shell git config "borg.drones-directory" || echo "site-lisp")
 
 -include $(DRONES_DIR)/borg/borg.mk
 

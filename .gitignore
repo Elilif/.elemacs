@@ -9,7 +9,6 @@ org-roam.db
 bookmarks
 .org-id-locations
 places
-/site-lisp/
 /transient/
 .lsp-session-v1
 /emms/
