@@ -218,6 +218,14 @@ MATCH is as in org-map-entries and determine which
 entries are offered."
     (interactive)
     (consult-org-heading match '(list org-agenda-file-inbox org-agenda-file-habit org-agenda-file-projects)))
+
+  (defun eli/consult-org-roam-heading (&optional match)
+    "Jump to an Org-roam heading.
+
+MATCH is as in org-map-entries and determine which
+entries are offered."
+    (interactive)
+    (consult-org-heading match '(directory-files-recursively org-roam-directory "\\.org")))
   
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
@@ -243,7 +251,7 @@ entries are offered."
   (defun eli/consult-git-ripgrep (dir)
     "Search single file use `consult-ripgrep'."
     (interactive
-     (list (read-directory-name "Select directory: " "~/.emacs.d/lib/")))
+     (list (read-directory-name "Select directory: " default-directory)))
     (let ((consult-project-function (lambda (x) nil))
           (consult-ripgrep-args (string-replace "." "-g *.el ."
                                                 consult-ripgrep-args)))
@@ -255,10 +263,12 @@ entries are offered."
    consult-ripgrep consult-git-grep consult-grep eli/consult-org-file 
    consult-bookmark consult-recent-file consult-xref consult-org-heading
    consult--source-bookmark consult--source-recent-file
-   consult--source-project-recent-file eli/consult-git-ripgrep
+   consult--source-project-recent-file
    :preview-key (kbd "M-.")))
 
-(add-hook 'minibuffer-setup-hook 'savehist-mode)
+(add-hook 'elemacs-first-buffer-hook 'savehist-mode)
+(with-eval-after-load 'savehist
+  (setq savehist-additional-variables '((kill-ring . 10) compile-command)))
 
 (provide 'init-minibuffer)
 ;;; init-minibuffer.el ends here.

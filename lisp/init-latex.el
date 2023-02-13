@@ -157,8 +157,14 @@
 
 ;; xenops
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
+;; (add-hook 'org-mode-hook #'xenops-mode)
+
+(defun eli/tex-algorithm-p ()
+  (when (functionp 'xenops-math-parse-algorithm-at-point)
+    (xenops-math-parse-algorithm-at-point)))
 
 (with-eval-after-load 'xenops
+  (advice-add 'xenops-mode :around #'suppress-messages)
   (setq xenops-math-image-scale-factor 1.3
         xenops-image-try-write-clipboard-image-to-file nil
         xenops-reveal-on-entry nil
@@ -166,7 +172,8 @@
         xenops-math-latex-max-tasks-in-flight 16
         xenops-auctex-electric-insert-commands nil)
   (defun eli/change-xenops-latex-header (orig &rest args)
-    (let ((org-format-latex-header "\\documentclass[dvisvgm,preview]{standalone}\n\\usepackage{arev}\n\\usepackage[ruled,linesnumbered]{algorithm2e}\n\\usepackage{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]"))
+    (let ((org-format-latex-header "\\documentclass[dvisvgm,preview]{standalone}\n\\usepackage{arev}\n\\usepackage[linesnumbered,noline,noend]{algorithm2e}\n\\usepackage{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]\n\\DontPrintSemicolon\n\\SetKw{KwDownto}{downto}\n\\let\\oldnl\\nl\n\\newcommand{\\nonl}{\\renewcommand{\\nl}{\\let\\nl\\oldnl}}")
+          (org-cite-export-processors nil))
       (apply orig args)))
   (advice-add 'xenops-math-latex-make-latex-document :around #'eli/change-xenops-latex-header)
   (advice-add 'xenops-math-file-name-static-hash-data :around #'eli/change-xenops-latex-header)
@@ -312,9 +319,9 @@ to calculate the decent value of `:ascent'. "
                (format "\\setcounter{equation}{%s}\n" numberp)
                latex))))
     (funcall orig-func element latex colors cache-file display-image))
-  (advice-add 'xenops-math-latex-create-image
-              :around #'eli/xenops-renumber-environment)
-
+  ;; (advice-add 'xenops-math-latex-create-image
+  ;;             :around #'eli/xenops-renumber-environment)
+  
   ;; pseudocode
   (add-to-list 'xenops-elements '(algorithm
                                   (:delimiters
@@ -338,7 +345,6 @@ to calculate the decent value of `:ascent'. "
     (format "\\(%s\\)"
             (s-join "\\|"
                     (apply #'append (xenops-elements-get-for-types '(block-math table algorithm) :delimiters)))))
-
 
   ;; html export
   (defun eli/org-html-export-replace-algorithm-with-image (backend)

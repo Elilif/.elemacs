@@ -149,27 +149,27 @@ for confirmation when needed."
   (setq mu4e-mu-binary "~/.emacs.d/lib/mu4e/build/mu/mu")
   (setq mu4e-compose-format-flowed t)
   (setq mu4e-get-mail-command "proxychains mbsync -a"
-	mu4e-update-interval 600)
+	    mu4e-update-interval 600)
   ;; configure the bookmarks.
   (setq mu4e-bookmarks
-	    '( ("flag:unread AND NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"  "Unread messages"                  ?u)
-	       ("NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                  "All messages"                     ?a)
-           ("date:today..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                   "Today's messages"                 ?t)
-           ("date:7d..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                      "Last 7 days"                      ?w)
-           ("date:1d..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                      "Last 1 days"                      ?y)
-           ("list:emacs-orgmode.gnu.org"                                                                            "Org mode"                         ?o)
-           ("list:emacs-devel.gnu.org"                                                                              "Emacs Devel"                      ?e)
-           ("flag:f"                                                                                                "starred"                          ?m)
-           ("maildir:/sent"                                                                                         "sent"                             ?s)
-           ("maildir:/drafts"                                                                                       "drafts"                           ?d)
-           ("mime:image/*"                                                                                          "Messages with images"             ?p)
-	       ("maildir:/trash"                                                                                        "Trash"                            ?g)))
+	    '(("flag:unread AND NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"  "Unread messages"                  ?u)
+	      ("NOT flag:trashed AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                  "All messages"                     ?a)
+          ("date:today..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                   "Today's messages"                 ?t)
+          ("date:7d..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                      "Last 7 days"                      ?w)
+          ("date:1d..now AND NOT list:emacs-orgmode.gnu.org AND NOT list:emacs-devel.gnu.org"                      "Last 1 days"                      ?y)
+          ("list:emacs-orgmode.gnu.org"                                                                            "Org mode"                         ?o)
+          ("list:emacs-devel.gnu.org"                                                                              "Emacs Devel"                      ?e)
+          ("flag:f"                                                                                                "starred"                          ?m)
+          ("maildir:/sent"                                                                                         "sent"                             ?s)
+          ("maildir:/drafts"                                                                                       "drafts"                           ?d)
+          ("mime:image/*"                                                                                          "Messages with images"             ?p)
+	      ("maildir:/trash"                                                                                        "Trash"                            ?g)))
 
   ;; filter
   (defun eli/mu4e-search-filter-source ()
     (interactive)
     (let* ((msg (mu4e-message-at-point))
-	   (sender-email (plist-get (car (plist-get msg :from)) :email)))
+	       (sender-email (plist-get (car (plist-get msg :from)) :email)))
       (mu4e--search-execute (concat "from:" sender-email) nil)))
 
   ;; citation format

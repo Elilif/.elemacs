@@ -155,7 +155,7 @@ This functions is a advice for `org-html--format-image',
 arguments, SOURCE ATTRIBUTES and INFO are like the arguments with
 the same names of ORIG."
     (let ((image-html (funcall orig source attributes info))
-          (image-base64 (format "data:image/%s;base64,%s\"%s"
+          (image-base64 (format "data:image/%s+xml;base64,%s\"%s"
                                 (or (file-name-extension source) "")
                                 (base64-encode-string
                                  (with-temp-buffer

@@ -3,8 +3,8 @@
 # key:nif
 # --
 ;; `(buffer-name)` --- Initialize `(progn
-  (string-match "init\\-\\(.*\\)\\.el" (buffer-name))
-  (match-string 1 (buffer-name)))` configurations.	-*- lexical-binding: t -*-
+  (string-match "\\(.*\\)\\.el" (buffer-name))
+  (match-string 1 (buffer-name)))` configurations.	-*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -39,6 +39,6 @@
 $0
 
 
-
+;;;; provide
 (provide '`(progn (string-match "\\(.*\\)\\.el" (buffer-name)) (match-string 1 (buffer-name))))`)
 ;;; `(buffer-name)` ends here.

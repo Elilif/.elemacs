@@ -39,15 +39,20 @@
   (sp-pair "“" "”")
   ;; improving emphasis marker
   (with-eval-after-load 'smartparens-org
+    (defun sp-in-algorithm-p (_id _action _context)
+      "Return t if point is inside code, nil otherwise."
+      (when (functionp 'xenops-math-parse-algorithm-at-point)
+        (xenops-math-parse-algorithm-at-point)))
+    
     (sp-with-modes 'org-mode
-      (sp-local-pair "/" "/" :unless '(sp-org-point-after-left-square-bracket-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
+      (sp-local-pair "/" "/" :unless '(sp-org-point-after-left-square-bracket-p sp-in-math-p sp-in-algorithm-p) :post-handlers '(("[d1]" "SPC")))
       (sp-local-pair "*" "*" ;;sp-point-after-word-p
-                     :unless '(sp-point-at-bol-p sp-in-math-p)
+                     :unless '(sp-point-at-bol-p sp-in-math-p sp-in-algorithm-p)
                      :post-handlers '(("[d1]" "SPC"))
                      :skip-match 'sp--org-skip-asterisk)
-      (sp-local-pair "=" "=" :unless '(sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-      (sp-local-pair "_" "_" :unless '(sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-      (sp-local-pair "~" "~" :unless '(sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))
+      (sp-local-pair "=" "=" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
+      (sp-local-pair "_" "_" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
+      (sp-local-pair "~" "~" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))
   
   (define-advice show-paren-function (:around (fn) fix-show-paren-function)
     "Highlight enclosing parens."
@@ -62,6 +67,7 @@
     consult-git-grep
     consult-ripgrep
     eli/consult-git-grep
+    eli/consult-git-ripgrep
     my-search-with-chrome))
 
 (defvar mcfly-back-commands

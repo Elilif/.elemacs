@@ -119,8 +119,6 @@ because otherwise all these markers will point to nowhere."
 
 (setq use-short-answers t)
 
-(setq load-prefer-newer t)
-
 ;; show minibuffer depth
 (minibuffer-depth-indicate-mode 1)
 
@@ -229,13 +227,20 @@ because otherwise all these markers will point to nowhere."
 (add-hook 'elemacs-first-input-hook #'which-key-mode)
 (setq which-key-idle-delay 0.3)
 
-
-(autoload #'auto-save-enable "auto-save")
-(add-hook 'elemacs-first-input-hook #'auto-save-enable)
-(with-eval-after-load 'auto-save
-  (setq auto-save-silent t)   ; quietly save
-  (setq auto-save-delete-trailing-whitespace nil)
-  (setq auto-save-idle 2))
+;; auto save
+(add-hook 'elemacs-first-input-hook #'super-save-mode)
+(with-eval-after-load 'super-save
+  (setq save-silently t)
+  (add-to-list 'super-save-triggers 'ace-window)
+  (add-to-list 'super-save-triggers 'magit-status)
+  (add-to-list 'super-save-hook-triggers 'find-file-hook)
+  (setq super-save-remote-files nil)
+  (add-to-list 'super-save-predicates
+               (lambda ()
+                 (not (or (and (functionp 'xenops-math-parse-algorithm-at-point)
+                               (xenops-math-parse-algorithm-at-point))
+                          (and (functionp 'texmathp)
+                               (texmathp)))))))
 
 ;;; dired
 (with-eval-after-load 'dired-x
@@ -254,7 +259,7 @@ because otherwise all these markers will point to nowhere."
   ;; 切换buffer后，立即刷新
   (defadvice switch-to-buffer (after revert-buffer-now activate)
     (if (eq major-mode 'dired-mode)
-	(revert-buffer)))
+	    (revert-buffer)))
 
   ;; 执行shell-command后，立即刷新
   (defadvice shell-command (after revert-buffer-now activate)
@@ -272,7 +277,7 @@ because otherwise all these markers will point to nowhere."
 
 (add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
 (with-eval-after-load 'dired-x
-    (setq all-the-icons-dired-monochrome nil))
+  (setq all-the-icons-dired-monochrome nil))
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/diredfl/")
 (with-eval-after-load 'dired-x
@@ -284,18 +289,19 @@ because otherwise all these markers will point to nowhere."
 
 (add-hook 'elemacs-first-input-hook #'recentf-mode)
 (with-eval-after-load 'recentf
-    (setq recentf-auto-cleanup 'never)
-    (setq recentf-exclude
-	   '("/home/eli/.emacs.d/.cache/treemacs-persist-at-last-error"
-	     "/home/eli/.emacs.d/.cache/treemacs-persist"
-	     "\\.txt"
-	     "/home/eli/.emacs.d/elpa/*"
-	     "/home/eli/.elfeed/index"
-	     "/home/eli/.mail/*"
-         "/tmp/*"
-	     ))
-    (setq recentf-max-menu-items 50)
-    (setq recentf-max-saved-items 50))
+  (setq recentf-auto-cleanup 'never)
+  (setq recentf-exclude
+	    '("/home/eli/.emacs.d/.cache/treemacs-persist-at-last-error"
+	      "/home/eli/.emacs.d/.cache/treemacs-persist"
+	      "\\.txt"
+          "/home/eli/.emacs.d/emms/history"
+	      "/home/eli/.emacs.d/elpa/*"
+	      "/home/eli/.elfeed/index"
+	      "/home/eli/.mail/*"
+          "/tmp/*"
+	      ))
+  (setq recentf-max-menu-items 50)
+  (setq recentf-max-saved-items 50))
 
 (add-hook 'elemacs-first-file-hook #'save-place-mode)
 
@@ -344,8 +350,8 @@ because otherwise all these markers will point to nowhere."
 currently in the helpful buffer, reuse it's window, otherwise
 create new one."
     (if (eq major-mode 'helpful-mode)
-	(switch-to-buffer buffer-or-name)
-    (pop-to-buffer buffer-or-name)))
+	    (switch-to-buffer buffer-or-name)
+      (pop-to-buffer buffer-or-name)))
 
   (keymap-set helpful-mode-map "q" #'kill-buffer-and-window)
   (defun helpful-set-arguments-face (&rest _args)
@@ -703,8 +709,10 @@ By default, go to the current Info node."
     (smartparens-mode 1)
     (winner-mode 1)
     (hungry-delete-mode 1)
-    (aggressive-indent-mode 1)
-    (corfu-mode 1)
+    (unless (member major-mode '(org-mode text-mode fundamental-mode
+                                          markdown-mode))
+      (aggressive-indent-mode 1)
+      (corfu-mode 1))
     (font-lock-mode 1)
     (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets))
   
@@ -757,7 +765,7 @@ the _value_ of the choice, not the selected choice. "
                      ((hash-table-p collection) (gethash choice collection))
                      ((assoc-list-p collection) (alist-get choice collection def nil 'equal))
                      (t                         choice))))
-      (if (listp results) (first results) results))))
+      (if (listp results) (car results) results))))
 
 (provide 'init-better-defaults)
 ;;; init-better-defaults.el ends here.

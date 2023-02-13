@@ -32,7 +32,6 @@
 (add-hook 'elemacs-first-file-hook #'yas-global-mode)
 (with-eval-after-load 'yasnippet
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
-  (add-hook 'minibuffer-setup-hook 'yas-minor-mode)
   (setq yas-triggers-in-field t)
 
   ;; Function that tries to autoexpand YaSnippets
@@ -117,23 +116,38 @@ instance: \"$4\pi^2 //$\" will be expand into
 (add-hook 'c-mode-hook #'electric-operator-mode)
 (add-hook 'org-mode-hook #'electric-operator-mode)
 
+(with-eval-after-load 'xenops
+  (apply #'electric-operator-add-rules-for-mode 'algorithm
+         (electric-operator-get-rules-for-mode 'c++-mode))
+  (electric-operator-add-rules-for-mode 'algorithm
+                                        (cons "-" nil))
+  (electric-operator-add-rules-for-mode 'latex-math
+                                        (cons "==" " == "))
+  (electric-operator-add-rules-for-mode 'latex-math
+                                        (cons "-" nil)))
+
 (with-eval-after-load 'org
   (defun eli/filter-electric-operator-get-rules-list (list)
     "Enable `electric-operator-mode' in math environments of org-mode.
 
-This function is a advice for `electric-operator-get-rules-list',
-whose result is LIST."
-    (cond  ((and (eq major-mode 'org-mode)
-                 (texmathp))
-            (if (electric-operator--latex-in-math?)
-                (electric-operator-get-rules-trie-for-mode 'latex-math)
-              (if electric-operator-enable-in-docs
-                  (electric-operator-get-rules-trie-for-mode 'text-mode)
-                (make-electric-operator--trie))))
-           ((eq major-mode 'org-mode)
-            nil)
-           (t
-            list)))
+    This function is a advice for `electric-operator-get-rules-list',
+    whose result is LIST."
+    (cond
+     ((and (eq major-mode 'org-mode)
+           (texmathp))
+      (if (electric-operator--latex-in-math?)
+          (electric-operator-get-rules-trie-for-mode 'latex-math)
+        (if electric-operator-enable-in-docs
+            (electric-operator-get-rules-trie-for-mode 'text-mode)
+          (make-electric-operator--trie))))
+     ((and (eq major-mode 'org-mode)
+           (functionp 'xenops-math-parse-algorithm-at-point)
+           (xenops-math-parse-algorithm-at-point))
+      (electric-operator-get-rules-trie-for-mode 'algorithm))
+     ((eq major-mode 'org-mode)
+      nil)
+     (t
+      list)))
   
   (advice-add 'electric-operator-get-rules-list :filter-return
               #'eli/filter-electric-operator-get-rules-list))
@@ -146,7 +160,7 @@ whose result is LIST."
    '(and (or (derived-mode-p 'c++-mode)
              (derived-mode-p 'c-mode))
          (null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|while\\|return\\)\\b\\)"
-                             (thing-at-point 'line))))))
+                                  (thing-at-point 'line))))))
 
 (with-eval-after-load 'leetcode
   (setq leetcode-prefer-language "cpp"
@@ -167,7 +181,31 @@ whose result is LIST."
               (leetcode--kill-buff-and-delete-window (get-buffer (leetcode--result-buffer-name problem-id)))
               (leetcode--kill-buff-and-delete-window (get-buffer (leetcode--testcase-buffer-name problem-id)))))
           leetcode--problem-titles)
-    (setq leetcode--problem-titles nil)))
+    (setq leetcode--problem-titles nil))
+
+  (defvar leetcode-lang-class-keyword '(("cpp" . "class"))
+    "Alist of (LANG . CLASS KEYWORD) pairs.
+
+  This alist will be  parsed by `eli/leetcode--buffer-content'.")
+
+  (defun eli/leetcode--buffer-content (buf)
+    "Get content without text properties of BUF."
+    (with-current-buffer buf
+      (let* ((string (alist-get leetcode--lang
+                                leetcode-lang-class-keyword
+                                "class" nil #'string=))
+             (point (save-excursion
+                      (goto-char (point-max))
+                      (re-search-backward (concat "^" string) nil t)
+                      (line-beginning-position))))
+        (buffer-substring-no-properties
+         (if (buffer-file-name buf)
+             point
+           (point-min))
+         (point-max)))))
+
+  (advice-add #'leetcode--buffer-content :override #'eli/leetcode--buffer-content)
+  )
 
 (provide 'init-lang)
 ;;; init-lang.el ends here.
