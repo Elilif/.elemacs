@@ -1,9 +1,11 @@
 * Elemacs (Working in progress)
-#+attr_org: :width 800px
-[[./screenshots/org-mode.png]]
 
+#+BEGIN_HTML
+<div>
+<img src="./screenshots/org-mode.png" width=47.5%/>
+<img src="./screenshots/start-up.png" width=47.5% hight=90%/>
+</div>
+#+END_HTML
 
-#+attr_org: :width 800px
-[[./screenshots/start-up.png]]
 * Contents
 
