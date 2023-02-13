@@ -34,9 +34,10 @@
   (require 'org-fold-core)
   (require 'expand-region-core)
   (require 'er-basic-expansions)
-  (require 'lib-expand-region)
   (require 'leetcode)
-  (require 'cc-cmds))
+  (require 'cc-cmds)
+  (require 'lib-expand-region)
+  (require 'lib-markmacro))
 
 ;;;; supser save
 (setup super-save
@@ -186,7 +187,8 @@
 ;;;; misc
 (setup prog-mode
   (:hook display-fill-column-indicator-mode
-         rainbow-delimiters-mode))
+         rainbow-delimiters-mode)
+  (:hooks emacs-lisp-mode-hook add-after-save-hook))
 
 ;;;; outli
 (setup outli

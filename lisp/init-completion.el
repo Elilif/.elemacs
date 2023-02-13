@@ -155,7 +155,7 @@
    "C-." embark-act
    "M-." embark-dwim
    "C-h B" embark-bindings)
-  (:option
+  (:option*
    prefix-help-command #'embark-prefix-help-command))
 
 ;;;; provide
