@@ -280,6 +280,9 @@
 [submodule "popwin"]
 	path = site-lisp/popwin
 	url = https://github.com/emacsorphanage/popwin
+[submodule "posframe"]
+	path = site-lisp/posframe
+	url = https://github.com/tumashu/posframe
 [submodule "powerline"]
 	path = site-lisp/powerline
 	url = https://github.com/milkypostman/powerline
