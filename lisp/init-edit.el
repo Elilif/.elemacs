@@ -110,7 +110,25 @@
 			  :hooks 'post-self-insert-hook)
     (global-hungry-delete-mode)))
 
-
+;;;; markmacro
+(setup markmacro
+  (:also-load lib-markmacro)
+  (:advice
+   kmacro-start-macro :before eli/speed-up-kmacro
+   kmacro-keyboard-quit :after eli/speed-up-kmacro-recover
+   markmacro-exit :after eli/speed-up-kmacro-recover)
+  (:global
+   "s-=" markmacro-apply-all
+   "s--" kmacro-start-macro
+   "s-w" markmacro-mark-words
+   "s-l" markmacro-mark-lines
+   "C-r" rectangle-mark-mode
+   "s-g" markmacro-secondary-region-set
+   "s-a" markmacro-secondary-region-mark-cursors
+   "s-s" markmacro-swap-region
+   "s-f" markmacro-mark-current-or-next-target
+   "s-b" markmacro-mark-current-or-previous-target
+   "s-u" markmacro-unmark-current-target))
 ;;;; smartparens
 (setup smartparens
   (:when-loaded

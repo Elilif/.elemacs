@@ -181,6 +181,9 @@
 [submodule "markdown-mode"]
 	path = site-lisp/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
+[submodule "markmacro"]
+	path = site-lisp/markmacro
+	url = https://github.com/Elilif/markmacro
 [submodule "mindre-theme"]
 	path = site-lisp/mindre-theme
 	url = https://github.com/Elilif/mindre-theme
