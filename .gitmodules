@@ -227,6 +227,9 @@
 [submodule "org-clock-convenience"]
 	path = site-lisp/org-clock-convenience
 	url = https://github.com/dfeich/org-clock-convenience
+[submodule "org-download"]
+	path = site-lisp/org-download
+	url = https://github.com/abo-abo/org-download
 [submodule "org-media-note"]
 	path = site-lisp/org-media-note
 	url = https://github.com/yuchen-lea/org-media-note
