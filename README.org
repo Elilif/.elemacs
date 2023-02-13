@@ -1,11 +1,72 @@
-* Elemacs (Working in progress)
-
+* Elemacs (working in progress)
 #+BEGIN_HTML
 <div>
 <img src="./screenshots/org-mode.png" width=47.5%/>
-<img src="./screenshots/start-up.png" width=47.5% hight=90%/>
+<img src="./screenshots/start-up.png" width=47.5%/>
 </div>
 #+END_HTML
-
 * Contents
+- [[#structure][Structure]]
+- [[#intro][Introduction]]
+* Introduction
+:PROPERTIES:
+:CUSTOM_ID: intro
+:END:
+Elemacs is a personal emacs config. 
+* Structure
+:PROPERTIES:
+:CUSTOM_ID: structure
+:END:
+** Core
+:PROPERTIES:
+:CUSTOM_ID: core
+:END:
+This folder contains essential libraries, useful functions, macros, and sane
+settings.
+1. ~core-incremental-loading.el~
+   
+    The code in this file is mainly taken from [[https://github.com/doomemacs/doomemacs/blob/e96624926/lisp/doom-start.el#L180][doomemacs]] .
 
+    Load packages incrementally. Any large packages here may cause noticeable
+    pauses, so it's recommended you break them up into sub-packages.
+2. ~core-setup.el~
+
+    Elemacs use [[https://www.emacswiki.org/emacs/SetupEl][SetupEl]] as its configuration manager. The main reason for
+    choosing is its simplicity and extensibility. You can use
+    ~emacs-lisp-macroexpand~ or ~pp-macroexpand-last-sexp~ to expand any =setup= config
+    to get more information.
+
+    This file defines some useful setup-local macros:
+    - =:incremental-loading=
+    - =:silence=
+    - =:option*=
+    - =:after=
+    - =:autoload=
+    - =:hooks=
+    - =:init=
+    - =:advice=
+4. ~core-lib.el~
+   
+   ~core-lib.el~ indludes functions that will be used in all configuration. 
+5. ~core-better-defaults.el~
+6. ~core-benchmarking.el~
+7. ~core-ui.el~
+** Lib
+:PROPERTIES:
+:CUSTOM_ID: lib
+:END:
+** Lisp
+:PROPERTIES:
+:CUSTOM_ID: lisp
+:END:
+- completion
+- hydra
+- news
+- lang
+- misc
+- edit
+- info
+- pdf
+- bib
+- org
+- vc
