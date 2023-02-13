@@ -4,6 +4,6 @@
 
 
 #+attr_org: :width 800px
-[[file:../Documents/org-images/2023-02-13_21-36-06_screenshot.png]]
+[[./screenshots/start-up.png]]
 * Contents
 
