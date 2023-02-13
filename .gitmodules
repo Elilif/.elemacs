@@ -52,7 +52,7 @@
 	url = https://github.com/kiwanami/emacs-deferred
 [submodule "diredfl"]
 	path = site-lisp/diredfl
-	url = https://github.com/purcell/diredfl
+	url = https://github.com/Elilif/diredfl
 [submodule "electric-operator"]
 	path = site-lisp/electric-operator
 	url = https://github.com/davidshepherd7/electric-operator
