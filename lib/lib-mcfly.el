@@ -1,4 +1,4 @@
-;; core-mcfly.el --- Initialize core-mcfly.el.	-*- lexical-binding: t; -*-
+;; lib-mcfly.el --- Initialize lib-mcfly.el.	-*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -77,5 +77,5 @@
 
 
 
-(provide 'core-mcfly)
-;;; core-mcfly.el ends here.
+(provide 'lib-mcfly)
+;;; lib-mcfly.el ends here.

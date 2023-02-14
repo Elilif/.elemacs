@@ -151,7 +151,6 @@
   (require 'core-setup)
   (require 'core-lib)
   (require 'core-ui)
-  (require 'core-mcfly)
   (require 'core-better-default)
 
   
