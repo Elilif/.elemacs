@@ -96,8 +96,7 @@
    filter-buffer-substring :filter-return eli/unfill-string)
   (:hook
    org-indent-mode
-   auto-fill-mode
-   org-appear-mode)
+   auto-fill-mode)
   (:bind "C-c l" org-store-link
 		 "C-c c" org-capture
 		 "<f8>" eli/rating
@@ -105,6 +104,7 @@
 		 "<f9>" eli/set-film-ratings
 		 "<f10>" eli/get-film-rating
 		 "C-c C-l" ar/org-insert-link-dwim))
+
 ;;;; org-agenda
 (setup org-agenda
   (:once (list :before 'org-agenda
@@ -294,27 +294,26 @@
 
 ;;;; org-babel
 (setup org
-  (:option*
-   org-confirm-babel-evaluate nil
-   org-babel-default-header-args '((:session . "none")
-								   (:results . "output replace")
-								   (:exports . "code")
-								   (:cache . "no")
-								   (:noweb . "no")
-								   (:hlines . "no")
-								   (:tangle . "no"))
-   org-babel-load-languages '((emacs-lisp . t)
-                              (shell . t)
-                              (C . t)
-                              (latex . t))
-   )
-  (:when-loaded
+  (:once (list :before 'org-insert-structure-template)
+	(:option*
+	 org-confirm-babel-evaluate nil
+	 org-babel-default-header-args '((:session . "none")
+									 (:results . "output replace")
+									 (:exports . "code")
+									 (:cache . "no")
+									 (:noweb . "no")
+									 (:hlines . "no")
+									 (:tangle . "no"))
+	 org-babel-load-languages '((emacs-lisp . t)
+								(shell . t)
+								(C . t)
+								(latex . t)))
 	(org-babel-do-load-languages 'org-babel-load-languages
 								 '((emacs-lisp . t)
-                                   (shell . t)
-                                   (C . t)
-                                   (latex . t))))
-  )
+								   (shell . t)
+								   (C . t)
+								   (latex . t)))))
+
 ;;;; org-clock
 (setup org-clock
   (:option*
@@ -324,6 +323,7 @@
    org-clock-continuously t
    org-clock-sound "~/.emacs.d/private/bellring.wav"
    ))
+
 ;;;; org-protocol
 (setup org-protocol
   (:once (list :hooks 'org-mode-hook)
@@ -333,6 +333,7 @@
 						   (require 'server)
 						   (unless (server-running-p)
 							 (server-start))))))
+
 ;;;; org-refile
 (setup org-file
   (:option*
@@ -353,6 +354,7 @@
    org-habit-preceding-days 10
    org-habit-following-days 1
    org-habit-show-habits-only-for-today nil))
+
 ;;;; prettify symbol
 (setup org
   (:hook
@@ -380,12 +382,15 @@
 									))
 	 (prettify-symbols-mode)
 	 )))
+
+
 ;;;; org-superstar
 (setup org-superstar
   (:option*
    org-superstar-headline-bullets-list '("⦿" "⊚" "𐰧" "◯" "●" "►" "▻")
    org-superstar-prettify-item-bullets nil)
   (:hook-into org-mode))
+
 ;;;; org-roam
 (setup org-roam
   (:also-load lib-org-roam)
@@ -452,8 +457,8 @@
 	  "DEL" #'delete-region)
 	(add-to-list 'embark-keymap-alist
 				 '(consult-org-heading . embark-org-heading-map))
-	)
-  )
+	))
+
 ;;;; org-roam-ui
 (setup org-roam-ui
   (:option*
@@ -461,6 +466,7 @@
    org-roam-ui-follow t
    org-roam-ui-update-on-save t
    org-roam-ui-open-on-start t))
+
 ;;;; org-mru-clock
 (setup org-mru-clock
   (:option*
@@ -472,6 +478,7 @@
    '(("c" (org-mru-clock-capturing))
      ("1" (elemacs-global-interactive-capture))
      ("2" (elemacs-global-interactive-capture)))))
+
 ;;;; org-clock-convenience
 (setup org-clock-convenience
   (:option*
@@ -481,6 +488,13 @@
 	"M-<down>" org-clock-convenience-timestamp-down
 	"<f9>" org-clock-convenience-fill-gap
 	"<f10>" org-clock-convenience-fill-gap-both))
+
+;;;; org-appear-mode
+(setup org-appear-mode
+  (:once (list :hooks 'org-mode-hook)
+	(:once (list :before 'org-self-insert-command)
+	  (org-appear-mode))))
+
 ;;;; org-download
 (setup org-download
   (:incremental-loading org-download)
@@ -497,6 +511,7 @@
    org-attach-auto-tag "attach"
    org-attach-store-link-p 't)
   (:hooks dired-mode-hook org-download-enable))
+
 ;;;; appt
 (setup appt
   (:once (list :packages 'org-agenda)
@@ -513,6 +528,7 @@
    appt-display-interval 5
    appt-display-format 'window
    appt-disp-window-function #'appt-disp-window-and-notification))
+
 ;;;; org-media note
 (setup org-media-note
   (:also-load org-link-edit
@@ -525,6 +541,7 @@
 	"s-[" eli/org-media-note-vedio-pause)
   (:option*
    org-media-note-screenshot-image-dir "~/Documents/org-images/"))
+
 ;;;; org-anki
 (setup org-anki
   (:also-load lib-org-anki)
@@ -549,6 +566,7 @@
 		   org-anki-delete-all :around eli/org-anki-around)
   (:global
    "<f12>" #'org-anki-sync-region))
+
 ;;;; LaTeX
 (setup org
   (:also-load ox-latex)
@@ -638,9 +656,11 @@
   (:hook turn-on-org-cdlatex)
   (:advice
    org--make-preview-overlay :around eli/org-preview-show-label))
+
 ;;;; org simple ref
 (setup org
   (:also-load lib-org-simple-ref))
+
 ;;;; org export
 (setup ox
   (:also-load lib-ox)
@@ -652,6 +672,7 @@
   (:advice
    org-export-get-ordinal :around eli/org-export-get-special-block-ordinal
    org-html-special-block :around eli/org-html-special-block-filter))
+
 ;;;; mixed-pitch
 (setup mixed-pitch
   (:option*
@@ -662,6 +683,7 @@
 	(add-to-list 'mixed-pitch-fixed-pitch-faces 'org-tag)
 	(add-to-list 'mixed-pitch-fixed-pitch-faces 'font-lock-comment-face))
   (:hooks org-mode-hook mixed-pitch-mode))
+
 ;;;; svg-tag-mode
 (setup svg-tag-mode
   (:after org
