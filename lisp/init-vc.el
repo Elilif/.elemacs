@@ -56,8 +56,10 @@
 
 (setup magit-todos
   (:once (list :before 'magit-status)
-    (magit-todos-mode)
-    (:option magit-todos-auto-group-items 3)))
+    (magit-todos-mode))
+  (:option*
+   magit-todos-auto-group-items 3
+   magit-todos-branch-list nil))
 
 ;;;; forge
 (setup forge
