@@ -81,7 +81,7 @@ the _value_ of the choice, not the selected choice. "
 	(byte-compile-file buffer-file-name)))
 
 (defun add-after-save-hook ()
-  (add-hook 'after-save-hook 'auto-recompile-file-maybe))
+  (add-hook 'after-save-hook 'auto-recompile-file-maybe nil t))
 
 (provide 'core-lib)
 ;;; core-lib.el ends here.
