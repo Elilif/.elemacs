@@ -59,6 +59,9 @@
   "Marks a starred Elfeed entry."
   :group 'elfeed)
 
+(defalias 'elfeed-toggle-star
+  (elfeed-expose #'elfeed-search-toggle-all 'starred))
+
 ;;;###autoload
 (defun eli/filter-read ()
   (interactive)

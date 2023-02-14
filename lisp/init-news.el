@@ -30,6 +30,7 @@
 
 ;;; Code:
 
+;;; TODO: remove compile warnings
 (cl-eval-when (compile)
   (require 'elfeed)
   (require 'elfeed-score)
@@ -63,9 +64,6 @@
    elfeed-search-filter "@2-days-ago +unread +A"
    elfeed-search-face-alist '((starred elfeed-search-starred-title-face)
 							  (unread elfeed-search-unread-title-face)))
-  (:after elfeed
-	(defalias 'elfeed-toggle-star
-	  (elfeed-expose #'elfeed-search-toggle-all 'starred)))
   (:bind-into elfeed-search-mode-map
 	"q" eli/elfeed-search-quit-and-kill-buffers
 	"R" eli/filter-read
