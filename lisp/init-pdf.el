@@ -30,6 +30,13 @@
 
 ;;; Code:
 
+
+(cl-eval-when (compile)
+  (require 'pdf-tools)
+  (require 'org-noter)
+  (require 'lib-pdf)
+  (require 'lib-org-noter))
+
 (setup pdf-tools
   (:init
    (run-with-idle-timer 2 nil #'pdf-loader-install)

@@ -32,7 +32,8 @@
 
 (cl-eval-when (compile)
   (require 'cal-china-x)
-  (require 'lib-rime))
+  (require 'lib-rime)
+  (require 'rime))
 
 (setup dired
   (:once (list :packages 'dired)
