@@ -39,7 +39,7 @@
 (add-to-list 'load-path (concat user-emacs-directory "lib"))
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 ;;;; Benchmark
-(require 'core-benchmarking)
+;; (require 'core-benchmarking)
 
 ;;;; Borg
 ;; (eval-and-compile ; `borg'
@@ -142,7 +142,6 @@
 
   (lld-initialize))
 
-
 
 ;;;; Core
 (let ((gc-cons-threshold most-positive-fixnum)
@@ -156,11 +155,11 @@
   
 ;;;; Modules
   (require 'init-completion)
-  (run-with-idle-timer 0.5 nil (lambda () (require 'init-hydra)))
+  (run-with-idle-timer 0.3 nil (lambda () (require 'init-hydra)))
+  (require 'init-misc)
   (require 'init-vc)
   (require 'init-info)
   (require 'init-edit)
-  (require 'init-misc)
 
   ;; (require 'init-lang)
   ;; (require 'init-news)  
@@ -168,27 +167,28 @@
   ;; (require 'init-pdf)
   ;; (require 'init-bib)
 
+  (once (list :hooks 'find-file-hook 'consult-dir 'consult-bookmark)
+	(require 'init-lang))
+
+  (once (list :before 'hydra-reader/body)
+	(require 'init-news))
+
+  (setup org
+	(:incremental-loading calendar find-func format-spec org-macs org-compat
+						  org-faces org-entities org-list org-pcomplete org-src
+						  org-footnote org-macro ob org org-clock org-agenda
+						  org-capture)
+	(:once (list :before 'hydra-org-agenda/body 'hydra-org/body
+				 'citar-open
+				 :packages 'org)
+	  (require 'init-org)))
+
+  (setup reader
+	(:once (list :before 'hydra-bibtex/body)
+	  (require 'init-pdf)
+	  (require 'init-bib)))
+
   )
-
-(once (list :hooks 'find-file-hook 'consult-dir 'consult-bookmark)
-  (require 'init-lang))
-
-(once (list :before 'hydra-reader/body)
-  (require 'init-news))
-
-(setup org
-  (:incremental-loading calendar find-func format-spec org-macs org-compat
-						org-faces org-entities org-list org-pcomplete org-src
-						org-footnote org-macro ob org org-clock org-agenda
-						org-capture)
-  (:once (list :before 'hydra-org-agenda/body 'hydra-org/body
-			   'citar-open)
-	(require 'init-org)))
-
-(setup reader
-  (:once (list :before 'hydra-bibtex/body)
-	(require 'init-pdf)
-	(require 'init-bib)))
 
 
 ;;; init.el ends here.
