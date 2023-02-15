@@ -170,7 +170,8 @@
 (setup electric-operator
   (:hook-into c++-mode)
   (:hook-into c-mode)
-  (:hook-into org-mode))
+  ;; (:hook-into org-mode)
+  )
 
 ;;;; aggressive-indent
 (setup aggressive-indent
