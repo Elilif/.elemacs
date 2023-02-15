@@ -68,6 +68,7 @@
   (:after vertico
 	(require 'lib-consult)
     (require 'consult))
+  (:also-load lib-mcfly)
   (:once (list :before 'consult-recent-file)
     (:silence (recentf-mode 1)))
   (:global [remap isearch-forward]     consult-line
