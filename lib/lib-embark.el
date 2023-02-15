@@ -47,6 +47,7 @@
         (posframe-show "*image*"
                        :poshandler #'posframe-poshandler-frame-center)))))
 
+;;;###autoload
 (defun eli/select-images ()
   (interactive)
   (let ((default-directory "~/Documents/org-images/"))
