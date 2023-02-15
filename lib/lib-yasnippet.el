@@ -103,6 +103,10 @@ instance: \"$4\pi^2 //$\" will be expand into
                (point)) 'no-errer)
       (concat namespace "::"))))
 
+(defun eli/tex-algorithm-p ()
+  (when (functionp 'xenops-math-parse-algorithm-at-point)
+    (xenops-math-parse-algorithm-at-point)))
+
 
 ;;;; provide
 (provide 'lib-yasnippet)
