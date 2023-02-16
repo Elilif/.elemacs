@@ -55,6 +55,8 @@
 
 (setq save-interprogram-paste-before-kill t)
 
+(setq copy-region-blink-delay 0)
+
 (setq word-wrap-by-category t)
 
 (setq help-at-pt-display-when-idle t)
