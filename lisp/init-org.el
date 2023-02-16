@@ -97,13 +97,15 @@
   (:hook
    org-indent-mode
    auto-fill-mode)
-  (:bind "C-c l" org-store-link
-		 "C-c c" org-capture
-		 "<f8>" eli/rating
-		 "<f7>" eli/entry-rating
-		 "<f9>" eli/set-film-ratings
-		 "<f10>" eli/get-film-rating
-		 "C-c C-l" ar/org-insert-link-dwim))
+  (:bind 
+   "<f8>" eli/rating
+   "<f7>" eli/entry-rating
+   "<f9>" eli/set-film-ratings
+   "<f10>" eli/get-film-rating
+   "C-c C-l" ar/org-insert-link-dwim)
+  (:global
+   "C-c l" org-store-link
+   "C-c c" org-capture))
 
 ;;;; org-agenda
 (setup org-agenda
@@ -476,8 +478,10 @@
    org-mru-clock-files #'org-agenda-files
    org-capture-templates-contexts
    '(("c" (org-mru-clock-capturing))
-     ("1" (elemacs-global-interactive-capture))
-     ("2" (elemacs-global-interactive-capture)))))
+	 ;; TODO: make it work
+     ;; ("1" (elemacs-global-interactive-capture))
+     ;; ("2" (elemacs-global-interactive-capture))
+	 )))
 
 ;;;; org-clock-convenience
 (setup org-clock-convenience
