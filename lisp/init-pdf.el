@@ -39,7 +39,8 @@
 
 (setup pdf-tools
   (:init
-   (run-with-idle-timer 2 nil #'pdf-loader-install)
+   ;; (run-with-idle-timer 2 nil #'pdf-loader-install)
+   (pdf-loader-install)
    )
   (:also-load
    lib-pdf
