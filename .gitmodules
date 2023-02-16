@@ -39,6 +39,9 @@
 [submodule "cape"]
 	path = site-lisp/cape
 	url = https://github.com/minad/cape
+[submodule "ccls"]
+	path = site-lisp/ccls
+	url = https://github.com/emacs-lsp/emacs-ccls
 [submodule "cdlatex"]
 	path = site-lisp/cdlatex
 	url = https://github.com/cdominik/cdlatex
@@ -116,6 +119,9 @@
 [submodule "f"]
 	path = site-lisp/f
 	url = https://github.com/rejeep/f.el
+[submodule "flycheck"]
+	path = site-lisp/flycheck
+	url = https://github.com/flycheck/flycheck
 [submodule "forge"]
 	path = site-lisp/forge
 	url = https://github.com/magit/forge
@@ -292,6 +298,9 @@
 [submodule "queue"]
 	path = site-lisp/queue
 	url = git@github.com:emacsmirror/queue.git
+[submodule "quickrun"]
+	path = site-lisp/quickrun
+	url = https://github.com/emacsorphanage/quickrun
 [submodule "rainbow-delimiters"]
 	path = site-lisp/rainbow-delimiters
 	url = https://github.com/Fanael/rainbow-delimiters

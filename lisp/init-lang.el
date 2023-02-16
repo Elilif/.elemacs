@@ -63,12 +63,18 @@
 							  (c-mode . "k&r")
 							  (c++-mode . "stroustrup")
 							  (other . "gnu")))
+  (:also-load
+   ccls)
   (:hooks c-mode-common-hook eli/compile-set
-		  c++-mode-hook modern-c++-font-lock-global-mode)
+		  c++-mode-hook modern-c++-font-lock-mode)
   (:bind-into c-mode-base-map
 	"(" nil
 	"{" nil
-	"C-c C-o" ff-find-other-file))
+	"C-c C-o" ff-find-other-file)
+  (:when-loaded
+	(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+	(add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))))
+
 
 (defun eli/compile-set ()
   (let* ((file-name (buffer-file-name))
@@ -78,7 +84,6 @@
 	  (setq file-name (file-name-nondirectory file-name))
 	  (let ((out-file (concat (file-name-sans-extension file-name) exec-suffix)))
 	    (setq-local compile-command (format "g++ -std=c++11 -g %s -o %s" file-name out-file))))))
-
 ;;;; r
 (setup ess
   (:option*
@@ -97,7 +102,7 @@
    ess-smart-equals-extra-ops '(brace paren percent)))
 
 ;;;; lsp
-(setup lsp
+(setup lsp-mode
   (:when-loaded
 	(require 'lib-lsp)
 	(setenv "LSP_USE_PLISTS" "true"))
@@ -126,12 +131,11 @@
 							 (lsp-deferred)))
 		  lsp-mode-hook (lambda ()
 						  ;; Integrate `which-key'
-						  (lsp-enable-which-key-integration)
+						  ;; (lsp-enable-which-key-integration)
 						  ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
 						  ;; (add-hook 'before-save-hook #'lsp-organize-imports t t)
 						  )
-		  lsp-completion-mode-hook my/lsp-mode-setup-completion)
-  )
+		  lsp-completion-mode-hook my/lsp-mode-setup-completion))
 
 (setup lsp-ui
   (:hook-into lsp-mode)
@@ -143,7 +147,25 @@
    lsp-ui-sideline-show-diagnostics t
    lsp-ui-sideline-show-code-actions t
    lsp-ui-doc-show-with-cursor t))
-
+;;;; flycheck
+(setup flycheck
+  (:option*
+   flycheck-idle-change-delay 5))
+;;;; eglot
+;; (setup eglot
+;;   (:option* eglot-confirm-server-initiated-edits nil
+;; 			eglot-autoreconnect 60
+;; 			eglot-autoshutdown t)
+;;   (:hooks c++-mode-hook eglot-ensure)
+;;   (:when-loaded
+;; 	(custom-set-faces
+;; 	 '(eglot-mode-line ((t (:foreground "#B0BEC5")))))
+;; 	(add-to-list 'eglot-server-programs '(c++-mode . ("ccls")))
+;;     (add-to-list 'eglot-server-programs '(c-mode . ("ccls")))))
+;;;; flymake
+;; (setup flymake
+;;   (:option*
+;;    flymake-no-changes-timeout 0.5))
 ;;;; provide
 (provide 'init-lang)
 ;;; init-lang.el ends here.
