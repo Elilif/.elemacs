@@ -169,7 +169,7 @@ entries are offered."
 (defun eli/consult-git-ripgrep (dir)
   "Search single file use `consult-ripgrep'."
   (interactive
-   (list (read-directory-name "Select directory: " "~/.emacs.d/lib/")))
+   (list (read-directory-name "Select directory: " "~/.emacs.d/site-lisp/")))
   (let ((consult-project-function (lambda (_x) nil))
         (consult-ripgrep-args (string-replace "." "-g *.el ."
                                               consult-ripgrep-args)))

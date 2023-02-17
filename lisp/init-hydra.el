@@ -64,7 +64,7 @@
    "rg"
    (("g" eli/consult-git-grep)
     ("r" eli/consult-git-ripgrep)
-    ("e" (eli/consult-git-ripgrep "~/.emacs.d/lib/") "lib"))
+    ("e" (eli/consult-git-ripgrep "~/.emacs.d/site-lisp/") "lib"))
    "Google"
    (("s" my-search-with-chrome)
     ("h" github-copy-reference-url-at-point))))
