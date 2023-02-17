@@ -167,9 +167,12 @@
   ;; (require 'init-pdf)
   ;; (require 'init-bib)
 
-  ;;; HACK: load the following config on demand, need more test.
-  (once (list :hooks 'find-file-hook 'consult-dir 'consult-bookmark)
-	(require 'init-lang))
+  ;;; HACK: load the following config on demand, need more tests.
+  (setup init-lang
+	(:incremental-loading lsp-mode lsp-ui ccls)
+	(:once (list :hooks 'find-file-hook 
+				 :before 'consult-recent-file 'consult-dir 'consult-bookmark)
+	  (require 'init-lang)))
 
   (once (list :before 'hydra-reader/body)
 	(require 'init-news))
