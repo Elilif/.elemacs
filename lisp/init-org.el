@@ -33,6 +33,7 @@
 (cl-eval-when (compile)
   (require 'embark)
   (require 'mixed-pitch)
+  (require 'org-roam)
   (require 'svg-tag-mode)
   (require 'lib-svg-tag-mode)
   (require 'lib-ox)
