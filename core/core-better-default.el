@@ -200,6 +200,7 @@
                                "/home/eli/.emacs.d/emms/history"
 	                           "/home/eli/.emacs.d/elpa/*"
 	                           "/home/eli/.elfeed/index"
+							   "~/.elfeed/index"
 	                           "/home/eli/.mail/*"
                                "/tmp/*")
              recentf-max-menu-items 50
