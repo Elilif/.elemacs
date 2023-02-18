@@ -33,23 +33,29 @@
 (cl-eval-when (compile)
   (require 'cal-china-x)
   (require 'lib-rime)
-  (require 'rime))
+  (require 'rime)
+  (require 'avy))
 
+;;;; dired
 (setup dired
   (:once (list :packages 'dired)
     (diredfl-global-mode))
   (:hook all-the-icons-dired-mode)
   (:option* all-the-icons-dired-monochrome nil))
 
+;;;; ibuffer
 (setup ibuffer
   (:hook all-the-icons-ibuffer-mode)
   (:option* all-the-icons-ibuffer-icon t
             all-the-icons-ibuffer-color-icon t))
 
+
+;;;; hl-todo
 (setup hl-todo
   (:once (list :hooks 'find-file-hook)
     (global-hl-todo-mode)))
 
+;;;; popper
 (setup popper
   (:once (list :hooks 'find-file-hook)
     (popper-mode)
@@ -77,6 +83,7 @@
   (:advice popper-raise-popup :after (lambda (&optional _arg)
                                        (delete-other-windows))))
 
+;;;; shackle
 (setup shackle
   (:once (list :hooks 'find-file-hook)
     (shackle-mode))
@@ -91,6 +98,8 @@
 			                (org-agenda-mode :select t)
 			                ("*Org Select*" :select t :align right :size 0.3))))
 
+
+;;;; cal-china-x
 (setup cal-china-x
   (:autoload cal-china-x-setup)
   (:after calendar
@@ -114,6 +123,7 @@
                                       cal-china-x-general-holidays
                                       holiday-other-holidays)))
 
+;;;; rime
 (setup rime
   (:when-loaded
 	(require 'lib-rime))

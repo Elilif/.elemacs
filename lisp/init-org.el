@@ -42,6 +42,8 @@
   (require 'lib-appt)
   (require 'lib-org-roam)
   (require 'lib-org)
+  (require 'lib-org-agenda)
+  (require 'lib-org-capture)
   )
 
 ;;;; org better than default

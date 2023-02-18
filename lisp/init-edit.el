@@ -35,6 +35,7 @@
   (require 'expand-region-core)
   (require 'er-basic-expansions)
   (require 'leetcode)
+  (require 'electric-operator)
   (require 'cc-cmds)
   (require 'lib-expand-region)
   (require 'lib-markmacro))
