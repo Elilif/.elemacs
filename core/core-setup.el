@@ -31,15 +31,19 @@
 
 ;;; Code:
 
+(cl-eval-when (compile)
+  (require 'borg)
+  (require 'info))
+
 (require 'setup)
 (require 'once-setup)
 
 
 ;;;; setup
-;;;  custom local variables 
-(setup-define :incremental-loading
-  (lambda (&rest body)
-    `(elemacs-load-packages-incrementally '(,@body)))
+;;;  custom local variables
+(setup-define :iload
+  (lambda (&rest packages)
+    `(elemacs-load-packages-incrementally '(,@packages)))
   :documentation "Load packages incrementally.")
 
 (setup-define :silence
@@ -114,7 +118,7 @@ loaded."
 	(delete-file file)))
 
 (setup borg
-  (:incremental-loading borg)
+  (:iload borg)
   (:once (list :before 'info)
     (info-initialize)
     (borg-do-drones (drone)

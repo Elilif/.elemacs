@@ -58,6 +58,7 @@
 
 ;;;; c/c++
 (setup cc-mode
+  ;; (:iload ccls)
   (:option* c-default-style '((java-mode . "java")
 							  (awk-mode . "awk")
 							  (c-mode . "k&r")
@@ -103,6 +104,7 @@
 
 ;;;; lsp
 (setup lsp-mode
+  ;; (:iload lsp-mode lsp-ui)
   (:when-loaded
 	(require 'lib-lsp)
 	(setenv "LSP_USE_PLISTS" "true"))

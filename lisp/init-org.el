@@ -61,10 +61,10 @@
 
 ;;;; org
 (setup org
-  ;; (:incremental-loading calendar find-func format-spec org-macs org-compat
-  ;; 						org-faces org-entities org-list org-pcomplete org-src
-  ;; 						org-footnote org-macro ob org org-clock org-agenda
-  ;; 						org-capture)
+  ;; (:iload calendar find-func format-spec org-macs org-compat
+  ;; 					 org-faces org-entities org-list org-pcomplete org-src
+  ;; 					 org-footnote org-macro ob org org-clock org-agenda
+  ;; 					 org-capture)
   (:option*
    org-indirect-buffer-display 'current-window
    org-export-preserve-breaks nil
@@ -499,12 +499,12 @@
 ;;;; org-appear-mode
 (setup org-appear-mode
   (:once (list :hooks 'org-mode-hook)
-	(:once (list :before 'org-self-insert-command)
+	(:once (list :hooks 'pre-command-hook)
 	  (org-appear-mode))))
 
 ;;;; org-download
 (setup org-download
-  (:incremental-loading org-download)
+  ;; (:iload org-download)
   (:option*
    org-download-method 'directory
    org-download-image-dir "~/Documents/org-images"
