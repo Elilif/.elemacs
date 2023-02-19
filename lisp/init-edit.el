@@ -174,19 +174,21 @@
   (:hook-into c++-mode)
   (:hook-into c-mode)
   ;; (:hook-into org-mode)
-  )
+  (:when-loaded
+	(electric-operator-add-rules-for-mode 'c++-mode
+										  (cons "&" nil))
+	(electric-operator-add-rules-for-mode 'c++-mode
+										  (cons "*" nil))))
 
 ;;;; aggressive-indent
 (setup aggressive-indent
   (:hook-into emacs-lisp-mode-hook)
   (:hook-into c-mode-common-hook)
-  (:when-loaded
-    (add-to-list
-     'aggressive-indent-dont-indent-if
-     '(and (or (derived-mode-p 'c++-mode)
-               (derived-mode-p 'c-mode))
-           (null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|while\\|return\\)\\b\\)"
-                               (thing-at-point 'line)))))))
+  (:option*  aggressive-indent-dont-indent-if
+			 '((and (or (derived-mode-p 'c++-mode)
+						(derived-mode-p 'c-mode))
+					(null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|else\\|while\\|return\\)\\b\\)"
+										(thing-at-point 'line)))))))
 
 ;;;; misc
 (setup prog-mode
