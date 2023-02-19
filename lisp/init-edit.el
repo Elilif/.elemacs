@@ -62,6 +62,8 @@
             super-save-predicates
             '((lambda () buffer-file-name)
               (lambda () (buffer-modified-p (current-buffer)))
+			  (lambda () (and (boundp 'org-noter-notes-mode)
+							  (not org-noter-notes-mode)))
               (lambda () (file-writable-p buffer-file-name))
               (lambda () (if (and super-save-max-buffer-size (> super-save-max-buffer-size 0))
                              (< (buffer-size) super-save-max-buffer-size)
