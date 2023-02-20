@@ -33,7 +33,8 @@
 
 (cl-eval-when (compile)
   (require 'borg)
-  (require 'info))
+  (require 'info)
+  (require 'epkg))
 
 (require 'setup)
 (require 'once-setup)
