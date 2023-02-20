@@ -168,14 +168,17 @@
   ;; (require 'init-bib)
 
   ;;; HACK: load the following config on demand, need more tests.
+  ;;; TODO: check the entire loading procedure and refactor it.
   (setup init-lang
 	(:iload init-lang)
 	(:once (list :hooks 'find-file-hook 
 				 :before 'consult-recent-file 'consult-dir 'consult-bookmark)
 	  (require 'init-lang)))
 
-  (once (list :before 'hydra-reader/body)
-	(require 'init-news))
+  (setup init-news
+	(:iload init-news)
+	(once (list :before 'hydra-reader/body)
+	  (require 'init-news)))
 
   (setup org
 	(:iload init-org)
