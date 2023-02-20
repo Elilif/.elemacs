@@ -249,6 +249,9 @@
 	path = site-lisp/org-pdftools
 	url = https://github.com/fuxialexander/org-pdftools
 	no-byte-compile = org-noter-pdftools.el
+[submodule "org-reverse-datetree"]
+	path = site-lisp/org-reverse-datetree
+	url = https://github.com/akirak/org-reverse-datetree
 [submodule "org-roam"]
 	path = site-lisp/org-roam
 	url = https://github.com/org-roam/org-roam
