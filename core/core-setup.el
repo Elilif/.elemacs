@@ -46,6 +46,28 @@
     `(elemacs-load-packages-incrementally '(,@packages)))
   :documentation "Load packages incrementally.")
 
+
+(defmacro epkg-get-subpkgs (pkg)
+  "Get sub-package list from epkg."
+  (let* ((name (symbol-name pkg))
+		 (provided (thread-last
+					 (oref (epkg name) provided)
+					 (mapcar (lambda (x) (car x)))))
+		 (no-byte-compile (mapcar (lambda (x) (file-name-base x))
+								  (borg-get-all name "no-byte-compile"))))
+	`',(cl-remove-if (lambda (x) (let ((name (symbol-name x)))
+								   (or (string-match-p "test" name)
+									   (member name no-byte-compile))))
+					 provided)))
+
+(setup-define :iload*
+  (lambda (body)
+	`(once (list :packages 'epkg)
+	   (elemacs-load-packages-incrementally
+		(epkg-get-subpkgs ,body))))
+  :documentation "Load packages incrementally.")
+
+
 (setup-define :silence
   (lambda (&rest body)
     `(cl-letf (((symbol-function 'message) (lambda (&rest _args) nil)))
