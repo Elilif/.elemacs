@@ -61,10 +61,7 @@
 
 ;;;; org
 (setup org
-  ;; (:iload calendar find-func format-spec org-macs org-compat
-  ;; 					 org-faces org-entities org-list org-pcomplete org-src
-  ;; 					 org-footnote org-macro ob org org-clock org-agenda
-  ;; 					 org-capture)
+  (:iload* org)
   (:option*
    org-indirect-buffer-display 'current-window
    org-export-preserve-breaks nil

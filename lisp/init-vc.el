@@ -41,7 +41,7 @@
 (setup magit
   (:when-loaded
 	(require 'lib-magit))
-  (:iload dash f s with-editor git-commit eieio transient)
+  (:iload* magit)
   (:once (list :before 'magit-auto-revert-mode--init-kludge)
     (:option magit-no-message '("Turning on magit-auto-revert-mode...")))  
   (:option* magit-display-buffer-function     'magit-display-buffer-fullframe-status-v1
@@ -63,7 +63,7 @@
 
 ;;;; forge
 (setup forge
-  (:iload forge-db forge-core forge)
+  (:iload* forge)
   (:with-feature magit
     (:also-load forge))
   (:option* forge-owned-accounts '(("eli" . (remote-name "personal")))))

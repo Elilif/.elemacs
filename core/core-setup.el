@@ -128,6 +128,9 @@ loaded."
     (advice-add 'borg-clean :after #'elemacs/borg-clean)))
 
 
+;;;; epkg
+(setup epkg
+  (:iload epkg))
 ;;;; provide
 (provide 'core-setup)
 ;;; core-setup.el ends here.

@@ -169,7 +169,7 @@
 
   ;;; HACK: load the following config on demand, need more tests.
   (setup init-lang
-	(:iload ccls lsp-mode lsp-ui)
+	(:iload init-lang)
 	(:once (list :hooks 'find-file-hook 
 				 :before 'consult-recent-file 'consult-dir 'consult-bookmark)
 	  (require 'init-lang)))
@@ -178,18 +178,14 @@
 	(require 'init-news))
 
   (setup org
-	(:iload calendar find-func format-spec org-macs org-compat
-			org-faces org-entities org-list org-pcomplete org-src
-			org-footnote org-macro ob org org-clock org-agenda
-			org-capture org-download)
+	(:iload init-org)
 	(:once (list :before 'hydra-org-agenda/body 'hydra-org/body
 				 'citar-open
 				 :packages 'org)
 	  (require 'init-org)))
 
   (setup reader
-	(:iload init-pdf init-bib image-mode pdf-macs pdf-util pdf-info pdf-cache
-			jka-compr  pdf-view pdf-annot pdf-tools pdf-occur org-noter org-refile)
+	(:iload init-pdf init-bib)
 	(:once (list :before 'hydra-bibtex/body)
 	  (require 'init-pdf)
 	  (require 'init-bib)))

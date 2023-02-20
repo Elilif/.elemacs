@@ -47,6 +47,7 @@
 
 ;;;; leetcode
 (setup leetcode
+  (:iload* leetcode)
   (:when-loaded
 	(require 'lib-leetcode))
   (:option* leetcode-prefer-language "cpp"
@@ -58,7 +59,7 @@
 
 ;;;; c/c++
 (setup cc-mode
-  ;; (:iload ccls)
+  (:iload* ccls)
   (:option* c-default-style '((java-mode . "java")
 							  (awk-mode . "awk")
 							  (c-mode . "k&r")
@@ -104,7 +105,7 @@
 
 ;;;; lsp
 (setup lsp-mode
-  ;; (:iload lsp-mode lsp-ui)
+  (:iload* lsp-mode)
   (:when-loaded
 	(require 'lib-lsp)
 	(setenv "LSP_USE_PLISTS" "true"))
@@ -140,6 +141,7 @@
 		  lsp-completion-mode-hook my/lsp-mode-setup-completion))
 
 (setup lsp-ui
+  (:iload* lsp-ui)
   (:hook-into lsp-mode)
   (:option*
    lsp-ui-sideline-show-hover t

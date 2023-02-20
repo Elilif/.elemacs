@@ -38,10 +38,9 @@
   (require 'lib-org-noter))
 
 (setup pdf-tools
+  (:iload* pdf-tools)
   (:init
-   ;; (run-with-idle-timer 2 nil #'pdf-loader-install)
-   (pdf-loader-install)
-   )
+   (pdf-loader-install))
   (:also-load
    lib-pdf
    saveplace-pdf-view)
@@ -53,10 +52,10 @@
 	"v" +pdf-keyboard-select-region
 	"O" pdf-occur)
   (:hooks pdf-tools-enabled-hook pdf-view-auto-slice-minor-mode
-		  pdf-tools-enabled-hook pdf-isearch-minor-mode)
-  )
+		  pdf-tools-enabled-hook pdf-isearch-minor-mode))
 
 (setup org-noter
+  (:iload* org-noter)
   (:also-load
    lib-org-noter)
   (:hook org-pdftools-setup-link)
