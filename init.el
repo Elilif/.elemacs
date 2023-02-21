@@ -167,6 +167,13 @@
 
   ;;; HACK: load the following config on demand, need more tests.
   ;;; TODO: check the entire loading procedure and refactor it.
+  (setup org
+	(:iload init-org)
+	(:once (list :before 'hydra-org-agenda/body 'hydra-org/body
+				 'citar-open
+				 :packages 'org)
+	  (require 'init-org)))
+  
   (setup init-lang
 	(:iload init-lang)
 	(:once (list :hooks 'find-file-hook 
@@ -177,13 +184,6 @@
 	(:iload init-news)
 	(once (list :before 'hydra-reader/body)
 	  (require 'init-news)))
-
-  (setup org
-	(:iload init-org)
-	(:once (list :before 'hydra-org-agenda/body 'hydra-org/body
-				 'citar-open
-				 :packages 'org)
-	  (require 'init-org)))
 
   (setup reader
 	(:iload init-pdf init-bib)
