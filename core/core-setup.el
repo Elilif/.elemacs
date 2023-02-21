@@ -54,8 +54,9 @@
 		 (provided (thread-last
 					 (oref (epkg name) provided)
 					 (mapcar (lambda (x) (car x)))))
-		 (no-byte-compile (mapcar (lambda (x) (file-name-base x))
-								  (borg-get-all name "no-byte-compile"))))
+		 (no-byte-compile (thread-last
+							(borg-get-all name "no-byte-compile")
+							(mapcar (lambda (x) (file-name-base x))))))
 	`',(cl-remove-if (lambda (x) (let ((name (symbol-name x)))
 								   (or (string-match-p "test" name)
 									   (member name no-byte-compile))))
