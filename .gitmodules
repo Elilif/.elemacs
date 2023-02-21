@@ -204,7 +204,7 @@
 	url = https://github.com/ludwigpacifici/modern-cpp-font-lock
 [submodule "mood-line"]
 	path = site-lisp/mood-line
-	url = https://github.com/Elilif/mood-line
+	url = https://gitlab.com/jessieh/mood-line
 [submodule "mpv"]
 	path = site-lisp/mpv
 	url = https://github.com/kljohann/mpv.el
