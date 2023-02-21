@@ -142,8 +142,8 @@
 
 
 ;;;; Core
-(let ((gc-cons-threshold most-positive-fixnum)
-      (file-name-handler-alist nil))
+(let ((file-name-handler-alist nil))
+  
   (require 'core-incremental-loading)
   (require 'core-setup)
   (require 'core-lib)
