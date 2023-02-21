@@ -95,7 +95,7 @@
 				  (push (concat "~" (string-remove-prefix home p)) theme-path-list)
                 (push p theme-path-list)))
 
-            (prin1 `(set `load-path ',(nreverse path-list)))
+            (prin1 `(set `load-path ',path-list))
             (insert "\n")
             (print `(set `custom-theme-load-path ',(nreverse theme-path-list)))
             (insert "\n")

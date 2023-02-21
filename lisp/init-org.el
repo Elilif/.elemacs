@@ -64,6 +64,7 @@
 (setup org
   (:iload* org)
   (:option*
+   org-modules '(ol-bbdb ol-bibtex ol-info)
    org-indirect-buffer-display 'current-window
    org-export-preserve-breaks nil
    org-adapt-indentation t
