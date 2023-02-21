@@ -33,11 +33,12 @@
 (setq package-enable-at-startup nil)
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
-(let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold most-positive-fixnum))
-  (setq gc-cons-threshold init-gc-cons-threshold)
-  (add-hook 'emacs-startup-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+;; (let ((normal-gc-cons-threshold (* 20 1024 1024))
+;;       (init-gc-cons-threshold most-positive-fixnum))
+;;   (setq gc-cons-threshold init-gc-cons-threshold)
+;;   (add-hook 'emacs-startup-hook
+;;             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+(setq gc-cons-threshold most-positive-fixnum)
 
 ;; Prioritize old byte-compiled source files over newer sources. It saves us a
 ;; little IO time to skip all the mtime checks on each lookup.
@@ -46,7 +47,7 @@
 ;; Prevent unwanted runtime compilation for gccemacs (native-comp) users;
 ;; packages are compiled ahead-of-time when they are installed and site files
 ;; are compiled when gccemacs is installed.
-(setq native-comp-deferred-compilation nil)
+(setq inhibit-automatic-native-compilation t)
 
 ;; A second, case-insensitive pass over `auto-mode-alist' is time wasted and
 ;; indicates misconfiguration.

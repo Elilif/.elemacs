@@ -125,6 +125,9 @@
 [submodule "forge"]
 	path = site-lisp/forge
 	url = https://github.com/magit/forge
+[submodule "gcmh"]
+	path = site-lisp/gcmh
+	url = https://gitlab.com/koral/gcmh
 [submodule "ghub"]
 	path = site-lisp/ghub
 	url = https://github.com/magit/ghub

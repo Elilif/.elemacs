@@ -98,6 +98,14 @@
 			                (org-agenda-mode :select t)
 			                ("*Org Select*" :select t :align right :size 0.3))))
 
+;;;; gcmh
+(setup gcmh
+  (:once (list :hooks 'pre-command-hook)
+	(gcmh-mode))
+  (:option*
+   gcmh-high-cons-threshold most-positive-fixnum
+   gcmh-idle-delay 5))
+
 
 ;;;; cal-china-x
 (setup cal-china-x
