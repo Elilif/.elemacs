@@ -53,8 +53,6 @@
     "single autoload file.")
 
   (add-to-list 'load-path (expand-file-name "site-lisp/borg" user-emacs-directory))
-  (setq borg-compile-function #'borg-byte+native-compile-async)
-
 
   (defun lld-collect-autoloads (file)
     "insert all enabled drone's autoloads file to a single file."

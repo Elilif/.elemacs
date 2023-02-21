@@ -147,6 +147,8 @@ loaded."
     (borg-do-drones (drone)
       (dolist (dir (borg-info-path drone))
         (push  dir Info-directory-list))))
+  (:option*
+   borg-compile-function #'borg-byte+native-compile-async)
   (:when-loaded
     (advice-add 'borg-clean :after #'elemacs/borg-clean)))
 
@@ -154,6 +156,7 @@ loaded."
 ;;;; epkg
 (setup epkg
   (:iload epkg))
+
 ;;;; provide
 (provide 'core-setup)
 ;;; core-setup.el ends here.
