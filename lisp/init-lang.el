@@ -35,14 +35,22 @@
   (require 'lib-lsp)
   (require 'leetcode)
   (require 'lsp-mode)
-  (require 'lib-leetcode))
+  (require 'lib-leetcode)
+  (require 'lib-vterm))
 
 
 ;;;; vterm
 (setup vterm
+  (:iload* vterm)
+  (:also-load
+   lib-vterm)
   (:hook (lambda () (setq-local global-hl-line-mode nil)))
   (:with-hook vterm-copy-mode-hook
-    (:hook (lambda () (call-interactively 'hl-line-mode)))))
+    (:hook (lambda () (call-interactively 'hl-line-mode))))
+  (:global
+   "s-o" shell-pop-posframe-toggle)
+  (:bind
+   "C-g" eli/vterm-quit))
 
 
 ;;;; leetcode
