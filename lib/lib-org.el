@@ -243,28 +243,35 @@ Assume point is at first MARK."
 (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
 (org-element-update-syntax)
 
-(defun eli/clock-in-to-nest (kw)
+(defun eli/clock-in-to-nest (_kw)
   (if (org-get-todo-state)
 	  "STARTED"))
 
 
 ;; remove superfluous whitespace.
-(defun eli/formatted-copy (string)
-  "Export string to HTML, and convert it into plain text."
-  (let ((string (org-export-string-as string 'html t)))
-    (shell-command-to-string
-     (format "echo \"%s\" | pandoc --from=html --to=plain" string))))
+(defun eli/org2plaintxt (string)
+  (cl-flet ((drop-markup (_ content _) (identity content)))
+    (cl-letf (((symbol-function #'org-ascii-bold) #'drop-markup)
+              ((symbol-function #'org-ascii-italic) #'drop-markup)
+              ((symbol-function #'org-ascii-strike-through) #'drop-markup)
+              ((symbol-function #'org-ascii-underline) #'drop-markup))
+      (let ((org-ascii-bullets nil)
+            (org-ascii-underline nil)
+            (org-ascii-verbatim-format "%s"))
+        (org-export-string-as string 'ascii t)))))
 
 (defun eli/unfill-string (string)
   (if (and (memq major-mode '(org-mode
                               mu4e-view-mode
                               Info-mode
-                              elfeed-show-mode nov-mode))
-           (member (prefix-numeric-value current-prefix-arg) '(4 16 64)))
-      (let* ((new-string (replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 "
-                                                   (eli/formatted-copy string)))
-             (new-string (replace-regexp-in-string "\n" "" new-string)))
-        new-string)
+                              elfeed-show-mode
+							  nov-mode))
+           current-prefix-arg)
+	  (thread-last
+		string
+		eli/org2plaintext
+		(replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 ")
+		(replace-regexp-in-string "\n" "" ))
     string))
 
 ;; movie rating
@@ -365,7 +372,7 @@ Assume point is at first MARK."
            (call-interactively 'org-insert-link)))))
 
 ;; show `#+name:' while in latex preview.
-(defun eli/org-preview-show-label (orig-fun beg end &rest _args)
+(defun eli/org-preview-show-label (orig-fun beg end &rest args)
   (let* ((beg (save-excursion
                 (goto-char beg)
                 (if (re-search-forward "#\\+name:" end t)
@@ -373,7 +380,7 @@ Assume point is at first MARK."
                       (forward-line)
                       (line-beginning-position))
                   beg))))
-    (apply orig-fun beg end _args)))
+    (apply orig-fun beg end args)))
 
 
 ;; better list format

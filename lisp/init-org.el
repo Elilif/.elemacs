@@ -97,7 +97,7 @@
                      "SOMEDAY(S)" "|" "CANCELLED(c@/!)")))
    org-ellipsis "▼")
   (:advice
-   filter-buffer-substring :filter-return eli/unfill-string)
+   buffer-substring--filter :filter-return eli/unfill-string)
   (:hook
    org-indent-mode
    auto-fill-mode)
