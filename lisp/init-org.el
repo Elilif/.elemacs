@@ -44,8 +44,7 @@
   (require 'lib-org-roam)
   (require 'lib-org)
   (require 'lib-org-agenda)
-  (require 'lib-org-capture)
-  )
+  (require 'lib-org-capture))
 
 ;;;; org better than default
 (setup org
@@ -62,7 +61,10 @@
 
 ;;;; org
 (setup org
-  (:iload* org)
+  (:iload calendar find-func format-spec org-macs org-compat
+		  org-faces org-entities org-list org-pcomplete org-src
+		  org-footnote org-macro ob org org-clock org-agenda
+		  org-capture)
   (:option*
    org-modules '(ol-bbdb ol-bibtex ol-info)
    org-indirect-buffer-display 'current-window
