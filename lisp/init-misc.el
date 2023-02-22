@@ -160,6 +160,27 @@
 	(:global
 	 "C-s-k" rime-inline-ascii
 	 "C-s-j" +rime-convert-string-at-point)))
+;;;; avy
+(setup avy
+  (:init
+   (defun avy-goto-char-near-point (char)
+	 "Jump to the currently visible CHAR in the few lines near point."
+	 (interactive (list (read-char "char: " t)))
+	 (let ((avy-all-windows nil))
+       (avy-with avy-goto-char
+		 (avy-process
+		  (avy--regex-candidates
+		   (regexp-quote (string char))
+		   (line-beginning-position -1)
+		   (line-end-position 3))
+		  (avy--style-fn avy-style))))))
+  (:bind-into org-mode-map
+	"<remap> <org-cycle-agenda-files>" avy-goto-char)
+  (:global
+   "C-:" avy-goto-char-in-line
+   "C-'" avy-goto-char
+   "C-\"" avy-goto-char-near-point))
 
+;;;; provide
 (provide 'init-misc)
 ;;; init-misc.el ends here.
