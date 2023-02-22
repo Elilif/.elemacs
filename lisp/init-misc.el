@@ -106,7 +106,12 @@
    gcmh-high-cons-threshold most-positive-fixnum
    gcmh-idle-delay 5))
 
-
+;;;; ace-window
+(setup ace-window
+  (:global
+   "M-o" ace-window)
+  (:option*
+   aw-scope 'frame))
 ;;;; cal-china-x
 (setup cal-china-x
   (:autoload cal-china-x-setup)
