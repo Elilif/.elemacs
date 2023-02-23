@@ -94,6 +94,16 @@
 	  (setq file-name (file-name-nondirectory file-name))
 	  (let ((out-file (concat (file-name-sans-extension file-name) exec-suffix)))
 	    (setq-local compile-command (format "g++ -std=c++11 -g %s -o %s" file-name out-file))))))
+;;;; gdb
+(setup gdb
+  (:also-load
+   lib-gdb)
+  (:option*
+   gdb-show-main t
+   gdb-many-windows t)
+  (:advice
+   gud-query-cmdline :before eli/reset-gud-gdb-history))
+
 ;;;; r
 (setup ess
   (:option*
