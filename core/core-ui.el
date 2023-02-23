@@ -36,7 +36,10 @@
 
 
 ;;;; modeline.
-(add-hook 'after-init-hook 'mood-line-mode)
+(setup mood-line
+  (:hook-into after-init-hook)
+  (:option*
+   mood-line-glyph-alist  mood-line-glyphs-fira-code))
 
 
 ;;;; font
