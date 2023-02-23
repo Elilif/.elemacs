@@ -33,7 +33,8 @@
 (defun suppress-messages (func &rest args)
   (cl-letf (((symbol-function 'message)
              (lambda (&rest _args) nil)))
-    (apply func args)))
+    (let ((inhibit-message t))
+	  (apply func args))))
 
 ;;;###autoload
 (defun eli/open-init-file()
