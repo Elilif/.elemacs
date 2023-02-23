@@ -155,7 +155,6 @@
   (require 'init-completion)
   (run-with-idle-timer 0.3 nil (lambda () (require 'init-hydra)))
   (require 'init-misc)
-  (require 'init-vc)
   (require 'init-info)
   (require 'init-edit)
 
@@ -173,6 +172,11 @@
 				 'citar-open
 				 :packages 'org)
 	  (require 'init-org)))
+
+  (setup init-vc
+	(:iload init-vc)
+	(:once (list :before 'magit-status)
+	  (require 'init-vc)))
   
   (setup init-lang
 	(:iload init-lang)
