@@ -52,7 +52,7 @@
   Incremental loading does not occur in daemon sessions (they are
   loaded immediately at startup).")
 
-(defcustom elemacs-incremental-first-idle-timer (if (daemonp) 0 2)
+(defcustom elemacs-incremental-first-idle-timer (if (daemonp) 0 1.5)
   "How long (in idle seconds) until incremental loading starts.
 
  Set this to nil to disable incremental loading. Set this to 0 to
@@ -61,7 +61,7 @@ load all incrementally deferred packages immediately at
   :group 'elemacs-iloader
   :type 'number)
 
-(defcustom elemacs-incremental-idle-timer 2
+(defcustom elemacs-incremental-idle-timer 1.5
   "How long (in idle seconds) in between incrementally loading packages."
   :group 'elemacs-iloader
   :type 'number)
