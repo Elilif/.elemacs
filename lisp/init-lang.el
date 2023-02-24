@@ -172,7 +172,7 @@
 ;;;; flycheck
 (setup flycheck
   (:option*
-   flycheck-idle-change-delay 5))
+   flycheck-idle-change-delay 0.5))
 ;;;; eglot
 ;; (setup eglot
 ;;   (:option* eglot-confirm-server-initiated-edits nil
