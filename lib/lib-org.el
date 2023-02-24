@@ -267,11 +267,7 @@ Assume point is at first MARK."
                               elfeed-show-mode
 							  nov-mode))
            current-prefix-arg)
-	  (thread-last
-		string
-		eli/org2plaintext
-		(replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 ")
-		(replace-regexp-in-string "\n" "" ))
+	  (eli/org2plaintxt string)
     string))
 
 ;; movie rating
