@@ -95,7 +95,7 @@
 	  (let ((out-file (concat (file-name-sans-extension file-name) exec-suffix)))
 	    (setq-local compile-command (format "g++ -std=c++11 -g %s -o %s" file-name out-file))))))
 ;;;; gdb
-(setup gdb
+(setup gdb-mi
   (:also-load
    lib-gdb)
   (:option*
