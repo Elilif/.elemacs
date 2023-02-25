@@ -170,7 +170,10 @@
     (:once (list :hooks 'post-self-insert-hook)
       (:silence (yas-global-mode))
 	  (require 'lib-yasnippet)
-	  (:hooks post-command-hook my/yas-try-expanding-auto-snippets)))  
+	  ;; (:hooks post-command-hook my/yas-try-expanding-auto-snippets)
+	  ))
+  (:option*
+   yas-indent-line 'fixed)
   (:when-loaded
     (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
     (:option yas-triggers-in-field t)))
