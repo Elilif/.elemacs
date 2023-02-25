@@ -162,6 +162,8 @@
 	 "C-s-j" +rime-convert-string-at-point)))
 ;;;; avy
 (setup avy
+  (:when-loaded
+	(ace-pinyin-global-mode))
   (:init
    (defun avy-goto-char-near-point (char)
 	 "Jump to the currently visible CHAR in the few lines near point."

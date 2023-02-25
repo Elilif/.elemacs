@@ -1,3 +1,6 @@
+[submodule "ace-pinyin"]
+	path = site-lisp/ace-pinyin
+	url = https://github.com/cute-jumper/ace-pinyin
 [submodule "ace-window"]
 	path = site-lisp/ace-window
 	url = https://github.com/abo-abo/ace-window
