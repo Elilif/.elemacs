@@ -65,12 +65,9 @@
 			   :min-width width
 			   :min-height height
 			   :internal-border-width 3
-			   ;; :internal-border-color (face-background 'posframe-border nil t)
 			   :background-color (face-background 'tooltip nil t)
 			   :override-parameters '((cursor-type . t))
-			   ;; :respect-mode-line t
-			   :accept-focus t
-			   ))
+			   :accept-focus t))
 
 		(with-current-buffer buffer
 		  (setq-local cursor-type 'box) ; blink cursor
