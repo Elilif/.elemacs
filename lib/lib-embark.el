@@ -55,7 +55,7 @@
 
 (defun eli/remove-image-preview-hook ()
   (remove-hook 'post-command-hook #'eli/image-preview)
-  (posframe-delete-all)
+  (posframe--kill-buffer "*image*")
   (remove-hook 'minibuffer-exit-hook #'eli/remove-image-preview-hook))
 
 (advice-add 'eli/select-images
