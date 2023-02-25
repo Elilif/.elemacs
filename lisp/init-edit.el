@@ -128,8 +128,8 @@
    kmacro-keyboard-quit :after eli/speed-up-kmacro-recover
    markmacro-exit :after eli/speed-up-kmacro-recover)
   (:global
-   "s-=" markmacro-apply-all
-   "s--" kmacro-start-macro
+   "s-`" markmacro-apply-all
+   "s-\\" kmacro-start-macro
    "s-w" markmacro-mark-words
    "s-l" markmacro-mark-lines
    "C-r" rectangle-mark-mode
