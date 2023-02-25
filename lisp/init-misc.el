@@ -140,8 +140,8 @@
 (setup rime
   (:when-loaded
 	(require 'lib-rime))
-  (:once (list :hooks 'post-self-insert-hook)
-	(:option default-input-method "rime"))
+  (:option
+   default-input-method "rime")
   (:option*
    rime-user-data-dir "~/.emacs.d/rime"
    rime-disable-predicates '(rime-predicate-prog-in-code-p
