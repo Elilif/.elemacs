@@ -110,6 +110,10 @@
 
 (setq save-silently t)
 
+(run-with-idle-timer 0.6 nil (lambda ()
+							   (with-current-buffer (get-buffer "*scratch*")
+								 (lisp-interaction-mode))))
+
 ;;;; hippie-expand
 (setup hippie-exp
   (:when-loaded
