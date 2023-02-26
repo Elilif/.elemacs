@@ -34,7 +34,8 @@
   (require 'rect)
   (require 'midnight)
   (require 'ibuf-ext)
-  (require 'dired))
+  (require 'dired)
+  (require 'core-lib))
 
 
 ;;;; misc

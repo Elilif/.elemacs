@@ -36,7 +36,8 @@
   (require 'leetcode)
   (require 'lsp-mode)
   (require 'lib-leetcode)
-  (require 'lib-vterm))
+  (require 'lib-vterm)
+  (require 'lib-gdb))
 
 
 ;;;; vterm
