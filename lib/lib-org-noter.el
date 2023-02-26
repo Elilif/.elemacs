@@ -37,7 +37,7 @@
       (remove-overlays (point-min) (point-max) 'org-noter-current-hl t)
       (goto-char (org-entry-beginning-position))
       (let* ((hl (org-element-context))
-             (hl-begin (plist-get  (plist-get hl 'headline) :begin))
+             (hl-begin (1+ (plist-get  (plist-get hl 'headline) :begin)))
              (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
              (hl-ov (make-overlay hl-begin hl-end)))
         (overlay-put hl-ov 'face 'mindre-keyword)
