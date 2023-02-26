@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: mk
+# key: mk
+# --
+CXX = g++
+CXXFLAGS = -g
+
+SRCS = $(wildcard *.cpp)
+OBJS = $(SRCS:.cpp=.o)
+EXEC = result.out
+
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(EXEC)
+
+clean:
+	rm -f $(OBJS) $(EXEC)
