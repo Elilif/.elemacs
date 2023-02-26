@@ -133,9 +133,8 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 (when (featurep 'ns)
   (push '(ns-transparent-titlebar . t) default-frame-alist))
-(push '(internal-border-width . 20) default-frame-alist)
+(push '(internal-border-width . 15) default-frame-alist)
 (push '(line-spacing . 10) default-frame-alist)
-
 
 (provide 'early-init)
 ;;; early-init.el ends here.
