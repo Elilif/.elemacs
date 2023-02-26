@@ -84,5 +84,12 @@ the _value_ of the choice, not the selected choice. "
 (defun add-after-save-hook ()
   (add-hook 'after-save-hook 'auto-recompile-file-maybe nil t))
 
+;;;###autoload
+(defun eli/find-file-or-create ()
+  (interactive)
+  (if current-prefix-arg
+	  (call-interactively 'make-directory)
+	(call-interactively 'find-file)))
+
 (provide 'core-lib)
 ;;; core-lib.el ends here.

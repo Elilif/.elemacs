@@ -191,7 +191,9 @@
              dired-kill-when-opening-new-dired-buffer t
              dired-guess-shell-alist-user '(("\\.doc\\'" "wps")
                                             ("\\.docx\\'" "wps")))
-    (put 'dired-find-alternate-file 'disabled nil)))
+    (put 'dired-find-alternate-file 'disabled nil))
+  (:global
+   [remap find-file] eli/find-file-or-create))
 
 ;;;; recentf
 (setup recentf
