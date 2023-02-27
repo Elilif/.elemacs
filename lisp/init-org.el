@@ -352,7 +352,7 @@
 
 ;;;; org-habit
 (setup org-habit
-  (:with-feature org
+  (:with-feature org-agenda
 	(:also-load org-habit
 				lib-org-habit))
   (:option*
