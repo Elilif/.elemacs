@@ -56,23 +56,22 @@
 	;;; modeline font setting
 	(create-fontset-from-fontset-spec
 	 (font-xlfd-name
-	  (font-spec :family "InconsolataGo QiHei NF"
+	  (font-spec :family "Cascadia Mono"
 				 :registry "fontset-modeline fontset")))
 
 	(dolist (charset '(kana han cjk-misc bopomofo unicode))
       (set-fontset-font "fontset-modeline fontset"  charset
 			            (font-spec :family "InconsolataGo QiHei NF")))
-	(set-fontset-font "fontset-modeline fontset" 'ascii
-			          (font-spec :family "Cascadia Mono"))
+	(set-fontset-font "fontset-modeline fontset" 'latin
+					  (font-spec :family "Cascadia Mono"))
 	
 	(dolist (face '(mode-line mode-line-inactive mode-line-buffer-id
 							  mode-line-highlight mode-line-active
 							  mode-line-emphasis))
-	  (set-face-attribute face nil :font "fontset-modeline fontset"
-						  :fontset "fontset-modeline fontset"))
+	  (set-face-attribute face nil :fontset "fontset-modeline fontset"))
 	(dolist (sym '(?● ?■ ?◢))
 	  (set-fontset-font "fontset-modeline fontset" sym
-						(font-spec :family "Sarasa Mono SC Nerd" :size 12)))
+						(font-spec :family "Sarasa Mono SC Nerd" :size 13)))
 	;;; modeline font setting ends here
 
 	(dolist (font '("AR PL New Kai" "Meslo LG S DZ" "HanaMinA" "Noto Color Emoji"))
