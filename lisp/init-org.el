@@ -462,8 +462,7 @@
 	  "SPC" #'mark
 	  "DEL" #'delete-region)
 	(add-to-list 'embark-keymap-alist
-				 '(consult-org-heading . embark-org-heading-map))
-	))
+				 '(consult-org-heading . embark-org-heading-map))))
 
 ;;;; org-roam-ui
 (setup org-roam-ui
@@ -475,6 +474,7 @@
 
 ;;;; org-mru-clock
 (setup org-mru-clock
+  (:autoload org-mru-clock-goto)
   (:option*
    org-mru-clock-capture-if-no-match '((".*" . "c"))
    org-mru-clock-how-many 50
@@ -485,27 +485,29 @@
 	 ;; TODO: make it work
      ;; ("1" (elemacs-global-interactive-capture))
      ;; ("2" (elemacs-global-interactive-capture))
-	 )))
+	 ))
+  (:when-loaded
+	(org-mru-clock-to-history 50)))
 
 ;;;; org-clock-convenience
 (setup org-clock-convenience
   (:option*
    org-clock-convenience-clocked-agenda-re "^ +\\([^:]+\\):[[:space:]]*\\(\\([ 	012][0-9]\\):\\([0-5][0-9]\\)\\)-\\(\\([ 012]*[0-9]\\):\\([0-5][0-9]\\)\\|.*\\)?[[:space:]]+Clocked:[[:space:]]+\\(([0-9]+:[0-5][0-9])\\|(-)\\)")
-  (:bind-into org-agenda-mode-map
-	"M-<up>" org-clock-convenience-timestamp-up
-	"M-<down>" org-clock-convenience-timestamp-down
-	"<f9>" org-clock-convenience-fill-gap
-	"<f10>" org-clock-convenience-fill-gap-both))
+  (:with-feature org
+	(:bind-into org-agenda-mode-map
+	  "M-<up>" org-clock-convenience-timestamp-up
+	  "M-<down>" org-clock-convenience-timestamp-down
+	  "<f9>" org-clock-convenience-fill-gap
+	  "<f10>" org-clock-convenience-fill-gap-both)))
 
 ;;;; org-appear-mode
 (setup org-appear-mode
-  (:once (list :hooks 'org-mode-hook)
-	(:once (list :hooks 'pre-command-hook)
-	  (org-appear-mode))))
+  (:hook-into
+   org-mode))
 
 ;;;; org-download
 (setup org-download
-  ;; (:iload org-download)
+  (:iload* org-download)
   (:option*
    org-download-method 'directory
    org-download-image-dir "~/Documents/org-images"
@@ -539,13 +541,15 @@
 
 ;;;; org-media note
 (setup org-media-note
-  (:also-load org-link-edit
-			  lib-org-media-note)
+  (:iload org-link-edit org-media-note-mpv org-media-note-core org-media-note
+		  org-media-note-import)
+  (:also-load 
+   lib-org-media-note)
   (:advice
    org-media-note-play-online-video :after
    (lambda ()
 	 (add-hook 'pre-command-hook #'eli/org-media-note-auto-pause nil t)))
-  (:bind-into org-mode
+  (:bind-into org
 	"s-[" eli/org-media-note-vedio-pause)
   (:option*
    org-media-note-screenshot-image-dir "~/Documents/org-images/"))
@@ -576,8 +580,9 @@
    "<f12>" #'org-anki-sync-region))
 
 ;;;; LaTeX
-(setup org
-  (:also-load ox-latex)
+(setup ox-latex
+  (:once (list :before 'org-self-insert-command)
+	(require 'ox-latex))
   (:option*
    org-highlight-latex-and-related nil
    ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
@@ -667,7 +672,8 @@
 
 ;;;; org simple ref
 (setup org
-  (:also-load lib-org-simple-ref))
+  (:once (list :before 'hydra-insert/body)
+	(require 'lib-org-simple-ref)))
 
 ;;;; org export
 (setup ox
@@ -690,7 +696,7 @@
 	(add-to-list 'mixed-pitch-fixed-pitch-faces 'org-date)
 	(add-to-list 'mixed-pitch-fixed-pitch-faces 'org-tag)
 	(add-to-list 'mixed-pitch-fixed-pitch-faces 'font-lock-comment-face))
-  (:hooks org-mode-hook mixed-pitch-mode))
+  (:hook-into org-mode))
 
 ;;;; svg-tag-mode
 (setup svg-tag-mode
