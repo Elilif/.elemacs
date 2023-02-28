@@ -81,7 +81,12 @@
            "M-g o"                     consult-outline)
   (:option* consult-fontify-max-size       100000
             xref-show-xrefs-function       #'consult-xref
-            xref-show-definitions-function #'consult-xref)
+            xref-show-definitions-function #'consult-xref
+			consult-buffer-filter '("\\` "
+									"\\`\\*Completions\\*\\'"
+									"\\`\\*Flymake log\\*\\'"
+									"\\`\\*Semantic SymRef\\*\\'"
+									"\\`\\*tramp/.*\\*\\'"))
   (:when-loaded
     (consult-customize
      consult-theme
