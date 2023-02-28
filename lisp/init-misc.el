@@ -182,6 +182,42 @@
    "C-:" avy-goto-char-in-line
    "C-'" avy-goto-char
    "C-\"" avy-goto-char-near-point))
+;;;; desktop
+(setup desktop
+  (:option*
+   desktop-dirname user-emacs-directory))
+;;;; tab-bar
+(setup tab-bar
+  (:option*
+   tab-bar-close-button-show nil
+   tab-bar-separator " "
+   tab-bar-tab-hints nil
+   tab-bar-new-tab-choice "*scratch*"
+   tab-bar-select-tab-modifiers '(super)
+   tab-bar-tab-name-truncated-max 15
+   tab-bar-border nil
+   tab-bar-auto-width nil
+   tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
+   tab-bar-tab-name-function #'tab-bar-tab-name-truncated
+   tab-bar-tab-name-format-function (lambda (tab i)
+									  (concat
+									   (propertize (if tab-bar-tab-hints (format "%d " i) "")
+												   'face 'tab-bar-tab-inactive)
+									   (propertize (alist-get 'name tab)
+												   'face (funcall tab-bar-tab-face-function tab)))))
+  
+  (:global
+   "s--" tab-bar-close-tab
+   "s-=" tab-bar-new-tab
+   "s-<left>" tab-bar-move-tab-backward
+   "s-<right>" tab-bar-move-tab))
+
+(setup tabspaces
+  (:also-load
+   project
+   lib-tabspaces)
+  (:hook my--consult-tabspaces)
+  (:hook-into tab-bar-mode-hook))
 
 ;;;; provide
 (provide 'init-misc)

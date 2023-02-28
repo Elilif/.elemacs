@@ -361,6 +361,9 @@
 [submodule "tablist"]
 	path = site-lisp/tablist
 	url = https://github.com/politza/tablist
+[submodule "tabspaces"]
+	path = site-lisp/tabspaces
+	url = https://github.com/mclear-tools/tabspaces
 [submodule "treepy"]
 	path = site-lisp/treepy
 	url = https://github.com/volrath/treepy.el
