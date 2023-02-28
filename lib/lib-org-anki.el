@@ -38,7 +38,7 @@
 (defun eli/org-show-empty-headline ()
   "Display all empty headlines in current buffer."
   (interactive)
-  (org-set-startup-visibility)
+  (org-cycle-set-startup-visibility)
   (let ((count 0))
     (org-map-entries
      (lambda ()
@@ -91,22 +91,21 @@ Used by `org-anki-skip-function'"
                   (back-string (if ,back
                                    (match-string-no-properties ,back)
                                  nil))
-                  (front (org-anki--string-to-html (string-clean-whitespace
-                                                    front-string)))
+                  (front (org-anki--org-to-html (string-clean-whitespace
+                                                 front-string)))
                   (maybe-id (org-entry-get nil org-anki-prop-note-id))
                   (back (if ,back
-                            (org-anki--back-post-processing
-                             (org-anki--string-to-html
-                              (string-clean-whitespace
-                               back-string)))
+                            (org-anki--org-to-html
+                             (string-clean-whitespace
+                              back-string))
                           ""))
                   (tags (org-anki--get-tags))
                   (note-start (point))
                   (card (make-org-anki--note
                          :maybe-id (if (stringp maybe-id)
                                        (string-to-number maybe-id))
-                         :front    front
-                         :back     back
+						 :fields   (list (cons "Back" back)
+										 (cons "Front" front))
                          :tags     tags
                          :deck     deck
                          :type     type
@@ -131,21 +130,20 @@ Used by `org-anki-skip-function'"
   (let* ((org-export-preserve-breaks t)
          (text (buffer-substring beg end))
          (regexp (read-regexp "Input a Regexp: "))
-         (void (string-match regexp
-                             text))
+         (_void (string-match regexp
+                              text))
          (front-string (match-string-no-properties 1 text))
          (back-string (match-string-no-properties 2 text))
-         (front (org-anki--string-to-html
+         (front (org-anki--org-to-html
                  (read-string "Front Card: "
                               (string-clean-whitespace front-string))))
-         (back (org-anki--back-post-processing
-                (org-anki--string-to-html
-                 (read-string "Back Card: "
-                              (if (member (prefix-numeric-value
-                                           current-prefix-arg)
-                                          '(4 16 64))
-                                  (string-clean-whitespace back-string)
-                                back-string)))))
+         (back (org-anki--org-to-html
+                (read-string "Back Card: "
+                             (if (member (prefix-numeric-value
+                                          current-prefix-arg)
+                                         '(4 16 64))
+                                 (string-clean-whitespace back-string)
+                               back-string))))
          (deck (read-string "Input Deck to import: "))
          (type (org-anki--find-prop
                 org-anki-note-type org-anki-default-note-type))
@@ -155,8 +153,8 @@ Used by `org-anki-skip-function'"
          (card (make-org-anki--note
                 :maybe-id (if (stringp maybe-id)
                               (string-to-number maybe-id))
-                :front    front
-                :back     back
+                :fields   (list (cons "Back" back)
+								(cons "Front" front))
                 :tags     tags
                 :deck     deck
                 :type     type
