@@ -95,7 +95,7 @@ instance: \"$4\pi^2 //$\" will be expand into
   (save-excursion
     (c-beginning-of-defun)
     (unless (re-search-forward
-             (concat "^\s*using\\s-+namespace "
+             (concat "using namespace "
                      namespace
                      ";")
              (save-excursion
