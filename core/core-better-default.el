@@ -79,6 +79,8 @@
     (:option global-auto-revert-non-file-buffers t)
     (global-auto-revert-mode 1)))
 
+(setq set-mark-command-repeat-pop t)
+
 ;; disable backup
 (setq make-backup-files nil)
 (setq auto-save-default nil)
