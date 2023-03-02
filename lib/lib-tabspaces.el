@@ -46,7 +46,6 @@
 
 (defun my--consult-tabspaces ()
   "Deactivate isolated buffers when not using tabspaces."
-  (require 'consult)
   (cond (tabspaces-mode
          ;; hide full buffer list (still available with "b")
          (consult-customize consult--source-buffer :hidden t :default nil)
@@ -54,7 +53,7 @@
         (t
          ;; reset consult-buffer to show all buffers 
          (consult-customize consult--source-buffer :hidden nil :default t)
-         (setq consult-buffer-sources (remove #'consult--source-workspace consult-buffer-sources)))))
+         (setq consult-buffer-sources (remove 'consult--source-workspace consult-buffer-sources)))))
 
 
 ;;;; provide
