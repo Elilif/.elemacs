@@ -95,8 +95,8 @@
      :preview-key '(:debounce 0.2 any)
      consult-ripgrep consult-git-grep consult-grep eli/consult-org-file 
      consult-bookmark consult-recent-file consult-xref consult-org-heading
-     consult--source-bookmark consult--source-recent-file
-     consult--source-project-recent-file eli/consult-git-ripgrep
+     consult--source-bookmark consult--source-recent-file eli/consult-buffer
+	 consult--source-project-recent-file eli/consult-git-ripgrep
      :preview-key "M-."))
   (:advice consult-ripgrep :around consult--with-orderless
            consult-imenu :around my/consult-imenu-around-advice
