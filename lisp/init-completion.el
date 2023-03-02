@@ -74,7 +74,9 @@
   (:global [remap isearch-forward]     consult-line
            [remap find-file-read-only] consult-recent-file
            [remap list-directory]      consult-dir
-           [remap switch-to-buffer]    eli/consult-buffer
+           ;; [remap switch-to-buffer]    eli/consult-buffer
+		   ;; workaround for `tabspaces.el'
+		   "C-x b"                     eli/consult-buffer
            "C-c \\"                    consult-register
            "C-c -"                     consult-register-store 
            "C-c ="                     consult-register-load
