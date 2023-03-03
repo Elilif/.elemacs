@@ -58,7 +58,7 @@
 		  elfeed-search-update-hook hl-line-mode)
   (:option*
    shr-width 90
-   shr-inhibit-images t
+   shr-inhibit-images nil
    shr-use-colors nil
 
    elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890")
