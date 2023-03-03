@@ -261,13 +261,12 @@ Assume point is at first MARK."
         (org-export-string-as string 'ascii t)))))
 
 (defun eli/unfill-string (string)
-  (if (and (memq major-mode '(org-mode
-                              mu4e-view-mode
-                              Info-mode
-                              elfeed-show-mode
-							  nov-mode))
-           current-prefix-arg)
-	  (eli/org2plaintxt string)
+  (if current-prefix-arg
+	  (thread-last
+		string
+		eli/org2plaintxt
+		(replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 ")
+		(replace-regexp-in-string "\n" "" ))
     string))
 
 ;; movie rating
