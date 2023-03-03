@@ -88,9 +88,8 @@
    elfeed-score-serde-score-file "~/.emacs.d/private/elfeed.score"
    elfeed-score-rule-stats-file "~/.emacs.d/private/elfeed.stats")
   (:after elfeed
-	(elfeed-score-enable))
-  (:bind-into elfeed-search-mode-map
-	"=" elfeed-score-map))
+	(elfeed-score-enable)
+	(define-key elfeed-search-mode-map "=" elfeed-score-map)))
 
 ;;;; elfeed googdies
 (setup elfeed-googdies
