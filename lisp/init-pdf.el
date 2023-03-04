@@ -63,13 +63,14 @@
    org-noter-auto-save-last-location t
    org-noter-doc-split-fraction '(0.65 0.35)
    org-noter-notes-search-path '("~/Dropbox/org/roam")
-   org-noter-always-create-frame t)
+   org-noter-always-create-frame nil)
   (:bind-into org-noter-notes-mode-map
 	"M-]" eli/org-noter-scroll-up-other-window
 	"M-[" eli/org-noter-scroll-down-other-window)
   (:hooks org-noter-insert-heading-hook eli/org-noter-set-highlight)
   (:advice org-noter--focus-notes-region :after eli/org-noter-set-highlight
-		   org-noter--insert-heading :override eli/org-noter--insert-heading))
+		   org-noter--insert-heading :override eli/org-noter--insert-heading
+		   org-noter-kill-session :after eli/org-noter-kill-outline))
 
 
 ;;;; provide

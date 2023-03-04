@@ -75,6 +75,9 @@
                  #'pdf-view-scroll-down-or-previous-page)
              lines)))
 
+(defun eli/org-noter-kill-outline (&rest _arg)
+  (kill-buffer "*Outline Notes*"))
+
 ;; custom for org-anki
 (defun eli/org-noter--insert-heading (level title &optional newlines-number location)
   "Insert a new heading at LEVEL with TITLE.
