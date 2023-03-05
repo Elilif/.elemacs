@@ -148,9 +148,10 @@
    lsp-enable-indentation nil
    lsp-enable-on-type-formatting nil
    lsp-lens-enable nil
-   lsp-idle-delay 3)
+   lsp-idle-delay 0.5)
   (:hooks prog-mode-hook (lambda ()
-						   (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode)
+						   (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode
+												   'snippet-mode)
 							 (lsp-deferred)))
 		  lsp-mode-hook (lambda ()
 						  ;; Integrate `which-key'
