@@ -492,7 +492,7 @@
 (setup org-clock-convenience
   (:option*
    org-clock-convenience-clocked-agenda-re "^ +\\([^:]+\\):[[:space:]]*\\(\\([ 	012][0-9]\\):\\([0-5][0-9]\\)\\)-\\(\\([ 012]*[0-9]\\):\\([0-5][0-9]\\)\\|.*\\)?[[:space:]]+Clocked:[[:space:]]+\\(([0-9]+:[0-5][0-9])\\|(-)\\)")
-  (:with-feature org
+  (:with-feature org-agenda
 	(:bind-into org-agenda-mode-map
 	  "M-<up>" org-clock-convenience-timestamp-up
 	  "M-<down>" org-clock-convenience-timestamp-down
