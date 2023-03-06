@@ -555,10 +555,11 @@
 
 ;;;; org-anki
 (setup org-anki
+  (:iload org-anki)
   (:also-load lib-org-anki)
   (:option*
    org-fold-show-context-detail '((empty-headline . minimal)
-								  (agenda . local)
+								  (agenda . lineage)
 								  (bookmark-jump . lineage)
 								  (isearch . lineage)
 								  (default . ancestors))
