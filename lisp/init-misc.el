@@ -182,6 +182,11 @@
    "C-:" avy-goto-char-in-line
    "C-'" avy-goto-char
    "C-\"" avy-goto-char-near-point))
+
+;;;; ChatGPT
+(setup doctor-chatgpt
+  (:iload doctor-chatgpt))
+
 ;;;; desktop
 (setup desktop
   (:option*
