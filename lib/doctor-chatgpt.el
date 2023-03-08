@@ -89,8 +89,7 @@ OUTPUT is the string output we need to handle."
           (insert (substring output 0 index)))
         (doctor-chatgpt--insert-line ?\─))
       (setq doctor-chatgpt-replying nil)
-      (read-only-mode 0)
-	  (fill-region (point-min) (point-max))))
+      (read-only-mode 0)))
    (t
     (when doctor-chatgpt-replying ; ignore other output
       (when (> (length output) 1) (push output doctor-chatgpt-recv-list))
@@ -184,7 +183,7 @@ except that RET when point is after a newline, or LFD at any time,
 reads the sentence before point, and prints the ChatGPT's answer."
   :interactive nil
   (setq-local word-wrap-by-category t)
-  (visual-line-mode)
+  (visual-fill-column-mode)
   (insert "Hi. I am the ChatGPT. Please ask me anything, each time you are finished talking, type RET twice."))
 
 
