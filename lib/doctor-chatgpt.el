@@ -74,6 +74,7 @@ See https://platform.openai.com/account/api-keys"
     'font-lock-face 'font-lock-comment-face))
   (insert "\n\n"))
 
+;;; TODO: remove unused code and refactor
 ;; (defun doctor-chatgpt--process-filter (_ output)
 ;;   "Filter for chatgpt process.
 ;; OUTPUT is the string output we need to handle."
@@ -212,7 +213,10 @@ ARG will be passed to `newline'."
       (doctor-chatgpt--insert-line ?\═)
       (insert "Restarting process..."))
     (read-only-mode 0)
-    (doctor-chatgpt--start-process)))
+	;;; TODO: write a restart function
+	(doctor-chatgpt-process-set)
+    ;; (doctor-chatgpt--start-process)
+	))
 
 ;;;###autoload
 (defun doctor-chatgpt-exit ()
@@ -257,6 +261,7 @@ except that RET when point is after a newline, or LFD at any time,
 reads the sentence before point, and prints the ChatGPT's answer."
   :interactive nil
   (setq-local word-wrap-by-category t)
+  ;;; TODO: use doctor-chatgpt-mode-hook
   (visual-fill-column-mode)
   (mixed-pitch-mode)
   (insert "Hi. I am the ChatGPT. Please ask me anything, each time you are finished talking, type RET twice."))
