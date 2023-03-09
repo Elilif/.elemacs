@@ -195,6 +195,71 @@ reads the sentence before point, and prints the ChatGPT's answer."
   (switch-to-buffer doctor-chatgpt-buffer-name)
   (doctor-chatgpt-mode))
 
+;;;; posframe integration
+;;; TODO: design a general framwork to use toggle posframe
+(defvar doctor-chatgpt-pop--frame nil)
+
+;;;###autoload
+(defun doctor-chatgpt-pop-posframe-toggle ()
+  "Toggle shell in child frame."
+  (interactive)
+  ;; Shell pop in child frame
+  (unless (and doctor-chatgpt-pop--frame
+			   (frame-live-p doctor-chatgpt-pop--frame)
+			   (process-live-p doctor-chatgpt-process))
+	(let ((width  (max 100 (round (* (frame-width) 0.62))))
+		  (height (round (* (frame-height) 0.62)))
+		  (buffer (if doctor-chatgpt-conversations
+					  (elemacs-completing-read "Select a conversation: "
+											   doctor-chatgpt-conversations)
+					(doctor-chatgpt-process-set))))
+	  (setq doctor-chatgpt-pop--frame
+			(posframe-show
+			 buffer
+			 :poshandler #'posframe-poshandler-frame-center
+			 :left-fringe 8
+			 :right-fringe 8
+			 :width width
+			 :height height
+			 :min-width width
+			 :min-height height
+			 :internal-border-width 3
+			 :background-color (face-background 'tooltip nil t)
+			 :override-parameters '((cursor-type . t))
+			 :accept-focus t))
+
+	  (with-current-buffer buffer
+		(set-frame-parameter doctor-chatgpt-pop--frame 'line-spacing 10)
+		(goto-char (point-max)))))
+
+  ;; Focus in child frame
+  (select-frame-set-input-focus doctor-chatgpt-pop--frame)
+  (setq-local cursor-type 'box)
+  (goto-char (point-max)))
+
+;;;###autoload
+(defun eli/doctor-chatgpt-quit ()
+  (interactive)
+  (let ((frame (selected-frame)))
+	(if (frame-parameter frame 'posframe-buffer)
+		(progn
+		  (posframe--make-frame-invisible frame)
+		  (when current-prefix-arg
+			(doctor-chatgpt-exit)))
+	  (keyboard-quit))))
+
+
+;;;; prompt
+(defcustom doctor-chatgpt-prompts '(("English Translator and Improver" . "I want you to act as an English translator, spelling corrector and improver. I will speak to you in any language and you will detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations."))
+  "Promps used by doctor-chatgpt"
+  :type 'alist
+  :group 'doctor-chatgpt)
+
+(defun doctor-chatgpt-insert-prompt (prompt)
+  "Insert PROMPT."
+  (interactive (list (elemacs-completing-read "Prompts: " doctor-chatgpt-prompts)))
+  (insert prompt))
+
 (provide 'doctor-chatgpt)
 ;;; doctor-chatgpt.el ends here
 
