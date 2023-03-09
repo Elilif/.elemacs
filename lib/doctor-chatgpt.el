@@ -69,7 +69,7 @@ See https://platform.openai.com/account/api-keys"
   (insert "\n\n")
   (insert
    (propertize
-    (make-string 80 char)
+    (make-string 100 char)
     'font-lock-face 'font-lock-comment-face))
   (insert "\n\n"))
 
@@ -163,9 +163,9 @@ ARG will be passed to `newline'."
 `doctor-chatgpt-process-buffer-name' and
 `doctor-chatgpt-buffer-name'."
   (interactive)
-  (kill-buffer doctor-chatgpt-buffer-name)
   (let ((kill-buffer-query-functions nil))
-    (kill-buffer doctor-chatgpt-process-buffer-name)))
+    (kill-buffer doctor-chatgpt-process-buffer-name)
+	(kill-buffer doctor-chatgpt-buffer-name)))
 
 (defun doctor-chatgpt--kill-process ()
   "Kill the `doctor-chatgpt-process'."
