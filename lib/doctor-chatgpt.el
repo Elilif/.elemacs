@@ -20,9 +20,10 @@
 
 (require 'markdown-mode)
 
-(defvar doctor-chatgpt-buffer-name "*doctor-chatgpt*")
-(defvar doctor-chatgpt-process-buffer-name "*doctor-chatgpt-process*")
-(defvar doctor-chatgpt-process nil)
+(defvar-local doctor-chatgpt-buffer-name nil)
+(defvar-local doctor-chatgpt-process-buffer-name nil)
+(defvar-local doctor-chatgpt-process nil)
+(defvar doctor-chatgpt-conversations '())
 (defvar doctor-chatgpt-replying nil)
 (defvar doctor-chatgpt-recv-list nil)
 (defvar doctor-chatgpt-send-list nil)
@@ -73,46 +74,102 @@ See https://platform.openai.com/account/api-keys"
     'font-lock-face 'font-lock-comment-face))
   (insert "\n\n"))
 
-(defun doctor-chatgpt--process-filter (_ output)
+;; (defun doctor-chatgpt--process-filter (_ output)
+;;   "Filter for chatgpt process.
+;; OUTPUT is the string output we need to handle."
+;;   (cond
+;;    ((string-match-p (doctor-chatgpt-revchatgpt-chatgpt-prompt) output)
+;;     (setq doctor-chatgpt-replying t))
+;;    ((string-match-p (doctor-chatgpt-revchatgpt-user-prompt) output)
+;;     (with-current-buffer doctor-chatgpt-buffer-name
+;;       (let ((inhibit-read-only t))
+;;         (goto-char (point-max))
+;;         ;; maybe still have answer output before "User: "
+;;         (when-let* ((_ doctor-chatgpt-replying)
+;;                     (index (string-match (doctor-chatgpt-revchatgpt-user-prompt) output)))
+;;           (insert (substring output 0 index)))
+;;         (doctor-chatgpt--insert-line ?\─))
+;;       (setq doctor-chatgpt-replying nil)
+;;       (read-only-mode 0)))
+;;    (t
+;;     (when doctor-chatgpt-replying ; ignore other output
+;;       (when (> (length output) 1) (push output doctor-chatgpt-recv-list))
+;;       ;; insert answer output to the doctor buffer
+;;       (with-current-buffer doctor-chatgpt-buffer-name
+;;         (let ((inhibit-read-only t))
+;;           (goto-char (point-max))
+;;           (insert output)))))))
+
+;; (defun doctor-chatgpt--start-process ()
+;;   "Start a chat with ChatGPT."
+;;   (doctor-chatgpt--kill-process)
+;;   (setq doctor-chatgpt-recv-list nil)
+;;   (setq doctor-chatgpt-send-list nil)
+;;   (setq doctor-chatgpt-process
+;;         (let ((process-environment (copy-sequence process-environment)))
+;;           (setenv "NO_COLOR" "true")
+;;           (apply #'start-process
+;;                  `(,doctor-chatgpt-process-buffer-name
+;;                    ,doctor-chatgpt-process-buffer-name
+;;                    ,@(doctor-chatgpt-revchatgpt-program)))))
+;;   (set-process-sentinel doctor-chatgpt-process #'doctor-chatgpt--process-sentinel)
+;;   (set-process-filter doctor-chatgpt-process #'doctor-chatgpt--process-filter))
+
+(defun doctor-chatgpt--process-filter (process output)
   "Filter for chatgpt process.
 OUTPUT is the string output we need to handle."
-  (cond
-   ((string-match-p (doctor-chatgpt-revchatgpt-chatgpt-prompt) output)
-    (setq doctor-chatgpt-replying t))
-   ((string-match-p (doctor-chatgpt-revchatgpt-user-prompt) output)
-    (with-current-buffer doctor-chatgpt-buffer-name
-      (let ((inhibit-read-only t))
-        (goto-char (point-max))
-        ;; maybe still have answer output before "User: "
-        (when-let* ((_ doctor-chatgpt-replying)
-                    (index (string-match (doctor-chatgpt-revchatgpt-user-prompt) output)))
-          (insert (substring output 0 index)))
-        (doctor-chatgpt--insert-line ?\─))
-      (setq doctor-chatgpt-replying nil)
-      (read-only-mode 0)))
-   (t
-    (when doctor-chatgpt-replying ; ignore other output
-      (when (> (length output) 1) (push output doctor-chatgpt-recv-list))
-      ;; insert answer output to the doctor buffer
-      (with-current-buffer doctor-chatgpt-buffer-name
-        (let ((inhibit-read-only t))
-          (goto-char (point-max))
-          (insert output)))))))
+  (let ((buffer (string-replace "-process" "" (process-name process))))
+	(cond
+	 ((string-match-p (doctor-chatgpt-revchatgpt-chatgpt-prompt) output)
+	  (setq doctor-chatgpt-replying t))
+	 ((string-match-p (doctor-chatgpt-revchatgpt-user-prompt) output)
+	  (with-current-buffer buffer
+		(let ((inhibit-read-only t))
+		  (goto-char (point-max))
+		  ;; maybe still have answer output before "User: "
+		  (when-let* ((_ doctor-chatgpt-replying)
+					  (index (string-match (doctor-chatgpt-revchatgpt-user-prompt) output)))
+			(insert (substring output 0 index)))
+		  (doctor-chatgpt--insert-line ?\─))
+		(setq doctor-chatgpt-replying nil)
+		(read-only-mode 0)))
+	 (t
+	  (when doctor-chatgpt-replying ; ignore other output
+		(when (> (length output) 1) (push output doctor-chatgpt-recv-list))
+		;; insert answer output to the doctor buffer
+		(with-current-buffer buffer
+		  (let ((inhibit-read-only t))
+			(goto-char (point-max))
+			(insert output))))))))
 
-(defun doctor-chatgpt--start-process ()
-  "Start a chat with ChatGPT."
-  (doctor-chatgpt--kill-process)
+(defun doctor-chatgpt-process-set ()
   (setq doctor-chatgpt-recv-list nil)
   (setq doctor-chatgpt-send-list nil)
-  (setq doctor-chatgpt-process
-        (let ((process-environment (copy-sequence process-environment)))
-          (setenv "NO_COLOR" "true")
-          (apply #'start-process
-                 `(,doctor-chatgpt-process-buffer-name
-                   ,doctor-chatgpt-process-buffer-name
-                   ,@(doctor-chatgpt-revchatgpt-program)))))
-  (set-process-sentinel doctor-chatgpt-process #'doctor-chatgpt--process-sentinel)
-  (set-process-filter doctor-chatgpt-process #'doctor-chatgpt--process-filter))
+  (let* ((name (read-from-minibuffer "Name: "))
+		 (process-name (concat "*doctor-chatgpt-process-" name "*"))
+		 (buffer-name (concat "*doctor-chatgpt-" name "*")))
+	(if (rassoc buffer-name doctor-chatgpt-conversations)
+		(switch-to-buffer buffer-name)
+	  (get-buffer-create buffer-name)
+	  (add-to-list 'doctor-chatgpt-conversations
+				   (cons name buffer-name))
+	  (with-current-buffer buffer-name
+		(setq doctor-chatgpt-buffer-name buffer-name)
+		(put 'doctor-chatgpt-buffer-name 'permanent-local t)
+		(setq doctor-chatgpt-process
+			  (let ((process-environment (copy-sequence process-environment)))
+				(setenv "NO_COLOR" "true")
+				(apply #'start-process
+					   `(,process-name
+						 ,process-name
+						 ,@(doctor-chatgpt-revchatgpt-program)))))
+		(set-process-sentinel doctor-chatgpt-process #'doctor-chatgpt--process-sentinel)
+		(set-process-filter doctor-chatgpt-process #'doctor-chatgpt--process-filter)
+		(put 'doctor-chatgpt-process 'permanent-local t)
+		(setq doctor-chatgpt-process-buffer-name process-name)
+		(put 'doctor-chatgpt-process-buffer-name 'permanent-local t)
+		(doctor-chatgpt-mode)))
+	buffer-name))
 
 (defun doctor-chatgpt--process-sentinel (process event)
   "Sentinel for chatgpt process.
@@ -163,9 +220,26 @@ ARG will be passed to `newline'."
 `doctor-chatgpt-process-buffer-name' and
 `doctor-chatgpt-buffer-name'."
   (interactive)
-  (let ((kill-buffer-query-functions nil))
-    (kill-buffer doctor-chatgpt-process-buffer-name)
-	(kill-buffer doctor-chatgpt-buffer-name)))
+  (let ((kill-buffer-query-functions nil)
+		(buffer (or doctor-chatgpt-buffer-name
+					(elemacs-completing-read "Select a conversation: "
+											 doctor-chatgpt-conversations))))
+	(with-current-buffer buffer
+	  (kill-buffer (string-replace "chatgpt" "chatgpt-process" buffer))
+	  (setq doctor-chatgpt-conversations
+			(cl-remove-if (lambda (cons)
+							(string= (cdr cons)
+									 doctor-chatgpt-buffer-name))
+						  doctor-chatgpt-conversations))
+	  (kill-buffer doctor-chatgpt-buffer-name))))
+;; (defun doctor-chatgpt-exit ()
+;;   "Kill the `doctor-chatgpt-process' with buffers.
+;; `doctor-chatgpt-process-buffer-name' and
+;; `doctor-chatgpt-buffer-name'."
+;;   (interactive)
+;;   (let ((kill-buffer-query-functions nil))
+;;     (kill-buffer doctor-chatgpt-process-buffer-name)
+;; 	(kill-buffer doctor-chatgpt-buffer-name)))
 
 (defun doctor-chatgpt--kill-process ()
   "Kill the `doctor-chatgpt-process'."
@@ -184,6 +258,7 @@ reads the sentence before point, and prints the ChatGPT's answer."
   :interactive nil
   (setq-local word-wrap-by-category t)
   (visual-fill-column-mode)
+  (mixed-pitch-mode)
   (insert "Hi. I am the ChatGPT. Please ask me anything, each time you are finished talking, type RET twice."))
 
 
@@ -191,9 +266,14 @@ reads the sentence before point, and prints the ChatGPT's answer."
 (defun doctor-chatgpt ()
   "Switch to `doctor-chatgpt-buffer' and start talking with ChatGPT."
   (interactive)
-  (doctor-chatgpt--start-process)
-  (switch-to-buffer doctor-chatgpt-buffer-name)
-  (doctor-chatgpt-mode))
+  (let* ((doctor-chatgpt-buffer-name (doctor-chatgpt-process-set)))
+	(switch-to-buffer doctor-chatgpt-buffer-name)))
+;; (defun doctor-chatgpt ()
+;;   "Switch to `doctor-chatgpt-buffer' and start talking with ChatGPT."
+;;   (interactive)
+;;   (doctor-chatgpt--start-process)
+;;   (switch-to-buffer doctor-chatgpt-buffer-name)
+;;   (doctor-chatgpt-mode))
 
 ;;;; posframe integration
 ;;; TODO: design a general framwork to use toggle posframe
