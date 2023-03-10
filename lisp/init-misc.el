@@ -34,7 +34,8 @@
   (require 'cal-china-x)
   (require 'lib-rime)
   (require 'rime)
-  (require 'avy))
+  (require 'avy)
+  (require 'lib-tab-bar))
 
 ;;;; dired
 (setup dired
