@@ -294,7 +294,8 @@ reads the sentence before point, and prints the ChatGPT's answer."
 			   (process-live-p doctor-chatgpt-process))
 	(let ((width  (max 100 (round (* (frame-width) 0.62))))
 		  (height (round (* (frame-height) 0.62)))
-		  (buffer (if doctor-chatgpt-conversations
+		  (buffer (if (and doctor-chatgpt-conversations
+						   (not current-prefix-arg))
 					  (elemacs-completing-read "Select a conversation: "
 											   doctor-chatgpt-conversations)
 					(doctor-chatgpt-process-set))))
