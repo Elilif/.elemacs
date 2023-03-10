@@ -60,14 +60,18 @@
    "Deft"
    (("n" notdeft "notdeft"))
    "info"
-   (("i" eli/info-search))
+   (("i" eli/info-search)
+	("h" doctor-chatgpt)
+	("x" doctor-chatgpt-exit)
+	("p" doctor-chatgpt-insert-prompt))
    "rg"
    (("g" eli/consult-git-grep)
     ("r" eli/consult-git-ripgrep)
+	("f" consult-find)
     ("e" (eli/consult-git-ripgrep "~/.emacs.d/site-lisp/") "lib"))
    "Google"
    (("s" my-search-with-chrome)
-    ("h" github-copy-reference-url-at-point))))
+    ("c" github-copy-reference-url-at-point))))
 
 (pretty-hydra-define hydra-edit
   (:color amaranth :exit t
