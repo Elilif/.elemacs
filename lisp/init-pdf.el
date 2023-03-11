@@ -70,7 +70,7 @@
   (:hooks org-noter-insert-heading-hook eli/org-noter-set-highlight)
   (:advice org-noter--focus-notes-region :after eli/org-noter-set-highlight
 		   org-noter--insert-heading :override eli/org-noter--insert-heading
-		   org-noter-kill-session :after eli/org-noter-kill-outline))
+		   org-noter-kill-session :before eli/org-noter-kill-outline))
 
 
 ;;;; provide

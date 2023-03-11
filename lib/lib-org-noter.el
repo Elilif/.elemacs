@@ -76,7 +76,8 @@
              lines)))
 
 (defun eli/org-noter-kill-outline (&rest _arg)
-  (kill-buffer "*Outline Notes*"))
+  (when (buffer-live-p "*Outline Notes*")
+	(kill-buffer "*Outline Notes*")))
 
 ;; custom for org-anki
 (defun eli/org-noter--insert-heading (level title &optional newlines-number location)
