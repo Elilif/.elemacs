@@ -31,24 +31,24 @@
 ;;; Code:
 
 ;;;; expand-region lib
-(with-eval-after-load 'org
-  (defmacro org-fold-core-save-visibility (use-markers &rest body)
-    "Save and restore folding state around BODY.
-If USE-MARKERS is non-nil, use markers for the positions.  This
-means that the buffer may change while running BODY, but it also
-means that the buffer should stay alive during the operation,
-because otherwise all these markers will point to nowhere."
-    (declare (debug (form body)) (indent 1))
-    (org-with-gensyms (regions)
-	  `(let* ((,regions ,(org-fold-core-get-regions :with-markers use-markers)))
-		 (unwind-protect (progn ,@body)
-		   (org-fold-core-regions ,regions :override nil :clean-markers nil))))))
+;; (with-eval-after-load 'org
+;;   (defmacro org-fold-core-save-visibility (use-markers &rest body)
+;;     "Save and restore folding state around BODY.
+;; If USE-MARKERS is non-nil, use markers for the positions.  This
+;; means that the buffer may change while running BODY, but it also
+;; means that the buffer should stay alive during the operation,
+;; because otherwise all these markers will point to nowhere."
+;;     (declare (debug (form body)) (indent 1))
+;;     (org-with-gensyms (regions)
+;; 	  `(let* ((,regions ,(org-fold-core-get-regions :with-markers use-markers)))
+;; 		 (unwind-protect (progn ,@body)
+;; 		   (org-fold-core-regions ,regions :override nil :clean-markers nil))))))
 
-(with-eval-after-load 'the-org-mode-expansions
-  (defun er/save-org-mode-excursion (action)
-    "Save outline visibility while expanding in org-mode"
-    (org-fold-core-save-visibility t
-	  (funcall action))))
+;; (with-eval-after-load 'the-org-mode-expansions
+;;   (defun er/save-org-mode-excursion (action)
+;;     "Save outline visibility while expanding in org-mode"
+;;     (org-fold-core-save-visibility t
+;; 	  (funcall action))))
 
 ;;;###autoload
 (defun er/mark-block-comment ()
