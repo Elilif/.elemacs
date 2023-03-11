@@ -474,6 +474,9 @@
 ;;;; org-mru-clock
 (setup org-mru-clock
   (:autoload org-mru-clock-goto)
+  (:autoload org-mru-clock-embark-minibuffer-hook)
+  (:after embark
+	(add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
   (:option*
    org-mru-clock-capture-if-no-match '((".*" . "c"))
    org-mru-clock-how-many 50
