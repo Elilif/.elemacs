@@ -76,7 +76,7 @@
              lines)))
 
 (defun eli/org-noter-kill-outline (&rest _arg)
-  (when (buffer-live-p "*Outline Notes*")
+  (when (buffer-live-p (get-buffer "*Outline Notes*"))
 	(kill-buffer "*Outline Notes*")))
 
 ;; custom for org-anki
