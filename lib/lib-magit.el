@@ -58,35 +58,36 @@ Valid members are `summary-starts-with-capital',
   :group 'git-commit)
 
 ;; Parallels `git-commit-check-style-conventions'
-(defun my-git-commit-check-style-conventions (&optional _force)
+(defun my-git-commit-check-style-conventions (force)
   "Check for violations of certain basic style conventions.
 
 For each violation ask the user if she wants to proceed anway.
 Option `my-git-commit-check-style-conventions' controls which
 conventions are checked."
-  (save-excursion
-    (goto-char (point-min))
-    (re-search-forward (git-commit-summary-regexp) nil t)
-    (let ((summary (match-string 1))
-          (second-word))
-	  (and
-       (or (not (memq 'summary-does-not-end-with-period
-                      my-git-commit-style-convention-checks))
-           (not (string-match-p "[\\.!\\?;,:]$" summary))
-           (y-or-n-p "Summary line ends with punctuation.  Commit anyway? "))
-       (or (not (memq 'summary-uses-imperative
-                      my-git-commit-style-convention-checks))
-           (progn
-             (string-match "^[[:alpha:]]*(?[^[:space:]()]*)?\\:[[:space:]]\\([[:alpha:]]*\\)" summary)
-             (setq second-word (downcase (match-string 1 summary)))
-             (car (member second-word (get-imperative-verbs))))
-           (when (y-or-n-p "Summary line should use imperative.  Does it? ")
-             (when (y-or-n-p (format "Add `%s' to list of imperative verbs?" second-word))
-               (with-temp-buffer
-                 (insert second-word)
-                 (insert "\n")
-                 (write-region (point-min) (point-max) imperative-verb-file t)))
-             t))))))
+  (or force
+	  (save-excursion
+		(goto-char (point-min))
+		(re-search-forward (git-commit-summary-regexp) nil t)
+		(let ((summary (match-string 1))
+			  (second-word))
+		  (and
+		   (or (not (memq 'summary-does-not-end-with-period
+						  my-git-commit-style-convention-checks))
+			   (not (string-match-p "[\\.!\\?;,:]$" summary))
+			   (y-or-n-p "Summary line ends with punctuation.  Commit anyway? "))
+		   (or (not (memq 'summary-uses-imperative
+						  my-git-commit-style-convention-checks))
+			   (progn
+				 (string-match "^[[:alpha:]]*(?[^[:space:]()]*)?\\:[[:space:]]\\([[:alpha:]]*\\)" summary)
+				 (setq second-word (downcase (match-string 1 summary)))
+				 (car (member second-word (get-imperative-verbs))))
+			   (when (y-or-n-p "Summary line should use imperative.  Does it? ")
+				 (when (y-or-n-p (format "Add `%s' to list of imperative verbs?" second-word))
+				   (with-temp-buffer
+					 (insert second-word)
+					 (insert "\n")
+					 (write-region (point-min) (point-max) imperative-verb-file t)))
+				 t)))))))
 
 ;;;###autoload
 (defun mu-magit-kill-buffers ()
