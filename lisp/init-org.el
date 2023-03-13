@@ -341,7 +341,7 @@
 							 (server-start))))))
 
 ;;;; org-refile
-(setup org-file
+(setup org-refile
   (:option*
    org-refile-use-outline-path 'file
    org-outline-path-complete-in-steps nil
