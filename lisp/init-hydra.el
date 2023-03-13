@@ -141,7 +141,7 @@
     ("f" org-roam-node-find "find roam node")
     ("n" org-id-get-create "create roam id")
     ("i" org-roam-node-insert "insert roam node")
-    ("s" eli/consult-org-roam-heading "search headings")
+    ("s" consult-org-roam-headline "search headings")
     ("w" org-roam-refile "refile roam node"))
    "Roam"
    (("c" org-roam-dailies-capture-today "roam capture")
