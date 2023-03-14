@@ -32,7 +32,7 @@
 
 (defvar org-roam-headline--db nil)
 
-(defcustom org-roam-headline-db-location "~/test/test.db"
+(defcustom org-roam-headline-db-location (locate-user-emacs-file "org-roam-headline.db")
   "Default db locationl"
   :group 'org-roam-headline)
 
@@ -267,7 +267,7 @@ OLD-FILE is cleared from the database, and NEW-FILE-OR-DIR is added."
   (consult--read
    (org-roam-headline-read--completions)
    :prompt "Go to heading: "
-   :category 'consult-org-heading
+   :category 'org-roam-headline--node
    :sort nil
    :require-match t
    :preview-key nil
