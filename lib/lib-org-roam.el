@@ -164,6 +164,15 @@ direct title.
                            "/")))))
     (insert (format "[[%s]]" headline-name))))
 
+(defun eli/update-org-roam-db ()
+  (while-no-input
+	(dolist (buf (org-roam-buffer-list))
+	  (with-current-buffer buf
+		(let ((file (buffer-file-name buf)))
+		  (org-roam-headline-db--update-file file)
+		  (org-roam-db-update-file file))))))
+
+
 ;;;; provide
 (provide 'lib-org-roam)
 ;;; lib-org-roam.el ends here.

@@ -398,8 +398,13 @@
 
 ;;;; org-roam
 (setup org-roam
+  (:iload* org-roam)
   (:also-load lib-org-roam)
+  (:also-load org-roam-headline)
   (:option*
+   org-roam-db-update-on-save nil
+   org-roam-file-exclude-regexp '("data/"
+								  "archives/")
    org-roam-directory "~/Dropbox/org/roam/"
    org-roam-db-gc-threshold most-positive-fixnum
    org-roam-mode-sections (list #'org-roam-backlinks-section
@@ -413,26 +418,27 @@
 								:target (file+head "main/%<%Y%m%d%H%M%S>-${title}.org"
 												   "#+TITLE: ${title}\n")
 								:unnarrowed t)
-							   ("b" "bibliography reference" plain
-								(file "~/.emacs.d/private/orb-capture-template.org")
-								:target (file+head "references/${citekey}.org" "#+title: ${title}\n")
-								)
+							   ;; ("b" "bibliography reference" plain
+							   ;; 	(file "~/.emacs.d/private/orb-capture-template.org")
+							   ;; 	:target (file+head "references/${citekey}.org" "#+title: ${title}\n")
+							   ;; 	)
 							   ("r" "reference" plain "%? \n %(v-i-or-nothing) \n\n%(v-a-or-nothing)"
 								:target
 								(file+head "references/%<%Y%m%d%H%M%S>-${title}.org" "#+title: ${title}\n")
 								:unnarrowed t))
    org-roam-node-display-template (concat "${type:15} ${doom-hierarchy:120} ${backlinkscount:6}"
-										  (propertize "${tags:*}" 'face 'org-tag))
-   )
-
-  (:after org
-	(run-with-idle-timer 15 nil
-						 #'org-roam-db-autosync-enable))
+										  (propertize "${tags:*}" 'face 'org-tag)))
 
   (:hooks org-roam-buffer-postrender-functions (lambda ()
 												 (org-latex-preview)
 												 (org-display-inline-images)))
+  (:after org
+	(run-with-idle-timer 15 nil
+						 #'org-roam-db-autosync-enable))
+  
   (:when-loaded
+	(run-with-idle-timer 3 t
+						 #'eli/update-org-roam-db)
 	(add-to-list 'display-buffer-alist
 				 '("\\*org-roam\\*"
 		           (display-buffer-in-direction)
