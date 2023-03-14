@@ -138,9 +138,9 @@
 	      :post (progn (setq which-key-inhibit nil) ))
   ("Roam"
    (("l" org-roam-buffer-toggle "toggle roam buffer")
-    ("f" org-roam-node-find "find roam node")
+    ("f" eli/org-roam-node-find "find roam node")
     ("n" org-id-get-create "create roam id")
-    ("i" org-roam-node-insert "insert roam node")
+    ("i" (org-roam-node-insert #'eli/org-roam-filter-books) "insert roam node")
     ("s" consult-org-roam-headline "search headings")
     ("w" org-roam-refile "refile roam node"))
    "Roam"

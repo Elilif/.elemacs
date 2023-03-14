@@ -172,6 +172,13 @@ direct title.
 		  (org-roam-headline-db--update-file file)
 		  (org-roam-db-update-file file))))))
 
+(defun eli/org-roam-filter-books (node)
+  (let ((file (org-roam-node-file node)))
+	(not (string-match-p "books/" file))))
+
+(defun eli/org-roam-node-find (&optional other-window)
+  (interactive current-prefix-arg)
+  (org-roam-node-find other-window nil #'eli/org-roam-filter-books))
 
 ;;;; provide
 (provide 'lib-org-roam)
