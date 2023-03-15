@@ -104,8 +104,11 @@
   (:once (list :hooks 'pre-command-hook)
 	(gcmh-mode))
   (:option*
-   gcmh-high-cons-threshold most-positive-fixnum
-   gcmh-idle-delay 5))
+   gcmh-high-cons-threshold 1073741824
+   gcmh-verbose nil
+   gcmh-idle-delay 5)
+  (:when-loaded
+	(add-function :after after-focus-change-function #'garbage-collect)))
 
 ;;;; ace-window
 (setup ace-window
@@ -186,7 +189,10 @@
 
 ;;;; ChatGPT
 (setup doctor-chatgpt
-  (:iload doctor-chatgpt))
+  (:iload doctor-chatgpt)
+  (:bind "C-g" eli/doctor-chatgpt-quit)
+  (:global
+   "s-p" doctor-chatgpt-pop-posframe-toggle))
 
 ;;;; desktop
 (setup desktop
@@ -197,7 +203,7 @@
   (:option*
    tab-bar-close-button-show nil
    tab-bar-separator " "
-   tab-bar-tab-hints nil
+   tab-bar-tab-hints t
    tab-bar-new-tab-choice "*scratch*"
    tab-bar-select-tab-modifiers '(super)
    tab-bar-tab-name-truncated-max 15
@@ -207,8 +213,10 @@
    tab-bar-tab-name-function #'tab-bar-tab-name-truncated
    tab-bar-tab-name-format-function (lambda (tab i)
 									  (concat
-									   (propertize (if tab-bar-tab-hints (format "%d " i) "")
-												   'face 'tab-bar-tab-inactive)
+									   (propertize (if tab-bar-tab-hints (format "%d" i) "")
+												   'face 'tab-bar-hints)
+									   (propertize (if tab-bar-tab-hints " " "")
+												   'face (funcall #'eli/tab-bar-tab-space-face tab))
 									   (propertize (alist-get 'name tab)
 												   'face (funcall tab-bar-tab-face-function tab)))))
   
@@ -219,11 +227,18 @@
    "s-<right>" tab-bar-move-tab))
 
 (setup tabspaces
+  (:once (list :before 'tab-bar-new-tab)
+	(tabspaces-mode))
   (:also-load
    project
-   lib-tabspaces)
+   lib-tab-bar)
   (:hook my--consult-tabspaces)
-  (:hook-into tab-bar-mode-hook))
+  (:option*
+   tabspaces-session nil))
+
+(setup markdown-mode
+  (:option*
+   markdown-fontify-code-blocks-natively t))
 
 ;;;; provide
 (provide 'init-misc)
