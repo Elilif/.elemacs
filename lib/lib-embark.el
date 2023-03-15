@@ -65,6 +65,26 @@
               (add-hook 'minibuffer-exit-hook #'eli/remove-image-preview-hook)))
 
 
+(defvar-keymap embark-org-roam-map
+  "i" #'org-roam-node-insert
+  "s" #'embark-collect
+  "b" #'eli/org-roam-backlinks-node-read)
+
+(defvar-keymap embark-consult-org-heading-map
+  "i" #'embark-insert
+  "b" #'consult-org-heading-insert-backlink
+  "r" #'consult-org-headling-insert-reference
+  "w" #'embark-copy-as-kill
+  "q" #'embark-toggle-quit
+  "E" #'embark-export
+  "S" #'embark-collect
+  "L" #'embark-live
+  "B" #'embark-become
+  "A" #'embark-act-all
+  "C-s" #'embark-isearch
+  "SPC" #'mark
+  "DEL" #'delete-region)
+
 ;;;; provide
 (provide 'lib-embark)
 ;;; lib-embark.el ends here.

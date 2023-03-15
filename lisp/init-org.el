@@ -446,28 +446,9 @@
 		           (window-width . 0.4)
 		           (window-height . fit-window-to-buffer))))
   (:after embark
-	(defvar-keymap embark-org-roam-map
-	  "i" #'org-roam-node-insert
-	  "s" #'embark-collect
-	  "b" #'eli/org-roam-backlinks-node-read)
 	(add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
-
-	(defvar-keymap embark-org-heading-map
-	  "i" #'embark-insert
-	  "b" #'consult-org-heading-insert-backlink
-	  "r" #'consult-org-headling-insert-reference
-	  "w" #'embark-copy-as-kill
-	  "q" #'embark-toggle-quit
-	  "E" #'embark-export
-	  "S" #'embark-collect
-	  "L" #'embark-live
-	  "B" #'embark-become
-	  "A" #'embark-act-all
-	  "C-s" #'embark-isearch
-	  "SPC" #'mark
-	  "DEL" #'delete-region)
 	(add-to-list 'embark-keymap-alist
-				 '(consult-org-heading . embark-org-heading-map))))
+				 '(consult-org-heading . embark-consult-org-heading-map))))
 
 ;;;; org-roam-ui
 (setup org-roam-ui
