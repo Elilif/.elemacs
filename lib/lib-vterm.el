@@ -57,7 +57,6 @@
 			  (posframe-show
 			   buffer
 			   :poshandler #'posframe-poshandler-frame-center
-			   :hidehandler #'shell-pop-posframe-hidehandler
 			   :left-fringe 8
 			   :right-fringe 8
 			   :width width
