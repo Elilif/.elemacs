@@ -6,6 +6,7 @@ recentf
 /.cache/
 history
 org-roam.db
+org-roam-headline.db
 bookmarks
 .org-id-locations
 places
