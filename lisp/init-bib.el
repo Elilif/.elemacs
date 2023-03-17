@@ -75,7 +75,7 @@
   (setq citar-symbol-separator "  ")
   (setq citar-bibliography eli/bibliography)
   (setq citar-at-point-function 'citar-dwim)
-  (setq citar-notes-paths '("~/Dropbox/org/roam/references"))
+  (setq citar-notes-paths '("~/Dropbox/org/roam/books"))
   (setq citar-library-paths '("~/Documents/Mybooks/"))
 
   ;; search pdf contents
@@ -99,7 +99,8 @@ STR is the searching string."
 
 (with-eval-after-load 'citar
   (citar-org-roam-mode)
-  (setq citar-org-roam-note-title-template (cdr (assoc 'note citar-templates))))
+  (setq citar-org-roam-note-title-template (cdr (assoc 'note citar-templates))
+		citar-org-roam-subdir "books"))
 
 (with-eval-after-load 'citar
   (citar-embark-mode))
@@ -107,7 +108,7 @@ STR is the searching string."
 (with-eval-after-load 'bibtex-completion
   (setq bibtex-completion-bibliography eli/bibliography
 		bibtex-completion-library-path "/home/eli/Documents/Thesis"
-		bibtex-completion-notes-path "/home/eli/Dropbox/org/roam/references"
+		bibtex-completion-notes-path "/home/eli/Dropbox/org/roam/books"
 		bibtex-completion-pdf-field "file"
 		;; bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
 
