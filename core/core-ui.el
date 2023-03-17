@@ -100,11 +100,6 @@
   (tooltip-mode -1))
 (setq x-gtk-use-system-tooltips nil)
 
-;; Favor vertical splits over horizontal ones, since monitors are trending
-;; toward wide rather than tall.
-(setq split-width-threshold 160
-      split-height-threshold nil)
-
 
 
 (provide 'core-ui)
