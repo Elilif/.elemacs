@@ -240,6 +240,14 @@
   (:option*
    markdown-fontify-code-blocks-natively t))
 
+(setup whisper
+  (:option*
+   whisper-install-directory "~/src/Clone/"
+   whisper-model "base.en"
+   whisper-language "en"
+   whisper-translate nil
+   whisper-enable-speed-up nil))
+
 ;;;; provide
 (provide 'init-misc)
 ;;; init-misc.el ends here.

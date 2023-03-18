@@ -385,6 +385,9 @@
 [submodule "websocket"]
 	path = site-lisp/websocket
 	url = https://github.com/ahyatt/emacs-websocket
+[submodule "whisper"]
+	path = site-lisp/whisper
+	url = https://github.com/natrys/whisper.el
 [submodule "with-editor"]
 	path = site-lisp/with-editor
 	url = https://github.com/magit/with-editor

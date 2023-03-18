@@ -495,11 +495,11 @@
 (pretty-hydra-define hydra-insert
   (:color amaranth :exit t
 	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil)
-		               ))
+	      :post (progn (setq which-key-inhibit nil)))
   ("Input"
    (("s" eli/input-switch "switch input")
-    ("k" eli/insert-key-sequence "insert key sequence"))
+    ("k" eli/insert-key-sequence "insert key sequence")
+	("w" whisper-run))
    "Yank"
    (("p" consult-yank-pop "Clipboard"))
    "Emoji & Pic"
