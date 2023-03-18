@@ -144,8 +144,8 @@
 (setup rime
   (:when-loaded
 	(require 'lib-rime))
-  (:option
-   default-input-method "rime")
+  (:once (list :hooks 'pre-command-hook)
+	(setq default-input-method "rime"))
   (:option*
    rime-user-data-dir "~/.emacs.d/rime"
    rime-disable-predicates '(rime-predicate-prog-in-code-p
@@ -200,26 +200,27 @@
    desktop-dirname user-emacs-directory))
 ;;;; tab-bar
 (setup tab-bar
-  (:option*
-   tab-bar-close-button-show nil
-   tab-bar-separator " "
-   tab-bar-tab-hints t
-   tab-bar-new-tab-choice "*scratch*"
-   tab-bar-select-tab-modifiers '(super)
-   tab-bar-tab-name-truncated-max 15
-   tab-bar-border nil
-   tab-bar-auto-width nil
-   tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
-   tab-bar-tab-name-function #'tab-bar-tab-name-truncated
-   tab-bar-tab-name-format-function (lambda (tab i)
-									  (concat
-									   (propertize (if tab-bar-tab-hints (format "%d" i) "")
-												   'face 'tab-bar-hints)
-									   (propertize (if tab-bar-tab-hints " " "")
-												   'face (funcall #'eli/tab-bar-tab-space-face tab))
-									   (propertize (alist-get 'name tab)
-												   'face (funcall tab-bar-tab-face-function tab)))))
-  
+  (:once (list :hooks 'post-command-hook)
+	(:option*
+	 tab-bar-close-button-show nil
+	 tab-bar-separator " "
+	 tab-bar-tab-hints t
+	 tab-bar-new-tab-choice "*scratch*"
+	 tab-bar-select-tab-modifiers '(super)
+	 tab-bar-tab-name-truncated-max 15
+	 tab-bar-border nil
+	 tab-bar-auto-width nil
+	 tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
+	 tab-bar-tab-name-function #'tab-bar-tab-name-truncated
+	 tab-bar-tab-name-format-function (lambda (tab i)
+										(concat
+										 (propertize (if tab-bar-tab-hints (format "%d" i) "")
+													 'face 'tab-bar-hints)
+										 (propertize (if tab-bar-tab-hints " " "")
+													 'face (funcall #'eli/tab-bar-tab-space-face tab))
+										 (propertize (alist-get 'name tab)
+													 'face (funcall tab-bar-tab-face-function tab))))))
+
   (:global
    "s--" tab-bar-close-tab
    "s-=" tab-bar-new-tab
