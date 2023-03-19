@@ -239,8 +239,16 @@
                                 (mode . magit-diff-mode)
                                 (mode . magit-revision-mode)
                                 (mode . magit-log-mode)))
-	                  ("org" (mode . org-mode))
-	                  )))))
+					  ("pdf" (or
+							  (file-extension . "pdf")
+							  (mode . pdf-outline-buffer-mode)))
+					  ("roam"  (or
+								(filename . "/home/eli/Dropbox/org/roam/main/")
+								(filename . "/home/eli/Dropbox/org/roam/references/")))
+					  ("books" (filename . "/home/eli/Dropbox/org/roam/books/"))
+	                  ("agenda" (or
+								 (filename . "/home/eli/Dropbox/org/")
+								 (name . "^\\*Org Agenda\\*$"))))))))
   (:hook (lambda ()
            (ibuffer-switch-to-saved-filter-groups "default"))))
 
