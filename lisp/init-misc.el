@@ -187,17 +187,25 @@
    "C-'" avy-goto-char
    "C-\"" avy-goto-char-near-point))
 
-;;;; ChatGPT
+;;;; GPT
 (setup doctor-chatgpt
   (:iload doctor-chatgpt)
   (:bind "C-g" eli/doctor-chatgpt-quit)
   (:global
    "s-p" doctor-chatgpt-pop-posframe-toggle))
 
+(setup gptel
+  (:option*
+   gptel-playback nil
+   gptel--temperature 0
+   gptel-default-mode 'org-mode
+   gptel-prompt-string "* "))
+
 ;;;; desktop
 (setup desktop
   (:option*
    desktop-dirname user-emacs-directory))
+
 ;;;; tab-bar
 (setup tab-bar
   (:once (list :hooks 'post-command-hook)
@@ -248,6 +256,12 @@
    whisper-language "en"
    whisper-translate nil
    whisper-enable-speed-up nil))
+
+;;;; keycast
+(setup keycast
+  (:option*
+   keycast-mode-line-insert-after '(:eval (mood-line-segment-misc-info))
+   keycast-mode-line-format "%1s%k%c%R"))
 
 ;;;; provide
 (provide 'init-misc)

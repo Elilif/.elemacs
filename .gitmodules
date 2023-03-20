@@ -137,6 +137,9 @@
 [submodule "ghub"]
 	path = site-lisp/ghub
 	url = https://github.com/magit/ghub
+[submodule "gptel"]
+	path = site-lisp/gptel
+	url = https://github.com/karthink/gptel
 [submodule "graphql"]
 	path = site-lisp/graphql
 	url = https://github.com/vermiculus/graphql.el
@@ -161,6 +164,9 @@
 [submodule "js2-mode"]
 	path = site-lisp/js2-mode
 	url = https://github.com/mooz/js2-mode
+[submodule "keycast"]
+	path = site-lisp/keycast
+	url = https://github.com/tarsius/keycast
 [submodule "leetcode"]
 	path = site-lisp/leetcode
 	url = https://github.com/Elilif/leetcode.el
