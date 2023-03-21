@@ -333,7 +333,12 @@ reads the sentence before point, and prints the ChatGPT's answer."
 
 
 ;;;; prompt
-(defcustom doctor-chatgpt-prompts '(("English Translator and Improver" . "I want you to act as an English translator, spelling corrector and improver. I will speak to you in any language and you will detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations."))
+(defcustom doctor-chatgpt-prompts
+  '(("English Translator and Improver" . "I want you to act as an English translator, spelling corrector and improver. I will speak to you in any language and you will detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations.")
+	("Feynman" . "Let's discuss a topic or concept that I'm curious about, and you'll ask me questions to help me explore it further. We'll work together to build a deep understanding of the topic, and you'll provide feedback to help me identify any misconceptions or gaps in my understanding, sort of like the Feynman technique. We'll approach this with an open mind, and we'll be curious and inquisitive as we explore the topic.
+
+I want you to keep in mind that you do also ask specific questions that will push my understanding of said topic, it doesn't matter if I'm not capable of answering cause my goal is to learn more and more. Let's begin.")
+	("Feynman_CN" . "在接下来的对话中，我将采用费曼技巧来对一个主题进行阐述，你将扮演一个提问者，针对所有我说的话，理解其中的意思，并且尝试找出里面的漏洞，每次提出一个相应的问题。"))
   "Promps used by doctor-chatgpt"
   :type 'alist
   :group 'doctor-chatgpt)
