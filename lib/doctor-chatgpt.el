@@ -143,33 +143,30 @@ OUTPUT is the string output we need to handle."
 			(goto-char (point-max))
 			(insert output))))))))
 
-(defun doctor-chatgpt-process-set ()
+(defun doctor-chatgpt-process-set (name)
   (setq doctor-chatgpt-recv-list nil)
   (setq doctor-chatgpt-send-list nil)
-  (let* ((name (read-from-minibuffer "Name: "))
-		 (process-name (concat "*doctor-chatgpt-process-" name "*"))
+  (let* ((process-name (concat "*doctor-chatgpt-process-" name "*"))
 		 (buffer-name (concat "*doctor-chatgpt-" name "*")))
-	(if (rassoc buffer-name doctor-chatgpt-conversations)
-		(switch-to-buffer buffer-name)
-	  (get-buffer-create buffer-name)
-	  (add-to-list 'doctor-chatgpt-conversations
-				   (cons name buffer-name))
-	  (with-current-buffer buffer-name
-		(setq doctor-chatgpt-buffer-name buffer-name)
-		(put 'doctor-chatgpt-buffer-name 'permanent-local t)
-		(setq doctor-chatgpt-process
-			  (let ((process-environment (copy-sequence process-environment)))
-				(setenv "NO_COLOR" "true")
-				(apply #'start-process
-					   `(,process-name
-						 ,process-name
-						 ,@(doctor-chatgpt-revchatgpt-program)))))
-		(set-process-sentinel doctor-chatgpt-process #'doctor-chatgpt--process-sentinel)
-		(set-process-filter doctor-chatgpt-process #'doctor-chatgpt--process-filter)
-		(put 'doctor-chatgpt-process 'permanent-local t)
-		(setq doctor-chatgpt-process-buffer-name process-name)
-		(put 'doctor-chatgpt-process-buffer-name 'permanent-local t)
-		(doctor-chatgpt-mode)))
+	(get-buffer-create buffer-name)
+	(add-to-list 'doctor-chatgpt-conversations
+				 (cons name buffer-name))
+	(with-current-buffer buffer-name
+	  (setq doctor-chatgpt-buffer-name buffer-name)
+	  (put 'doctor-chatgpt-buffer-name 'permanent-local t)
+	  (setq doctor-chatgpt-process
+			(let ((process-environment (copy-sequence process-environment)))
+			  (setenv "NO_COLOR" "true")
+			  (apply #'start-process
+					 `(,process-name
+					   ,process-name
+					   ,@(doctor-chatgpt-revchatgpt-program)))))
+	  (set-process-sentinel doctor-chatgpt-process #'doctor-chatgpt--process-sentinel)
+	  (set-process-filter doctor-chatgpt-process #'doctor-chatgpt--process-filter)
+	  (put 'doctor-chatgpt-process 'permanent-local t)
+	  (setq doctor-chatgpt-process-buffer-name process-name)
+	  (put 'doctor-chatgpt-process-buffer-name 'permanent-local t)
+	  (doctor-chatgpt-mode))
 	buffer-name))
 
 (defun doctor-chatgpt--process-sentinel (process event)
@@ -203,20 +200,20 @@ ARG will be passed to `newline'."
     (process-send-string doctor-chatgpt-process (concat doctor-sent ""))))
 
 ;;;###autoload
-(defun doctor-chatgpt-restart ()
-  "Restart process manually when there is something wrong."
-  (interactive)
-  (with-current-buffer doctor-chatgpt-buffer-name
-    (let ((inhibit-read-only t))
-      (goto-char (point-max))
-      (insert "\n\n")
-      (doctor-chatgpt--insert-line ?\═)
-      (insert "Restarting process..."))
-    (read-only-mode 0)
-	;;; TODO: write a restart function
-	(doctor-chatgpt-process-set)
-    ;; (doctor-chatgpt--start-process)
-	))
+;; (defun doctor-chatgpt-restart ()
+;;   "Restart process manually when there is something wrong."
+;;   (interactive)
+;;   (with-current-buffer doctor-chatgpt-buffer-name
+;;     (let ((inhibit-read-only t))
+;;       (goto-char (point-max))
+;;       (insert "\n\n")
+;;       (doctor-chatgpt--insert-line ?\═)
+;;       (insert "Restarting process..."))
+;;     (read-only-mode 0)
+;; 	;;; TODO: write a restart function
+;; 	(doctor-chatgpt-process-set)
+;;     ;; (doctor-chatgpt--start-process)
+;; 	))
 
 ;;;###autoload
 (defun doctor-chatgpt-exit ()
@@ -268,11 +265,11 @@ reads the sentence before point, and prints the ChatGPT's answer."
 
 
 ;;;###autoload
-(defun doctor-chatgpt ()
-  "Switch to `doctor-chatgpt-buffer' and start talking with ChatGPT."
-  (interactive)
-  (let* ((doctor-chatgpt-buffer-name (doctor-chatgpt-process-set)))
-	(switch-to-buffer doctor-chatgpt-buffer-name)))
+;; (defun doctor-chatgpt ()
+;;   "Switch to `doctor-chatgpt-buffer' and start talking with ChatGPT."
+;;   (interactive)
+;;   (let* ((doctor-chatgpt-buffer-name (doctor-chatgpt-process-set)))
+;; 	(switch-to-buffer doctor-chatgpt-buffer-name)))
 ;; (defun doctor-chatgpt ()
 ;;   "Switch to `doctor-chatgpt-buffer' and start talking with ChatGPT."
 ;;   (interactive)
@@ -292,13 +289,13 @@ reads the sentence before point, and prints the ChatGPT's answer."
   (unless (and doctor-chatgpt-pop--frame
 			   (frame-live-p doctor-chatgpt-pop--frame)
 			   (process-live-p doctor-chatgpt-process))
-	(let ((width  (max 100 (round (* (frame-width) 0.62))))
-		  (height (round (* (frame-height) 0.62)))
-		  (buffer (if (and doctor-chatgpt-conversations
-						   (not current-prefix-arg))
-					  (elemacs-completing-read "Select a conversation: "
-											   doctor-chatgpt-conversations)
-					(doctor-chatgpt-process-set))))
+	(let* ((width  (max 100 (round (* (frame-width) 0.62))))
+		   (height (round (* (frame-height) 0.62)))
+		   (buffer-name-or-name (elemacs-completing-read "Select a conversation: "
+														 doctor-chatgpt-conversations))
+		   (buffer (if (rassoc buffer-name-or-name doctor-chatgpt-conversations)
+					   buffer-name-or-name
+					 (doctor-chatgpt-process-set buffer-name-or-name))))
 	  (setq doctor-chatgpt-pop--frame
 			(posframe-show
 			 buffer
