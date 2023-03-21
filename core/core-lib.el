@@ -59,7 +59,7 @@
   (insert (key-description
            (read-key-sequence-vector "Press a keystrokes:"))))
 
-
+;; src: https://howardism.org/Technical/Emacs/alt-completing-read.html
 (defun elemacs-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
   "Calls `completing-read' but returns the value from COLLECTION.
 
