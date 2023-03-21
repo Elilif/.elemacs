@@ -73,7 +73,9 @@ the _value_ of the choice, not the selected choice. "
                      ((hash-table-p collection) (gethash choice collection))
                      ((assoc-list-p collection) (alist-get choice collection def nil 'equal))
                      (t                         choice))))
-      (if (listp results) (car results) results))))
+      (if results
+		  (if (listp results) (car results) results)
+		choice))))
 
 
 (defun auto-recompile-file-maybe ()
