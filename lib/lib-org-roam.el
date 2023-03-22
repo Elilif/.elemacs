@@ -140,7 +140,7 @@ direct title.
     (find-file (org-roam-node-file backlink))))
 
 
-(defun consult-org-heading-insert-backlink (target)
+(defun consult-org-headline-insert-backlink (target)
   (let* ((marker (plist-get
                   (text-properties-at 0 target)
                   'consult--candidate))
@@ -154,7 +154,7 @@ direct title.
     (org-insert-link
 	 nil (concat "id:" headline-id) headline-name)))
 
-(defun consult-org-headling-insert-reference (target)
+(defun consult-org-headline-insert-reference (target)
   (let* ((headline (substring (org-no-properties target)
                               0 -1))
          (headline-name (car

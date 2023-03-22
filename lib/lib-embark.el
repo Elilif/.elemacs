@@ -70,10 +70,10 @@
   "s" #'embark-collect
   "b" #'eli/org-roam-backlinks-node-read)
 
-(defvar-keymap embark-consult-org-heading-map
+(defvar-keymap embark-consult-org-headline-map
   "i" #'embark-insert
-  "b" #'consult-org-heading-insert-backlink
-  "r" #'consult-org-headling-insert-reference
+  "b" #'consult-org-headline-insert-backlink
+  "r" #'consult-org-headline-insert-reference
   "w" #'embark-copy-as-kill
   "q" #'embark-toggle-quit
   "E" #'embark-export
