@@ -142,6 +142,7 @@
 
 ;;;; rime
 (setup rime
+  (:iload rime)
   (:when-loaded
 	(require 'lib-rime))
   (:once (list :hooks 'pre-command-hook)
