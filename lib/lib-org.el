@@ -190,6 +190,7 @@ Assume point is at first MARK."
     (apply orig args)))
 
 ;; override the original version
+;; src: https://stackoverflow.com/questions/17478260/completely-hide-the-properties-drawer-in-org-mode
 (defun elemacs/org-cycle-hide-drawers (state)
   "Re-hide all drawers after a visibility state change."
   (when (and (derived-mode-p 'org-mode)
