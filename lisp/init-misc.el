@@ -236,6 +236,10 @@
    "s-<left>" tab-bar-move-tab-backward
    "s-<right>" tab-bar-move-tab))
 
+(setup project
+  (:option*
+   project-vc-merge-submodules nil))
+
 (setup tabspaces
   (:once (list :before 'tab-bar-new-tab)
 	(tabspaces-mode))
