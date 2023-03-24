@@ -121,6 +121,9 @@
 	(ess-smart-equals-activate))
   (:option*
    ess-smart-equals-extra-ops '(brace paren percent)))
+;;;; python
+(setup lsp-pyright
+  (:iload lsp-pyright))
 
 ;;;; lsp
 (setup lsp-mode

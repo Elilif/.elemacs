@@ -182,6 +182,9 @@
 [submodule "lsp-mode"]
 	path = site-lisp/lsp-mode
 	url = https://github.com/emacs-lsp/lsp-mode
+[submodule "lsp-pyright"]
+	path = site-lisp/lsp-pyright
+	url = https://github.com/emacs-lsp/lsp-pyright
 [submodule "lsp-ui"]
 	path = site-lisp/lsp-ui
 	url = https://github.com/emacs-lsp/lsp-ui
