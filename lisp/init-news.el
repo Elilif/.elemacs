@@ -72,7 +72,8 @@
 	"f" eli/elfeed-search-filter-source
 	"M" eli/elfeed-search-starred-entries)
   (:bind-into elfeed-show-mode-map
-	"q" kill-buffer-and-window))
+	"q" kill-buffer-and-window
+	"M-v" scroll-down-command))
 
 
 ;;;; elfeed org
