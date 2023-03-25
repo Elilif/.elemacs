@@ -64,9 +64,11 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 	  (setq eli/prefer-English nil)
 	  )))
 
-(defun +rime-convert-string-at-point (&optional return-cregexp)
+(defun +rime-convert-string-at-point (&optional _return-cregexp)
   "将光标前的字符串转换为中文."
   (interactive "P")
+  (unless current-input-method
+	(toggle-input-method))
   (rime-force-enable)
   (let ((string (if mark-active
                     (buffer-substring-no-properties
