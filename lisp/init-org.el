@@ -448,7 +448,7 @@
   (:after embark
 	(add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
 	(add-to-list 'embark-keymap-alist
-				 '(consult-org-heading . embark-consult-org-heading-map))))
+				 '(consult-org-heading . embark-consult-org-headline-map))))
 
 ;;;; org-roam-ui
 (setup org-roam-ui
