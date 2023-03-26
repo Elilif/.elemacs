@@ -282,43 +282,37 @@ reads the sentence before point, and prints the ChatGPT's answer."
 (defvar doctor-chatgpt-pop--frame nil)
 
 ;;;###autoload
-(defun doctor-chatgpt-pop-posframe-toggle ()
+(defun doctor-chatgpt-pop-posframe-toggle (buffer-name-or-name)
   "Toggle shell in child frame."
-  (interactive)
+  (interactive (list (elemacs-completing-read "Select a conversation: "
+											  doctor-chatgpt-conversations)))
   ;; Shell pop in child frame
-  (unless (and doctor-chatgpt-pop--frame
-			   (frame-live-p doctor-chatgpt-pop--frame)
-			   (process-live-p doctor-chatgpt-process))
-	(let* ((width  (max 100 (round (* (frame-width) 0.62))))
-		   (height (round (* (frame-height) 0.62)))
-		   (buffer-name-or-name (elemacs-completing-read "Select a conversation: "
-														 doctor-chatgpt-conversations))
-		   (buffer (if (rassoc buffer-name-or-name doctor-chatgpt-conversations)
-					   buffer-name-or-name
-					 (doctor-chatgpt-process-set buffer-name-or-name))))
-	  (setq doctor-chatgpt-pop--frame
-			(posframe-show
-			 buffer
-			 :poshandler #'posframe-poshandler-frame-center
-			 :hidehandler nil
-			 :left-fringe 8
-			 :right-fringe 8
-			 :width width
-			 :height height
-			 :min-width width
-			 :min-height height
-			 :internal-border-width 3
-			 :background-color (face-background 'tooltip nil t)
-			 :override-parameters '((cursor-type . t))
-			 :accept-focus t))
+  (let* ((width  (max 100 (round (* (frame-width) 0.62))))
+		 (height (round (* (frame-height) 0.62)))
+		 (buffer (if (rassoc buffer-name-or-name doctor-chatgpt-conversations)
+					 buffer-name-or-name
+				   (doctor-chatgpt-process-set buffer-name-or-name))))
+	(setq doctor-chatgpt-pop--frame
+		  (posframe-show
+		   buffer
+		   :poshandler #'posframe-poshandler-frame-center
+		   :hidehandler nil
+		   :left-fringe 8
+		   :right-fringe 8
+		   :width width
+		   :height height
+		   :min-width width
+		   :min-height height
+		   :internal-border-width 3
+		   :background-color (face-background 'tooltip nil t)
+		   :override-parameters '((cursor-type . t))
+		   :accept-focus t))
 
-	  (with-current-buffer buffer
-		(set-frame-parameter doctor-chatgpt-pop--frame 'line-spacing 10)
-		(goto-char (point-max)))))
-
+	(with-current-buffer buffer
+	  (set-frame-parameter doctor-chatgpt-pop--frame 'line-spacing 10)
+	  (setq-local cursor-type 'box)))
   ;; Focus in child frame
   (select-frame-set-input-focus doctor-chatgpt-pop--frame)
-  (setq-local cursor-type 'box)
   (goto-char (point-max)))
 
 ;;;###autoload
