@@ -69,6 +69,7 @@
 			   :accept-focus t))
 
 		(with-current-buffer buffer
+		  (set-process-query-on-exit-flag (get-process "vterm") nil)
 		  (setq-local cursor-type 'box) ; blink cursor
 		  (goto-char (point-max))
 		  (when (fboundp 'vterm-reset-cursor-point)

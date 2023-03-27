@@ -163,6 +163,7 @@ OUTPUT is the string output we need to handle."
 					   ,@(doctor-chatgpt-revchatgpt-program)))))
 	  (set-process-sentinel doctor-chatgpt-process #'doctor-chatgpt--process-sentinel)
 	  (set-process-filter doctor-chatgpt-process #'doctor-chatgpt--process-filter)
+	  (set-process-query-on-exit-flag doctor-chatgpt-process nil)
 	  (put 'doctor-chatgpt-process 'permanent-local t)
 	  (setq doctor-chatgpt-process-buffer-name process-name)
 	  (put 'doctor-chatgpt-process-buffer-name 'permanent-local t)
