@@ -262,7 +262,8 @@
 	url = https://github.com/unhammer/org-mru-clock
 [submodule "org-noter"]
 	path = site-lisp/org-noter
-	url = https://github.com/weirdNox/org-noter
+	url = https://github.com/org-noter/org-noter
+	no-byte-compile = emacs-devel.el
 [submodule "org-pdftools"]
 	path = site-lisp/org-pdftools
 	url = https://github.com/fuxialexander/org-pdftools
