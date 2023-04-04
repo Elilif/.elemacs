@@ -51,7 +51,7 @@
     ;; Chinese fonts
     (dolist (charset '(kana han cjk-misc bopomofo))
       (set-fontset-font (frame-parameter nil 'font) charset
-			            (font-spec :family "Sarasa Mono SC Nerd")))
+			            (font-spec :family "Sarasa Term SC Nerd")))
 
 	;;; modeline font setting
 	(create-fontset-from-fontset-spec
@@ -71,13 +71,13 @@
 	  (set-face-attribute face nil :fontset "fontset-modeline fontset"))
 	(dolist (sym '(?● ?■ ?◢))
 	  (set-fontset-font "fontset-modeline fontset" sym
-						(font-spec :family "Sarasa Mono SC Nerd" :size 13)))
+						(font-spec :family "Sarasa Term SC Nerd" :size 13)))
 	;;; modeline font setting ends here
 
-	(dolist (font '("AR PL New Kai" "Meslo LG S DZ" "HanaMinA" "Noto Color Emoji"))
+	(dolist (font '("Meslo LG S DZ" "HanaMinA" "Noto Color Emoji"))
 	  (set-fontset-font "fontset-default" 'unicode font nil 'prepend))
 	
-    (set-fontset-font nil ?ㄓ (font-spec :family "Sarasa Mono SC Nerd" :size 12))
+    (set-fontset-font nil ?ㄓ (font-spec :family "Sarasa Term SC Nerd" :size 12))
     (set-fontset-font nil ?⎙ "PragmataPro Liga")
 	
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
