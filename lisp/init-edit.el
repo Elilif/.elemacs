@@ -161,7 +161,8 @@
 	  (sp-local-pair "=" "=" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
 	  (sp-local-pair "_" "_" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
 	  (sp-local-pair "~" "~" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))  
-  (:advice show-paren-function :around fix-show-paren-function))
+  (:advice show-paren-function :around fix-show-paren-function)
+  (:hooks minibuffer-setup-hook smartparens-mode))
 
 
 ;;;; yasnippet

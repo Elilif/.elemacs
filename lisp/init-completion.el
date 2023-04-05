@@ -137,7 +137,8 @@
 (setup corfu
   (:once (list :hooks 'prog-mode-hook)
     (global-corfu-mode)
-    (:also-load lib-kind-all-the-icons))
+    (:also-load lib-kind-all-the-icons
+				lib-corfu))
   (:option* corfu-cycle       t
 	        corfu-auto        t
 	        corfu-separator ?\s
@@ -145,17 +146,19 @@
 	        corfu-auto-prefix 3
             corfu-excluded-modes '(org-mode)
 	        corfu-on-exact-match nil
-            corfu-margin-formatters '(kind-all-the-icons-margin-formatter)))
+            corfu-margin-formatters '(kind-all-the-icons-margin-formatter))
+  (:hooks minibuffer-setup-hook corfu-enable-in-minibuffer))
 
 
 ;;;; cape
 (setup cape
-  (:after corfu
-    (add-to-list 'completion-at-point-functions #'cape-file)))
+  (:once (list :before 'global-corfu-mode)
+	(add-to-list 'completion-at-point-functions #'cape-file)))
 ;;;; embark
 (setup embark
+  (:after consult
+	(require 'embark))
   (:once (list :before 'hydra-bibtex/body)
-	(require 'embark)
 	(require 'all-the-icons))
   (:also-load lib-embark
 			  embark-consult)
