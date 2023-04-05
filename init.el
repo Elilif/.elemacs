@@ -143,10 +143,10 @@
 
 ;;;; Core
 (let ((file-name-handler-alist nil))
-  
+
+  (require 'core-lib)
   (require 'core-incremental-loading)
   (require 'core-setup)
-  (require 'core-lib)
   (require 'core-ui)
   (require 'core-better-default)
 
