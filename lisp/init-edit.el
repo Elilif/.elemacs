@@ -167,21 +167,22 @@
 ;;;; yasnippet
 (setup yasnippet
   (:once (list :hooks 'find-file-hook)
-    (:once (list :hooks 'post-self-insert-hook)
-      (:silence (yas-global-mode))
+    (:once (list :hooks 'post-command-hook)
+	  (:silence (yas-global-mode))
 	  (require 'lib-yasnippet)
 	  ;; (:hooks post-command-hook my/yas-try-expanding-auto-snippets)
 	  ))
   (:option*
    yas-indent-line 'fixed)
   (:when-loaded
-    (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
-    (:option yas-triggers-in-field t)))
+	(require 'warnings)
+    (add-to-list 'warning-suppress-types '(yasnippet backquote-change))))
 
 ;;;; electric-operator
 (setup electric-operator
   (:hook-into c++-mode)
   (:hook-into c-mode)
+  (:hook-into python-base-mode-hook)
   ;; (:hook-into org-mode)
   (:when-loaded
 	(electric-operator-add-rules-for-mode 'c++-mode
