@@ -39,6 +39,7 @@
   (require 'lib-vterm)
   (require 'lib-gdb))
 
+
 
 ;;;; vterm
 (setup vterm
@@ -71,7 +72,7 @@
   (:iload* ccls)
   (:option* c-default-style '((java-mode . "java")
 							  (awk-mode . "awk")
-							  (c-mode . "k&r")
+							  (c-mode . "gnu")
 							  (c++-mode . "stroustrup")
 							  (other . "gnu")))
   (:also-load
