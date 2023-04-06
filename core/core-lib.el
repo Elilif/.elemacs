@@ -36,6 +36,16 @@
     (let ((inhibit-message t))
 	  (apply func args))))
 
+;;; SRC: https://emacs-china.org/t/doom-modeline-2-1-0/9251/189?u=vagrantjoker
+(defun my/require (orig-func &rest orig-args)
+  (let ((fp (car orig-args)))
+    (if (symbolp fp)
+        (if (memq fp features)
+            fp
+          (apply orig-func orig-args))
+      (apply orig-func orig-args))))
+(advice-add 'require :around #'my/require)
+
 ;;;###autoload
 (defun eli/open-init-file()
   (interactive)
