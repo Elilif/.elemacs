@@ -67,7 +67,8 @@
 	
 	(dolist (face '(mode-line mode-line-inactive mode-line-buffer-id
 							  mode-line-highlight mode-line-active
-							  mode-line-emphasis))
+							  mode-line-emphasis
+							  tab-bar-tab tab-bar-tab-inactive))
 	  (set-face-attribute face nil :fontset "fontset-modeline fontset"))
 	(dolist (sym '(?● ?■ ?◢))
 	  (set-fontset-font "fontset-modeline fontset" sym
