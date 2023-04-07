@@ -1,4 +1,4 @@
-;; lib-tabspaces.el --- Initialize lib-tabspaces configurations.	-*- lexical-binding: t; -*-
+;; lib-tab-bar.el --- Initialize lib-tab-bar configurations.	-*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -30,6 +30,35 @@
 
 ;;; Code:
 
+;;;; tab-bar
+(defface tab-bar-hints
+  '((default
+	 :height 0.8 :inherit tab-bar-tab-inactive))
+  "Tab bar face for non-selected tab."
+  :version "30.0.50"
+  :group 'tab-bar-faces)
+
+(defface tab-bar-tab-space-inactive
+  '((default
+	 :height 0.8 :inherit tab-bar-tab-inactive))
+  "Tab bar face for non-selected tab."
+  :version "30.0.50"
+  :group 'tab-bar-faces)
+
+(defface tab-bar-tab-space-active
+  '((default
+	 :height 0.8 :inherit tab-bar-tab))
+  "Tab bar face for non-selected tab."
+  :version "30.0.50"
+  :group 'tab-bar-faces)
+
+
+(defun eli/tab-bar-tab-space-face (tab)
+  (if (eq (car tab) 'current-tab)
+	  'tab-bar-tab-space-active
+	'tab-bar-tab-space-inactive))
+
+;;;; tabspaces
 (defvar consult--source-workspace
   (list :name     "Workspace Buffers"
         :narrow   ?w
@@ -55,7 +84,6 @@
          (consult-customize consult--source-buffer :hidden nil :default t)
          (setq consult-buffer-sources (remove 'consult--source-workspace consult-buffer-sources)))))
 
-
 ;;;; provide
-(provide 'lib-tabspaces)
-;;; lib-tabspaces.el ends here.
+(provide 'lib-tab-bar)
+;;; lib-tab-bar.el ends here.
