@@ -85,19 +85,38 @@
   "SPC" #'mark
   "DEL" #'delete-region)
 
-(defvar eli/vertico-marked-list '())
+(defvar eli/vertico-marked-list '()
+  "List of marked candidates in minibuffer.")
+(defvar eli/vertico-mark-type nil
+  "The type of candidates in `eli/vertico-marked-list'.")
 
 (defun eli/vertico-mark ()
+  "Mark candidates in minibuffer"
   (interactive)
-  (let ((target (plist-get (car (embark--targets)) :target)))
+  (let*
+	  ((target (car (embark--targets)))
+	   (type (plist-get target :orig-type))
+	   (target (plist-get target :target)))
+	(unless eli/vertico-mark-type
+	  (setq eli/vertico-mark-type type))
 	(if (member target eli/vertico-marked-list)
 		(setq eli/vertico-marked-list (delete target eli/vertico-marked-list))
-	  (add-to-list 'eli/vertico-marked-list target))
+	  (add-to-list 'eli/vertico-marked-list target t))
 	(vertico--display-candidates (vertico--arrange-candidates))))
+
+(defun eli/vertico-marked-p (candidate)
+  "Return t if CANDIDATE is in `eli/vertico-marked-list'."
+  (member (eli/embark-transform-candidate candidate) eli/vertico-marked-list))
+
+(defun eli/embark-transform-candidate (str)
+  "Transform STR."
+  (if-let ((transformer (alist-get eli/vertico-mark-type embark-transformer-alist)))
+	  (cdr (funcall transformer eli/vertico-mark-type str))
+	str))
 
 (cl-defgeneric eli/vertico--format-candidate (cand prefix suffix index _start)
   "Format CAND given PREFIX, SUFFIX and INDEX."
-  (if (member (cdr (embark--refine-multi-category 'multi-category cand)) eli/vertico-marked-list)
+  (if (eli/vertico-marked-p cand)
 	  (add-face-text-property 0 (length cand) 'embark-collect-marked nil cand)
 	(remove-text-properties 0 (length cand) 'embark-collect-marked cand))
   (setq cand (vertico--display-string (concat prefix cand suffix "\n")))
@@ -107,7 +126,9 @@
 (advice-add #'vertico--format-candidate :override #'eli/vertico--format-candidate)
 
 (defun eli/vertico-marked-list-clean ()
-  (setq eli/vertico-marked-list '()))
+  "Initialize `eli/vertico-marked-list' and `eli/vertico-mark-type'."
+  (setq eli/vertico-marked-list '()
+		eli/vertico-mark-type nil))
 
 (add-hook 'minibuffer-setup-hook #'eli/vertico-marked-list-clean)
 
@@ -151,6 +172,7 @@
                 (let ((repeat (embark--action-repeatable-p action)))
                   (unless repeat (mapc #'funcall indicators))
                   (condition-case err
+					  ;; modifications
                       (if eli/vertico-marked-list
 						  (if (memq action embark-multitarget-actions)
 							  (embark--quit-and-run action eli/vertico-marked-list)
