@@ -166,8 +166,45 @@
    "C-." embark-act
    "M-." embark-dwim
    "C-h B" embark-bindings)
+  (:bind-into embark-buffer-map
+	"r" tabspaces-remove-selected-buffer
+	"R" embark-rename-buffer)
+  (:bind-into vertico-map
+	"C-SPC" eli/vertico-mark)
   (:option*
-   prefix-help-command #'embark-prefix-help-command))
+   prefix-help-command #'embark-prefix-help-command
+   embark-pre-action-hooks '((embark-org-copy-as-markdown embark--mark-target)
+							 (eval-last-sexp embark--end-of-target)
+							 (indent-pp-sexp embark--beginning-of-target)
+							 (backward-up-list embark--beginning-of-target)
+							 (backward-list embark--beginning-of-target)
+							 (forward-list embark--end-of-target)
+							 (forward-sexp embark--end-of-target)
+							 (backward-sexp embark--beginning-of-target)
+							 (raise-sexp embark--beginning-of-target)
+							 (kill-sexp embark--beginning-of-target)
+							 (mark-sexp embark--beginning-of-target)
+							 (transpose-sexps embark--end-of-target)
+							 (transpose-sentences embark--end-of-target)
+							 (transpose-paragraphs embark--end-of-target)
+							 (forward-sentence embark--end-of-target)
+							 (backward-sentence embark--beginning-of-target)
+							 (backward-paragraph embark--beginning-of-target)
+							 (find-library embark--xref-push-marker)
+							 (delete-file embark--confirm)
+							 (delete-directory embark--confirm)
+							 ;; (kill-buffer embark--confirm)
+							 ;; (embark-kill-buffer-and-window embark--confirm)
+							 (bookmark-delete embark--confirm)
+							 (package-delete embark--confirm)
+							 (tab-bar-close-tab-by-name embark--confirm)
+							 (embark-isearch embark--unmark-target)
+							 (occur embark--unmark-target)
+							 (query-replace embark--beginning-of-target embark--unmark-target)
+							 (query-replace-regexp embark--beginning-of-target embark--unmark-target)
+							 (mark embark--mark-target)
+							 (shell embark--universal-argument)
+							 (eshell embark--universal-argument))))
 
 ;;;; provide
 (provide 'init-completion)
