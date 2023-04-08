@@ -32,7 +32,7 @@
 
 (defvar org-roam-headline--db nil)
 
-(defcustom org-roam-headline-db-location (locate-user-emacs-file "org-roam-headline.db")
+(defcustom org-roam-headline-db-location "~/.emacs.d/var/org/org-roam-headline.db"
   "Default db locationl"
   :group 'org-roam-headline)
 

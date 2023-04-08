@@ -81,6 +81,7 @@
 						  (wl . wl-other-frame))
 
    org-id-link-to-org-use-id 'create-if-interactive
+   org-id-locations-file "~/.emacs.d/var/org/.org-id-locations"
    org-use-fast-todo-selection 'expert
    org-log-into-drawer t
    org-log-done 'time
@@ -403,6 +404,7 @@
   (:also-load org-roam-headline)
   (:option*
    org-roam-db-update-on-save nil
+   org-roam-db-location "~/.emacs.d/var/org/org-roam.db"
    org-roam-file-exclude-regexp '("data/"
 								  "archives/")
    org-roam-directory "~/Dropbox/org/roam/"

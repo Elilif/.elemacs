@@ -148,7 +148,7 @@
   (:once (list :hooks 'pre-command-hook)
 	(setq default-input-method "rime"))
   (:option*
-   rime-user-data-dir "~/.emacs.d/rime"
+   rime-user-data-dir "~/.emacs.d/var/rime/"
    rime-disable-predicates '(rime-predicate-prog-in-code-p
 				             rime-predicate-space-after-ascii-p
 				             rime-predicate-after-ascii-char-p
@@ -165,6 +165,7 @@
 	(:global
 	 "C-s-k" rime-inline-ascii
 	 "C-s-j" +rime-convert-string-at-point)))
+
 ;;;; avy
 (setup avy
   (:when-loaded
@@ -205,7 +206,7 @@
 ;;;; desktop
 (setup desktop
   (:option*
-   desktop-dirname user-emacs-directory))
+   desktop-dirname "~/.emacs.d/var/desktop/"))
 
 ;;;; tab-bar
 (setup tab-bar
@@ -238,7 +239,18 @@
 
 (setup project
   (:option*
-   project-vc-merge-submodules nil))
+   project-vc-merge-submodules nil
+   project-list-file "~/.emacs.d/var/projects"))
+
+(setup request
+  (:option*
+   request-storage-directory "~/.emacs.d/var/request/"))
+
+(setup transient
+  (:option*
+   transient-history-file "~/.emacs.d/var/transient/history.el"
+   transient-levels-file "~/.emacs.d/var/transient/levels.el"
+   transient-values-file "~/.emacs.d/var/transient/values.el"))
 
 (setup tabspaces
   (:once (list :before 'tab-bar-new-tab)

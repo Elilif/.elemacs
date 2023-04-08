@@ -133,6 +133,7 @@
 	(require 'lib-lsp)
 	(setenv "LSP_USE_PLISTS" "true"))
   (:option*
+   lsp-session-file "/home/eli/.emacs.d/var/.lsp-session-v1"
    lsp-warn-no-matched-clients nil
    lsp-keymap-prefix nil
    read-process-output-max (* 1024 1024)

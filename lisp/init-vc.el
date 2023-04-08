@@ -66,7 +66,12 @@
   (:iload* forge)
   (:with-feature magit
     (:also-load forge))
-  (:option* forge-owned-accounts '(("eli" . (remote-name "personal")))))
+  (:init
+   (setq forge-bug-reference-hooks '(forge-post-mode-hook
+									 git-commit-setup-hook
+									 magit-mode-hook)))
+  (:option* forge-owned-accounts '(("eli" . (remote-name "personal")))
+			forge-database-file "~/.emacs.d/var/forge/forge-database.sqlite"))
 
 
 ;;;; provide

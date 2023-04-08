@@ -156,7 +156,8 @@ loaded."
 
 ;;;; epkg
 (setup epkg
-  (:iload epkg))
+  (:iload epkg)
+  (:option* epkg-repository "~/.emacs.d/var/epkgs/"))
 
 ;;;; provide
 (provide 'core-setup)

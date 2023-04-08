@@ -33,3 +33,4 @@ forge-database.sqlite
 .emacs.keyfreq
 .emacs.desktop
 .emacs.desktop.lock
+var/

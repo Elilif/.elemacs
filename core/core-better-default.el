@@ -215,12 +215,15 @@
 	                           "/home/eli/.mail/*"
                                "/tmp/*")
              recentf-max-menu-items 50
-             recentf-max-saved-items 50)))
+             recentf-max-saved-items 50
+			 recentf-save-file "~/.emacs.d/var/recentf")))
 
 ;;;; saveplace
 (setup saveplace
   (:once (list :hooks 'pre-command-hook)
-    (save-place-mode 1)))
+    (save-place-mode 1))
+  (:option*
+   save-place-file "~/.emacs.d/var/places"))
 
 ;;;; ibuffer
 (setup ibuffer
@@ -267,6 +270,19 @@
     (pixel-scroll-precision-mode))
   (setq scroll-preserve-screen-position 'always))
 
+;;;; bookmark
+(setup bookmark
+  (:option*
+   bookmark-default-file "~/.emacs.d/var/bookmarks"))
+
+;;;; Eshell
+(setup esh-mode
+  (:option*
+   eshell-directory-name "~/.emacs.d/var/eshell/"))
+
+(setup url
+  (:option*
+   url-configuration-directory "~/.emacs.d/var/url/"))
 
 ;;;; midnight
 ;; (setup midnight

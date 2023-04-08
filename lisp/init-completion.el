@@ -38,8 +38,10 @@
 (setup savehist
   (:once (list :before 'vertico-mode)
     (savehist-mode t))
-  (:option* savehist-additional-variables '((kill-ring . 10)
-                                            compile-command)))
+  (:option*
+   savehist-additional-variables '((kill-ring . 10)
+                                   compile-command)
+   savehist-file "~/.emacs.d/var/history"))
 
 
 ;;;; vertico
