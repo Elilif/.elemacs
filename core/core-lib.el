@@ -103,5 +103,13 @@ the _value_ of the choice, not the selected choice. "
 	  (call-interactively 'make-directory)
 	(call-interactively 'find-file)))
 
+
+;; fix keymap-set completing error
+(defun keymap-set--anon-cmacro
+    (form keymap &optional key definition)
+  (ignore keymap key definition)
+  (keymap--compile-check key)
+  form)
+
 (provide 'core-lib)
 ;;; core-lib.el ends here.
