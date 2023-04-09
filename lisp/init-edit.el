@@ -174,7 +174,8 @@
 	  ;; (:hooks post-command-hook my/yas-try-expanding-auto-snippets)
 	  ))
   (:option*
-   yas-indent-line 'fixed)
+   yas-indent-line 'fixed
+   yas-triggers-in-field t)
   (:when-loaded
 	(require 'warnings)
     (add-to-list 'warning-suppress-types '(yasnippet backquote-change))))
