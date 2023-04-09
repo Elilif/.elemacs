@@ -94,9 +94,9 @@
   "Mark candidates in minibuffer"
   (interactive)
   (let*
-	  ((target (car (embark--targets)))
-	   (type (plist-get target :orig-type))
-	   (target (plist-get target :target)))
+	  ((selected (embark--vertico-selected))
+	   (type (car selected))
+	   (target (cdr selected)))
 	(unless eli/vertico-mark-type
 	  (setq eli/vertico-mark-type type))
 	(if (member target eli/vertico-marked-list)
@@ -106,13 +106,7 @@
 
 (defun eli/vertico-marked-p (candidate)
   "Return t if CANDIDATE is in `eli/vertico-marked-list'."
-  (member (eli/embark-transform-candidate candidate) eli/vertico-marked-list))
-
-(defun eli/embark-transform-candidate (str)
-  "Transform STR."
-  (if-let ((transformer (alist-get eli/vertico-mark-type embark-transformer-alist)))
-	  (cdr (funcall transformer eli/vertico-mark-type str))
-	str))
+  (member (concat vertico--base candidate) eli/vertico-marked-list))
 
 (cl-defgeneric eli/vertico--format-candidate (cand prefix suffix index _start)
   "Format CAND given PREFIX, SUFFIX and INDEX."
