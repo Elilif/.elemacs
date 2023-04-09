@@ -111,5 +111,31 @@ the _value_ of the choice, not the selected choice. "
   (keymap--compile-check key)
   form)
 
+
+;; open lib file
+(defun eli/setup-get-package ()
+  "Get the package name."
+  (save-excursion
+    (when (thing-at-point 'defun)
+      (beginning-of-defun)
+	  (let* ((sexp (read (current-buffer))))
+		(when (equal (car sexp) 'setup)
+		  (cadr sexp))))))
+
+;;;###autoload
+(defun eli/setup-open-lib ()
+  "Open the lib file corresponding to the current package."
+  (interactive)
+  (if-let* ((pkg (eli/setup-get-package))
+			(file-name (concat "lib-" (symbol-name pkg) ".el"))
+			(file-path (file-name-concat user-emacs-directory
+										 "lib"
+										 file-name)))
+	  (if (file-exists-p file-path)
+		  (find-file file-path)
+		(when (y-or-n-p (format "File %s does not exit, create it? " file-path))
+		  (find-file file-path)))
+	(error "Not in a setup expression!")))
+
 (provide 'core-lib)
 ;;; core-lib.el ends here.
