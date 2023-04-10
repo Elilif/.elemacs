@@ -115,7 +115,7 @@
 	(require 'lib-orderless)
     (require 'orderless))
   (:also-load pinyinlib)
-  (:option* completion-styles              '(orderless basic)
+  (:option* completion-styles              '(basic orderless)
             completion-category-defaults   nil
             completion-category-overrides  '((buffer (styles basic partial-completion))
                                              (file (styles partial-completion))
