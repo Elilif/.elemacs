@@ -172,9 +172,14 @@
 	"r" tabspaces-remove-selected-buffer
 	"R" embark-rename-buffer)
   (:bind-into vertico-map
-	"C-SPC" eli/vertico-mark)
+	"C-SPC" eli/vertico-mark
+	"C-," embark-act-all)
+  (:when-loaded
+	(add-to-list 'embark-keymap-alist
+				 '(multi-category . embark-multi-category-map)))
   (:option*
    prefix-help-command #'embark-prefix-help-command
+   embark-confirm-act-all nil
    embark-pre-action-hooks '((embark-org-copy-as-markdown embark--mark-target)
 							 (eval-last-sexp embark--end-of-target)
 							 (indent-pp-sexp embark--beginning-of-target)

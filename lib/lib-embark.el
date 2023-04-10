@@ -85,24 +85,24 @@
   "SPC" #'mark
   "DEL" #'delete-region)
 
-(defvar eli/vertico-marked-list '()
+(defvar-keymap embark-multi-category-map
+  "k" #'kill-buffer
+  "i" #'embark-insert
+  "w" #'embark-copy-as-kill
+  "r" #'tabspaces-remove-selected-buffer)
+
+(defvar eli/vertico-marked-list nil
   "List of marked candidates in minibuffer.")
-(defvar eli/vertico-mark-type nil
-  "The type of candidates in `eli/vertico-marked-list'.")
 
 (defun eli/vertico-mark ()
   "Mark candidates in minibuffer"
   (interactive)
   (let*
 	  ((selected (embark--vertico-selected))
-	   (type (car selected))
 	   (target (cdr selected)))
-	(unless eli/vertico-mark-type
-	  (setq eli/vertico-mark-type type))
 	(if (member target eli/vertico-marked-list)
 		(setq eli/vertico-marked-list (delete target eli/vertico-marked-list))
-	  (add-to-list 'eli/vertico-marked-list target t))
-	(vertico--display-candidates (vertico--arrange-candidates))))
+	  (push target eli/vertico-marked-list))))
 
 (defun eli/vertico-marked-p (candidate)
   "Return t if CANDIDATE is in `eli/vertico-marked-list'."
@@ -112,97 +112,55 @@
   "Format CAND given PREFIX, SUFFIX and INDEX."
   (if (eli/vertico-marked-p cand)
 	  (add-face-text-property 0 (length cand) 'embark-collect-marked nil cand)
-	(remove-text-properties 0 (length cand) 'embark-collect-marked cand))
+	(remove-text-properties 0 (length cand) '(face) cand))
   (setq cand (vertico--display-string (concat prefix cand suffix "\n")))
   (when (= index vertico--index)
     (add-face-text-property 0 (length cand) 'vertico-current 'append cand))
   cand)
+
 (advice-add #'vertico--format-candidate :override #'eli/vertico--format-candidate)
 
 (defun eli/vertico-marked-list-clean ()
   "Initialize `eli/vertico-marked-list' and `eli/vertico-mark-type'."
-  (setq eli/vertico-marked-list '()
-		eli/vertico-mark-type nil))
+  (setq eli/vertico-marked-list nil))
 
 (add-hook 'minibuffer-setup-hook #'eli/vertico-marked-list-clean)
 
-(defun eli/embark-act (&optional arg)
-  (interactive "P")
-  (let* ((targets (or (embark--targets) (user-error "No target found")))
-         (indicators (mapcar #'funcall embark-indicators))
-         (default-done nil))
-    (when arg
-      (if (minibufferp)
-          (embark-toggle-quit)
-        (setq targets (embark--rotate targets (prefix-numeric-value arg)))))
-    (unwind-protect
-        (while
-            (let* ((target (car targets))
-                   (action
-                    (or (embark--prompt
-                         indicators
-                         (let ((embark-default-action-overrides
-                                (if default-done
-                                    `((t . ,default-done))
-                                  embark-default-action-overrides)))
-                           (embark--action-keymap (plist-get target :type)
-                                                  (cdr targets)))
-                         targets)
-                        (user-error "Canceled")))
-                   (default-action (or default-done
-                                       (embark--default-action
-                                        (plist-get target :type)))))
-              (cond
-               ;; When acting twice in the minibuffer, do not restart
-               ;; `embark-act'.  Otherwise the next `embark-act' will
-               ;; find a target in the original buffer.
-               ((eq action #'embark-act)
-                (message "Press an action key"))
-               ((eq action #'embark-cycle)
-                (setq targets (embark--rotate
-                               targets (prefix-numeric-value prefix-arg))))
-               (t
-                ;; if the action is non-repeatable, cleanup indicator now
-                (let ((repeat (embark--action-repeatable-p action)))
-                  (unless repeat (mapc #'funcall indicators))
-                  (condition-case err
-					  ;; modifications
-                      (if eli/vertico-marked-list
-						  (if (memq action embark-multitarget-actions)
-							  (embark--quit-and-run action eli/vertico-marked-list)
-							(embark--quit-and-run #'mapc action eli/vertico-marked-list))
-						(embark--act
-						 action
-						 (if (and (eq action default-action)
-								  (eq action embark--command)
-								  (not (memq action embark-multitarget-actions)))
-							 (embark--orig-target target)
-						   target)
-						 (embark--quit-p action)))
-                    (user-error
-                     (funcall (if repeat #'message #'user-error)
-                              "%s" (cadr err))))
-                  (when-let (new-targets (and repeat (embark--targets)))
-                    ;; Terminate repeated prompter on default action,
-                    ;; when repeating. Jump to the region type if the
-                    ;; region is active after the action, or else to the
-                    ;; current type again.
-                    (setq default-done #'embark-done
-                          targets
-                          (embark--rotate
-                           new-targets
-                           (or (cl-position-if
-                                (let ((desired-type
-                                       (if (eq repeat t)
-                                           (plist-get (car targets) :type)
-                                         repeat)))
-                                  (lambda (x)
-                                    (eq (plist-get x :type) desired-type)))
-                                new-targets)
-                               0)))))))))
-      (mapc #'funcall indicators))))
+(defun eli/embark--maybe-transform-candidates ()
+  "Collect candidates and see if they all transform to the same type.
+Return a plist with keys `:type', `:orig-type', `:candidates', and
+`:orig-candidates'."
+  (pcase-let ((`(,type . ,candidates)
+               (if eli/vertico-marked-list
+				   (cons (car (embark--vertico-selected))
+						 eli/vertico-marked-list)
+				 (run-hook-with-args-until-success 'embark-candidate-collectors))))
+    (when (eq type 'file)
+      (let ((dir (embark--default-directory)))
+        (setq candidates
+              (mapcar (lambda (cand)
+                        (abbreviate-file-name (expand-file-name cand dir)))
+                      candidates))))
+    (append
+     (list :orig-type type :orig-candidates candidates)
+     (or (when candidates
+           (when-let ((transformer (alist-get type embark-transformer-alist)))
+             (pcase-let* ((`(,new-type . ,first-cand)
+                           (funcall transformer type (car candidates))))
+               (let ((new-candidates (list first-cand)))
+                 (when (cl-every
+                        (lambda (cand)
+                          (pcase-let ((`(,t-type . ,t-cand)
+                                       (funcall transformer type cand)))
+                            (when (eq t-type new-type)
+                              (push t-cand new-candidates)
+                              t)))
+                        (cdr candidates))
+                   (list :type new-type
+                         :candidates (nreverse new-candidates)))))))
+         (list :type type :candidates candidates)))))
 
-(advice-add #'embark-act :override #'eli/embark-act)
+(advice-add #'embark--maybe-transform-candidates :override #'eli/embark--maybe-transform-candidates)
 
 ;;;; provide
 (provide 'lib-embark)
