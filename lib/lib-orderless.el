@@ -58,7 +58,8 @@
     `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
 
 (defun completion--regex-pinyin (str)
-  (orderless-regexp (pinyinlib-build-regexp-string str)))
+  (unless (> (length str) 10)
+	(orderless-regexp (pinyinlib-build-regexp-string str))))
 
 
 ;;;; provide
