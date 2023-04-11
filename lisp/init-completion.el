@@ -61,8 +61,29 @@
 ;;;; marginlia
 (setup marginalia
   (:after vertico
-    (marginalia-mode t))
-  (:option* marginalia-align 'right))
+    (marginalia-mode t)
+	(require 'lib-marginalia))
+  (:option*
+   marginalia-align 'right
+   marginalia-prompt-categories '(("\\<customize group\\>" . customize-group)
+								  ("\\<M-x\\>" . command)
+								  ("\\<package\\>" . package)
+								  ("\\<bookmark\\>" . bookmark)
+								  ("\\<color\\>" . color)
+								  ("\\<face\\>" . face)
+								  ("\\<environment variable\\>" . environment-variable)
+								  ("\\<function\\|Callable\\|hook to remove\\>" . function)
+								  ("\\<variable\\>" . variable)
+								  ("\\<input method\\>" . input-method)
+								  ("\\<charset\\>" . charset)
+								  ("\\<coding system\\>" . coding-system)
+								  ("\\<minor mode\\>" . minor-mode)
+								  ("\\<kill-ring\\>" . kill-ring)
+								  ("\\<tab by name\\>" . tab)
+								  ("\\<[Ll]ibrary\\>" . library)))
+  (:when-loaded
+	(setf (alist-get 'command marginalia-annotator-registry)
+		  '(eli/marginalia-annotate-command marginalia-annotate-binding builtin none))))
 
 
 ;;;; consult
