@@ -131,6 +131,71 @@
 
 (add-hook 'embark-candidate-collectors #'eli/embark-vertico-marked-list -100)
 
+;;; file manipulations
+(defun eli/common-parent (paths)
+  "Return the deepest common parent directory of PATHS."
+  (if (cdr paths)
+	  (when paths
+		(let ((common-prefix (car paths)))
+		  (dolist (path (cdr paths))
+			(let ((components1 (file-name-split common-prefix))
+				  (components2 (file-name-split path)))
+			  (setq common-prefix "")
+			  (while (and components1 components2
+						  (string= (car components1) (car components2)))
+				(setq common-prefix (file-name-concat common-prefix  (car components1)))
+				(setq components1 (cdr components1))
+				(setq components2 (cdr components2)))))
+		  (expand-file-name (file-name-as-directory common-prefix))))
+	(file-name-parent-directory (car paths))))
+
+(defun directory-same-p (lst)
+  "Return t if all elements in LST are same."
+  (let ((first-elem (car lst))
+		(result t))
+	(while lst
+	  (unless (string= first-elem (car lst))
+		(setq result nil))
+	  (setq lst (cdr lst)))
+	result))
+
+(defun eli/move-file (files)
+  "Move FILES to the specific directory."
+  (if-let*
+	  ((same-parent-p (directory-same-p
+					   (mapcar #'file-name-parent-directory files)))
+	   (parent (eli/common-parent files))
+	   (dest (read-directory-name
+			  (format "Move %d file(s) to: " (length files))
+			  parent)))
+	  (when (y-or-n-p (format "Move %d file(s) to %s ?"
+							  (length files)
+							  dest))
+		(dolist (file files)
+		  (rename-file file dest)))
+	(error "All files must be in the same directory!")))
+
+(defun eli/delete-file (files)
+  (when (y-or-n-p (format "Move %d file(s) to the trash?" (length files)))
+	(dolist (file files)
+	  (dired-delete-file file 'always t))))
+
+(defun eli/copy-file (files)
+  (let*
+	  ((parent (eli/common-parent files))
+	   (dest (read-directory-name
+			  (format "Move %d file(s) to: " (length files))
+			  parent)))
+	(when (y-or-n-p (format "Copy %d file(s) to %s ?"
+							(length files)
+							dest))
+	  (dolist (file files)
+		(copy-file file dest)))))
+
+(defvar eli/multitarget-actions '(eli/copy-file
+								  eli/move-file
+								  eli/delete-file))
+
 ;;;; provide
 (provide 'lib-embark)
 ;;; lib-embark.el ends here.

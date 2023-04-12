@@ -192,12 +192,17 @@
   (:bind-into embark-buffer-map
 	"r" tabspaces-remove-selected-buffer
 	"R" embark-rename-buffer)
+  (:bind-into embark-file-map
+	"C" eli/copy-file
+	"D" eli/delete-file
+	"R" eli/move-file)
   (:bind-into vertico-map
 	"C-SPC" eli/vertico-mark
 	"C-," embark-act-all)
   (:when-loaded
 	(add-to-list 'embark-keymap-alist
-				 '(multi-category . embark-multi-category-map)))
+				 '(multi-category . embark-multi-category-map))
+	(cl-callf cl-union embark-multitarget-actions eli/multitarget-actions))
   (:option*
    prefix-help-command #'embark-prefix-help-command
    embark-confirm-act-all nil
