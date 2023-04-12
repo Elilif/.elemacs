@@ -167,6 +167,7 @@
    (("E" eval-buffer)
     ("f" (let ((default-directory "~/.emacs.d/lisp/"))
            (call-interactively 'find-file)) "config files")
+	("l" eli/setup-open-lib)
     ("R" restart-emacs)
     ("c" (byte-recompile-directory "~/.emacs.d/lisp/") "recompile"))
    "Bookmark"
