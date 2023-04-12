@@ -85,6 +85,7 @@
   "SPC" #'mark
   "DEL" #'delete-region)
 
+
 (defvar-keymap embark-multi-category-map
   "k" #'kill-buffer
   "i" #'embark-insert
@@ -108,17 +109,15 @@
   "Return t if CANDIDATE is in `eli/vertico-marked-list'."
   (member (concat vertico--base candidate) eli/vertico-marked-list))
 
-(cl-defgeneric eli/vertico--format-candidate (cand prefix suffix index _start)
-  "Format CAND given PREFIX, SUFFIX and INDEX."
-  (if (eli/vertico-marked-p cand)
-	  (add-face-text-property 0 (length cand) 'embark-collect-marked nil cand)
-	(remove-text-properties 0 (length cand) '(face) cand))
-  (setq cand (vertico--display-string (concat prefix cand suffix "\n")))
-  (when (= index vertico--index)
-    (add-face-text-property 0 (length cand) 'vertico-current 'append cand))
-  cand)
+(defun eli/vertico--format-candidate-hl-marked (args)
+  "Highlight marked vertico items."
+  (let* ((cand (car args)))
+	(if (eli/vertico-marked-p cand)
+		(add-face-text-property 0 (length cand) 'embark-collect-marked nil cand)
+	  (vertico--remove-face 0 (length cand) 'embark-collect-marked cand))
+	args))
 
-(advice-add #'vertico--format-candidate :override #'eli/vertico--format-candidate)
+(advice-add #'vertico--format-candidate :filter-args #'eli/vertico--format-candidate-hl-marked)
 
 (defun eli/vertico-marked-list-clean ()
   "Initialize `eli/vertico-marked-list' and `eli/vertico-mark-type'."
@@ -126,41 +125,11 @@
 
 (add-hook 'minibuffer-setup-hook #'eli/vertico-marked-list-clean)
 
-(defun eli/embark--maybe-transform-candidates ()
-  "Collect candidates and see if they all transform to the same type.
-Return a plist with keys `:type', `:orig-type', `:candidates', and
-`:orig-candidates'."
-  (pcase-let ((`(,type . ,candidates)
-               (if eli/vertico-marked-list
-				   (cons (car (embark--vertico-selected))
-						 eli/vertico-marked-list)
-				 (run-hook-with-args-until-success 'embark-candidate-collectors))))
-    (when (eq type 'file)
-      (let ((dir (embark--default-directory)))
-        (setq candidates
-              (mapcar (lambda (cand)
-                        (abbreviate-file-name (expand-file-name cand dir)))
-                      candidates))))
-    (append
-     (list :orig-type type :orig-candidates candidates)
-     (or (when candidates
-           (when-let ((transformer (alist-get type embark-transformer-alist)))
-             (pcase-let* ((`(,new-type . ,first-cand)
-                           (funcall transformer type (car candidates))))
-               (let ((new-candidates (list first-cand)))
-                 (when (cl-every
-                        (lambda (cand)
-                          (pcase-let ((`(,t-type . ,t-cand)
-                                       (funcall transformer type cand)))
-                            (when (eq t-type new-type)
-                              (push t-cand new-candidates)
-                              t)))
-                        (cdr candidates))
-                   (list :type new-type
-                         :candidates (nreverse new-candidates)))))))
-         (list :type type :candidates candidates)))))
+(defun eli/embark-vertico-marked-list ()
+  (when eli/vertico-marked-list
+    (cons (car (embark--vertico-selected)) (reverse eli/vertico-marked-list))))
 
-(advice-add #'embark--maybe-transform-candidates :override #'eli/embark--maybe-transform-candidates)
+(add-hook 'embark-candidate-collectors #'eli/embark-vertico-marked-list -100)
 
 ;;;; provide
 (provide 'lib-embark)
