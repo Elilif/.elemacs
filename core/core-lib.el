@@ -97,11 +97,16 @@ the _value_ of the choice, not the selected choice. "
   (add-hook 'after-save-hook 'auto-recompile-file-maybe nil t))
 
 ;;;###autoload
-(defun eli/find-file-or-create ()
-  (interactive)
-  (if current-prefix-arg
-	  (call-interactively 'make-directory)
-	(call-interactively 'find-file)))
+(defun eli/find-file-or-create (file)
+  (interactive "FFind file: ")
+  (cond
+   ((and (not (file-exists-p file))
+		 (directory-name-p file))
+	(make-directory file))
+   ((not (file-exists-p (file-name-parent-directory file)))
+	(make-directory (file-name-parent-directory file))
+	(find-file file))
+   (t (find-file file))))
 
 
 ;; fix keymap-set completing error
