@@ -159,6 +159,11 @@
 	  (setq lst (cdr lst)))
 	result))
 
+(defun eli/quit-minibuffer (&rest _)
+  (if (fboundp 'minibuffer-quit-recursive-edit)
+      (minibuffer-quit-recursive-edit)
+    (abort-recursive-edit)))
+
 (defun eli/move-file (files)
   "Move FILES to the specific directory."
   (if-let*
@@ -168,11 +173,23 @@
 	   (dest (read-directory-name
 			  (format "Move %d file(s) to: " (length files))
 			  parent)))
-	  (when (y-or-n-p (format "Move %d file(s) to %s ?"
-							  (length files)
-							  dest))
-		(dolist (file files)
-		  (rename-file file dest)))
+	  (progn
+		(unless (file-exists-p dest)
+		  (make-directory dest))
+		(when (y-or-n-p (format "Move %d file(s) to %s ?"
+								(length files)
+								dest))
+		  (dolist (file files)
+			(if-let ((bf (get-file-buffer file))
+					 (new-name (file-name-concat dest
+												 (file-name-nondirectory file))))
+				(with-current-buffer bf
+				  (rename-file file new-name)
+				  (set-visited-file-name new-name)
+				  (set-buffer-modified-p nil)
+				  (setq default-directory (expand-file-name dest))
+				  (recentf-push new-name))
+			  (rename-file file dest)))))
 	(error "All files must be in the same directory!")))
 
 (defun eli/delete-file (files)
@@ -186,6 +203,8 @@
 	   (dest (read-directory-name
 			  (format "Move %d file(s) to: " (length files))
 			  parent)))
+	(unless (file-exists-p dest)
+	  (make-directory dest))
 	(when (y-or-n-p (format "Copy %d file(s) to %s ?"
 							(length files)
 							dest))

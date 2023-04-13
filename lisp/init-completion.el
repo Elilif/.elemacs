@@ -202,10 +202,14 @@
   (:when-loaded
 	(add-to-list 'embark-keymap-alist
 				 '(multi-category . embark-multi-category-map))
+	(add-to-list 'embark-post-action-hooks
+				 '(eli/move-file eli/quit-minibuffer))
 	(cl-callf cl-union embark-multitarget-actions eli/multitarget-actions))
   (:option*
    prefix-help-command #'embark-prefix-help-command
    embark-confirm-act-all nil
+   embark-quit-after-action '((t . t)
+							  (eli/move-file . nil))
    embark-pre-action-hooks '((embark-org-copy-as-markdown embark--mark-target)
 							 (eval-last-sexp embark--end-of-target)
 							 (indent-pp-sexp embark--beginning-of-target)
