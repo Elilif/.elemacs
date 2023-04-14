@@ -31,7 +31,8 @@
 ;;; Code:
 
 (cl-eval-when (compile)
-  (require 'consult-imenu))
+  (require 'consult-imenu)
+  (require 'tabspaces))
 
 
 ;;;; savehist
