@@ -66,6 +66,7 @@
 		  org-footnote org-macro ob org org-clock org-agenda
 		  org-capture)
   (:option*
+   org-special-ctrl-a/e t
    org-modules '(ol-bbdb ol-bibtex ol-info)
    org-indirect-buffer-display 'current-window
    org-export-preserve-breaks nil
