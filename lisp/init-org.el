@@ -55,7 +55,8 @@
 		   org-return :around eli/org-return-wrapper
 		   org-do-emphasis-faces :override eli/org-do-emphasis-faces
 		   org-element--parse-generic-emphasis :override eli/org-element--parse-generic-emphasis
-		   fill-move-to-break-point :before eli/adjust-line-break-point)
+		   fill-move-to-break-point :before eli/adjust-line-break-point
+		   text-scale-mode :after eli/org-image-scale-increase)
   (:bind
    "C-<tab>" eli/org-expand-all))
 
