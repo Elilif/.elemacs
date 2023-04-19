@@ -50,11 +50,13 @@
 		   helpful--callable-at-point :before  (lambda (&rest _arg) (aset obarray 0 nil))))
 
 ;;;; Info
-(setup Info
+(setup info
   (:when-loaded
 	(require 'lib-info))
-  (:hook variable-pitch-mode)
-  (:bind "C" eli/Info-copy-node-url)
+  (:with-feature Info
+	(:hook variable-pitch-mode))
+  (:bind-into Info-mode-map
+	"C" eli/Info-copy-node-url)
   (:with-feature apropos
     (:hook (lambda ()
              (switch-to-buffer-other-window "*Apropos*")))))
