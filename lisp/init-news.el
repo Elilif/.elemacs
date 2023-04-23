@@ -148,34 +148,6 @@
   (:bind-into mu4e-main-mode-map
 	"g" mu4e-update-index)
   (:when-loaded
-	;; override original `mu4e~view-activate-urls'
-	(defun mu4e~view-activate-urls ()
-      "Turn things that look like URLs into clickable things.
-Also number them so they can be opened using `mu4e-view-go-to-url'."
-      (let ((num 0))
-		(save-excursion
-          (setq mu4e~view-link-map ;; buffer local
-				(make-hash-table :size 32 :weakness nil))
-          (goto-char (point-min))
-          (while (re-search-forward mu4e~view-beginning-of-url-regexp nil t)
-			(let ((bounds (thing-at-point-bounds-of-url-at-point)))
-	          (when bounds
-				(let* ((url (thing-at-point-url-at-point))
-		               (ov (make-overlay (car bounds) (cdr bounds))))
-	              (puthash (cl-incf num) url mu4e~view-link-map)
-	              (add-text-properties
-	               (car bounds)
-	               (cdr bounds)
-	               `(face mu4e-link-face
-		                  mouse-face highlight
-		                  mu4e-url ,url
-		                  keymap ,mu4e-view-active-urls-keymap
-		                  help-echo
-		                  "[mouse-1] or [M-RET] to open the link"))
-	              (overlay-put ov 'invisible t)
-	              (overlay-put ov 'after-string
-			                   (propertize (format "\u200B[%d]" num)
-				                           'face 'mu4e-url-number-face)))))))))
 	(setq mu4e-header-info
           '((:bcc :name "Bcc" :shortname "Bcc" :help "Blind Carbon-Copy recipients for the message" :sortable t)
 			(:cc :name "Cc" :shortname "Cc" :help "Carbon-Copy recipients for the message" :sortable t)
