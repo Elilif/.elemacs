@@ -72,8 +72,7 @@
 	"f" eli/elfeed-search-filter-source
 	"M" eli/elfeed-search-starred-entries)
   (:bind-into elfeed-show-mode-map
-	"q" kill-buffer-and-window
-	"M-v" scroll-down-command))
+	"q" kill-buffer-and-window))
 
 
 ;;;; elfeed org
@@ -93,15 +92,18 @@
 	(define-key elfeed-search-mode-map "=" elfeed-score-map)))
 
 ;;;; elfeed googdies
-(setup elfeed-googdies
-  (:iload* elfeed)
+(setup elfeed-goodies
+  (:iload* elfeed-goodies)
   (:after elfeed
-	(elfeed-goodies/setup)
-	(:option*
-	 elfeed-show-entry-switch #'pop-to-buffer)))
+	(elfeed-goodies/setup))
+  (:option*
+   elfeed-show-entry-switch #'pop-to-buffer)
+  (:bind-into elfeed-show-mode-map
+	"M-v" scroll-down-command))
 ;;;; Mu4e
 (setup mu4e
   (:iload* mu4e)
+  (:also-load lib-mu4e)
   (:hooks mu4e-view-mode-hook visual-fill-column-mode
 		  mu4e-view-mode-hook hide-mode-line-mode)
   (:option*
