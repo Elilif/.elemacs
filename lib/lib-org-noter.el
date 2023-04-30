@@ -30,6 +30,13 @@
 
 ;;; Code:
 
+(defun eli/org-noter-screenshot ()
+  "Capture screenshot and insert the image in the note."
+  (interactive)
+  (let ((org-download-image-org-width 500))
+	(org-noter-insert-note)
+	(org-download-screenshot)))
+
 (defun eli/org-noter-set-highlight (&rest _arg)
   "Highlight current org-noter note."
   (save-excursion

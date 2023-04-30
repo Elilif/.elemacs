@@ -505,8 +505,10 @@
    org-download-method 'directory
    org-download-image-dir "~/Documents/org-images"
    org-download-heading-lvl nil
+   org-download-link-format "[[%s]]\n"
+   org-download-abbreviate-filename-function (lambda (file) file)
    org-download-delete-image-after-download t
-   org-download-screenshot-method "flameshot gui --raw > %s"
+   org-download-screenshot-method "~/.config/flameshot/org-flameshot.sh %s"
    org-download-image-org-width 800
    org-download-annotate-function (lambda (_link) "")
    org-image-actual-width nil
