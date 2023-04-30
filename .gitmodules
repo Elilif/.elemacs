@@ -167,6 +167,9 @@
 [submodule "keycast"]
 	path = site-lisp/keycast
 	url = https://github.com/tarsius/keycast
+[submodule "ledger-mode"]
+	path = site-lisp/ledger-mode
+	url = https://github.com/ledger/ledger-mode
 [submodule "leetcode"]
 	path = site-lisp/leetcode
 	url = https://github.com/Elilif/leetcode.el
