@@ -36,6 +36,7 @@
 
 ;;;; Helpful
 (setup helpful
+  (:iload helpful)
   (:when-loaded
 	(require 'lib-helpful))
   (:global [remap describe-function] helpful-callable
