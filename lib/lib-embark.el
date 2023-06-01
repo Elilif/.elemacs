@@ -127,6 +127,8 @@
       (minibuffer-quit-recursive-edit)
     (abort-recursive-edit)))
 
+(defvar eli/move-file-list '())
+
 (defun eli/move-file (files)
   "Move FILES to the specific directory."
   (if-let*
@@ -150,10 +152,19 @@
 				  (rename-file file new-name)
 				  (set-visited-file-name new-name)
 				  (set-buffer-modified-p nil)
-				  (setq default-directory (expand-file-name dest))
+				  (push (cons bf (expand-file-name dest))
+						eli/move-file-list)
+				  ;; (setq default-directory (expand-file-name dest))
 				  (recentf-push new-name))
 			  (rename-file file dest)))))
 	(error "All files must be in the same directory!")))
+
+(defun eli/move-file-after-action (&rest _)
+  (dolist (pair eli/move-file-list)
+	(with-current-buffer (car pair)
+	  (setq default-directory (cdr pair))))
+  (setq eli/move-file-list nil)
+  (eli/quit-minibuffer))
 
 (defun eli/delete-file (files)
   (when (y-or-n-p (format "Move %d file(s) to the trash?" (length files)))

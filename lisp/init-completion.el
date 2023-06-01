@@ -189,7 +189,10 @@
   (:global
    "C-." embark-act
    "M-." embark-dwim
-   "C-h B" embark-bindings)
+   "C-," embark-act-all
+   "C-h B" embark-bindings
+   "s-d" eli/embark-deselect
+   "C-;" (kbd "C-. SPC"))
   (:bind-into embark-buffer-map
 	"r" tabspaces-remove-selected-buffer
 	"R" embark-rename-buffer)
@@ -198,21 +201,17 @@
 	"D" eli/delete-file
 	"R" eli/move-file)
   (:bind-into vertico-map
-	"C-SPC" eli/vertico-mark
-	"C-," embark-act-all)
+	"C-SPC" (kbd "C-. SPC"))
   (:when-loaded
-	(add-to-list 'embark-keymap-alist
-				 '(multi-category . embark-multi-category-map))
 	(add-to-list 'embark-post-action-hooks
-				 '(eli/move-file eli/quit-minibuffer))
+				 '(eli/move-file eli/move-file-after-action))
 	(cl-callf cl-union embark-multitarget-actions eli/multitarget-actions))
   (:option*
    prefix-help-command #'embark-prefix-help-command
-   embark-confirm-act-all nil
    embark-quit-after-action '((t . t)
 							  (eli/move-file . nil))
-   embark-pre-action-hooks '((embark-org-copy-as-markdown embark--mark-target)
-							 (eval-last-sexp embark--end-of-target)
+   embark-confirm-act-all nil
+   embark-pre-action-hooks '((eval-last-sexp embark--end-of-target)
 							 (indent-pp-sexp embark--beginning-of-target)
 							 (backward-up-list embark--beginning-of-target)
 							 (backward-list embark--beginning-of-target)
@@ -228,6 +227,7 @@
 							 (forward-sentence embark--end-of-target)
 							 (backward-sentence embark--beginning-of-target)
 							 (backward-paragraph embark--beginning-of-target)
+							 (embark-insert embark--end-of-target)
 							 (find-library embark--xref-push-marker)
 							 (delete-file embark--confirm)
 							 (delete-directory embark--confirm)
@@ -242,7 +242,8 @@
 							 (query-replace-regexp embark--beginning-of-target embark--unmark-target)
 							 (mark embark--mark-target)
 							 (shell embark--universal-argument)
-							 (eshell embark--universal-argument))))
+							 (eshell embark--universal-argument)
+							 (embark-select embark--select))))
 
 ;;;; provide
 (provide 'init-completion)
