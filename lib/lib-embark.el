@@ -85,51 +85,14 @@
   "SPC" #'mark
   "DEL" #'delete-region)
 
-
-(defvar-keymap embark-multi-category-map
-  "k" #'kill-buffer
-  "i" #'embark-insert
-  "w" #'embark-copy-as-kill
-  "r" #'tabspaces-remove-selected-buffer)
-
-(defvar eli/vertico-marked-list nil
-  "List of marked candidates in minibuffer.")
-
-(defun eli/vertico-mark ()
-  "Mark candidates in minibuffer"
+(defun eli/embark-deselect ()
+  "Deselect all selected candidates."
   (interactive)
-  (let*
-	  ((selected (embark--vertico-selected))
-	   (target (cdr selected)))
-	(if (member target eli/vertico-marked-list)
-		(setq eli/vertico-marked-list (delete target eli/vertico-marked-list))
-	  (push target eli/vertico-marked-list))))
-
-(defun eli/vertico-marked-p (candidate)
-  "Return t if CANDIDATE is in `eli/vertico-marked-list'."
-  (member (concat vertico--base candidate) eli/vertico-marked-list))
-
-(defun eli/vertico--format-candidate-hl-marked (args)
-  "Highlight marked vertico items."
-  (let* ((cand (car args)))
-	(if (eli/vertico-marked-p cand)
-		(add-face-text-property 0 (length cand) 'embark-collect-marked nil cand)
-	  (vertico--remove-face 0 (length cand) 'embark-collect-marked cand))
-	args))
-
-(advice-add #'vertico--format-candidate :filter-args #'eli/vertico--format-candidate-hl-marked)
-
-(defun eli/vertico-marked-list-clean ()
-  "Initialize `eli/vertico-marked-list' and `eli/vertico-mark-type'."
-  (setq eli/vertico-marked-list nil))
-
-(add-hook 'minibuffer-setup-hook #'eli/vertico-marked-list-clean)
-
-(defun eli/embark-vertico-marked-list ()
-  (when eli/vertico-marked-list
-    (cons (car (embark--vertico-selected)) (reverse eli/vertico-marked-list))))
-
-(add-hook 'embark-candidate-collectors #'eli/embark-vertico-marked-list -100)
+  (when embark--selection
+	(dolist (target embark--selection)
+	  (when-let ((overlay (cdr target)))
+		(delete-overlay overlay)))
+	(setq embark--selection nil)))
 
 ;;; file manipulations
 (defun eli/common-parent (paths)
