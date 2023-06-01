@@ -102,9 +102,9 @@ the _value_ of the choice, not the selected choice. "
   (cond
    ((and (not (file-exists-p file))
 		 (directory-name-p file))
-	(make-directory file))
+	(make-directory file t))
    ((not (file-exists-p (file-name-parent-directory file)))
-	(make-directory (file-name-parent-directory file))
+	(make-directory (file-name-parent-directory file) t)
 	(find-file file))
    (t (find-file file))))
 
