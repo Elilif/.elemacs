@@ -190,18 +190,38 @@
    "C-\"" avy-goto-char-near-point))
 
 ;;;; GPT
-(setup doctor-chatgpt
-  (:iload doctor-chatgpt)
-  (:bind "C-g" eli/doctor-chatgpt-quit)
-  (:global
-   "s-p" doctor-chatgpt-pop-posframe-toggle))
+;; (setup doctor-chatgpt
+;;   (:iload doctor-chatgpt)
+;;   (:bind "C-g" eli/doctor-chatgpt-quit)
+;;   (:global
+;;    "s-p" doctor-chatgpt-pop-posframe-toggle))
 
 (setup gptel
+  (:iload gptel)
+  (:also-load
+   lib-gptel)
   (:option*
-   gptel-playback nil
-   gptel--temperature 0
+   gptel-stream t
+   ;; gptel-host "api.openai.com"
+   gptel-host "api.openai-sb.com"
    gptel-default-mode 'org-mode
-   gptel-prompt-string "* "))
+   gptel-temperature 0.7
+   gptel-prompt-prefix-alist `((markdown-mode . "### ")
+							   (org-mode . ,(concat (make-string 125 ?\-) "\n"))
+							   (text-mode . "### "))
+   gptel-directives '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
+					  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+					  (writing . "You are a large language model and a writing assistant. Respond concisely.")
+					  (chat . "You are a large language model and a conversation partner. Respond concisely.")
+					  (emacs . "You are an expert in Emacs.")))
+  (:hook visual-fill-column-mode
+		 toggle-word-wrap)
+  (:advice gptel--create-prompt :override eli/gptel--create-prompt
+		   gptel-send :override eli/gptel-send)
+  (:global
+   "s-p" eli/gptel-posframe-toggle
+   "C-c RET" gptel-send
+   "C-c DEL" gptel-abort))
 
 ;;;; desktop
 (setup desktop
