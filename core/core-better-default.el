@@ -222,8 +222,8 @@
 (setup saveplace
   (:once (list :hooks 'pre-command-hook)
     (save-place-mode 1))
-  (:option*
-   save-place-file "~/.emacs.d/var/places"))
+  (:init
+   (setq save-place-file "~/.emacs.d/var/places")))
 
 ;;;; ibuffer
 (setup ibuffer
