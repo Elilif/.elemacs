@@ -116,6 +116,8 @@
 							   (with-current-buffer (get-buffer "*scratch*")
 								 (lisp-interaction-mode))))
 
+(setq scroll-conservatively 100)
+
 ;;;; hippie-expand
 (setup hippie-exp
   (:when-loaded
@@ -203,6 +205,7 @@
 
 ;;;; recentf
 (setup recentf
+  (:iload recentf)
   (:when-loaded
     (:option recentf-auto-cleanup 'never
              recentf-exclude '("/home/eli/.emacs.d/.cache/treemacs-persist-at-last-error"
