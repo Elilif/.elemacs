@@ -6,5 +6,7 @@ class ${1:Name} {
 public:
     ${1:$(yas-c++-class-name yas-text)}();
     ${2:virtual ~${1:$(yas-c++-class-name yas-text)}();}
+
+private:
 };
 $0

@@ -2,4 +2,4 @@
 # name: str
 # key: str
 # --
-#include <string>
+std::string
