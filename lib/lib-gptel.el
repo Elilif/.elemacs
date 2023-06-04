@@ -202,9 +202,16 @@ for more details."
 				 70 30))
 
 ;;;###autoload
-(defun eli/gptel-summary ()
-  "Summary selected text."
-  (interactive)
+(defun eli/gptel-summary (&optional arg)
+  "Summary selected text.
+
+Prefixed with one C-u, select the whole buffer first. That's useful when
+reading RSS."
+  (interactive "P")
+  (when arg
+	(push-mark)
+	(push-mark (point-max) nil t)
+	(goto-char (minibuffer-prompt-end)))
   (eli/gptel--do 'summary
 				 (lambda (p s)
 				   (format (plist-get p :user) s))
@@ -248,7 +255,8 @@ for more details."
 ;;;###autoload
 (defun eli/gptel-posframe-toggle (&optional arg)
   "Pop up last used gptel posframe.
-With ARG, select a conversation in `eli/gptel-conversations' or create one."
+Prefixed with one C-u, select a conversation in `eli/gptel-conversations' or
+create one."
   (interactive "P")
   (unless (and eli/gptel--posframe
 			   (frame-live-p eli/gptel--posframe)
