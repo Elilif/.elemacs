@@ -34,17 +34,21 @@
   (require 'gptel-transient)
   (require 'posframe))
 
+(defvar eli/gptel-prompts
+  '((translator . (:sys "You are a professional translator."
+						:user "You will be provied text delimited by triple backticks, your task is to translate the wrapped text into %s. \n```\n%s\n```"))
+	(polish . (:sys "You are an English translator, spelling corrector and improver."
+					:user "You will be provied text delimited by triple backticks, your task is to detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations. \n```\n%s\n```"))
+	(programming . (:sys "You are a professional programmer."
+						 :user "You will be provied code delimited by triple backticks, your task is to explain the code to me. \n```\n%s\n```"))
+	(summary . (:sys "You are a professional reviewer."
+					 :user "You will be provied code delimited by triple backticks, your task is to summarize the wrapped text into a single sentence. \n```\n%s\n```"))))
+
+(defvar eli/gptel-conversations '())
+(defvar eli/gptel--posframe nil)
+
 (defun eli/gptel--create-prompt (&optional prompt-end)
-  "Return a full conversation prompt from the contents of this buffer.
-
-If `gptel--num-messages-to-send' is set, limit to that many
-recent exchanges.
-
-If the region is active limit the prompt to the region contents
-instead.
-
-If PROMPT-END (a marker) is provided, end the prompt contents
-there."
+  "Advice for `gptel--create-prompt'."
   (save-excursion
 	(save-restriction
 	  (if (use-region-p)
@@ -84,11 +88,9 @@ there."
 							   gptel--system-message))
 			  prompts)))))
 
+;;;###autoload
 (defun eli/gptel-send (&optional arg)
-  "Submit this prompt to ChatGPT.
-
-With prefix arg ARG activate a transient menu with more options
-instead."
+  "Advice for `gptel-send'."
   (interactive "P")
   (if (and arg (require 'gptel-transient nil t))
       (call-interactively #'gptel-menu)
@@ -111,18 +113,9 @@ instead."
 			 :position response-pt)))
     (gptel--update-header-line " Waiting..." 'warning)))
 
-(defvar eli/gptel-prompts
-  '((translator . (:sys "You are a professional translator."
-						:user "You will be provied text delimited by triple backticks, your task is to translate the wrapped text into %s. \n```\n%s\n```"))
-	(polish . (:sys "You are an English translator, spelling corrector and improver."
-					:user "You will be provied text delimited by triple backticks, your task is to detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations. \n```\n%s\n```"))
-	(programming . (:sys "You are a professional programmer."
-						 :user "You will be provied code delimited by triple backticks, your task is to explain the code to me. \n```\n%s\n```"))
-	(summary . (:sys "You are a professional reviewer."
-					 :user "You will be provied code delimited by triple backticks, your task is to summarize the wrapped text into a single sentence. \n```\n%s\n```"))
-	))
-
+;;;###autoload
 (defun eli/gptel-close ()
+  "Close current gptel posframe."
   (interactive)
   (let ((frame (selected-frame)))
 	(if (frame-parameter frame 'posframe-buffer)
@@ -130,6 +123,17 @@ instead."
 	  (keyboard-quit))))
 
 (defun eli/gptel--do (prompt usr-prompt-get buffer-name width height)
+  "Create a gptel posframe for PROMPT.
+
+PROMPT is a symbol, see `eli/gptel-prompts' for more details.
+
+USR-PROMPT-GET is a function of two arguments, called with PROMPTS and CONTENT.
+PROMPTS is a plist, CONTENT is the string you select.
+
+BUFFER-NAME is the gptel posframe's name.
+
+WIDTH and HEIGHT specifies the size of posframe, see `posframe-show'
+for more details."
   (if (use-region-p)
 	  (let* ((str (buffer-substring-no-properties (region-beginning)
 												  (region-end)))
@@ -142,6 +146,8 @@ instead."
 								   :position (point)
 								   :width width
 								   :height height
+								   :border-width 2
+								   :border-color "light gray"
 								   :accept-focus t
 								   :background-color (face-background 'tooltip nil t))))
 		(with-current-buffer bf
@@ -161,7 +167,9 @@ instead."
 		(select-frame-set-input-focus frame))
 	(message "Plesae select a region.")))
 
+;;;###autoload
 (defun eli/gptel-translate ()
+  "English-Chinese Translation."
   (interactive)
   (eli/gptel--do 'translator
 				 (lambda (p s)
@@ -173,7 +181,9 @@ instead."
 				 "*gptel-translator*"
 				 60 7))
 
+;;;###autoload
 (defun eli/gptel-polish ()
+  "Polish selected text."
   (interactive)
   (eli/gptel--do 'polish
 				 (lambda (p s)
@@ -181,7 +191,9 @@ instead."
 				 "*gptel-translator*"
 				 60 8))
 
+;;;###autoload
 (defun eli/gptel-program ()
+  "Explain selected code."
   (interactive)
   (eli/gptel--do 'programming
 				 (lambda (p s)
@@ -189,7 +201,9 @@ instead."
 				 "*gptel-programming*"
 				 70 30))
 
+;;;###autoload
 (defun eli/gptel-summary ()
+  "Summary selected text."
   (interactive)
   (eli/gptel--do 'summary
 				 (lambda (p s)
@@ -197,8 +211,9 @@ instead."
 				 "*gptel-summary*"
 				 60 10))
 
-
+;;;###autoload
 (defun eli/gptel-translate-and-insert ()
+  "Translate and replace selected text."
   (interactive)
   (if (use-region-p)
 	  (let* ((str (buffer-substring-no-properties (region-beginning)
@@ -216,9 +231,8 @@ instead."
 					   :in-place t))
 	(message "Plesae select a sentence.")))
 
-(defvar eli/gptel-conversations '())
-
 (defun eli/gptel-create-conversation (name)
+  "Start ChatGPT session with NAME."
   (let ((bn (format "*ChatGPT-%s*" name)))
 	(add-to-list 'eli/gptel-conversations
 				 (cons name bn))
@@ -227,14 +241,14 @@ instead."
 	  (setq gptel--num-messages-to-send 5))
 	bn))
 
-(defvar eli/gptel--posframe nil)
-
 (defun eli/gptel-posframe-hidehandler (_)
   "Hidehandler used by `eli/gptel-posframe-toggle'."
   (not (eq (selected-frame) eli/gptel--posframe)))
 
+;;;###autoload
 (defun eli/gptel-posframe-toggle (&optional arg)
-  "Toggle shell in child frame."
+  "Pop up last used gptel posframe.
+With ARG, select a conversation in `eli/gptel-conversations' or create one."
   (interactive "P")
   (unless (and eli/gptel--posframe
 			   (frame-live-p eli/gptel--posframe)
@@ -250,13 +264,10 @@ instead."
 								 buffer
 								 :poshandler #'posframe-poshandler-frame-center
 								 :hidehandler #'eli/gptel-posframe-hidehandler
-								 :left-fringe 8
-								 :right-fringe 8
 								 :width width
 								 :height height
-								 :min-width width
-								 :min-height height
-								 :internal-border-width 3
+								 :border-width 2
+								 :border-color "light gray"
 								 :background-color (face-background 'tooltip nil t)
 								 :override-parameters '((cursor-type . box))
 								 :accept-focus t))
@@ -267,7 +278,9 @@ instead."
   (select-frame-set-input-focus eli/gptel--posframe)
   (goto-char (point-max)))
 
+;;;###autoload
 (defun eli/gptel-exit ()
+  "Close a ChatGPT session."
   (interactive)
   (let ((kill-buffer-query-functions nil)
 		(buffer (elemacs-completing-read "Select a conversation: "
