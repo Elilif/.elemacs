@@ -260,8 +260,10 @@ create one."
   (interactive "P")
   (unless (and eli/gptel--posframe
 			   (frame-live-p eli/gptel--posframe)
-			   (not arg))
-	(let* ((width  (max 100 (round (* (frame-width) 0.62))))
+			   (not arg)
+			   (eq (floor (/ (frame-width eli/gptel--posframe) 0.62))
+				   (frame-width)))
+	(let* ((width  (round (* (frame-width) 0.62)))
 		   (height (round (* (frame-height) 0.62)))
 		   (buffer-name-or-name (elemacs-completing-read "Select a conversation: "
 														 eli/gptel-conversations))
