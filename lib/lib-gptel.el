@@ -36,13 +36,13 @@
 
 (defvar eli/gptel-prompts
   '((translator . (:sys "You are a professional translator."
-						:user "You will be provied text delimited by triple backticks, your task is to translate the wrapped text into %s. \n```\n%s\n```"))
+						:user "You will be provied with text delimited by triple backticks, your task is to translate the wrapped text into %s. \n```\n%s\n```"))
 	(polish . (:sys "You are an English translator, spelling corrector and improver."
-					:user "You will be provied text delimited by triple backticks, your task is to detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations. \n```\n%s\n```"))
+					:user "You will be provied with text delimited by triple backticks, your task is to detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations. \n```\n%s\n```"))
 	(programming . (:sys "You are a professional programmer."
-						 :user "You will be provied code delimited by triple backticks, your task is to explain the code to me. \n```\n%s\n```"))
+						 :user "You will be provied with code delimited by triple backticks, your task is to determine the language and explain the code to me. \n```\n%s\n```"))
 	(summary . (:sys "You are a professional reviewer."
-					 :user "You will be provied code delimited by triple backticks, your task is to summarize the wrapped text into a single sentence. \n```\n%s\n```"))))
+					 :user "You will be provied with text delimited by triple backticks, your task is to summarize the wrapped text into a single sentence. \n```\n%s\n```"))))
 
 (defvar eli/gptel-conversations '())
 (defvar eli/gptel--posframe nil)
