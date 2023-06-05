@@ -134,9 +134,14 @@ BUFFER-NAME is the gptel posframe's name.
 
 WIDTH and HEIGHT specifies the size of posframe, see `posframe-show'
 for more details."
-  (if (use-region-p)
-	  (let* ((str (buffer-substring-no-properties (region-beginning)
-												  (region-end)))
+  (if (or (use-region-p)
+		  pdf-view-active-region)
+	  (let* ((str (cond
+				   ((eq major-mode 'pdf-view-mode)
+					(car (pdf-view-active-region-text)))
+				   (t
+					(buffer-substring-no-properties (region-beginning)
+													(region-end)))))
 			 (prompts (alist-get prompt eli/gptel-prompts))
 			 (gptel--system-message (plist-get prompts :sys))
 			 (user-prompt (funcall usr-prompt-get prompts str))
