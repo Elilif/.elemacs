@@ -220,6 +220,9 @@
 		   gptel-send :override eli/gptel-send)
   (:bind
    "s-p" eli/gptel-close)
+  (:with-feature elfeed
+	(:bind-into elfeed-show-mode-map
+	  "f" eli/gptel-summary))
   (:global
    "s-p" eli/gptel-posframe-toggle
    "C-c DEL" gptel-abort

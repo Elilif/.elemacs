@@ -128,7 +128,7 @@
 PROMPT is a symbol, see `eli/gptel-prompts' for more details.
 
 USR-PROMPT-GET is a function of two arguments, called with PROMPTS and CONTENT.
-PROMPTS is a plist, CONTENT is the string you select.
+PROMPTS is a plist in `eli/gptel-prompts', CONTENT is the string you select.
 
 BUFFER-NAME is the gptel posframe's name.
 
