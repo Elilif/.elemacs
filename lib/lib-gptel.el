@@ -122,8 +122,13 @@
 		(posframe--make-frame-invisible frame)
 	  (keyboard-quit))))
 
-(defun eli/gptel--do (prompt usr-prompt-get buffer-name width height)
+(cl-defun eli/gptel--do (&key (query-get #'eli/gptel-query-get-from-region)
+							  prompt  usr-prompt-get buffer-name
+							  (width 60) (height 7))
   "Create a gptel posframe for PROMPT.
+
+QUERY-GET is a function used to get query. The available functions now are:
+`eli/gptel-query-get-from-region', `eli/gptel-query-get-from-minibuffer'.
 
 PROMPT is a symbol, see `eli/gptel-prompts' for more details.
 
@@ -134,77 +139,98 @@ BUFFER-NAME is the gptel posframe's name.
 
 WIDTH and HEIGHT specifies the size of posframe, see `posframe-show'
 for more details."
+  (let* ((str (funcall query-get))
+		 (prompts (alist-get prompt eli/gptel-prompts))
+		 (gptel--system-message (plist-get prompts :sys))
+		 (user-prompt (funcall usr-prompt-get prompts str))
+		 (bf-live-p (get-buffer buffer-name))
+		 (bf (get-buffer-create buffer-name))
+		 (frame (posframe-show bf
+							   :position (point)
+							   :width width
+							   :height height
+							   :border-width 2
+							   :border-color "light gray"
+							   :accept-focus t
+							   :background-color (face-background 'tooltip nil t))))
+	(with-current-buffer bf
+	  (unless bf-live-p
+		(org-mode)
+		(gptel-mode)
+		(setq-local gptel-prompt-prefix-alist
+					`((markdown-mode . "### ")
+					  (org-mode . ,(concat (make-string width ?\-) "\n"))
+					  (text-mode . "### ")))
+		(set-frame-parameter frame 'line-spacing 10))
+	  (erase-buffer)
+	  (gptel-request user-prompt
+					 :stream t)
+	  (setq-local cursor-type 'box))
+	(deactivate-mark)
+	(select-frame-set-input-focus frame)))
+
+(defun eli/gptel-query-get-from-region ()
+  "Get query string from selected region."
   (if (or (use-region-p)
 		  pdf-view-active-region)
-	  (let* ((str (cond
-				   ((eq major-mode 'pdf-view-mode)
-					(car (pdf-view-active-region-text)))
-				   (t
-					(buffer-substring-no-properties (region-beginning)
-													(region-end)))))
-			 (prompts (alist-get prompt eli/gptel-prompts))
-			 (gptel--system-message (plist-get prompts :sys))
-			 (user-prompt (funcall usr-prompt-get prompts str))
-			 (bf-live-p (get-buffer buffer-name))
-			 (bf (get-buffer-create buffer-name))
-			 (frame (posframe-show bf
-								   :position (point)
-								   :width width
-								   :height height
-								   :border-width 2
-								   :border-color "light gray"
-								   :accept-focus t
-								   :background-color (face-background 'tooltip nil t))))
-		(with-current-buffer bf
-		  (unless bf-live-p
-			(org-mode)
-			(gptel-mode)
-			(setq-local gptel-prompt-prefix-alist
-						`((markdown-mode . "### ")
-						  (org-mode . ,(concat (make-string width ?\-) "\n"))
-						  (text-mode . "### ")))
-			(set-frame-parameter frame 'line-spacing 10))
-		  (erase-buffer)
-		  (gptel-request user-prompt
-						 :stream t)
-		  (setq-local cursor-type 'box))
-		(deactivate-mark)
-		(select-frame-set-input-focus frame))
-	(message "Plesae select a region.")))
+	  (cond
+	   ((eq major-mode 'pdf-view-mode)
+		(car (pdf-view-active-region-text)))
+	   (t
+		(buffer-substring-no-properties (region-beginning)
+										(region-end))))
+	(error "Plesae select a region.")))
+
+(defun eli/gptel-query-get-from-minibuffer ()
+  "Get query string from minibuffer."
+  (read-string "Input: "))
 
 ;;;###autoload
 (defun eli/gptel-translate ()
   "English-Chinese Translation."
   (interactive)
-  (eli/gptel--do 'translator
-				 (lambda (p s)
-				   (format (plist-get p :user)
-						   (if (string-match "^\\cc" s)
-							   "English"
-							 "Chinese")
-						   s))
-				 "*gptel-translator*"
-				 60 7))
+  (eli/gptel--do :prompt 'translator
+				 :usr-prompt-get (lambda (p s)
+									(format (plist-get p :user)
+											(if (string-match "^\\cc" s)
+												"English"
+											  "Chinese")
+											s))
+				 :buffer-name "*gptel-translator*"))
+
+(defun eli/gptel-translate-from-minibuffer ()
+  "English-Chinese Translation."
+  (interactive)
+  (eli/gptel--do :query-get #'eli/gptel-query-get-from-minibuffer
+				 :prompt 'translator
+				 :usr-prompt-get (lambda (p s)
+									(format (plist-get p :user)
+											(if (string-match "^\\cc" s)
+												"English"
+											  "Chinese")
+											s))
+				 :buffer-name "*gptel-translator*"))
 
 ;;;###autoload
 (defun eli/gptel-polish ()
   "Polish selected text."
   (interactive)
-  (eli/gptel--do 'polish
-				 (lambda (p s)
-				   (format (plist-get p :user) s))
-				 "*gptel-translator*"
-				 60 8))
+  (eli/gptel--do :prompt 'polish
+				 :usr-prompt-get (lambda (p s)
+									(format (plist-get p :user) s))
+				 :buffer-name "*gptel-translator*"
+				 :height 8))
 
 ;;;###autoload
 (defun eli/gptel-program ()
   "Explain selected code."
   (interactive)
-  (eli/gptel--do 'programming
-				 (lambda (p s)
-				   (format (plist-get p :user) s))
-				 "*gptel-programming*"
-				 70 30))
+  (eli/gptel--do :prompt 'programming
+				 :usr-prompt-get (lambda (p s)
+									(format (plist-get p :user) s))
+				 :buffer-name "*gptel-programming*"
+				 :width 70
+				 :width 30))
 
 ;;;###autoload
 (defun eli/gptel-summary (&optional arg)
@@ -217,11 +243,11 @@ reading RSS."
 	(push-mark)
 	(push-mark (point-max) nil t)
 	(goto-char (minibuffer-prompt-end)))
-  (eli/gptel--do 'summary
-				 (lambda (p s)
-				   (format (plist-get p :user) s))
-				 "*gptel-summary*"
-				 60 10))
+  (eli/gptel--do :prompt 'summary
+				 :usr-prompt-get (lambda (p s)
+									(format (plist-get p :user) s))
+				 :buffer-name "*gptel-summary*"
+				 :height 10))
 
 ;;;###autoload
 (defun eli/gptel-translate-and-insert ()
