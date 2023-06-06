@@ -122,8 +122,29 @@
 		(posframe--make-frame-invisible frame)
 	  (keyboard-quit))))
 
+(defun eli/gptel-query-get-from-region ()
+  "Get query string from selected region."
+  (if (or (use-region-p)
+		  pdf-view-active-region)
+	  (cond
+	   ((eq major-mode 'pdf-view-mode)
+		(car (pdf-view-active-region-text)))
+	   (t
+		(buffer-substring-no-properties (region-beginning)
+										(region-end))))
+	(error "Plesae select a region.")))
+
+(defun eli/gptel-query-get-from-minibuffer ()
+  "Get query string from minibuffer."
+  (read-string "Input: "))
+
+(defun eli/gptel-usr-prompt-get-defualt (p s)
+  (format (plist-get p :user) s))
+
 (cl-defun eli/gptel--do (&key (query-get #'eli/gptel-query-get-from-region)
-							  prompt  usr-prompt-get buffer-name
+							  prompt
+							  (usr-prompt-get #' eli/gptel-usr-prompt-get-defualt)
+							  buffer-name
 							  (width 60) (height 7))
   "Create a gptel posframe for PROMPT.
 
@@ -169,25 +190,11 @@ for more details."
 	(deactivate-mark)
 	(select-frame-set-input-focus frame)))
 
-(defun eli/gptel-query-get-from-region ()
-  "Get query string from selected region."
-  (if (or (use-region-p)
-		  pdf-view-active-region)
-	  (cond
-	   ((eq major-mode 'pdf-view-mode)
-		(car (pdf-view-active-region-text)))
-	   (t
-		(buffer-substring-no-properties (region-beginning)
-										(region-end))))
-	(error "Plesae select a region.")))
-
-(defun eli/gptel-query-get-from-minibuffer ()
-  "Get query string from minibuffer."
-  (read-string "Input: "))
-
 ;;;###autoload
 (defun eli/gptel-translate (&optional arg)
-  "English-Chinese Translation."
+  "English-Chinese Translation.
+
+Prefixed with one C-u, Read a string from the minibuffer."
   (interactive "P")
   (eli/gptel--do :query-get (if arg 
 								#'eli/gptel-query-get-from-minibuffer
@@ -206,8 +213,6 @@ for more details."
   "Polish selected text."
   (interactive)
   (eli/gptel--do :prompt 'polish
-				 :usr-prompt-get (lambda (p s)
-								   (format (plist-get p :user) s))
 				 :buffer-name "*gptel-translator*"
 				 :height 8))
 
@@ -216,8 +221,6 @@ for more details."
   "Explain selected code."
   (interactive)
   (eli/gptel--do :prompt 'programming
-				 :usr-prompt-get (lambda (p s)
-									(format (plist-get p :user) s))
 				 :buffer-name "*gptel-programming*"
 				 :width 70
 				 :width 30))
@@ -235,8 +238,6 @@ reading RSS."
 								   (point-min) (point-max)))
 							  #'eli/gptel-query-get-from-region)
 				 :prompt 'summary
-				 :usr-prompt-get (lambda (p s)
-								   (format (plist-get p :user) s))
 				 :buffer-name "*gptel-summary*"
 				 :height 10))
 
