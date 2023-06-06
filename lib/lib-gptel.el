@@ -173,6 +173,7 @@ for more details."
 							   :border-width 2
 							   :border-color "light gray"
 							   :accept-focus t
+							   :initialize (lambda () (erase-buffer))
 							   :background-color (face-background 'tooltip nil t))))
 	(with-current-buffer bf
 	  (unless bf-live-p
@@ -183,12 +184,12 @@ for more details."
 					  (org-mode . ,(concat (make-string width ?\-) "\n"))
 					  (text-mode . "### ")))
 		(set-frame-parameter frame 'line-spacing 10))
-	  (erase-buffer)
-	  (gptel-request user-prompt
-					 :stream t)
 	  (setq-local cursor-type 'box))
 	(deactivate-mark)
-	(select-frame-set-input-focus frame)))
+	(select-frame-set-input-focus frame)
+	(setq posframe--initialized-p nil)
+	(gptel-request user-prompt
+				   :stream t)))
 
 ;;;###autoload
 (defun eli/gptel-translate (&optional arg)
