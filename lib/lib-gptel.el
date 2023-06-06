@@ -79,6 +79,7 @@
 						(string-trim
 						 (buffer-substring-no-properties (prop-match-beginning prop)
 														 (prop-match-end prop))
+						 "[*# \t\n\r-]+"
 						 "[*# \t\n\r-]+"))
 				  prompts)
 			(and max-entries (cl-decf max-entries))))
