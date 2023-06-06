@@ -186,29 +186,19 @@ for more details."
   (read-string "Input: "))
 
 ;;;###autoload
-(defun eli/gptel-translate ()
+(defun eli/gptel-translate (&optional arg)
   "English-Chinese Translation."
-  (interactive)
-  (eli/gptel--do :prompt 'translator
-				 :usr-prompt-get (lambda (p s)
-									(format (plist-get p :user)
-											(if (string-match "^\\cc" s)
-												"English"
-											  "Chinese")
-											s))
-				 :buffer-name "*gptel-translator*"))
-
-(defun eli/gptel-translate-from-minibuffer ()
-  "English-Chinese Translation."
-  (interactive)
-  (eli/gptel--do :query-get #'eli/gptel-query-get-from-minibuffer
+  (interactive "P")
+  (eli/gptel--do :query-get (if arg 
+								#'eli/gptel-query-get-from-minibuffer
+							  #'eli/gptel-query-get-from-region)
 				 :prompt 'translator
 				 :usr-prompt-get (lambda (p s)
-									(format (plist-get p :user)
-											(if (string-match "^\\cc" s)
-												"English"
-											  "Chinese")
-											s))
+								   (format (plist-get p :user)
+										   (if (string-match "^\\cc" s)
+											   "English"
+											 "Chinese")
+										   s))
 				 :buffer-name "*gptel-translator*"))
 
 ;;;###autoload
@@ -217,7 +207,7 @@ for more details."
   (interactive)
   (eli/gptel--do :prompt 'polish
 				 :usr-prompt-get (lambda (p s)
-									(format (plist-get p :user) s))
+								   (format (plist-get p :user) s))
 				 :buffer-name "*gptel-translator*"
 				 :height 8))
 
@@ -239,13 +229,14 @@ for more details."
 Prefixed with one C-u, select the whole buffer first. That's useful when
 reading RSS."
   (interactive "P")
-  (when arg
-	(push-mark)
-	(push-mark (point-max) nil t)
-	(goto-char (minibuffer-prompt-end)))
-  (eli/gptel--do :prompt 'summary
+  (eli/gptel--do :query-get (if arg
+								(lambda ()
+								  (buffer-substring-no-properties
+								   (point-min) (point-max)))
+							  #'eli/gptel-query-get-from-region)
+				 :prompt 'summary
 				 :usr-prompt-get (lambda (p s)
-									(format (plist-get p :user) s))
+								   (format (plist-get p :user) s))
 				 :buffer-name "*gptel-summary*"
 				 :height 10))
 
