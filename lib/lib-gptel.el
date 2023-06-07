@@ -46,6 +46,7 @@
 
 (defvar eli/gptel-conversations '())
 (defvar eli/gptel--posframe nil)
+(defvar eli/gptel--last-posframe nil)
 
 (defun eli/gptel--create-prompt (&optional prompt-end)
   "Advice for `gptel--create-prompt'."
@@ -188,7 +189,8 @@ for more details."
 	  (setq-local cursor-type 'box))
 	(deactivate-mark)
 	(select-frame-set-input-focus frame)
-	(setq posframe--initialized-p nil)
+	(setq posframe--initialized-p nil
+		  eli/gptel--last-posframe frame)
 	(gptel-request user-prompt
 				   :stream t)))
 
@@ -225,7 +227,7 @@ Prefixed with one C-u, Read a string from the minibuffer."
   (eli/gptel--do :prompt 'programming
 				 :buffer-name "*gptel-programming*"
 				 :width 70
-				 :width 30))
+				 :height 30))
 
 ;;;###autoload
 (defun eli/gptel-summary (&optional arg)
@@ -242,6 +244,12 @@ reading RSS."
 				 :prompt 'summary
 				 :buffer-name "*gptel-summary*"
 				 :height 10))
+
+;;;###autoload
+(defun eli/gptel-toggle-last-posframe ()
+  "Toggle last gptel posframe."
+  (interactive)
+  (select-frame-set-input-focus eli/gptel--last-posframe))
 
 ;;;###autoload
 (defun eli/gptel-translate-and-insert ()

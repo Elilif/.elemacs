@@ -222,11 +222,15 @@
    "s-p" eli/gptel-close)
   (:with-feature elfeed
 	(:bind-into elfeed-show-mode-map
-	  "f" eli/gptel-summary))
+	  "s" eli/gptel-summary))
+  (:with-feature pdf-tools
+	(:bind-into pdf-view-mode-map
+	  "<mouse-8>" eli/gptel-translate))
   (:global
    "s-p" eli/gptel-posframe-toggle
    "C-c DEL" gptel-abort
-   "s-;" gptel-send))
+   "s-;" gptel-send
+   "s-\[" eli/gptel-toggle-last-posframe))
 
 ;;;; desktop
 (setup desktop
