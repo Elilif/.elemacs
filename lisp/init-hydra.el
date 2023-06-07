@@ -43,6 +43,7 @@
 (keymap-global-set "C-c j" #'hydra-roam/body)
 (keymap-global-set "C-c i" #'hydra-insert/body)
 (keymap-global-set "C-c p" #'hydra-move/body)
+(keymap-global-set "C-c h" #'hydra-gpt/body)
 (keymap-global-set "s-r" #'hydra-rectangle/body)
 (keymap-global-set "C-c [" #'hydra-skan-user-buffers-prev/body)
 (keymap-global-set "C-c ]" #'hydra-skan-user-buffers-next/body)
@@ -60,10 +61,7 @@
    "Deft"
    (("n" notdeft "notdeft"))
    "info"
-   (("i" eli/info-search)
-	("h" doctor-chatgpt)
-	("x" doctor-chatgpt-exit)
-	("p" doctor-chatgpt-insert-prompt))
+   (("i" eli/info-search))
    "rg"
    (("g" eli/consult-git-grep)
     ("r" eli/consult-git-ripgrep)
@@ -72,6 +70,17 @@
    "Google"
    (("s" my-search-with-chrome)
     ("c" github-copy-reference-url-at-point))))
+
+(pretty-hydra-define hydra-gpt
+  (:color amaranth :exit t :quit-key "q")
+  (""
+   (("x" eli/gptel-exit)
+	("b" eli/gptel-translate)
+	("s" eli/gptel-summary))
+   ""
+   (("r" eli/gptel-translate-and-insert)
+	("e" eli/gptel-program)
+	("p" eli/gptel-polish))))
 
 (pretty-hydra-define hydra-edit
   (:color amaranth :exit t
