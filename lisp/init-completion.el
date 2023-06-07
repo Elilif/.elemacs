@@ -82,6 +82,8 @@
 								  ("\\<kill-ring\\>" . kill-ring)
 								  ("\\<tab by name\\>" . tab)
 								  ("\\<[Ll]ibrary\\>" . library)))
+  (:bind-into minibuffer-local-map
+	"M-a" marginalia-cycle)
   (:when-loaded
 	(setf (alist-get 'command marginalia-annotator-registry)
 		  '(eli/marginalia-annotate-command marginalia-annotate-binding builtin none))))
@@ -137,7 +139,7 @@
 	(require 'lib-orderless)
     (require 'orderless))
   (:also-load pinyinlib)
-  (:option* completion-styles              '(basic orderless)
+  (:option* completion-styles              '(orderless basic)
             completion-category-defaults   nil
             completion-category-overrides  '((buffer (styles basic partial-completion))
                                              (file (styles partial-completion))
@@ -157,7 +159,7 @@
       (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))))
 
 
-;;;; corfu config
+;;;; corfu
 (setup corfu
   (:once (list :hooks 'prog-mode-hook)
     (global-corfu-mode)
@@ -171,13 +173,15 @@
             corfu-excluded-modes '(org-mode)
 	        corfu-on-exact-match nil
             corfu-margin-formatters '(kind-all-the-icons-margin-formatter))
-  (:hooks minibuffer-setup-hook corfu-enable-in-minibuffer))
+  (:when-loaded
+	(:hooks minibuffer-setup-hook corfu-enable-in-minibuffer)))
 
 
 ;;;; cape
 (setup cape
   (:once (list :before 'global-corfu-mode)
-	(add-to-list 'completion-at-point-functions #'cape-file)))
+	(add-hook 'completion-at-point-functions #'cape-file)))
+
 ;;;; embark
 (setup embark
   (:after consult
