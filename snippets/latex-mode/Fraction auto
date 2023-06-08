@@ -2,7 +2,7 @@
 # key: //
 # name: Fraction auto
 # expand-env: ((numerator (quote t)))
-# condition: (and (texmathp) (quote auto))
+# condition: (and (eli/texmathp) (quote auto))
 # group: math
 # --
 `(eli/latex-smart-kill)`\\frac{`(eli/latex-smart-paste)`}{$1}

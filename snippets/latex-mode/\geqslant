@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: \geqslant
 # key: geq
-# condition: (and (texmathp) (quote auto))
+# condition: (and (eli/texmathp) (quote auto))
 # group: math
 # --
 \\geqslant

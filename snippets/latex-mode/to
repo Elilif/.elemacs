@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: to
 # key: to;
-# condition: (and (texmathp) 'auto)
+# condition: (and (eli/texmathp) 'auto)
 # group: math
 # --
 \to

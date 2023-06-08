@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: limit
 # key: lm
-# condition: (and (texmathp) (quote auto))
+# condition: (and (eli/texmathp) (quote auto))
 # group: math
 # --
 \\lim_{${1:n} \\to ${2:\\infty}}$0

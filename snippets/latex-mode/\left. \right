@@ -2,6 +2,6 @@
 # name: \left. \right
 # key: rd
 # group: math
-# condition: (and (texmathp) 'auto)
+# condition: (and (eli/texmathp) 'auto)
 # --
 \\left. \\frac{\\partial $1}{\\partial ${2:x}} \\right |_{$0}

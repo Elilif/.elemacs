@@ -2,6 +2,6 @@
 # name: square
 # key: squ
 # group: math
-# condition: (and (texmathp) (quote auto))
+# condition: (and (eli/texmathp) (quote auto))
 # --
 `(backward-delete-char 1)`^2

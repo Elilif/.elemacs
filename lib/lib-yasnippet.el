@@ -89,6 +89,10 @@ instance: \"$4\pi^2 //$\" will be expand into
             (match-string 1 temp)
           temp))))
 
+(defun eli/texmathp ()
+  (and (functionp 'texmathp)
+	   (texmathp)))
+
 ;; C/C++ mode
 (defun eli/c-fun-has-namespace-p (namespace)
   "Predicate whether the current function has NAMESPACE namespace."

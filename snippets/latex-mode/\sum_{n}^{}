@@ -2,7 +2,7 @@
 # contributor: Song Qiang <tsiangsung@gmail.com>
 # key: sm
 # group: math
-# condition: (and (texmathp) (quote auto))
+# condition: (and (eli/texmathp) (quote auto))
 # name: \sum_{n}^{}
 # --
 \sum_{$1}^{$2}$0

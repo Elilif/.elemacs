@@ -2,6 +2,6 @@
 # name: sqrt
 # key: sr
 # group: math
-#condition: (and (texmathp) 'auto)
+#condition: (and (eli/texmathp) 'auto)
 # --
 \\sqrt{$0}

@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: To the bottom
 # key: tb
-# condition: (and (texmathp) 'auto)
+# condition: (and (eli/texmathp) 'auto)
 # group: math
 # --
 `(backward-delete-char 1)`_{$1}

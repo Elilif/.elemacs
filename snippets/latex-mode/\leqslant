@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: \leqslant
 # key: leq
-# condition: (and (texmathp) (quote auto))
+# condition: (and (eli/texmathp) (quote auto))
 # group: math
 # --
 \\leqslant

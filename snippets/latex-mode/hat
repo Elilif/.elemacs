@@ -2,7 +2,7 @@
 # key: ht
 # name: hat
 # expand-env: ((numerator (quote t)))
-# condition: (and (texmathp) (quote auto))
+# condition: (and (eli/texmathp) (quote auto))
 # group: math
 # --
 `(eli/latex-smart-kill)`\\hat{`(eli/latex-smart-paste)`}$0

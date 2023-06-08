@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: bar
 # key: bar
-# condition: (and (texmathp) 'auto)
+# condition: (and (eli/texmathp) 'auto)
 # expand-env: ((argument (quote t)))
 # group: math
 # --
