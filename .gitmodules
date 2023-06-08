@@ -119,6 +119,9 @@
 [submodule "ess-smart-equals"]
 	path = site-lisp/ess-smart-equals
 	url = https://github.com/genovese/ess-smart-equals
+[submodule "esxml"]
+	path = site-lisp/esxml
+	url = https://github.com/tali713/esxml
 [submodule "expand-region"]
 	path = site-lisp/expand-region
 	url = https://github.com/magnars/expand-region.el
@@ -167,6 +170,9 @@
 [submodule "keycast"]
 	path = site-lisp/keycast
 	url = https://github.com/tarsius/keycast
+[submodule "kv"]
+	path = site-lisp/kv
+	url = https://github.com/nicferrier/emacs-kv
 [submodule "ledger-mode"]
 	path = site-lisp/ledger-mode
 	url = https://github.com/ledger/ledger-mode
@@ -237,6 +243,9 @@
 [submodule "mwim"]
 	path = site-lisp/mwim
 	url = https://github.com/alezost/mwim.el
+[submodule "nov"]
+	path = site-lisp/nov
+	url = https://depp.brause.cc/nov.el.git
 [submodule "once"]
 	path = site-lisp/once
 	url = https://github.com/emacs-magus/once

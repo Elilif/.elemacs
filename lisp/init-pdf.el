@@ -67,10 +67,23 @@
   (:bind-into org-noter-notes-mode-map
 	"M-]" eli/org-noter-scroll-up-other-window
 	"M-[" eli/org-noter-scroll-down-other-window)
+  (:bind-into org-noter-doc-mode-map
+	"c" eli/org-noter-screenshot)
   (:hooks org-noter-insert-heading-hook eli/org-noter-set-highlight)
   (:advice org-noter--focus-notes-region :after eli/org-noter-set-highlight
 		   org-noter--insert-heading :override eli/org-noter--insert-heading
 		   org-noter-kill-session :before eli/org-noter-kill-outline))
+
+(setup nov
+  (:iload org-noter)
+  (:also-load
+   lib-nov)
+  (:when-loaded
+	(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+  (:bind
+   "o" nov-goto-toc)
+  (:advice
+   nov-content-unique-identifier :override my-nov-content-unique-identifier))
 
 
 ;;;; provide
