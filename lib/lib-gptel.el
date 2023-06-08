@@ -37,6 +37,8 @@
 (defvar eli/gptel-prompts
   '((translator . (:sys "You are a professional translator."
 						:user "You will be provied with text delimited by triple backticks, your task is to translate the wrapped text into %s. \n```\n%s\n```"))
+	(classical . (:sys "你是一位古汉语学者，能熟练的翻译古汉语。"
+					   :user "你将收到由三个反引号包裹的古汉语，你的任务是按照以下格式提供它的拼音和释义：\n【拼音】...\n【释义】...\n。\n```\n%s\n```"))
 	(polish . (:sys "You are an English translator, spelling corrector and improver."
 					:user "You will be provied with text delimited by triple backticks, your task is to detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations. \n```\n%s\n```"))
 	(programming . (:sys "You are a professional programmer."
@@ -210,6 +212,18 @@ Prefixed with one C-u, Read a string from the minibuffer."
 											   "English"
 											 "Chinese")
 										   s))
+				 :buffer-name "*gptel-translator*"))
+
+;;;###autoload
+(defun eli/gptel-translate-cc (&optional arg)
+  "Translate Classical Chinese.
+
+Prefixed with one C-u, Read a string from the minibuffer."
+  (interactive "P")
+  (eli/gptel--do :query-get (if arg 
+								#'eli/gptel-query-get-from-minibuffer
+							  #'eli/gptel-query-get-from-region)
+				 :prompt 'classical
 				 :buffer-name "*gptel-translator*"))
 
 ;;;###autoload

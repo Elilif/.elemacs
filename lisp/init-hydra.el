@@ -76,6 +76,7 @@
   (""
    (("x" eli/gptel-exit)
 	("b" eli/gptel-translate)
+	("c" eli/gptel-translate-cc)
 	("s" eli/gptel-summary))
    ""
    (("r" eli/gptel-translate-and-insert)
