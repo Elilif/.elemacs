@@ -35,7 +35,8 @@
   (interactive)
   (let ((org-download-image-org-width 500))
 	(org-noter-insert-note)
-	(org-download-screenshot)))
+	(org-download-screenshot))
+  (redisplay))
 
 (defun eli/org-noter-set-highlight (&rest _arg)
   "Highlight current org-noter note."
