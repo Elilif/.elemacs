@@ -81,7 +81,9 @@
    ""
    (("r" eli/gptel-translate-and-insert)
 	("e" eli/gptel-program)
-	("p" eli/gptel-polish))))
+	("p" eli/gptel-polish)
+	("w" eli/gptel-translate-word)
+	("g" eli/gptel-grammar-correct))))
 
 (pretty-hydra-define hydra-edit
   (:color amaranth :exit t

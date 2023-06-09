@@ -36,17 +36,19 @@
 
 (defvar eli/gptel-prompts
   '((translator . (:sys "You are a professional translator."
-						:user "You will be provied with text delimited by triple backticks, your task is to translate the wrapped text into %s. You should only output the translated text. \n```\n%s\n```"))
+						:user "You will be provied with text delimited by triple backticks, your task is to translate the wrapped text into %s. You should only output the translated text. \n```%s```"))
 	(word . (:sys "You are a experienced linguist."
-				  :user "You will be provied with text delimited by triple backticks. your task is to, for the wrapped text, provide its pronunciation, synonyms, definition and an example sentence according to the following format:\n【发音】...\n【近义】...\n【释义】...\n【例句】...\n```\n%s\n```"))
+				  :user "You will be provied with text delimited by triple backticks. your task is to, for the wrapped text, provide its pronunciation, synonyms, definition and an example sentence according to the following format:\n【发音】...\n【近义】...\n【释义】...\n【例句】...\n```%s```"))
 	(classical . (:sys "你是一位古汉语学者，能熟练的翻译古汉语。"
-					   :user "你将收到由三个反引号包裹的古汉语，你的任务是按照以下格式提供它的释义和拼音：\n【释义】...\n【拼音】...\n```\n%s\n```"))
+					   :user "你将收到由三个反引号包裹的古汉语，你的任务是按照以下格式提供它的释义和拼音：\n【释义】...\n【拼音】...\n```%s```"))
 	(polish . (:sys "You are an English translator, spelling corrector and improver."
-					:user "You will be provied with text delimited by triple backticks, your task is to detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations. \n```\n%s\n```"))
+					:user "You will be provied with text delimited by triple backticks, your task is to detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations. \n```%s```"))
 	(programming . (:sys "You are a professional programmer."
-						 :user "You will be provied with code delimited by triple backticks, your task is to determine the language and explain the code to me. \n```\n%s\n```"))
+						 :user "You will be provied with code delimited by triple backticks, your task is to determine the language and explain the code to me. \n```%s```"))
 	(summary . (:sys "You are a professional reviewer."
-					 :user "You will be provied with text delimited by triple backticks, your task is to summarize the wrapped text into a single sentence. \n```\n%s\n```"))))
+					 :user "You will be provied with text delimited by triple backticks, your task is to summarize the wrapped text into a single sentence. \n```%s```"))
+	(grammar . (:sys "You are a grammar checker that looks for mistakes and makes sentence’s more fluent."
+					 :user "You will be provied with text delimited by triple backticks, your task is to correct grammar errors in the wrapped text. Just reply to user input with the correct grammar, DO NOT reply the context of the question of the user input. If the user input is grammatically correct and fluent, just reply “sounds good”. Sample of the conversation will show below:\nuser: grammar mistake text\nyou: correct text\nuser:Grammatically correct text\nyou: Sounds good.\n```%s```"))))
 
 (defvar eli/gptel-conversations '())
 (defvar eli/gptel--posframe nil)
@@ -248,6 +250,15 @@ Prefixed with one C-u, Read a string from the minibuffer."
   (eli/gptel--do :prompt 'polish
 				 :buffer-name "*gptel-translator*"
 				 :height 8))
+
+;;;###autoload
+(defun eli/gptel-grammar-correct ()
+  "Correct grammar errors in the selected text. 
+
+Prefixed with one C-u, read a string from the minibuffer."
+  (interactive)
+  (eli/gptel--do :prompt 'grammar
+				 :buffer-name "*gptel-translator*"))
 
 ;;;###autoload
 (defun eli/gptel-program ()
