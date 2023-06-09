@@ -357,7 +357,8 @@ create one."
   (let ((kill-buffer-query-functions nil)
 		(buffer (elemacs-completing-read "Select a conversation: "
 										 eli/gptel-conversations)))
-	(kill-buffer buffer)
+	(when (get-buffer buffer) 
+	  (kill-buffer buffer))
 	(setq eli/gptel-conversations
 		  (cl-remove-if (lambda (cons)
 						  (string= (cdr cons)
