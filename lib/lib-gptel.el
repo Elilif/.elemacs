@@ -204,7 +204,7 @@ for more details."
 (defun eli/gptel-translate (&optional arg)
   "English-Chinese Translation.
 
-Prefixed with one C-u, Read a string from the minibuffer."
+Prefixed with one C-u, read a string from the minibuffer."
   (interactive "P")
   (eli/gptel--do :query-get (if arg 
 								#'eli/gptel-query-get-from-minibuffer
@@ -222,7 +222,7 @@ Prefixed with one C-u, Read a string from the minibuffer."
 (defun eli/gptel-translate-cc (&optional arg)
   "Translate Classical Chinese.
 
-Prefixed with one C-u, Read a string from the minibuffer."
+Prefixed with one C-u, read a string from the minibuffer."
   (interactive "P")
   (eli/gptel--do :query-get (if arg 
 								#'eli/gptel-query-get-from-minibuffer
@@ -231,9 +231,9 @@ Prefixed with one C-u, Read a string from the minibuffer."
 				 :buffer-name "*gptel-translator*"))
 
 (defun eli/gptel-translate-word (&optional arg)
-  "Translate selected word.
+  "Translate the selected word.
 
-Prefixed with one C-u, Read a string from the minibuffer."
+Prefixed with one C-u, read a string from the minibuffer."
   (interactive "P")
   (eli/gptel--do :query-get (if arg 
 								#'eli/gptel-query-get-from-minibuffer
@@ -245,7 +245,7 @@ Prefixed with one C-u, Read a string from the minibuffer."
 
 ;;;###autoload
 (defun eli/gptel-polish ()
-  "Polish selected text."
+  "Polish the selected text."
   (interactive)
   (eli/gptel--do :prompt 'polish
 				 :buffer-name "*gptel-translator*"
@@ -262,7 +262,7 @@ Prefixed with one C-u, read a string from the minibuffer."
 
 ;;;###autoload
 (defun eli/gptel-program ()
-  "Explain selected code."
+  "Explain the selected code."
   (interactive)
   (eli/gptel--do :prompt 'programming
 				 :buffer-name "*gptel-programming*"
@@ -271,7 +271,7 @@ Prefixed with one C-u, read a string from the minibuffer."
 
 ;;;###autoload
 (defun eli/gptel-summary (&optional arg)
-  "Summary selected text.
+  "Summary the selected text.
 
 Prefixed with one C-u, select the whole buffer first. That's useful when
 reading RSS."
