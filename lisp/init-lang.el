@@ -122,6 +122,10 @@
 	(ess-smart-equals-activate))
   (:option*
    ess-smart-equals-extra-ops '(brace paren percent)))
+;;;; lisp
+(setup racket-mode)
+
+(setup emacs-ob-racket)
 ;;;; python
 (setup lsp-pyright
   (:iload lsp-pyright))

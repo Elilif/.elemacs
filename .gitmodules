@@ -249,6 +249,9 @@
 [submodule "nov"]
 	path = site-lisp/nov
 	url = https://depp.brause.cc/nov.el.git
+[submodule "ob-racket"]
+	path = site-lisp/ob-racket
+	url = https://github.com/hasu/emacs-ob-racket
 [submodule "once"]
 	path = site-lisp/once
 	url = https://github.com/emacs-magus/once
@@ -337,6 +340,9 @@
 [submodule "quickrun"]
 	path = site-lisp/quickrun
 	url = https://github.com/emacsorphanage/quickrun
+[submodule "racket-mode"]
+	path = site-lisp/racket-mode
+	url = https://github.com/greghendershott/racket-mode
 [submodule "rainbow-delimiters"]
 	path = site-lisp/rainbow-delimiters
 	url = https://github.com/Fanael/rainbow-delimiters
@@ -418,6 +424,9 @@
 [submodule "with-editor"]
 	path = site-lisp/with-editor
 	url = https://github.com/magit/with-editor
+[submodule "wordnut"]
+	path = site-lisp/wordnut
+	url = https://github.com/gromnitsky/wordnut
 [submodule "yaml"]
 	path = site-lisp/yaml
 	url = https://github.com/zkry/yaml.el

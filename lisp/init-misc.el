@@ -308,6 +308,47 @@
   (:option*
    keycast-mode-line-insert-after '(:eval (mood-line-segment-misc-info))
    keycast-mode-line-format "%1s%k%c%R"))
+;;;; ledger
+(setup ledger-mode
+  (:also-load lib-ledger-mode)
+  (:option* ledger-reconcile-default-commodity "¥"
+			ledger-post-amount-alignment-column 80
+			ledger-report-auto-refresh-sticky-cursor t
+			ledger-report-auto-refresh t
+			ledger-copy-transaction-insert-blank-line-after t
+			ledger-reconcile-buffer-line-format "%(date)s %-4(code)s %-30(payee)s %-30(account)s %15(amount)s\n"
+			ledger-reports '(("bal" "%(binary) -f %(ledger-file) bal")
+							 ("bal this month" "%(binary) -f %(ledger-file) bal -p %(month) -S amount")
+							 ("bal this year" "%(binary) -f %(ledger-file) bal -p 'this year'")
+							 ("net worth"      "%(binary) -f %(ledger-file) bal Assets Liabilities")
+							 ("reg" "%(binary) -f %(ledger-file) reg")
+							 ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
+							 ("account" "%(binary) -f %(ledger-file) reg %(account)")))
+  (:when-loaded
+	(setq-default ledger-occur-use-face-shown nil))
+  (:bind
+   "C-M-p" ledger-navigate-previous-uncleared
+   "C-M-n" ledger-navigate-next-uncleared
+   "C-M-a" ledger-navigate-beginning-of-xact
+   "C-M-e" ledger-navigate-end-of-xact
+   "C-M-f" eli/jump-to-amount)
+  (:advice
+   ledger-read-date :override eli/ledger-read-date)
+  (:hooks
+   ledger-mode-hook eli/ledger-set-tab-style))
+
+;;;; Goldendict
+(defun eli/goldendict-word-at-point ()
+  "Search word in goldendict"
+  (interactive)
+  (call-process-shell-command (concat "goldendict " (current-word) " &") nil 0))
+(setup simple
+  (:global
+   "s-h" eli/goldendict-word-at-point))
+
+(setup wordnut
+  (:global
+   "C-c y" wordnut-lookup-current-word))
 
 ;;;; provide
 (provide 'init-misc)
