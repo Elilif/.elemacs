@@ -84,6 +84,15 @@ for confirmation when needed."
   (kill-buffer "*elfeed-log*")
   (kill-buffer (current-buffer)))
 
+(defvar eli/elfeed-filters '("@2-days-ago +A"
+							 "+B +TEP"))
+
+;;;###autoload
+(defun eli/elfeed-search-set-filter ()
+  "Set a new search filter for the elfeed-search buffer."
+  (interactive)
+  (elfeed-search-set-filter (completing-read "Filter: " eli/elfeed-filters)))
+
 
 
 ;;;; provide

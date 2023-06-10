@@ -70,7 +70,8 @@
 	"R" eli/filter-read
 	"m" elfeed-toggle-star
 	"f" eli/elfeed-search-filter-source
-	"M" eli/elfeed-search-starred-entries)
+	"M" eli/elfeed-search-starred-entries
+	"S" eli/elfeed-search-set-filter)
   (:bind-into elfeed-show-mode-map
 	"q" kill-buffer-and-window))
 
