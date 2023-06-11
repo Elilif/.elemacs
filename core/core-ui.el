@@ -83,7 +83,8 @@
 	
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
                                     ("Sarasa" . 1.2)
-                                    ("Amazon Ember" . 1.2)))))
+                                    ("Amazon Ember" . 1.2)
+									("Bookerly" . 1.2)))))
 
 (add-hook 'after-init-hook #'eli/set-font)
 
