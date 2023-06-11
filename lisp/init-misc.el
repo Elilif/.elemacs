@@ -35,6 +35,11 @@
   (require 'lib-rime)
   (require 'rime)
   (require 'avy)
+  (require 'gptel)
+  (require 'gptel-curl)
+  (require 'lib-gptel)
+  (require 'ledger-mode)
+  (require 'lib-ledger-mode)
   (require 'lib-tab-bar))
 
 ;;;; dired

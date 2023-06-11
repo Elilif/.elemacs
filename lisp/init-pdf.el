@@ -35,7 +35,9 @@
   (require 'pdf-tools)
   (require 'org-noter)
   (require 'lib-pdf)
-  (require 'lib-org-noter))
+  (require 'lib-org-noter)
+  (require 'nov)
+  (require 'lib-nov))
 
 (setup pdf-tools
   (:iload* pdf-tools)

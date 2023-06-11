@@ -68,8 +68,8 @@
 (defun org-pandoc-link (link contents info)
   "Transcode a LINK object.
 
-The registered formatter for the 'pandoc backend is used. If none
-exists, transcode using the registered formatter for the 'org
+The registered formatter for the \='pandoc backend is used. If none
+exists, transcode using the registered formatter for the \='org
 export backend. For fuzzy (internal) links, resolve the link
 destination in order to determine the appropriate reference
 number of the target Table/Figure/Equation etc. CONTENTS is the

@@ -30,6 +30,9 @@
 
 ;;; Code:
 
+(cl-eval-when (compile)
+  (require 'gdb-mi))
+
 (defun gdb-non-stop-handler ()
   (goto-char (point-min))
   (if (re-search-forward "No symbol" nil t)

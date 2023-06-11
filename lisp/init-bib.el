@@ -32,6 +32,12 @@
 
 ;;; TODO: refactor
 
+(cl-eval-when (compile)
+  (require 'oc-csl)
+  (require 'citar)
+  (require 'bibtex)
+  (require 'bibtex-completion))
+
 (setq eli/bibliography '("/home/eli/Documents/Mybooks/Books.bib"))
 
 (with-eval-after-load 'org
