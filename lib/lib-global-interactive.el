@@ -50,7 +50,7 @@ to get user input. You need to install `zenity'."
                                         (elemacs-global-interactive-system-read-string prompt)
                                       (apply orig-fun prompt args))))
 
-(defun elemacs-global-interactive-dmenu (prompt items &rest ignored)
+(defun elemacs-global-interactive-dmenu (prompt items &rest _ignored)
   "Like `completing-read' but instead use dmenu.
 Useful for system-wide scripts."
   (with-temp-buffer
@@ -75,7 +75,8 @@ Useful for system-wide scripts."
     (string-trim (buffer-string))))
 
 (defun elemacs-global-interactive-run ()
-  "enable selecting a functions from `elemacs-global-interactive-commands' and call it."
+  "enable selecting a functions from `elemacs-global-interactive-commands'
+and call it."
   (let*
       ((completing-read-function #'elemacs-global-interactive-dmenu)
        (elemacs-global-interactive-defer-to-system-app t)

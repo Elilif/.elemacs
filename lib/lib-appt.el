@@ -35,7 +35,7 @@
   "call org-agenda-to-appt with refresh."
   (org-agenda-to-appt t))
 
-(defun appt-disp-window-and-notification (min-to-appt current-time appt-msg)
+(defun appt-disp-window-and-notification (min-to-appt _current-time appt-msg)
   (if (atom min-to-appt)
 	  (notifications-notify :timeout (* appt-display-interval 60000)
                             ;; 一直持续到下一次提醒
