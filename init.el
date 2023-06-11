@@ -1,4 +1,4 @@
-;; init.el --- Initialize Args out of range: "init.el", 23, 117 configurations.	-*- lexical-binding: t -*-
+;; init.el 	-*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -172,46 +172,43 @@
   (run-with-idle-timer 0.3 nil (lambda () (require 'init-hydra)))
   (require 'init-misc)
   (require 'init-info)
-  (require 'init-edit)
+  (require 'init-edit))
 
-  ;; (require 'init-lang)
-  ;; (require 'init-news)  
-  ;; (require 'init-org)
-  ;; (require 'init-pdf)
-  ;; (require 'init-bib)
+;; (require 'init-lang)
+;; (require 'init-news)  
+;; (require 'init-org)
+;; (require 'init-pdf)
+;; (require 'init-bib)
 
-  ;;; HACK: load the following config on demand, need more tests.
-  ;;; TODO: check the entire loading procedure and refactor it.
-  (setup org
-	(:iload init-org)
-	(:once (list :before 'hydra-org-agenda/body 'hydra-org/body
-				 'citar-open
-				 :packages 'org)
-	  (require 'init-org)))
+;;; HACK: load the following config on demand, need more tests.
+;;; TODO: check the entire loading procedure and refactor it.
+(setup org
+  (:iload init-org)
+  (:once (list :before 'hydra-org-agenda/body 'hydra-org/body
+			   'citar-open
+			   :packages 'org)
+	(require 'init-org)))
 
-  (setup init-vc
-	(:iload init-vc)
-	(:once (list :before 'magit-status)
-	  (require 'init-vc)))
-  
-  (setup init-lang
-	(:iload init-lang)
-	(:once (list :hooks 'find-file-hook 
-				 :before 'consult-recent-file 'consult-dir 'consult-bookmark)
-	  (require 'init-lang)))
+(setup init-vc
+  (:iload init-vc)
+  (:once (list :before 'magit-status)
+	(require 'init-vc)))
 
-  (setup init-news
-	(:iload init-news)
-	(once (list :before 'hydra-reader/body)
-	  (require 'init-news)))
+(setup init-lang
+  (:iload init-lang)
+  (:once (list :hooks 'find-file-hook 
+			   :before 'consult-recent-file 'consult-dir 'consult-bookmark)
+	(require 'init-lang)))
 
-  (setup reader
-	(:iload init-pdf init-bib)
-	(:once (list :before 'hydra-bibtex/body)
-	  (require 'init-pdf)
-	  (require 'init-bib)))
+(setup init-news
+  (:iload init-news)
+  (once (list :before 'hydra-reader/body)
+	(require 'init-news)))
 
-  )
-
+(setup reader
+  (:iload init-pdf init-bib)
+  (:once (list :before 'hydra-bibtex/body)
+	(require 'init-pdf)
+	(require 'init-bib)))
 
 ;;; init.el ends here.
