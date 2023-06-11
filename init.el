@@ -138,12 +138,28 @@
         (borg-initialize)
         (lld-collect-autoloads file))))
 
-  (lld-initialize))
+  (defun latest-file (path)
+	"Get latest file (including directory) in PATH."
+	(file-name-nondirectory (car (seq-find
+								  '(lambda (x) (not (nth 1 x))) ; non-directory
+								  (sort
+								   (directory-files-and-attributes path 'full nil t)
+								   (lambda (x y) (time-less-p (nth 5 y) (nth 5 x))))))))
+
+  (defun eli/collect-lib-autoloads ()
+	(unless (string= (latest-file "~/.emacs.d/lib/") "lib-autoloads.el")
+	  (require 'loaddefs-gen nil t)
+	  (loaddefs-generate "~/.emacs.d/lib/"
+						 "~/.emacs.d/lib/lib-autoloads.el"
+						 nil nil nil t))
+	(load "~/.emacs.d/lib/lib-autoloads.el" nil t))
+
+  (lld-initialize)
+  (eli/collect-lib-autoloads))
 
 
 ;;;; Core
 (let ((file-name-handler-alist nil))
-
   (require 'core-lib)
   (require 'core-incremental-loading)
   (require 'core-setup)

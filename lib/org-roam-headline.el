@@ -114,6 +114,7 @@ SQL can be either the emacsql vector representation, or a string."
 	(org-roam-headline-db--clear-file file)
 	(org-roam-headline-db--insert-entry file)))
 
+;;;###autoload
 (defun org-roam-headline-db-sync (&optional force)
   (interactive "P")
   (org-roam-headline-db--close)
@@ -174,6 +175,7 @@ SQL can be either the emacsql vector representation, or a string."
     (org-insert-link
 	 nil (concat "id:" headline-id) headline-name)))
 
+;;;###autoload
 (defun org-roam-headline-read ()
   (interactive)
   (let* ((nodes (org-roam-headline-read--completions))
@@ -186,6 +188,7 @@ SQL can be either the emacsql vector representation, or a string."
 					(complete-with-action action nodes string pred))))))
 	(cdr (assoc node nodes))))
 
+;;;###autoload
 (defun org-roam-headline-node-find (&optional other-window)
   (interactive current-prefix-arg)
   (let ((node (org-roam-headline-read)))
@@ -262,6 +265,7 @@ OLD-FILE is cleared from the database, and NEW-FILE-OR-DIR is added."
   "If appropriate, update the database for the current file after saving buffer."
   (when org-roam-headline-db-update-on-save (org-roam-headline-db--update-file)))
 
+;;;###autoload
 (defun consult-org-roam-headline ()
   (interactive)
   (consult--read

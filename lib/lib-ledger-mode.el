@@ -54,6 +54,7 @@
 			  completion-cycle-threshold t
 			  ledger-complete-in-steps t))
 
+;;;###autoload
 (defun eli/jump-to-amount ()
   (interactive)
   (ledger-navigate-beginning-of-xact)

@@ -85,6 +85,7 @@
   "SPC" #'mark
   "DEL" #'delete-region)
 
+;;;###autoload
 (defun eli/embark-deselect ()
   "Deselect all selected candidates."
   (interactive)

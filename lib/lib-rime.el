@@ -47,6 +47,8 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
               (not (string-match-p " $" string))))))
 
 (defvar eli/prefer-English t)
+
+;;;###autoload
 (defun eli/input-switch ()
   (interactive)
   (if (not eli/prefer-English)
@@ -64,6 +66,7 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 	  (setq eli/prefer-English nil)
 	  )))
 
+;;;###autoload
 (defun +rime-convert-string-at-point (&optional _return-cregexp)
   "将光标前的字符串转换为中文."
   (interactive "P")

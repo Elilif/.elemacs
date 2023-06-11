@@ -121,17 +121,20 @@ Used to preselect nearest headings and imenu items.")
   (setq consult--previous-point nil))
 
 ;; my customizations
+;;;###autoload
 (defun eli/consult-buffer()
   (interactive)
   (consult-buffer)
   (when (member (prefix-numeric-value current-prefix-arg) '(4 16 64))
     (delete-other-windows)))
 
+;;;###autoload
 (defun eli/consult-git-grep ()
   "Search with git grep for files in current git dir. "
   (interactive)
   (consult-git-grep (vc-root-dir)))
 
+;;;###autoload
 (defun eli/consult-org-file (&optional match)
   "Jump to an Org heading.
 
@@ -140,6 +143,7 @@ entries are offered."
   (interactive)
   (consult-org-heading match '(list org-agenda-file-inbox org-agenda-file-habit org-agenda-file-projects)))
 
+;;;###autoload
 (defun eli/consult-org-roam-heading (&optional match)
   "Jump to an Org-roam heading.
 
@@ -148,6 +152,7 @@ entries are offered."
   (interactive)
   (consult-org-heading match '(directory-files-recursively org-roam-directory "\\.org")))
 
+;;;###autoload
 (defun eli/consult-ripgrep-single-file (file-path)
   "Search single file use `consult-ripgrep'."
   (interactive)
@@ -166,6 +171,7 @@ entries are offered."
                  (shell-quote-argument file-path))))
     (consult-ripgrep)))
 
+;;;###autoload
 (defun eli/consult-git-ripgrep (dir)
   "Search single file use `consult-ripgrep'."
   (interactive
@@ -175,6 +181,7 @@ entries are offered."
                                               consult-ripgrep-args)))
     (consult-ripgrep dir)))
 
+;;;###autoload
 (defun eli/info-search ()
   "Search info through `consult-info'."
   (interactive)

@@ -128,6 +128,7 @@ This function returns nil if it cannot parse REMOTE."
               (cons (match-string-no-properties 1 remote) (match-string-no-properties 2 remote))
             nil))))))
 
+;;;###autoload
 (defun github-copy-reference-url-at-point ()
   "Copy a link to the current line on the GitHub Web interface."
   (interactive)

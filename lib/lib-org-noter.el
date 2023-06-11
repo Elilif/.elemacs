@@ -30,6 +30,7 @@
 
 ;;; Code:
 
+;;;###autoload
 (defun eli/org-noter-screenshot ()
   "Capture screenshot and insert the image in the note."
   (interactive)
@@ -69,6 +70,7 @@
 
 (eli/advise-org-noter-functions org-noter-move-functions)
 
+;;;###autoload
 (defun eli/org-noter-scroll-up-other-window (lines)
   (interactive "P")
   (with-selected-window (other-window-for-scrolling)
@@ -76,6 +78,7 @@
                  #'pdf-view-scroll-up-or-next-page)
              lines)))
 
+;;;###autoload
 (defun eli/org-noter-scroll-down-other-window (lines)
   (interactive "P")
   (with-selected-window (other-window-for-scrolling)

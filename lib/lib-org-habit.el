@@ -104,6 +104,7 @@ or equal to scheduled (%s)"
 	      (setq count (1+ count))))
 	  (list scheduled sr-days deadline dr-days closed-dates sr-type))))
 
+;;;###autoload
 (defun eli/habit-streaks (habit)
   (interactive)
   (let ((closed-days (nth 4 habit))

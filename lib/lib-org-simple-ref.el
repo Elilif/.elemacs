@@ -73,6 +73,7 @@ The label should always be in group 1.")
                                                   'face 'mindre-faded)
                                       70 nil 32))))
 
+;;;###autoload
 (defun eli/org-ref-insert-ref-link ()
   "Completion function for a ref link."
   (interactive)

@@ -125,6 +125,7 @@ Used by `org-anki-skip-function'"
 
 (eli/org-anki-install "checkbox" "^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\| \\|\\([0-9]+\\)/\\1\\)\\] \\(.*\n?\\(?: \\{1,2\\}.*\n?\\)*\\)" 2)
 
+;;;###autoload
 (defun org-anki-sync-region (beg end)
   (interactive "r")
   (let* ((org-export-preserve-breaks t)

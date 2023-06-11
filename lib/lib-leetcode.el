@@ -31,6 +31,8 @@
 ;;; Code:
 
 ;;;;; leetcode lib
+
+;;;###autoload
 (defun eli/leetcode-kill-problems-buffer ()
   "Close and delete leetcode related buffers and windows."
   (interactive)
