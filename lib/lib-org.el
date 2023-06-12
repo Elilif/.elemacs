@@ -256,7 +256,8 @@ Assume point is at first MARK."
               ((symbol-function #'org-ascii-italic) #'drop-markup)
               ((symbol-function #'org-ascii-strike-through) #'drop-markup)
               ((symbol-function #'org-ascii-underline) #'drop-markup))
-      (let ((org-ascii-bullets nil)
+      (let ((org-ascii-text-width most-positive-fixnum)
+			(org-ascii-bullets nil)
             (org-ascii-underline nil)
             (org-ascii-verbatim-format "%s"))
         (org-export-string-as string 'ascii t)))))
@@ -266,8 +267,9 @@ Assume point is at first MARK."
 	  (thread-last
 		string
 		eli/org2plaintxt
-		(replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 ")
-		(replace-regexp-in-string "\n" "" ))
+		;; (replace-regexp-in-string "\\([A-Za-z0-9]\\)\n" "\\1 ")
+		;; (replace-regexp-in-string "\n" "" )
+		)
     string))
 
 ;; movie rating
