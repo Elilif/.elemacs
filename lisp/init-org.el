@@ -58,7 +58,8 @@
 		   fill-move-to-break-point :before eli/adjust-line-break-point
 		   text-scale-mode :after eli/org-image-scale-increase)
   (:bind
-   "C-<tab>" eli/org-expand-all))
+   "C-<tab>" eli/org-expand-all
+   "C-x n l" eli/org-narrow-to-item))
 
 ;;;; org
 (setup org

@@ -393,6 +393,17 @@ Assume point is at first MARK."
 						   (expt eli/org-image-scale-mode-step
 								 text-scale-mode-amount)))))
 
+;;;###autoload
+(defun eli/org-narrow-to-item ()
+  "Narrow buffer to the current item.
+
+Throw an error when not in a list."
+  (interactive)
+  (save-excursion
+    (narrow-to-region
+	 (progn (org-beginning-of-item) (point))
+	 (progn (org-end-of-item) (1- (point))))))
+
 
 ;; better list format
 ;; (defun org-list-struct-fix-bul (struct prevs)
