@@ -37,7 +37,7 @@ settings.
     to get more information.
 
     This file defines some useful setup-local macros:
-    - =:incremental-loading=
+    - =:iload=
     - =:silence=
     - =:option*=
     - =:after=
