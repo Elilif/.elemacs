@@ -81,10 +81,11 @@
   "dynamic generate agenda files list when changing org state")
 
 (defun update-dynamic-agenda-hook ()
-  (let ((done (or (not org-state) ;; nil when no TODO list
-                  (member org-state org-done-keywords)))
-        (file (buffer-file-name))
-        (agenda (funcall (ad-get-orig-definition 'org-agenda-files)) ))
+  (let* ((org-state (org-get-todo-state))
+		 (done (or (not org-state) ;; nil when no TODO list
+                   (member org-state org-done-keywords)))
+         (file (buffer-file-name))
+         (agenda (funcall (ad-get-orig-definition 'org-agenda-files)) ))
     (unless (member file agenda)
 	  (if done
           (save-excursion
