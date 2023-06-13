@@ -72,37 +72,40 @@
   (:global "C-`" #'popper-toggle-latest
            "M-`" #'popper-cycle
            "C-M-`" #'popper-toggle-type)
-  (:option* popper-reference-buffers '("\\*Messages\\*"
-                                       "\\*scratch\\*"
+  (:option* popper-reference-buffers '("scratch\\*"
                                        "Output\\*$"
                                        "\\*Async Shell Command\\*"
                                        "\\*Xenops-Doctor\\*"
                                        "\\*Emms\\*.*"
                                        "\\*Org LATEX Export\\*"
+									   "\\*Pp Macroexpand Output\\*"
                                        emms-browser-mode
-                                       org-agenda-mode
-                                       helpful-mode
                                        compilation-mode)
             popper-mode-line t
             popper-echo-dispatch-keys '("0" "1" "2" "3" "4" "5" "6" "7" "8" "9")
             popper-display-control nil)
   (:advice popper-raise-popup :after (lambda (&optional _arg)
-                                       (delete-other-windows))))
+                                       (delete-other-windows))
+		   popper-open-latest :before eli/popper-remove-autoscratch))
 
 ;;;; shackle
 (setup shackle
   (:once (list :hooks 'find-file-hook)
     (shackle-mode))
   (:option* shackle-rules '(("*Messages*" :align below :size 0.3 :select t)
-			                ("*scratch*" :select t :align right)
+			                (".*scratch\\*$" :regexp t :select t :align right)
 			                (helpful-mode :select t :align right)
+							(help-mode :select t :align right)
 			                (elfeed-show-mode :select t :align bottom :size 0.85)
+							("\\*Pp Macroexpand Output\\*" :regexp t :select t)
 			                ("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
 			                ("*WordNut*" :select t :align right :size 0.4)
 			                ("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
 			                (emms-browser-mode :select t :align right :size 0.5)
+							(emacs-lisp-compilation-mode :ignore t)
 			                (org-agenda-mode :select t)
-			                ("*Org Select*" :select t :align right :size 0.3))))
+			                ("*Org Select*" :select t :align right :size 0.3)
+							("*Reconcile*" :select t :align right :size 0.5))))
 
 ;;;; gcmh
 (setup gcmh
@@ -354,7 +357,28 @@
 (setup wordnut
   (:global
    "C-c y" wordnut-lookup-current-word))
-
+;;;; autoscratch
+(setup autoscratch
+  (:also-load
+   lib-autoscratch)
+  (:init
+   (run-with-idle-timer 0.6 nil (lambda ()
+								  (with-current-buffer (get-buffer "*scratch*")
+									(autoscratch-mode)))))
+  (:option*
+   initial-major-mode 'autoscratch-mode
+   autoscratch-triggers-alist '(("[(;]" lisp-interaction-mode)
+								("#" autoscratch-select
+								 '(("python" python-mode)
+								   ("shell" shell-script-mode)))
+								("[-a-zA-Z0-9]" org-mode)
+								("/" c-mode)
+								("." fundamental-mode)))
+  (:advice
+   autoscratch--fork-and-rename-current
+   :override eli/autoscratch--fork-and-rename-current)
+  (:bind
+   [remap yank] eli/autoscratch--yank))
 ;;;; provide
 (provide 'init-misc)
 ;;; init-misc.el ends here.
