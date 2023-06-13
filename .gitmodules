@@ -28,6 +28,9 @@
 [submodule "async"]
 	path = site-lisp/async
 	url = https://github.com/jwiegley/emacs-async
+[submodule "autoscratch"]
+	path = site-lisp/autoscratch
+	url = https://github.com/TLINDEN/autoscratch
 [submodule "avy"]
 	path = site-lisp/avy
 	url = https://github.com/abo-abo/avy
