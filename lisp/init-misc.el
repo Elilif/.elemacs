@@ -40,7 +40,8 @@
   (require 'lib-gptel)
   (require 'ledger-mode)
   (require 'lib-ledger-mode)
-  (require 'lib-tab-bar))
+  (require 'lib-tab-bar)
+  (require 'elfeed-show))
 
 ;;;; dired
 (setup dired
