@@ -80,6 +80,10 @@
 (dolist (lang org-babel-lang-list)
   (eval `(lsp-org-babel-enable ,lang)))
 
+(defun eli/lsp-ui-doc--hide-frame (orig-fun &rest args)
+  (when (and lsp-ui-doc-mode
+			 (not (frame-parameter (selected-frame) 'posframe-buffer)))
+	(apply orig-fun args)))
 
 ;;;; provide
 (provide 'lib-lsp)

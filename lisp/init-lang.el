@@ -162,12 +162,12 @@
 						   (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode
 												   'snippet-mode)
 							 (lsp-deferred)))
-		  lsp-mode-hook (lambda ()
-						  ;; Integrate `which-key'
-						  ;; (lsp-enable-which-key-integration)
-						  ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
-						  ;; (add-hook 'before-save-hook #'lsp-organize-imports t t)
-						  )
+		  ;; lsp-mode-hook (lambda ()
+		  ;; 				  ;; Integrate `which-key'
+		  ;; 				  ;; (lsp-enable-which-key-integration)
+		  ;; 				  ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
+		  ;; 				  ;; (add-hook 'before-save-hook #'lsp-organize-imports t t)
+		  ;; 				  )
 		  lsp-completion-mode-hook my/lsp-mode-setup-completion))
 
 (setup lsp-ui
@@ -180,7 +180,9 @@
    lsp-ui-sideline-enable nil
    lsp-ui-sideline-show-diagnostics t
    lsp-ui-sideline-show-code-actions t
-   lsp-ui-doc-show-with-cursor t))
+   lsp-ui-doc-show-with-cursor t)
+  (:advice
+   lsp-ui-doc--hide-frame :around eli/lsp-ui-doc--hide-frame))
 ;;;; flycheck
 (setup flycheck
   (:option*
