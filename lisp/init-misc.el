@@ -220,7 +220,7 @@
 ;;    "s-p" doctor-chatgpt-pop-posframe-toggle))
 
 (setup gptel
-  (:iload gptel-curl)
+  (:iload gptel)
   (:also-load
    lib-gptel)
   (:when-loaded
@@ -229,6 +229,8 @@
    gptel-stream t
    ;; gptel-host "api.openai.com"
    gptel-host "api.openai-sb.com"
+   ;; gptel-proxy "socks://127.0.0.1:7891"
+   gptel-proxy ""
    gptel-default-mode 'org-mode
    gptel-temperature 0.7
    gptel-prompt-prefix-alist `((markdown-mode . "### ")
@@ -242,18 +244,21 @@
   (:advice gptel--create-prompt :override eli/gptel--create-prompt
 		   gptel-send :override eli/gptel-send)
   (:bind
-   "s-p" eli/gptel-close)
+   "s-p" eli/gptel-close
+   "s-\]" eli/gptel-close)
   (:with-feature elfeed
 	(:bind-into elfeed-show-mode-map
 	  "s" eli/gptel-summary))
   (:with-feature pdf-tools
 	(:bind-into pdf-view-mode-map
 	  "<mouse-8>" eli/gptel-translate))
+  (:bind
+   "RET" eli/gptel-ret-or-read)
   (:global
    "s-p" eli/gptel-posframe-toggle
    "C-c DEL" gptel-abort
    "s-;" gptel-send
-   "s-\[" eli/gptel-toggle-last-posframe))
+   "s-\]" eli/gptel-toggle-last-posframe))
 
 ;;;; desktop
 (setup desktop

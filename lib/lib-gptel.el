@@ -48,7 +48,7 @@
 	(summary . (:sys "You are a professional reviewer."
 					 :user "You will be provided with text delimited by triple backticks, your task is to summarize the wrapped text into a single sentence. \n```%s```"))
 	(grammar . (:sys "You are a grammar checker that looks for mistakes and makes sentence’s more fluent."
-					 :user "You will be provided with text delimited by triple backticks. Your task is to correct grammar errors in the wrapped text. You should only output the revised text and list the changes one by one. If the user input is grammatically correct and fluent, just reply “sounds good”. You should output in the following format:\nCorrected text:\n ...\nChanges:\n1. ...\n2. ...\n```%s```"))))
+					 :user "You will be provided with text delimited by triple backticks. Your task is to correct grammar errors in the wrapped text. You should only output the revised text and list the changes one by one. You should output in the following format:\nCorrected text:\n ...\nChanges:\n1. ...\n2. ...\nIf the user input is grammatically correct and fluent, just reply “sounds good”. \n```%s```"))))
 
 (defvar eli/gptel-conversations '())
 (defvar eli/gptel--posframe nil)
@@ -377,6 +377,19 @@ create one."
 						  (string= (cdr cons)
 								   buffer))
 						eli/gptel-conversations))))
+
+;;;###autoload
+(defun eli/gptel-ret-or-read (arg)
+  "Insert a newline if preceding character is not a newline.
+
+Otherwise call the `gptel-send' to parse preceding sentence.
+ARG will be passed to `newline'."
+  (interactive "*p" gptel-mode)
+  (if (= (preceding-char) ?\n)
+      (progn
+		(delete-char -1)
+		(gptel-send))
+    (newline arg)))
 
 
 ;;;; provide
