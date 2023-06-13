@@ -57,13 +57,15 @@
 			  (posframe-show
 			   buffer
 			   :poshandler #'posframe-poshandler-frame-center
+			   :hidehandler nil
 			   :left-fringe 8
 			   :right-fringe 8
 			   :width width
 			   :height height
 			   :min-width width
 			   :min-height height
-			   :internal-border-width 3
+			   :border-width 2
+			   :border-color "light gray"
 			   :background-color (face-background 'tooltip nil t)
 			   :override-parameters '((cursor-type . t))
 			   :accept-focus t))
