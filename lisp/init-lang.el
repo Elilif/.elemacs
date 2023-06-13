@@ -52,7 +52,7 @@
   (:global
    "s-o" shell-pop-posframe-toggle)
   (:bind
-   "C-g" eli/vterm-quit))
+   "s-o" eli/vterm-quit))
 
 
 ;;;; leetcode
