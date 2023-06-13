@@ -112,11 +112,7 @@
 
 (setq save-silently t)
 
-(run-with-idle-timer 0.6 nil (lambda ()
-							   (with-current-buffer (get-buffer "*scratch*")
-								 (lisp-interaction-mode))))
-
-(setq scroll-conservatively 100)
+;; (setq scroll-conservatively 100)
 
 ;;;; hippie-expand
 (setup hippie-exp
@@ -231,30 +227,40 @@
 ;;;; ibuffer
 (setup ibuffer
   (:global [remap list-buffers] ibuffer)
-  (:when-loaded
-    (:option ibuffer-saved-filter-groups
-             (quote (("default"
-                      ("dired" (mode . dired-mode))
-                      ("emacs" (or
-			                    (mode . emacs-lisp-mode)
-                                (name . "^\\*scratch\\*$")
-                                (name . "^\\*Messages\\*$")))
-	                  ("magit" (or
-                                (mode . magit-status-mode)
-                                (mode . magit-process-mode)
-                                (mode . magit-diff-mode)
-                                (mode . magit-revision-mode)
-                                (mode . magit-log-mode)))
-					  ("pdf" (or
-							  (file-extension . "pdf")
-							  (mode . pdf-outline-buffer-mode)))
-					  ("roam"  (or
-								(filename . "/home/eli/Dropbox/org/roam/main/")
-								(filename . "/home/eli/Dropbox/org/roam/references/")))
-					  ("books" (filename . "/home/eli/Dropbox/org/roam/books/"))
-	                  ("agenda" (or
-								 (filename . "/home/eli/Dropbox/org/")
-								 (name . "^\\*Org Agenda\\*$"))))))))
+  (:option*
+   ibuffer-formats '((mark modified read-only locked " "
+						   (name 30 30 :left :elide)
+						   " "
+						   (size 9 -1 :right)
+						   " "
+						   (mode 16 16 :left :elide)
+						   " " filename-and-process)
+					 (mark " "
+						   (name 16 -1)
+						   " " filename))
+   ibuffer-saved-filter-groups
+   '(("default"
+	  ("dired" (mode . dired-mode))
+	  ("emacs" (or
+				(mode . emacs-lisp-mode)
+				(name . ".*scratch.*")
+				(name . "^\\*Messages\\*$")))
+	  ("magit" (or
+				(mode . magit-status-mode)
+				(mode . magit-process-mode)
+				(mode . magit-diff-mode)
+				(mode . magit-revision-mode)
+				(mode . magit-log-mode)))
+	  ("pdf" (or
+			  (file-extension . "pdf")
+			  (mode . pdf-outline-buffer-mode)))
+	  ("roam"  (or
+				(filename . "/home/eli/Dropbox/org/roam/main/")
+				(filename . "/home/eli/Dropbox/org/roam/references/")))
+	  ("books" (filename . "/home/eli/Dropbox/org/roam/books/"))
+	  ("agenda" (or
+				 (filename . "/home/eli/Dropbox/org/")
+				 (name . "^\\*Org Agenda\\*$"))))))
   (:hook (lambda ()
            (ibuffer-switch-to-saved-filter-groups "default"))))
 

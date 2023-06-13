@@ -54,7 +54,21 @@
 (setup ibuffer
   (:hook all-the-icons-ibuffer-mode)
   (:option* all-the-icons-ibuffer-icon t
-            all-the-icons-ibuffer-color-icon t))
+            all-the-icons-ibuffer-color-icon t
+			all-the-icons-ibuffer-formats '((mark modified read-only locked " "
+												  (icon 2 2 :left :elide)
+												  #(" " 0 1
+													(display
+													 (space :align-to 8)))
+												  (name 30 30 :left :elide)
+												  " "
+												  (size-h 9 -1 :right)
+												  " "
+												  (mode+ 16 16 :left :elide)
+												  " " filename-and-process+)
+											(mark " "
+												  (name 16 -1)
+												  " " filename))))
 
 
 ;;;; hl-todo
