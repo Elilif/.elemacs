@@ -8,6 +8,8 @@
 * Contents
 - [[#intro][Introduction]]
 - [[#structure][Structure]]
+  - [[#core][/core]]
+  - [[#lisp_and_lib][/lisp and /lib]]
 * Introduction
 :PROPERTIES:
 :CUSTOM_ID: intro
@@ -22,7 +24,7 @@ It is compatible *ONLY with GNU Emacs 29 and above*.
 :PROPERTIES:
 :CUSTOM_ID: structure
 :END:
-** Core
+** =/core=
 :PROPERTIES:
 :CUSTOM_ID: core
 :END:
@@ -51,29 +53,17 @@ settings.
 
    Just like its file name, this file includes modifications to many default
    settings in Emacs.
-6. ~core-benchmarking.el~
+6. [[https://github.com/Elilif/.elemacs/blob/devel/core/core-benchmarking.el][core-benchmarking.el]]
 
    This is a simple benchmark of calls to Emacs require and load functions. It
    can be used to keep track of where time is being spent during Emacs startup
    in order to optimize startup times.
-7. ~core-ui.el~
+7. [[https://github.com/Elilif/.elemacs/blob/devel/core/core-ui.el][core-ui.el]]
+   
    UI config.
-** Lib
+** =/lisp= and =/lib=
 :PROPERTIES:
-:CUSTOM_ID: lib
+:CUSTOM_ID: lisp_and_lib
 :END:
-** Lisp
-:PROPERTIES:
-:CUSTOM_ID: lisp
-:END:
-- completion
-- hydra
-- news
-- lang
-- misc
-- edit
-- info
-- pdf
-- bib
-- org
-- vc
+
+These two folders contain configurations of many third-party plugins.
