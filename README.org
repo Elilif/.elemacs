@@ -7,6 +7,7 @@
 #+END_HTML
 * Contents
 - [[#intro][Introduction]]
+  - [[#feat][Features]]
 - [[#structure][Structure]]
   - [[#core][/core]]
   - [[#lisp_and_lib][/lisp and /lib]]
@@ -20,6 +21,13 @@ have made a lot of hacks to adapt Emacs to suit me, so please be sure to read
 the README before trying my configuration.
 
 It is compatible *ONLY with GNU Emacs 29 and above*.
+** Features
+:PROPERTIES:
+:CUSTOM_ID: feat
+:END:
+- *Fast* 
+- *Modular*
+- *Package installation and configuration separation*
 * Structure
 :PROPERTIES:
 :CUSTOM_ID: structure
@@ -60,10 +68,10 @@ settings.
    in order to optimize startup times.
 7. [[https://github.com/Elilif/.elemacs/blob/devel/core/core-ui.el][core-ui.el]]
    
-   UI config.
+   UI config. See [[https://github.com/Elilif/mindre-theme][Elilif/mindre-theme]] for more details.
 ** =/lisp= and =/lib=
 :PROPERTIES:
 :CUSTOM_ID: lisp_and_lib
 :END:
 
-These two folders contain configurations of many third-party plugins.
+These two folders contain configurations of many packages.
