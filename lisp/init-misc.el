@@ -223,9 +223,14 @@
   (:iload gptel)
   (:also-load
    lib-gptel)
+  (:init
+   (add-to-list 'auto-mode-alist '("\\.chat\\'" . org-mode)))
   (:when-loaded
 	(toggle-word-wrap))
+  (:once (list :before 'eli/gptel-posframe-toggle)
+	(eli/gptel-restore-conversations))
   (:option*
+   gptel-model "gpt-3.5-turbo-16k"
    gptel-stream t
    ;; gptel-host "api.openai.com"
    gptel-host "api.openai-sb.com"
@@ -241,6 +246,8 @@
 					  (emacs . "You are an expert in Emacs.")))
   (:hook visual-fill-column-mode
 		 visual-line-mode)
+  (:hooks
+   kill-emacs-hook eli/gptel-save-conversations)
   (:advice gptel--create-prompt :override eli/gptel--create-prompt
 		   gptel-send :override eli/gptel-send)
   (:bind

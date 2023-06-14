@@ -364,14 +364,17 @@ create one."
   (goto-char (point-max)))
 
 ;;;###autoload
-(defun eli/gptel-exit ()
+(defun eli/gptel-exit (&optional arg)
   "Close a ChatGPT session."
-  (interactive)
-  (let ((kill-buffer-query-functions nil)
-		(buffer (elemacs-completing-read "Select a conversation: "
-										 eli/gptel-conversations)))
-	(when (get-buffer buffer) 
-	  (kill-buffer buffer))
+  (interactive "P")
+  (let* ((kill-buffer-query-functions nil)
+		 (buffer (elemacs-completing-read "Select a conversation: "
+										  eli/gptel-conversations))
+		 (file (buffer-file-name (get-buffer buffer))))
+	(when (get-buffer buffer)
+	  (kill-buffer buffer)
+	  (when arg
+		(delete-file file t)))
 	(setq eli/gptel-conversations
 		  (cl-remove-if (lambda (cons)
 						  (string= (cdr cons)
@@ -390,6 +393,30 @@ ARG will be passed to `newline'."
 		(delete-char -1)
 		(gptel-send))
     (newline arg)))
+
+(defvar eli/gptel-conversations-dir "~/.emacs.d/etc/gptel/")
+
+(defun eli/gptel-save-conversations ()
+  "Save current conversations before killing Emacs."
+  (when eli/gptel-conversations
+	(dolist (conv eli/gptel-conversations)
+	  (let ((buf (cdr conv)))
+		(with-current-buffer buf
+		  (write-file (file-name-concat
+					   eli/gptel-conversations-dir
+					   (file-name-with-extension buf ".chat"))))))))
+
+(defun eli/gptel-restore-conversations ()
+  "Restore conversations in `eli/gptel-conversations-dir'."
+  (when-let ((convs (directory-files eli/gptel-conversations-dir nil "\\.chat$")))
+	(dolist (conv convs)
+	  (find-file-noselect (file-name-concat eli/gptel-conversations-dir conv))
+	  (with-current-buffer conv
+		(gptel-mode))
+	  (add-to-list 'eli/gptel-conversations
+				   (cons
+					(string-trim conv "\\*ChatGPT-" "\\*\\.chat")
+					(file-name-nondirectory conv))))))
 
 
 ;;;; provide
