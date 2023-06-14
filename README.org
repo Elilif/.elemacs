@@ -6,13 +6,18 @@
 </div>
 #+END_HTML
 * Contents
-- [[#structure][Structure]]
 - [[#intro][Introduction]]
+- [[#structure][Structure]]
 * Introduction
 :PROPERTIES:
 :CUSTOM_ID: intro
 :END:
-Elemacs is a personal emacs config. 
+Elemacs is a personal Emacs config. It may not be the best Emacs configuration,
+but it is definitely the most comfortable and efficient one for me to use. I
+have made a lot of hacks to adapt Emacs to suit me, so please be sure to read
+the README before trying my configuration.
+
+It is compatible *ONLY with GNU Emacs 29 and above*.
 * Structure
 :PROPERTIES:
 :CUSTOM_ID: structure
@@ -21,36 +26,38 @@ Elemacs is a personal emacs config.
 :PROPERTIES:
 :CUSTOM_ID: core
 :END:
-This folder contains essential libraries, useful functions, macros, and sane
+This folder contains essential libraries, useful functions, macros, and some
 settings.
-1. ~core-incremental-loading.el~
+1. [[https://github.com/Elilif/.elemacs/blob/devel/core/core-incremental-loading.el][core-incremental-loading.el]]
    
     The code in this file is mainly taken from [[https://github.com/doomemacs/doomemacs/blob/e96624926/lisp/doom-start.el#L180][doomemacs]] .
 
     Load packages incrementally. Any large packages here may cause noticeable
     pauses, so it's recommended you break them up into sub-packages.
-2. ~core-setup.el~
+2. [[https://github.com/Elilif/.elemacs/blob/devel/core/core-setup.el][core-setup.el]]
 
     Elemacs use [[https://www.emacswiki.org/emacs/SetupEl][SetupEl]] as its configuration manager. The main reason for
-    choosing is its simplicity and extensibility. You can use
+    choosing it is its simplicity and extensibility. You can use
     ~emacs-lisp-macroexpand~ or ~pp-macroexpand-last-sexp~ to expand any =setup= config
     to get more information.
 
-    This file defines some useful setup-local macros:
-    - =:iload=
-    - =:silence=
-    - =:option*=
-    - =:after=
-    - =:autoload=
-    - =:hooks=
-    - =:init=
-    - =:advice=
-4. ~core-lib.el~
+    This file defines some useful setup-local macros, such as =:iload= ,
+   =:silence= , =:option*= .
+4. [[https://github.com/Elilif/.elemacs/blob/devel/core/core-lib.el][core-lib.el]]
    
-   ~core-lib.el~ indludes functions that will be used in all configuration. 
-5. ~core-better-defaults.el~
+   ~core-lib.el~ provides utilities that will be used in all configuration, such
+   as ~elemacs-completing-read~.
+5. [[https://github.com/Elilif/.elemacs/blob/devel/core/core-better-default.el][core-better-defaults.el]]
+
+   Just like its file name, this file includes modifications to many default
+   settings in Emacs.
 6. ~core-benchmarking.el~
+
+   This is a simple benchmark of calls to Emacs require and load functions. It
+   can be used to keep track of where time is being spent during Emacs startup
+   in order to optimize startup times.
 7. ~core-ui.el~
+   UI config.
 ** Lib
 :PROPERTIES:
 :CUSTOM_ID: lib
