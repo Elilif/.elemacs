@@ -337,12 +337,11 @@
 ;;;; org-protocol
 (setup org-protocol
   (:once (list :hooks 'org-mode-hook)
-	(run-with-idle-timer 2 nil
-						 (lambda ()
-						   (require 'org-protocol)
-						   (require 'server)
-						   (unless (server-running-p)
-							 (server-start))))))
+	(:delay 2
+	  (require 'org-protocol)
+	  (require 'server)
+	  (unless (server-running-p)
+		(server-start)))))
 
 ;;;; org-refile
 (setup org-refile
@@ -438,9 +437,8 @@
 												 (org-latex-preview)
 												 (org-display-inline-images)))
   (:after org
-	(run-with-idle-timer 15 nil
-						 #'org-roam-db-autosync-enable))
-  
+	(:delay 15
+	  (org-roam-db-autosync-enable)))
   (:when-loaded
 	(run-with-idle-timer 3 t
 						 #'eli/update-org-roam-db)

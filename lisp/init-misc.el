@@ -388,17 +388,16 @@
 (setup autoscratch
   (:also-load
    lib-autoscratch)
-  (:init
-   (run-with-idle-timer 0.6 nil (lambda ()
-								  (with-current-buffer (get-buffer "*scratch*")
-									(autoscratch-mode)))))
+  (:delay 0.6
+	(with-current-buffer (get-buffer "*scratch*")
+	  (autoscratch-mode)))
   (:option*
    initial-major-mode 'autoscratch-mode
    autoscratch-triggers-alist '(("[(;]" lisp-interaction-mode)
 								("#" autoscratch-select
 								 '(("python" python-mode)
 								   ("shell" shell-script-mode)))
-								("[-a-zA-Z0-9]" org-mode)
+								("[*-a-zA-Z0-9]" org-mode)
 								("/" c-mode)
 								("." fundamental-mode)))
   (:advice

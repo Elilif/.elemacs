@@ -102,6 +102,12 @@ loaded."
   :documentation "Eval BODY after FEATURE."
   :indent 1)
 
+(setup-define :delay
+  (lambda (time &rest body)
+    `(run-with-idle-timer ,time nil
+                          (lambda () ,@body)))
+  :documentation "Delay loading BODY until a certain amount of idle time has passed."
+  :indent 1)
 
 ;;  src: https://emacs.nasy.moe/#Setup-EL
 (setup-define :autoload
