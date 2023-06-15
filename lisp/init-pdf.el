@@ -57,7 +57,7 @@
 		  pdf-tools-enabled-hook pdf-isearch-minor-mode))
 
 (setup org-noter
-  (:iload* org-noter)
+  (:iload org-noter)
   (:also-load
    lib-org-noter)
   (:hook org-pdftools-setup-link)
@@ -72,9 +72,10 @@
   (:bind-into org-noter-doc-mode-map
 	"c" eli/org-noter-screenshot)
   (:hooks org-noter-insert-heading-hook eli/org-noter-set-highlight)
-  (:advice org-noter--focus-notes-region :after eli/org-noter-set-highlight
-		   org-noter--insert-heading :override eli/org-noter--insert-heading
-		   org-noter-kill-session :before eli/org-noter-kill-outline))
+  (:advice
+   org-noter--focus-notes-region :after eli/org-noter-set-highlight
+   org-noter--insert-heading :override eli/org-noter--insert-heading
+   org-noter-kill-session :before eli/org-noter-kill-outline))
 
 (setup nov
   (:iload org-noter)
