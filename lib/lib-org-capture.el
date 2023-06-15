@@ -61,24 +61,6 @@
                   v-i
                   (format "\n#+end_%s\n" type)))))))
 
-(defun v-i-or-nothing ()
-  (with-current-buffer (org-capture-get :original-buffer)
-    (let ((v-i (plist-get org-store-link-plist :initial))
-          (org-src-mode (replace-regexp-in-string
-			             "-mode"
-			             ""
-			             (format "%s" major-mode)))
-          (type (if (derived-mode-p 'prog-mode) "src" "quote")))
-      (cond
-       ((equal v-i "") "")
-       ((string= type "src")
-        (concat (format "\n#+begin_%s %s\n" type org-src-mode)
-                v-i
-                (format "\n#+end_%s\n" type)))
-       (t (concat (format "\n#+begin_%s\n" type)
-                  v-i
-                  (format "\n#+end_%s\n" type)))))))
-
 (defun v-a-or-nothing ()
   (with-current-buffer (org-capture-get :original-buffer)
     (let* ((v-a (plist-get org-store-link-plist :annotation))
