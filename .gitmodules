@@ -319,6 +319,9 @@
 	url = https://github.com/vedang/pdf-tools
 	load-path = .
 	load-path = lisp
+[submodule "pdf-view-pagemark"]
+	path = site-lisp/pdf-view-pagemark
+	url = https://github.com/kimim/pdf-view-pagemark
 [submodule "pinyinlib"]
 	path = site-lisp/pinyinlib
 	url = https://github.com/Elilif/pinyinlib.el

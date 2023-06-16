@@ -56,6 +56,11 @@
   (:hooks pdf-tools-enabled-hook pdf-view-auto-slice-minor-mode
 		  pdf-tools-enabled-hook pdf-isearch-minor-mode))
 
+(setup pdf-view-pagemark
+  (:option*
+   pdf-view-pagemark-timeout 0.2)
+  (:hook-into pdf-view-mode-hook))
+
 (setup org-noter
   (:iload org-noter)
   (:also-load
