@@ -405,6 +405,15 @@
    :override eli/autoscratch--fork-and-rename-current)
   (:bind
    [remap yank] eli/autoscratch--yank))
+
+;;;; beacon
+(setup beacon
+  (:once (list :before
+			   'scroll-up-command 'scroll-down-command)
+	(beacon-mode))
+  (:option*
+   beacon-blink-delay 0.1
+   beacon-blink-when-window-changes nil))
 ;;;; provide
 (provide 'init-misc)
 ;;; init-misc.el ends here.

@@ -34,6 +34,9 @@
 [submodule "avy"]
 	path = site-lisp/avy
 	url = https://github.com/abo-abo/avy
+[submodule "beacon"]
+	path = site-lisp/beacon
+	url = https://github.com/Malabarba/beacon
 [submodule "biblio"]
 	path = site-lisp/biblio
 	url = https://github.com/cpitclaudel/biblio.el
