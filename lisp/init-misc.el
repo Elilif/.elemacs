@@ -226,11 +226,13 @@
   (:init
    (add-to-list 'auto-mode-alist '("\\.chat\\'" . org-mode)))
   (:when-loaded
-	(toggle-word-wrap))
+	(toggle-word-wrap)
+	(:hooks
+	 kill-emacs-hook eli/gptel-save-conversations))
   (:once (list :before 'eli/gptel-posframe-toggle)
 	(eli/gptel-restore-conversations))
   (:option*
-   gptel-model "gpt-3.5-turbo-16k"
+   gptel-model "gpt-3.5-turbo-0613"
    gptel-stream t
    ;; gptel-host "api.openai.com"
    gptel-host "api.openai-sb.com"
@@ -246,8 +248,6 @@
 					  (emacs . "You are an expert in Emacs.")))
   (:hook visual-fill-column-mode
 		 visual-line-mode)
-  (:hooks
-   kill-emacs-hook eli/gptel-save-conversations)
   (:advice gptel--create-prompt :override eli/gptel--create-prompt
 		   gptel-send :override eli/gptel-send)
   (:bind
@@ -259,8 +259,6 @@
   (:with-feature pdf-tools
 	(:bind-into pdf-view-mode-map
 	  "<mouse-8>" eli/gptel-translate))
-  (:bind
-   "RET" eli/gptel-ret-or-read)
   (:global
    "s-p" eli/gptel-posframe-toggle
    "C-c DEL" gptel-abort

@@ -128,7 +128,7 @@
   (let ((frame (selected-frame)))
 	(if (frame-parameter frame 'posframe-buffer)
 		(posframe--make-frame-invisible frame)
-	  (keyboard-quit))))
+	  (eli/gptel-posframe-toggle))))
 
 (defun eli/gptel-query-get-from-region ()
   "Get query string from selected region."
@@ -291,7 +291,10 @@ reading RSS."
 (defun eli/gptel-toggle-last-posframe ()
   "Toggle last gptel posframe."
   (interactive)
-  (select-frame-set-input-focus eli/gptel--last-posframe))
+  (if (and eli/gptel--last-posframe
+		   (frame-live-p eli/gptel--last-posframe))
+	  (select-frame-set-input-focus eli/gptel--last-posframe)
+	(message "frame is unvailibale!")))
 
 ;;;###autoload
 (defun eli/gptel-translate-and-insert ()
@@ -327,15 +330,10 @@ reading RSS."
   "Hidehandler used by `eli/gptel-posframe-toggle'."
   (not (eq (selected-frame) eli/gptel--posframe)))
 
-;;;###autoload
-(defun eli/gptel-posframe-toggle (&optional arg)
-  "Pop up last used gptel posframe.
-Prefixed with one C-u, select a conversation in `eli/gptel-conversations' or
-create one."
-  (interactive "P")
+(defun eli/gptel-make-posframe-maybe (prefix)
   (unless (and eli/gptel--posframe
 			   (frame-live-p eli/gptel--posframe)
-			   (not arg)
+			   (not prefix)
 			   (eq (floor (/ (frame-width eli/gptel--posframe) 0.62))
 				   (frame-width)))
 	(let* ((width  (round (* (frame-width) 0.62)))
@@ -358,8 +356,24 @@ create one."
 								 :accept-focus t))
 	  (with-selected-frame eli/gptel--posframe
 		(set-frame-parameter eli/gptel--posframe 'line-spacing 10)
-		(setq cursor-type 'box))))
+		(setq cursor-type 'box)))))
+
+;;;###autoload
+(defun eli/gptel-posframe-toggle (&optional arg)
+  "Pop up last used gptel posframe.
+Prefixed with one C-u, select a conversation in `eli/gptel-conversations' or
+create one."
+  (interactive "P")
+  (eli/gptel-make-posframe-maybe arg)
   ;; Focus in child frame
+  (when (and gptel-mode
+			 (equal (car (buffer-list eli/gptel--posframe))
+					(current-buffer)))
+	(let ((eli/gptel-conversations (remove
+									(rassoc (buffer-name (current-buffer))
+											eli/gptel-conversations)
+									eli/gptel-conversations)))
+	  (eli/gptel-make-posframe-maybe t)))
   (select-frame-set-input-focus eli/gptel--posframe)
   (goto-char (point-max)))
 
@@ -380,19 +394,6 @@ create one."
 						  (string= (cdr cons)
 								   buffer))
 						eli/gptel-conversations))))
-
-;;;###autoload
-(defun eli/gptel-ret-or-read (arg)
-  "Insert a newline if preceding character is not a newline.
-
-Otherwise call the `gptel-send' to parse preceding sentence.
-ARG will be passed to `newline'."
-  (interactive "*p" gptel-mode)
-  (if (= (preceding-char) ?\n)
-      (progn
-		(delete-char -1)
-		(gptel-send))
-    (newline arg)))
 
 (defvar eli/gptel-conversations-dir "~/.emacs.d/etc/gptel/")
 
