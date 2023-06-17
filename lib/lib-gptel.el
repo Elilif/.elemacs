@@ -38,7 +38,7 @@
   '((translator . (:sys "You are a professional translator."
 						:user "You will be provided with text delimited by triple backticks, your task is to translate the wrapped text into %s. You should only output the translated text. \n```%s```"))
 	(word . (:sys "You are a experienced linguist."
-				  :user "You will be provided with text delimited by triple backticks. your task is to, for the wrapped text, provide its pronunciation, synonyms, definition and an example sentence according to the following format:\n【发音】...\n【近义】...\n【释义】...\n【例句】...\n```%s```"))
+				  :user "You will be provided with text delimited by triple backticks. your task is to, for the wrapped text, understand it. For the word `%s', provide its pronunciation, synonyms, meaning in the text and an example sentence according to the following format:\n【发音】<pronunciation>\n【近义】<synonyms>\n【释义】<meaning>\n【例句】<example-sentence>\n```%s```"))
 	(classical . (:sys "你是一位古汉语学者，能熟练的翻译古汉语。"
 					   :user "你将收到由三个反引号包裹的古汉语，你的任务是按照以下格式提供它的释义和拼音：\n【释义】...\n【拼音】...\n```%s```"))
 	(polish . (:sys "You are an English translator, spelling corrector and improver."
@@ -230,14 +230,15 @@ Prefixed with one C-u, read a string from the minibuffer."
 				 :prompt 'classical
 				 :buffer-name "*gptel-translator*"))
 
-(defun eli/gptel-translate-word (&optional arg)
-  "Translate the selected word.
-
-Prefixed with one C-u, read a string from the minibuffer."
-  (interactive "P")
-  (eli/gptel--do :query-get (if arg 
-								#'eli/gptel-query-get-from-minibuffer
-							  #'eli/gptel-query-get-from-region)
+(defun eli/gptel-translate-word ()
+  "Translate the word under the point."
+  (interactive)
+  (eli/gptel--do :query-get (lambda () (thing-at-point 'sentence))
+				 :usr-prompt-get
+				 (lambda (p s)
+				   (format (plist-get p :user)
+						   (thing-at-point 'word)
+						   s))
 				 :prompt 'word
 				 :buffer-name "*gptel-translator*"
 				 :width 70
