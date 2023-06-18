@@ -74,7 +74,7 @@
 (pretty-hydra-define hydra-gpt
   (:color amaranth :exit t :quit-key "q")
   (""
-   (("x" eli/gptel-exit)
+   (("k" eli/gptel-exit)
 	("b" eli/gptel-translate)
 	("c" eli/gptel-translate-cc)
 	("s" eli/gptel-summary))
@@ -186,8 +186,8 @@
    (("bs" bookmark-set "set bookmark")
     ("bj" consult-bookmark "jump bookmark")
     ("bd" bookmark-delete "delete bookmark"))
-   "treemacs"
-   (("t" treemacs "treemacs"))
+   "basic"
+   (("s" scratch-buffer))
    ))
 
 (pretty-hydra-define hydra-org

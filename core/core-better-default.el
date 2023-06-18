@@ -294,7 +294,11 @@
 (setup url
   (:option*
    url-configuration-directory "~/.emacs.d/var/url/"))
-
+;;;; bytecompile
+(setup bytecomp
+  (:with-map emacs-lisp-compilation-mode-map
+	(:bind
+	 "q" kill-buffer-and-window)))
 ;;;; midnight
 ;; (setup midnight
 ;;   (once (list :before 'eli/consult-buffer)
