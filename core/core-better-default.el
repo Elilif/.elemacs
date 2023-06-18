@@ -112,6 +112,8 @@
 
 (setq save-silently t)
 
+(setq custom-file null-device)
+
 ;; (setq scroll-conservatively 100)
 
 ;;;; hippie-expand
