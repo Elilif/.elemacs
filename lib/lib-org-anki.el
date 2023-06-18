@@ -128,44 +128,47 @@ Used by `org-anki-skip-function'"
 ;;;###autoload
 (defun org-anki-sync-region (beg end)
   (interactive "r")
-  (let* ((org-export-preserve-breaks t)
-         (text (buffer-substring beg end))
-         (regexp (read-regexp "Input a Regexp: "))
-         (_void (string-match regexp
-                              text))
-         (front-string (match-string-no-properties 1 text))
-         (back-string (match-string-no-properties 2 text))
-         (front (org-anki--org-to-html
-                 (read-string "Front Card: "
-                              (string-clean-whitespace front-string))))
-         (back (org-anki--org-to-html
+  (let* ((minibuffer-setup-hook nil)
+		 (org-export-preserve-breaks t)
+		 (text (buffer-substring-no-properties beg end))
+		 (regexp (read-regexp "Input a Regexp: "))
+		 (_void (string-match regexp
+							  text))
+		 (front-string (match-string 1 text))
+		 (back-string (match-string 2 text))
+		 (front (org-anki--org-to-html
+				 (read-string "Front Card: "
+							  (string-clean-whitespace front-string))))
+		 (back (org-anki--org-to-html
                 (read-string "Back Card: "
-                             (if (member (prefix-numeric-value
-                                          current-prefix-arg)
-                                         '(4 16 64))
-                                 (string-clean-whitespace back-string)
-                               back-string))))
-         (deck (read-string "Input Deck to import: "))
-         (type (org-anki--find-prop
+							 (if (member (prefix-numeric-value
+										  current-prefix-arg)
+										 '(4 16 64))
+								 (string-clean-whitespace back-string)
+							   back-string))))
+		 (deck (read-string "Input Deck to import: "))
+		 (type (org-anki--find-prop
                 org-anki-note-type org-anki-default-note-type))
-         (note-start (point))
-         (maybe-id (org-entry-get nil org-anki-prop-note-id))
-         (tags (org-anki--get-tags))
-         (card (make-org-anki--note
+		 (note-start (point))
+		 (maybe-id (org-entry-get nil org-anki-prop-note-id))
+		 (tags (org-anki--get-tags))
+		 (card (make-org-anki--note
                 :maybe-id (if (stringp maybe-id)
-                              (string-to-number maybe-id))
+							  (string-to-number maybe-id))
                 :fields   (list (cons "Back" back)
 								(cons "Front" front))
                 :tags     tags
                 :deck     deck
                 :type     type
                 :point    note-start)))
-    (eli/org-anki-sync-item card)
-    (deactivate-mark)))
+	(eli/org-anki-sync-item card)
+	(deactivate-mark)))
 
+;;;###autoload
 (defalias 'org-anki-sync-word
   (kmacro "C-u <f12> C-s-k \\(.*\\)\\(?:：\\|:\\)\\(\\(?:.* C-q C-j ?\\)*\\) <return> SPC 的语境 <return> <return> Words <return>"))
 
+;;;###autoload
 (defalias 'org-anki-sync-poem
   (kmacro "<f12> \\(.*\\) C-q C-j C-q C-j \\(\\(?:.* C-q C-j ?\\)*\\) <return> <return> <return> Poems <return>"))
 

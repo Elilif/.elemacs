@@ -177,6 +177,7 @@ direct title.
   (let ((file (org-roam-node-file node)))
 	(not (string-match-p "books/" file))))
 
+;;;###autoload
 (defun eli/org-roam-node-find (&optional other-window)
   (interactive current-prefix-arg)
   (org-roam-node-find other-window nil #'eli/org-roam-filter-books))
