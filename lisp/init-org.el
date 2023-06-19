@@ -317,12 +317,16 @@
 	 org-babel-load-languages '((emacs-lisp . t)
 								(shell . t)
 								(C . t)
-								(latex . t)))
+								(latex . t)
+								(racket . t)
+								(jupyter . t)))
 	(org-babel-do-load-languages 'org-babel-load-languages
 								 '((emacs-lisp . t)
 								   (shell . t)
 								   (C . t)
-								   (latex . t)))))
+								   (latex . t)
+								   (racket . t)
+								   (jupyter . t)))))
 
 ;;;; org-clock
 (setup org-clock

@@ -176,6 +176,9 @@
 [submodule "js2-mode"]
 	path = site-lisp/js2-mode
 	url = https://github.com/mooz/js2-mode
+[submodule "jupyter"]
+	path = site-lisp/jupyter
+	url = https://github.com/nnicandro/emacs-jupyter
 [submodule "keycast"]
 	path = site-lisp/keycast
 	url = https://github.com/tarsius/keycast
@@ -442,3 +445,6 @@
 [submodule "yasnippet"]
 	path = site-lisp/yasnippet
 	url = https://github.com/joaotavora/yasnippet
+[submodule "zmq"]
+	path = site-lisp/zmq
+	url = https://github.com/nnicandro/emacs-zmq
