@@ -130,6 +130,15 @@
 		(posframe--make-frame-invisible frame)
 	  (eli/gptel-posframe-toggle))))
 
+;;;###autoload
+(defun eli/gptel-clean ()
+  "Clean the content of a conversation."
+  (interactive)
+  (let ((beg (save-excursion
+			   (goto-char (point-min))
+			   (search-forward (alist-get 'org-mode gptel-prompt-prefix-alist)))))
+	(delete-region beg (point-max))))
+
 (defun eli/gptel-query-get-from-region ()
   "Get query string from selected region."
   (if (or (use-region-p)

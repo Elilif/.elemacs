@@ -252,7 +252,8 @@
 		   gptel-send :override eli/gptel-send)
   (:bind
    "s-p" eli/gptel-close
-   "s-\]" eli/gptel-close)
+   "s-\]" eli/gptel-close
+   "C-c C-k" eli/gptel-clean)
   (:with-feature elfeed
 	(:bind-into elfeed-show-mode-map
 	  "s" eli/gptel-summary))
