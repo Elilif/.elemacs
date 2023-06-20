@@ -361,7 +361,6 @@ reading RSS."
 								 :height height
 								 :border-width 2
 								 :border-color "light gray"
-								 :background-color (face-background 'tooltip nil t)
 								 :override-parameters '((cursor-type . box))
 								 :accept-focus t))
 	  (with-selected-frame eli/gptel--posframe
