@@ -46,16 +46,16 @@
 
 (defun eli/org-noter-set-highlight (&rest _arg)
   "Highlight current org-noter note."
-  (with-current-buffer (org-noter--session-notes-buffer org-noter--session)
-    (remove-overlays (point-min) (point-max) 'org-noter-current-hl t)
-    (goto-char (org-entry-beginning-position))
-    (let* ((hl (org-element-context))
-		   (hl-begin (1+ (plist-get  (plist-get hl 'headline) :begin)))
-		   (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
-		   (hl-ov (make-overlay hl-begin hl-end)))
-	  (overlay-put hl-ov 'face 'mindre-keyword)
-	  (overlay-put hl-ov 'org-noter-current-hl t))
-    (org-cycle-hide-drawers 'all)))
+  (org-noter--with-selected-notes-window
+   (remove-overlays (point-min) (point-max) 'org-noter-current-hl t)
+   (goto-char (org-entry-beginning-position))
+   (let* ((hl (org-element-context))
+		  (hl-begin (1+ (plist-get  (plist-get hl 'headline) :begin)))
+		  (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
+		  (hl-ov (make-overlay hl-begin hl-end)))
+	 (overlay-put hl-ov 'face 'mindre-keyword)
+	 (overlay-put hl-ov 'org-noter-current-hl t))
+   (org-cycle-hide-drawers 'all)))
 
 (defun eli/org-noter-back-to-current-window (orig-fun)
   (save-selected-window
