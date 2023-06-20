@@ -41,7 +41,8 @@
   (require 'ledger-mode)
   (require 'lib-ledger-mode)
   (require 'lib-tab-bar)
-  (require 'elfeed-show))
+  (require 'elfeed-show)
+  (require 'pdf-tools))
 
 ;;;; dired
 (setup dired
