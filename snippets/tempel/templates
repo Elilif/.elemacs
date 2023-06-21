@@ -1,0 +1,17 @@
+;; ~/.config/emacs/templates
+
+org-mode ;; Available everywhere
+
+(9td (format-time-string "%Y-%m-%d"))
+(9el "#+begin_src emacs-lisp" n> r> n "#+end_src" :post (org-edit-src-code))
+
+
+emacs-lisp-mode
+
+(9ld ";;;###autoload")
+(9ar "(advice-remove #'" (p "fun") " #'" (p "fun") ")")
+
+;; Local Variables:
+;; mode: lisp-data
+;; outline-regexp: "[a-z]"
+;; End:

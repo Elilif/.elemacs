@@ -139,23 +139,28 @@
    "C-=" eli/expand-region)
   (:bind
    "C-M-a" beginning-of-defun
-   "C-M-e" end-of-defun))
+   "C-M-e" end-of-defun
+   "C-M-p" puni-beginning-of-sexp
+   "C-M-n" puni-end-of-sexp))
 
-;;;; yasnippet
-(setup yasnippet
-  (:once (list :hooks 'find-file-hook)
-    (:once (list :hooks 'post-command-hook)
-	  (:silence (yas-global-mode))
-	  (require 'lib-yasnippet)
-	  ;; (:hooks post-command-hook my/yas-try-expanding-auto-snippets)
-	  ))
-  (:option*
-   yas-indent-line 'fixed
-   yas-triggers-in-field t)
+;;;; tempel
+(setup tempel
+  (:once (list :hooks 'pre-command-hook)
+	(require 'tempel))
+  (:also-load
+   lib-tempel)
+  (:init
+   (setq tempel-path "~/.emacs.d/snippets/tempel/templates"))
   (:when-loaded
-	(require 'warnings)
-    (add-to-list 'warning-suppress-types '(yasnippet backquote-change))))
-
+	(:hooks
+	 prog-mode-hook tempel-setup-capf
+	 org-mode-hook tempel-setup-capf))
+  (:bind-into tempel-map
+	"<tab>" tempel-next
+	"C-<tab>" tempel-previous
+	"M-a" tempel-beginning
+	"M-e" tempel-end
+	"C-g" tempel-abort))
 ;;;; electric-operator
 (setup electric-operator
   (:hook-into c++-mode)

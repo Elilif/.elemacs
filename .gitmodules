@@ -409,6 +409,9 @@
 [submodule "tabspaces"]
 	path = site-lisp/tabspaces
 	url = https://github.com/mclear-tools/tabspaces
+[submodule "tempel"]
+	path = site-lisp/tempel
+	url = https://github.com/minad/tempel
 [submodule "treepy"]
 	path = site-lisp/treepy
 	url = https://github.com/volrath/treepy.el
