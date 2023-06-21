@@ -32,12 +32,9 @@
 
 (cl-eval-when (compile)
   (require 'org-fold-core)
-  (require 'expand-region-core)
-  (require 'er-basic-expansions)
   (require 'leetcode)
   (require 'electric-operator)
   (require 'cc-cmds)
-  (require 'lib-expand-region)
   (require 'lib-markmacro))
 
 ;;;; supser save
@@ -83,32 +80,6 @@
 													 (save-some-buffers t)))
 		   save-buffer :around suppress-messages))
 
-;;;; expand-region
-(setup expand-region
-  (:once (list :before 'er/expand-region)
-	(require 'lib-expand-region))
-  (:global "C-=" er/expand-region)
-  (:when-loaded
-    (setq-default er/try-expand-list '(er/mark-word
-                                       er/mark-symbol
-                                       er/mark-symbol-with-prefix
-                                       er/mark-next-accessor
-                                       er/mark-method-call
-                                       er/mark-inside-quotes
-                                       er/mark-outside-quotes
-                                       er/mark-inside-pairs
-                                       er/mark-outside-pairs
-                                       er/mark-comment
-                                       er/mark-block-comment
-                                       er/mark-url
-                                       er/mark-email
-                                       er/mark-defun
-                                       er/mark-sentence
-                                       mark-paragraph
-                                       )))
-  (:advice er/expand-region :before eli/er-clearn-history))
-
-
 ;;;; mwim
 (setup mwim
   (:global [remap move-beginning-of-line] mwim-beginning
@@ -139,31 +110,36 @@
    "s-f" markmacro-mark-current-or-next-target
    "s-b" markmacro-mark-current-or-previous-target
    "s-u" markmacro-unmark-current-target))
-;;;; smartparens
-(setup smartparens
-  (:when-loaded
-	(require 'lib-smartparens))
-  (:once (list :hooks 'find-file-hook 'prog-mode-hook 'org-mode-hook)
-    (:once (list :hooks 'pre-command-hook)
-	  (smartparens-global-mode)))
-  (:also-load smartparens-config)
-  (:when-loaded
-    (sp-pair "（" "）")
-    (sp-pair "《" "》")
-    (sp-pair "“" "”"))
-  (:after smartparens-org
-    (sp-with-modes 'org-mode
-	  (sp-local-pair "/" "/" :unless '(sp-org-point-after-left-square-bracket-p sp-in-math-p sp-in-algorithm-p) :post-handlers '(("[d1]" "SPC")))
-	  (sp-local-pair "*" "*" ;;sp-point-after-word-p
-					 :unless '(sp-point-at-bol-p sp-in-math-p sp-in-algorithm-p)
-					 :post-handlers '(("[d1]" "SPC"))
-					 :skip-match 'sp--org-skip-asterisk)
-	  (sp-local-pair "=" "=" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-	  (sp-local-pair "_" "_" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))
-	  (sp-local-pair "~" "~" :unless '(sp-in-algorithm-p sp-in-math-p) :post-handlers '(("[d1]" "SPC")))))  
-  (:advice show-paren-function :around fix-show-paren-function)
-  (:hooks minibuffer-setup-hook smartparens-mode))
+;;;; electric pair
+(setup elec-pair
+  (:once (list :before 'self-insert-command)
+	(electric-pair-mode))
+  (:also-load
+   lib-elec-pair)
+  (:option*
+   electric-pair-inhibit-predicate #'eli/electric-pair-inhibit
+   electric-pair-pairs `(,electric-pair-pairs
+						 ("《" . "》")
+						 ("（" . "）")))
+  (:after org
+	(modify-syntax-entry ?/ "(/" org-mode-syntax-table)
+	(modify-syntax-entry ?* "(*" org-mode-syntax-table)
+	(modify-syntax-entry ?= "(=" org-mode-syntax-table)
+	(modify-syntax-entry ?+ "(+" org-mode-syntax-table)
+	(modify-syntax-entry ?_ "(_" org-mode-syntax-table)
+	(modify-syntax-entry ?~ "(~" org-mode-syntax-table))
+  (:hooks
+   minibuffer-setup-hook electric-pair-mode))
 
+(setup puni
+  (:also-load
+   lib-puni)
+  (:hook-into prog-mode)
+  (:global
+   "C-=" eli/expand-region)
+  (:bind
+   "C-M-a" beginning-of-defun
+   "C-M-e" end-of-defun))
 
 ;;;; yasnippet
 (setup yasnippet

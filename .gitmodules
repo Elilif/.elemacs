@@ -346,6 +346,9 @@
 [submodule "promise"]
 	path = site-lisp/promise
 	url = https://github.com/chuntaro/emacs-promise
+[submodule "puni"]
+	path = site-lisp/puni
+	url = https://github.com/AmaiKinono/puni
 [submodule "queue"]
 	path = site-lisp/queue
 	url = git@github.com:emacsmirror/queue.git

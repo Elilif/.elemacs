@@ -1,4 +1,4 @@
-;; lib-smartparens.el --- Initialize lib-smartparens configurations.	-*- lexical-binding: t; -*-
+;; lib-elec-pair.el --- Initialize lib-elec-pair configurations.	-*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -30,19 +30,14 @@
 
 ;;; Code:
 
-(defun sp-in-algorithm-p (_id _action _context)
-  "Return t if point is inside code, nil otherwise."
-  (when (functionp 'xenops-math-parse-algorithm-at-point)
-    (xenops-math-parse-algorithm-at-point)))
-
-
-(defun fix-show-paren-function (fn)
-  (cond ((looking-at-p "\\s(") (funcall fn))
-	    (t (save-excursion
-	         (ignore-errors (backward-up-list))
-	         (funcall fn)))))
+(defun eli/electric-pair-inhibit (char)
+  (cond
+   (t
+	(if electric-pair-preserve-balance
+		(electric-pair-inhibit-if-helps-balance char)
+      (electric-pair-conservative-inhibit char)))))
 
 
 ;;;; provide
-(provide 'lib-smartparens)
-;;; lib-smartparens.el ends here.
+(provide 'lib-elec-pair)
+;;; lib-elec-pair.el ends here.
