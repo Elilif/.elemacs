@@ -32,6 +32,11 @@
 
 (defun eli/electric-pair-inhibit (char)
   (cond
+   ((eq major-mode 'org-mode)
+	(or
+	 (eq (char-before (1- (point))) ?#)
+	 (and (fboundp #'texmathp)
+		  (texmathp))))
    (t
 	(if electric-pair-preserve-balance
 		(electric-pair-inhibit-if-helps-balance char)
