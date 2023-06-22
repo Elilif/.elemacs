@@ -203,14 +203,21 @@
 		 (avy-process
 		  (avy--regex-candidates
 		   (regexp-quote (string char))
-		   (line-beginning-position -1)
-		   (line-end-position 3))
+		   (save-excursion
+			 (backward-paragraph)
+			 (point))
+		   (save-excursion
+			 (forward-paragraph)
+			 (point)))
 		  (avy--style-fn avy-style))))))
-  (:bind-into org-mode-map
-	"<remap> <org-cycle-agenda-files>" avy-goto-char)
+  (:after org
+	(:bind-into org-mode-map
+	  "<remap> <org-cycle-agenda-files>" avy-goto-char))
+  (:option*
+   avy-all-windows nil)
   (:global
    "C-:" avy-goto-char-in-line
-   "C-'" avy-goto-char
+   "C-'" avy-goto-char-2
    "C-\"" avy-goto-char-near-point))
 
 ;;;; GPT
