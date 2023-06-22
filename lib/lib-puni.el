@@ -63,6 +63,16 @@
 		(er/mark-sentence)
 	  (er/mark-symbol)))))
 
+;;;###autoload
+(defun eli/puni-hungry-backward-delete-char ()
+  "Hungry delete char backward while keeping expressions balanced.
+
+See `puni-backward-delete-char' for more information."
+  (interactive)
+  (if (memq (char-before) '(?\t ?\n ?\ ))
+      (hungry-delete-backward 1)
+    (puni-backward-delete-char)))
+
 
 ;;;; provide
 (provide 'lib-puni)

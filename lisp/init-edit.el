@@ -137,6 +137,7 @@
   (:global
    "C-=" eli/expand-region)
   (:bind
+   "<DEL>" eli/puni-hungry-backward-delete-char
    "C-M-a" beginning-of-defun
    "C-M-e" end-of-defun
    "C-M-p" puni-beginning-of-sexp
