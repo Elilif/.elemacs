@@ -139,7 +139,8 @@
   (:global
    "M-o" ace-window)
   (:option*
-   aw-scope 'frame))
+   aw-scope 'frame
+   aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 ;;;; cal-china-x
 (setup cal-china-x
   (:autoload cal-china-x-setup)
