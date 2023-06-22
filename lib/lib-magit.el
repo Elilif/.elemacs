@@ -154,6 +154,16 @@ This function returns nil if it cannot parse REMOTE."
     (browse-url url)
     (message "Open %s" url)))
 
+(defun eli/magit-reverse-rebase-commits ()
+  "Reverse the order of commits displayed during a Git interactive rebase."
+  (let* ((inhibit-read-only t)
+		 (beg (point-min))
+		 (end (save-excursion
+				(goto-char beg)
+				(re-search-forward "^$"))))
+	(reverse-region beg end))
+  (add-hook 'with-editor-pre-finish-hook #'eli/magit-reverse-rebase-commits nil t))
+
 
 ;;;; provide
 (provide 'lib-magit)
