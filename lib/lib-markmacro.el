@@ -31,24 +31,20 @@
 ;;; Code:
 
 (defun eli/speed-up-kmacro (_args)
-  (smartparens-mode -1)
   (winner-mode -1)
   (hungry-delete-mode -1)
   (aggressive-indent-mode -1)
   (corfu-mode -1)
-  (font-lock-mode -1)
-  (remove-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets))
+  (font-lock-mode -1))
 
 (defun eli/speed-up-kmacro-recover ()
-  (smartparens-mode 1)
   (winner-mode 1)
   (hungry-delete-mode 1)
   (when (and (derived-mode-p 'prog-mode)
 			 (not (member major-mode '(makefile-gmake-mode))))
 	(aggressive-indent-mode 1)
 	(corfu-mode 1))
-  (font-lock-mode 1)
-  (add-hook 'post-command-hook #'my/yas-try-expanding-auto-snippets))
+  (font-lock-mode 1))
 
 
 ;;;; provide

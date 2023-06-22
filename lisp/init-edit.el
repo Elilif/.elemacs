@@ -96,7 +96,6 @@
   (:also-load lib-markmacro)
   (:advice
    kmacro-start-macro :before eli/speed-up-kmacro
-   kmacro-keyboard-quit :after eli/speed-up-kmacro-recover
    markmacro-exit :after eli/speed-up-kmacro-recover)
   (:global
    "s-`" markmacro-apply-all
