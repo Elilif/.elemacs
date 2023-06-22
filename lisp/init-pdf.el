@@ -83,7 +83,7 @@
    org-noter-kill-session :before eli/org-noter-kill-outline))
 
 (setup nov
-  (:iload org-noter)
+  (:iload nov)
   (:also-load
    lib-nov)
   (:when-loaded
