@@ -39,8 +39,14 @@
   ;; `tempel-expand' *before* the main programming mode Capf, such
   ;; that it will be tried first.
   (setq-local completion-at-point-functions
-              (cons #'tempel-complete
-                    completion-at-point-functions)))
+			  (cons #'tempel-complete
+					completion-at-point-functions)))
+
+(defun my/tempel-try-expanding-auto-snippets ()
+  (when (memq this-command '(org-self-insert-command
+                             self-insert-command))
+	(cl-letf (((symbol-function 'user-error) (lambda (&rest _args) nil)))
+      (call-interactively #'tempel-expand))))
 
 
 ;;;; provide

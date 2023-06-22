@@ -154,13 +154,17 @@
   (:when-loaded
 	(:hooks
 	 prog-mode-hook tempel-setup-capf
-	 org-mode-hook tempel-setup-capf))
+	 org-mode-hook tempel-setup-capf
+	 ;; post-self-insert-hook my/tempel-try-expanding-auto-snippets
+	 ))
   (:bind-into tempel-map
 	"<tab>" tempel-next
 	"C-<tab>" tempel-previous
 	"M-a" tempel-beginning
 	"M-e" tempel-end
-	"C-g" tempel-abort))
+	"C-g" tempel-abort
+	"C-<return>" tempel-done))
+
 ;;;; electric-operator
 (setup electric-operator
   (:hook-into c++-mode)
