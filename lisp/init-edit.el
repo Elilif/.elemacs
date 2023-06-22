@@ -178,7 +178,8 @@
   (:hook-into emacs-lisp-mode-hook)
   (:hook-into c-mode-common-hook)
   (:option*  aggressive-indent-dont-indent-if
-			 '((and (or (derived-mode-p 'c++-mode)
+			 '((memq (char-before) '(?\t ?\n)) ;; used by hungry-delete
+			   (and (or (derived-mode-p 'c++-mode)
 						(derived-mode-p 'c-mode))
 					(null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|else\\|while\\|return\\)\\b\\)"
 										(thing-at-point 'line)))))))
