@@ -43,6 +43,7 @@
 (keymap-global-set "C-c j" #'hydra-roam/body)
 (keymap-global-set "C-c i" #'hydra-insert/body)
 (keymap-global-set "C-c h" #'hydra-gpt/body)
+(keymap-global-set "C-c p" #'hydra-puni/body)
 (keymap-global-set "s-r" #'hydra-rectangle/body)
 (keymap-global-set "C-c [" #'hydra-skan-user-buffers-prev/body)
 (keymap-global-set "C-c ]" #'hydra-skan-user-buffers-next/body)
@@ -146,11 +147,22 @@
    (("s" scratch-buffer))
    ))
 
+(pretty-hydra-define hydra-puni
+  (:color amaranth :exit t :quit-key "q")
+  (""
+   (("k" puni-squeeze)
+	("r" puni-raise)
+	("c" puni-convolute)
+	("p" puni-split)
+	("s" puni-splice))
+   "slurp & barf"
+   (("lf" puni-slurp-forward)
+	("lb" puni-slurp-backward)
+	("bf" puni-barf-forward)
+	("bb" puni-barf-backward))))
+
 (pretty-hydra-define hydra-org
-  (:color amaranth :exit t :quit-key "q"
-	      :pre
-	      (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil) ))
+  (:color amaranth :exit t :quit-key "q")
   ("Basic"
    (("h" org-mode "org mode")
     ("j" consult-org-heading "headings")
