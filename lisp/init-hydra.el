@@ -42,7 +42,6 @@
 (keymap-global-set "C-c q" #'hydra-emacs/body)
 (keymap-global-set "C-c j" #'hydra-roam/body)
 (keymap-global-set "C-c i" #'hydra-insert/body)
-(keymap-global-set "C-c p" #'hydra-move/body)
 (keymap-global-set "C-c h" #'hydra-gpt/body)
 (keymap-global-set "s-r" #'hydra-rectangle/body)
 (keymap-global-set "C-c [" #'hydra-skan-user-buffers-prev/body)
@@ -99,49 +98,6 @@
    (("g" markmacro-secondary-region-set)
     ("j" markmacro-secondary-region-mark-cursors)
     ("s" markmacro-swap-region))
-   ))
-
-(pretty-hydra-define hydra-move
-  (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil)))
-  ("Moving"
-   (("a" sp-beginning-of-sexp)
-    ("e" sp-end-of-sexp)
-    ("f" sp-forward-sexp)
-    ("b" sp-backward-sexp)
-    ("n" sp-down-sexp)
-    ("N" sp-backward-down-sexp)
-    ("p" sp-up-sexp)
-    ("P" sp-backward-up-sexp))
-   "Slurping & barfing"
-   (("h" sp-backward-slurp-sexp)
-    ("H" sp-backward-barf-sexp)
-    ("l" sp-forward-slurp-sexp)
-    ("L" sp-forward-barf-sexp))
-   "Wrapping"
-   (("R" sp-rewrap-sexp)
-    ("u" sp-unwrap-sexp)
-    ("U" sp-backward-unwrap-sexp)
-    ("(" sp-wrap-round)
-    ("{" sp-wrap-curly)
-    ("[" sp-wrap-square))
-   "Sexp juggling"
-   (("S" sp-split-sexp)
-    ("s" sp-splice-sexp)
-    ("r" sp-raise-sexp)
-    ("j" sp-join-sexp)
-    ("t" sp-transpose-sexp)
-    ("A" sp-absorb-sexp)
-    ("E" sp-emit-sexp)
-    ("o" sp-convolute-sexp))
-   "Destructive editing"
-   (("c" sp-change-inner :exit t)
-    ("C" sp-change-enclosing :exit t)
-    ("k" sp-kill-sexp)
-    ("K" sp-backward-kill-sexp)
-    ("w" sp-copy-sexp))
-
    ))
 
 (pretty-hydra-define hydra-roam
