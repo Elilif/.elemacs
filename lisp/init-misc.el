@@ -278,33 +278,38 @@
 ;;;; desktop
 (setup desktop
   (:option*
-   desktop-dirname "~/.emacs.d/var/desktop/"))
+   desktop-dirname "~/.emacs.d/var/desktop/"
+   desktop-save t))
 
 ;;;; tab-bar
-(setup tab-bar
-  (:once (list :hooks 'post-command-hook)
-	(:option*
-	 tab-bar-close-button-show nil
-	 tab-bar-separator " "
-	 tab-bar-tab-hints t
-	 tab-bar-new-tab-choice "*scratch*"
-	 tab-bar-select-tab-modifiers '(super)
-	 tab-bar-tab-name-truncated-max 15
-	 tab-bar-border nil
-	 tab-bar-auto-width nil
-	 tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
-	 tab-bar-tab-name-function #'tab-bar-tab-name-truncated
-	 tab-bar-tab-name-format-function (lambda (tab i)
-										(concat
-										 (propertize (if tab-bar-tab-hints (format "%d" i) "")
-													 'face 'tab-bar-hints)
-										 (propertize (if tab-bar-tab-hints " " "")
-													 'face (funcall #'eli/tab-bar-tab-space-face tab))
-										 (propertize (alist-get 'name tab)
-													 'face (funcall tab-bar-tab-face-function tab))))))
-
+(setup tabspaces
+  (:also-load
+   lib-tab-bar)
+  (:option*
+   tab-bar-close-button-show nil
+   tab-bar-separator " "
+   tab-bar-tab-hints t
+   tab-bar-new-tab-choice "*scratch*"
+   tab-bar-select-tab-modifiers '(super)
+   tab-bar-tab-name-truncated-max 15
+   tab-bar-border nil
+   tab-bar-auto-width nil
+   tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
+   tab-bar-tab-name-function #'tab-bar-tab-name-truncated
+   tab-bar-tab-name-format-function (lambda (tab i)
+									  (concat
+									   (propertize (if tab-bar-tab-hints (format "%d" i) "")
+												   'face 'tab-bar-hints)
+									   (propertize (if tab-bar-tab-hints " " "")
+												   'face (funcall (lambda (tab)
+																	(if (eq (car tab) 'current-tab)
+																		'tab-bar-tab-space-active
+																	  'tab-bar-tab-space-inactive))
+																  tab))
+									   (propertize (alist-get 'name tab)
+												   'face (funcall tab-bar-tab-face-function tab)))))
   (:global
-   "s--" tab-bar-close-tab
+   "s--" eli/tabspaces-kill-buffers-close-workspace
    "s-=" tab-bar-new-tab
    "s-<left>" tab-bar-move-tab-backward
    "s-<right>" tab-bar-move-tab))
@@ -331,6 +336,8 @@
    project
    lib-tab-bar)
   (:hook my--consult-tabspaces)
+  (:init
+   (setq tabspaces-keymap-prefix nil))
   (:option*
    tabspaces-session nil))
 
