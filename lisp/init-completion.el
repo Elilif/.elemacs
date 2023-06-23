@@ -193,10 +193,10 @@
   (:global
    "C-." embark-act
    "M-." embark-dwim
-   "C-," embark-act-all
+   "C-c ," embark-act-all
    "C-h B" embark-bindings
    "s-d" eli/embark-deselect
-   "C-;" (kbd "C-. SPC"))
+   "C-c ;" (kbd "C-. SPC"))
   (:bind-into embark-buffer-map
 	"r" tabspaces-remove-selected-buffer
 	"R" embark-rename-buffer)
@@ -205,7 +205,7 @@
 	"D" eli/delete-file
 	"R" eli/move-file)
   (:bind-into vertico-map
-	"C-SPC" (kbd "C-. SPC"))
+	"C-s" (kbd "C-. SPC"))
   (:when-loaded
 	(add-to-list 'embark-post-action-hooks
 				 '(eli/move-file eli/move-file-after-action))
