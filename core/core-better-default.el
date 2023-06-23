@@ -208,7 +208,8 @@
     (:option recentf-auto-cleanup 'never
              recentf-exclude '("/home/eli/.emacs.d/.cache/treemacs-persist-at-last-error"
 	                           "/home/eli/.emacs.d/.cache/treemacs-persist"
-	                           "\\.txt"
+	                           "\\.txt$"
+							   "\\.chat$"
                                "/home/eli/.emacs.d/emms/history"
 	                           "/home/eli/.emacs.d/elpa/*"
 	                           "/home/eli/.elfeed/index"
