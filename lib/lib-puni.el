@@ -36,11 +36,11 @@
   "Mark the entire symbol around or in front of point."
   (interactive)
   (let ((symbol-regexp "\\s_\\|\\sw"))
-    (when (or (looking-at symbol-regexp)
-              (looking-back symbol-regexp))
-      (skip-syntax-forward "_w")
-      (set-mark (point))
-      (skip-syntax-backward "_w"))))
+	(when (or (looking-at symbol-regexp)
+			  (looking-back symbol-regexp (line-beginning-position)))
+	  (skip-syntax-forward "_w")
+	  (set-mark (point))
+	  (skip-syntax-backward "_w"))))
 
 ;;;###autoload
 (defun er/mark-sentence ()
@@ -55,13 +55,14 @@
 ;;;###autoload
 (defun eli/expand-region ()
   (interactive)
-  (cond
-   ((derived-mode-p 'prog-mode)
-	(puni-expand-region))
-   (t
-	(if (eq last-command this-command)
-		(er/mark-sentence)
-	  (er/mark-symbol)))))
+  (if (eq last-command this-command)
+	  (cond
+	   ((derived-mode-p 'prog-mode)
+		(puni-expand-region))
+	   (t (er/mark-sentence)))
+	(if (thing-at-point 'symbol)
+		(er/mark-symbol)
+	  (puni-expand-region))))
 
 ;;;###autoload
 (defun eli/puni-hungry-backward-delete-char ()
