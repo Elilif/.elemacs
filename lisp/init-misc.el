@@ -428,7 +428,9 @@
 	(beacon-mode))
   (:option*
    beacon-blink-delay 0.1
-   beacon-blink-when-window-changes nil))
+   beacon-blink-duration 0.2
+   beacon-blink-when-window-changes nil
+   beacon-blink-when-buffer-changes nil))
 ;;;; provide
 (provide 'init-misc)
 ;;; init-misc.el ends here.
