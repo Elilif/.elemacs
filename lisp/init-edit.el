@@ -231,7 +231,14 @@
 			  ("i" . outli-insert-heading-respect-content)
 			  ("@" . outline-mark-subtree) 
 			  ("?" . outli-speed-command-help))))
-
+;;;; smart-mark
+(setup smart-mark
+  (:once (list :hooks 'pre-command-hook)
+	(smart-mark-mode))
+  (:option* smart-mark-mark-functions `(,@smart-mark-mark-functions
+										eli/expand-region
+										org-capture-finalize
+										hydra-gpt/body)))
 
 ;;;; provide
 (provide 'init-edit)
