@@ -53,13 +53,13 @@
   (:when-loaded
 	(require 'lib-elfeed))
   (:hooks elfeed-show-mode-hook visual-fill-column-mode
-		  elfeed-show-mode-hook hide-mode-line-mode
-		  elfeed-search-update-hook hide-mode-line-mode
+		  ;; elfeed-show-mode-hook hide-mode-line-mode
+		  ;; elfeed-search-update-hook hide-mode-line-mode
 		  elfeed-search-update-hook hl-line-mode)
   (:option*
    shr-width 90
    shr-inhibit-images nil
-   shr-use-colors nil
+   shr-use-colors t
 
    elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890")
    elfeed-search-filter "@2-days-ago +unread +A"
@@ -96,11 +96,15 @@
 (setup elfeed-goodies
   (:iload* elfeed-goodies)
   (:after elfeed
-	(elfeed-goodies/setup))
-  (:option*
-   elfeed-show-entry-switch #'pop-to-buffer)
-  (:bind-into elfeed-show-mode-map
-	"M-v" scroll-down-command))
+	(elfeed-goodies/setup)
+	(setq elfeed-show-entry-switch #'pop-to-buffer
+		  ;; workround for `(eval (elfeed-goodies/entry-header-line))' error
+		  ;; elfeed-search-header-function #'elfeed-search--header
+		  )
+	;; (remove-hook 'elfeed-show-mode-hook #'elfeed-goodies/show-mode-setup)
+	)
+  (:advice elfeed-goodies/show-mode-setup :after 
+		   (lambda () (keymap-set elfeed-show-mode-map "M-v" #'scroll-down-command))))
 ;;;; Mu4e
 (setup mu4e
   (:iload* mu4e)
@@ -128,6 +132,7 @@
    mu4e-compose-format-flowed t
    mu4e-get-mail-command "proxychains mbsync -a"
    mu4e-update-interval 600
+   mu4e-modeline-support nil
    mu4e-bookmarks '(("flag:unread"                       "Unread messages"                  ?u)
 					("NOT flag:trashed"                  "All messages"                     ?a)
 					("date:today..now"                   "Today's messages"                 ?t)

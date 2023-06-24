@@ -75,12 +75,11 @@ for confirmation when needed."
   (elfeed-db-save)
   (let (buf)
     (dolist (file rmh-elfeed-org-files)
-	  (setq buf (get-file-buffer file))
-	  (when (and (buffer-modified-p buf)
-				 file
+	  (when (and (setq buf (get-file-buffer file))
+				 (buffer-modified-p buf)
 				 (y-or-n-p (format "Save file %s? " file)))
-        (with-current-buffer buf (save-buffer)))
-	  (kill-buffer buf)))
+        (with-current-buffer buf (save-buffer))
+		(kill-buffer buf))))
   (kill-buffer "*elfeed-log*")
   (kill-buffer (current-buffer)))
 
