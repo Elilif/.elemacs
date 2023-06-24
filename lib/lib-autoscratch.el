@@ -84,7 +84,8 @@ ARG is the content of the clipboard being yanked."
 	(setf (alist-get group popper-buried-popup-alist
 					 nil nil 'equal)
 		  (cl-remove-if (lambda (buf)
-						  (string-match "-scratch" (buffer-name buf)))
+						  (when (buffer-live-p buf)
+							(string-match "-scratch" (buffer-name buf))))
 						buried-popups :key #'cdr))))
 
 
