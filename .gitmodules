@@ -124,6 +124,7 @@
 	url = git@github.com:emacscollective/epkg.git
 [submodule "ess"]
 	path = site-lisp/ess
+	load-path = lisp
 	url = https://github.com/emacs-ess/ESS
 [submodule "ess-smart-equals"]
 	path = site-lisp/ess-smart-equals
