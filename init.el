@@ -141,7 +141,7 @@
   (defun latest-file (path)
 	"Get latest file (including directory) in PATH."
 	(file-name-nondirectory (car (seq-find
-								  '(lambda (x) (not (nth 1 x))) ; non-directory
+								  (lambda (x) (not (nth 1 x))) ; non-directory
 								  (sort
 								   (directory-files-and-attributes path 'full nil t)
 								   (lambda (x y) (time-less-p (nth 5 y) (nth 5 x))))))))
