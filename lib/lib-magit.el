@@ -107,11 +107,11 @@ conventions are checked."
   nil)
 
 (setup org-protocol
-       (:when-loaded
-        (add-to-list 'org-protocol-protocol-alist
-                     '("git-clone"
-                       :protocol "git-clone"
-                       :function org-protocol-git-clone))))
+  (:when-loaded
+	(add-to-list 'org-protocol-protocol-alist
+				 '("git-clone"
+				   :protocol "git-clone"
+				   :function org-protocol-git-clone))))
 
 
 ;; from: https://github.com/ksqsf/emacs-config/blob/master/modules/prelude-git.el

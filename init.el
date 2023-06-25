@@ -39,7 +39,7 @@
 (add-to-list 'load-path (concat user-emacs-directory "lib"))
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 ;;;; Benchmark
-;; (require 'core-benchmarking)
+(require 'core-benchmarking)
 
 ;;;; Borg
 ;; (eval-and-compile ; `borg'
