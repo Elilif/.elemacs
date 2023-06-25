@@ -45,7 +45,8 @@
    (pdf-loader-install))
   (:also-load
    lib-pdf
-   saveplace-pdf-view)
+   ;; saveplace-pdf-view
+   )
   (:option*
    pdf-view-use-scaling t
    pdf-view-use-imagemagick nil
@@ -58,7 +59,7 @@
 
 (setup pdf-view-pagemark
   (:option*
-   pdf-view-pagemark-timeout 0.2)
+   pdf-view-pagemark-timeout 0.5)
   (:hook-into pdf-view-mode-hook))
 
 (setup org-noter
