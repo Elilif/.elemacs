@@ -44,11 +44,6 @@
 ;; little IO time to skip all the mtime checks on each lookup.
 (setq load-prefer-newer nil)
 
-;; Prevent unwanted runtime compilation for gccemacs (native-comp) users;
-;; packages are compiled ahead-of-time when they are installed and site files
-;; are compiled when gccemacs is installed.
-(setq inhibit-automatic-native-compilation t)
-
 ;; A second, case-insensitive pass over `auto-mode-alist' is time wasted and
 ;; indicates misconfiguration.
 (setq auto-mode-case-fold nil)
@@ -63,11 +58,6 @@
 ;; reordering of bidirectional text with embedded parentheses and other bracket
 ;; characters whose 'paired-bracket' Unicode property is non-nil.
 (setq bidi-inhibit-bpa t)  ; Emacs 27 only
-
-;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
-;; in non-focused windows.
-(setq-default cursor-in-non-selected-windows nil)
-(setq highlight-nonselected-windows nil)
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
 ;; in non-focused windows.
