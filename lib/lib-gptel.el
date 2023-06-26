@@ -149,7 +149,7 @@
 	   (t
 		(buffer-substring-no-properties (region-beginning)
 										(region-end))))
-	(error "Plesae select a region.")))
+	(thing-at-point 'sentence t)))
 
 (defun eli/gptel-query-get-from-minibuffer ()
   "Get query string from minibuffer."

@@ -83,8 +83,12 @@
 
 (defun v-i-or-nothing-word ()
   (let* ((v-i (plist-get org-store-link-plist :initial))
+		 (sentence (with-current-buffer (org-capture-get :original-buffer)
+					 (thing-at-point 'sentence 'no-properties)))
          (new-string (string-clean-whitespace
-                      (replace-regexp-in-string "\n" " " v-i))))
+                      (replace-regexp-in-string "\n" " " (if (string-empty-p v-i)
+															 sentence
+														   v-i)))))
     new-string))
 
 ;; better fill region in capture
