@@ -166,7 +166,8 @@
   ("Basic"
    (("h" org-mode "org mode")
     ("j" consult-org-heading "headings")
-    ("f" eli/consult-org-file "agenda filter"))
+    ("f" eli/consult-org-file "agenda filter")
+	("m" org-heatmap-calendar "heatmap"))
    "Org link"
    (("li" grab-x-link-chromium-insert-link "insert web link")
     ("lo" grab-x-link-chromium-insert-org-link "insert org link")
