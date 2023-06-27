@@ -528,9 +528,8 @@
   (:after org-agenda
 	(require 'appt)
 	(require 'notifications)
-    (run-with-idle-timer 10 nil
-                         (lambda ()
-                           (run-with-timer 0 3600 #'org-agenda-to-appt t))))
+	(:delay 10
+	  (run-with-timer 0 3600 #'org-agenda-to-appt t)))
   (:option*
    appt-message-warning-time 30
    appt-display-interval 5
