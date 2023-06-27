@@ -81,7 +81,8 @@ the current `org-heatmap-db-location'."
 (defun org-heatmap-db--query (sql &rest args)
   "Run SQL query on Org-heatmap database with ARGS.
 SQL can be either the emacsql vector representation, or a string."
-  (apply #'emacsql org-heatmap--db sql args))
+  (emacsql-with-transaction (org-heatmap-db)
+	(apply #'emacsql org-heatmap--db sql args)))
 
 (defun org-heatmap-db--init-entry ()
   "Insert new record."
@@ -90,10 +91,16 @@ SQL can be either the emacsql vector representation, or a string."
 									:values $v1]
 						   (vector date 1))))
 
+(defun org-heatmap-db-query--date (d)
+  (org-heatmap-db--query [:select [date done-tasks]
+								  :from heatmap
+								  :where (= date $s1)]
+						 d))
+
 (defun org-heatmap-update-counter ()
   (when (string= "DONE" (org-get-todo-state))
 	(if-let* ((td (format-time-string "%Y-%m-%d" (current-time)))
-			  (result (org-heatmap-db-query-date td)))
+			  (result (org-heatmap-db-query--date td)))
 		(org-heatmap-db--query [:update heatmap
 										:set (= done-tasks $s1)
 										:where (= date $s2)]
@@ -130,8 +137,8 @@ SQL can be either the emacsql vector representation, or a string."
 				 (>= n (car pair)))
 			   (reverse org-heatmap-threshold))))
 
-(defun org-heatmap-generate (month year indent)
-  (when t
+(defun org-heatmap-generate (month year _indent)
+  (when org-heatmap-current-streak
     (dotimes (i 31)
 	  (let ((date (list month (1+ i) year))
             (count-scaled (gethash (format "%04d-%02d-%02d" year month (1+ i))
@@ -147,16 +154,18 @@ SQL can be either the emacsql vector representation, or a string."
   (org-heatmap-get-habit-streak)
   (org-agenda-goto-calendar))
 
-
 ;;;###autoload
 (defun org-heatmap-calendar ()
   (interactive)
   (org-heatmap-get-done-streak)
   (calendar))
 
+(add-hook 'kill-emacs-hook #'org-heatmap-db--close)
 (add-hook 'org-after-todo-state-change-hook #'org-heatmap-update-counter)
 ;; (remove-hook 'org-after-todo-state-change-hook #'org-heatmap-update-counter)
 
+(advice-add #'calendar-exit :after
+			(lambda (&rest _arg) (setq org-heatmap-current-streak nil)))
 (advice-add #'calendar-generate-month :after #'org-heatmap-generate)
 ;; (advice-remove #'calendar-generate-month #'org-heatmap-habit-generate)
 

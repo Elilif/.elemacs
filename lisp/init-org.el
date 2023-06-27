@@ -819,9 +819,12 @@
 		  org-agenda-finalize-hook eli/org-agenda-show-svg))
 
 ;;;; org-heatmap
-(setup org-agenda
-  (:bind-into org-agenda-mode-map
-	"C" org-heatmap-habit-calendar))
+(setup org
+  (:when-loaded
+	(require 'org-heatmap))
+  (:with-feature org-agenda
+	(:bind-into org-agenda-mode-map
+	  "C" org-heatmap-habit-calendar)))
 ;;;; provide
 (provide 'init-org)
 ;;; init-org.el ends here.
