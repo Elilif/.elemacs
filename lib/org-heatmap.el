@@ -71,7 +71,7 @@ the current `org-heatmap-db-location'."
 	  (let ((conn (emacsql-sqlite-builtin org-heatmap-db-location)))
 		(emacsql conn [:pragma (= foreign_keys ON)])
 		(when-let* ((process (emacsql-process conn))
-                    (_ (processp process)))
+                    ((processp process)))
           (set-process-query-on-exit-flag process nil))
 		(when init-db
           (org-heatmap-db--init conn))
