@@ -692,9 +692,8 @@
    mixed-pitch-variable-pitch-cursor 'box
    mixed-pitch-set-height t)
   (:when-loaded
-	(add-to-list 'mixed-pitch-fixed-pitch-faces 'org-date)
-	(add-to-list 'mixed-pitch-fixed-pitch-faces 'org-tag)
-	(add-to-list 'mixed-pitch-fixed-pitch-faces 'font-lock-comment-face))
+	(dolist (face '(org-date org-tag corfu-default font-lock-comment-face))
+	  (add-to-list 'mixed-pitch-fixed-pitch-faces face)))
   (:hook-into org-mode))
 
 ;;;; svg-tag-mode
