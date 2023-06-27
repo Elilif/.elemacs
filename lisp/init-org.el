@@ -498,7 +498,7 @@
 	  "<f10>" org-clock-convenience-fill-gap-both)))
 
 ;;;; org-appear-mode
-(setup org-appear-mode
+(setup org-appear
   (:hook-into
    org-mode))
 
