@@ -161,17 +161,19 @@
 
 ;;;; corfu
 (setup corfu
-  (:once (list :hooks 'prog-mode-hook)
-    (global-corfu-mode)
-    (:also-load lib-kind-all-the-icons
-				lib-corfu))
+  (:also-load
+   lib-kind-all-the-icons
+   lib-corfu)
+  (:once (list :hooks 'prog-mode-hook 'org-mode-hook)
+    (global-corfu-mode))
   (:option* corfu-cycle       t
 	        corfu-auto        t
 	        corfu-separator ?\s
 	        corfu-max-width 150
-	        corfu-auto-prefix 3
-            corfu-excluded-modes '(org-mode)
-	        corfu-on-exact-match nil
+	        corfu-auto-prefix 2
+            corfu-excluded-modes nil
+			corfu-auto-delay 0.1
+	        corfu-on-exact-match 'insert
             corfu-margin-formatters '(kind-all-the-icons-margin-formatter))
   (:when-loaded
 	(:hooks minibuffer-setup-hook corfu-enable-in-minibuffer)))
