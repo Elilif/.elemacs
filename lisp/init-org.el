@@ -506,7 +506,7 @@
   (:iload* org-download)
   (:option*
    org-download-method 'directory
-   org-download-image-dir "~/Documents/org-images"
+   org-download-image-dir "~/Documents/org-images/org/"
    org-download-heading-lvl nil
    org-download-link-format "[[%s]]\n"
    org-download-abbreviate-filename-function (lambda (file) file)
