@@ -35,10 +35,12 @@
   (require 'server)
   (require 'mixed-pitch)
   (require 'org-roam)
+  (require 'org-heatmap)
   (require 'svg-tag-mode)
   (require 'lib-svg-tag-mode)
   (require 'lib-ox)
   (require 'lib-org-anki)
+  (require 'org-media-note)
   (require 'lib-org-media-note)
   (require 'lib-appt)
   (require 'lib-org-roam)
@@ -818,9 +820,10 @@
 		  org-agenda-finalize-hook eli/org-agenda-show-svg))
 
 ;;;; org-heatmap
-(setup org
-  (:when-loaded
-	(require 'org-heatmap))
+(setup org-heatmap
+  (:after org
+	(require 'org-heatmap)
+	(org-heatmap-mode))
   (:with-feature org-agenda
 	(:bind-into org-agenda-mode-map
 	  "C" org-heatmap-habit-calendar)))

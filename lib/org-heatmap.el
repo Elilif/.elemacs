@@ -10,24 +10,24 @@
 (require 'calendar)
 (require 'emacsql-sqlite-builtin)
 
-(defface calendar-scale-1  '((((background light)) :foreground "black" :background "#c6e48b")
+(defface org-heatmap-calendar-scale-1  '((((background light)) :foreground "black" :background "#c6e48b")
                              (((background dark))  :foreground "white" :background "#c6e48b")) "")
-(defface calendar-scale-2  '((((background light)) :foreground "black" :background "#7bc96f")
+(defface org-heatmap-calendar-scale-2  '((((background light)) :foreground "black" :background "#7bc96f")
                              (((background dark))  :foreground "white" :background "#7bc96f")) "")
-(defface calendar-scale-3  '((((background light)) :foreground "black" :background "#239a3b")
+(defface org-heatmap-calendar-scale-3  '((((background light)) :foreground "black" :background "#239a3b")
                              (((background dark))  :foreground "white" :background "#239a3b")) "")
-(defface calendar-scale-4  '((((background light)) :foreground "black" :background "#196127")
+(defface org-heatmap-calendar-scale-4  '((((background light)) :foreground "black" :background "#196127")
                              (((background dark))  :foreground "white" :background "#196127")) "")
 
 (defgroup org-heatmap nil
-  "Settings for `org-heatmap'"
+  "Settings for `org-heatmap'."
   :group 'org)
 
 (defcustom org-heatmap-threshold '((0 . default)
-								   (1 . calendar-scale-1)
-								   (3 . calendar-scale-2)
-								   (5 . calendar-scale-3)
-								   (7 . calendar-scale-4))
+								   (1 . org-heatmap-calendar-scale-1)
+								   (3 . org-heatmap-calendar-scale-2)
+								   (5 . org-heatmap-calendar-scale-3)
+								   (7 . org-heatmap-calendar-scale-4))
   "Choose a different face based on the quantity arrived."
   :group 'org-heatmap
   :type '(repeat (cons number symbol)))
@@ -37,15 +37,17 @@
   :group 'org-heatmap
   :type 'function)
 
-(defvar org-heatmap-current-streak nil
-  "Hash table used to store current streak.")
-
-(defvar org-heatmap--db nil)
-
 (defcustom org-heatmap-db-location "~/.emacs.d/var/org/org-heatmap.db"
   "Default db locationl"
   :group 'org-heatmap
   :type 'directory)
+
+(defvar org-heatmap-current-streak nil
+  "Hash table used to store current streak.")
+
+;;;; database
+(defvar org-heatmap--db nil
+  "Current connected org-heatmap database.")
 
 (defun org-heatmap-db--close (&optional db)
   "Closes the database connection for database DB.
@@ -86,7 +88,7 @@ SQL can be either the emacsql vector representation, or a string."
 
 (defun org-heatmap-db--init-entry ()
   "Insert new record."
-  (let* ((date (format-time-string "%Y-%m-%d" (current-time))))
+  (let* ((date (org-heatmap-today)))
 	(org-heatmap-db--query [:insert :into heatmap
 									:values $v1]
 						   (vector date 1))))
@@ -97,15 +99,26 @@ SQL can be either the emacsql vector representation, or a string."
 								  :where (= date $s1)]
 						 d))
 
+(defun org-heatmap-db-update (date num)
+  (org-heatmap-db--query [:update heatmap
+								  :set (= done-tasks $s1)
+								  :where (= date $s2)]
+						 num
+						 date))
+
+;;;; utilities
+(defun org-heatmap-today ()
+  (format-time-string "%Y-%m-%d" (current-time)))
+
+(defun org-heatmap-calendar-get-date ()
+  (org-heatmap-time-format (calendar-absolute-from-gregorian
+							(calendar-cursor-to-date t))))
+
 (defun org-heatmap-update-counter ()
   (when (string= "DONE" (org-get-todo-state))
-	(if-let* ((td (format-time-string "%Y-%m-%d" (current-time)))
-			  (result (org-heatmap-db-query--date td)))
-		(org-heatmap-db--query [:update heatmap
-										:set (= done-tasks $s1)
-										:where (= date $s2)]
-							   (1+ (cadar result))
-							   td)
+	(if-let* ((td (org-heatmap-today))
+			  (result (1+ (cadar (org-heatmap-db-query--date td)))))
+		(org-heatmap-db-update td result)
 	  (org-heatmap-db--init-entry))))
 
 (defun org-heatmap-time-format (days)
@@ -148,6 +161,9 @@ SQL can be either the emacsql vector representation, or a string."
 		   date
 		   (funcall org-heatmap-get-threshold-function count-scaled)))))))
 
+(defun org-heatmap-clear (&rest _args)
+  (setq org-heatmap-current-streak nil))
+
 ;;;###autoload
 (defun org-heatmap-habit-calendar ()
   (interactive)
@@ -160,15 +176,44 @@ SQL can be either the emacsql vector representation, or a string."
   (org-heatmap-get-done-streak)
   (calendar))
 
-(add-hook 'kill-emacs-hook #'org-heatmap-db--close)
-(add-hook 'org-after-todo-state-change-hook #'org-heatmap-update-counter)
-;; (remove-hook 'org-after-todo-state-change-hook #'org-heatmap-update-counter)
+;;;###autoload
+(defun org-heatmap-calendar-query ()
+  (interactive)
+  (if (eq major-mode 'calendar-mode)
+	  (let* ((date (org-heatmap-calendar-get-date))
+			 (tasks (cadar (org-heatmap-db-query--date date))))
+		(message "%d tasks are done in %s" (or tasks 0) date))
+	(error "Must be used in calendar mode!")))
 
-(advice-add #'calendar-exit :after
-			(lambda (&rest _arg) (setq org-heatmap-current-streak nil)))
-(advice-add #'calendar-generate-month :after #'org-heatmap-generate)
-;; (advice-remove #'calendar-generate-month #'org-heatmap-habit-generate)
+;;;###autoload
+(defun org-heatmap-adjust (num)
+  (interactive "nInput a number: ")
+  (if (eq major-mode 'calendar-mode)
+	  (let* ((date (org-heatmap-calendar-get-date)))
+		(org-heatmap-db-update date num))
+	(error "Must be used in calendar mode!")))
 
+;;;###autoload
+(define-minor-mode org-heatmap-mode
+  "Show heatmap in calendar."
+  :global t
+  :group 'org-heatmap
+  (cond
+   (org-heatmap-mode
+	(advice-add #'calendar-exit :after #'org-heatmap-clear)
+	(advice-add #'calendar-generate-month :after #'org-heatmap-generate)
+	(add-hook 'kill-emacs-hook #'org-heatmap-db--close)
+	(add-hook 'org-after-todo-state-change-hook #'org-heatmap-update-counter)
+	(keymap-set calendar-mode-map "j" #'org-heatmap-adjust)
+	(keymap-set calendar-mode-map "f" #'org-heatmap-calendar-query))
+   (t
+	(org-heatmap-db--close)
+	(advice-remove #'calendar-exit #'org-heatmap-clear)
+	(advice-remove #'calendar-generate-month #'org-heatmap-generate)
+	(remove-hook 'org-after-todo-state-change-hook #'org-heatmap-update-counter)
+	(remove-hook 'kill-emacs-hook #'org-heatmap-db--close)
+	(keymap-set calendar-mode-map "j" nil)
+	(keymap-set calendar-mode-map "f" nil))))
 
 ;; (defun org-heatmap-clock-sum (date)
 ;;   (let* ((cc (org-clock-special-range date))
