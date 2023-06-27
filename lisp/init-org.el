@@ -86,8 +86,9 @@
    org-id-link-to-org-use-id 'create-if-interactive
    org-id-locations-file "~/.emacs.d/var/org/.org-id-locations"
    org-use-fast-todo-selection 'expert
+   org-log-note-clock-out t
    org-log-into-drawer t
-   org-log-done 'time
+   org-log-done 'note
    org-custom-properties '("CUSTOM_ID")
    org-startup-folded t
    org-hide-block-startup t
@@ -95,8 +96,8 @@
    org-startup-with-inline-images t
    org-footnote-auto-adjust t
    org-todo-keywords
-   (quote ((sequence "TODO(t/!)" "STARTED(s)" "|" "DONE(d!/!)")
-		   (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
+   (quote ((sequence "TODO(t/!)" "STARTED(s)" "|" "DONE(d)")
+		   (sequence "PROJECT(p)" "|" "DONE(d)" "CANCELLED(c@/!)")
 		   (sequence "WAITING(w@/!)" "NEXT(n!/!)"
                      "SOMEDAY(S)" "|" "CANCELLED(c@/!)")))
    org-ellipsis "▼")
@@ -133,7 +134,7 @@
 			org-agenda-show-inherited-tags nil
 			org-agenda-window-setup 'only-window
 			org-agenda-log-mode-items '(clock)
-			org-agenda-log-mode-add-notes nil
+			org-agenda-log-mode-add-notes t
 			org-agenda-files '("~/Dropbox/org/journal.org"
 							   "/home/eli/Dropbox/org/Français.org"
 							   "/home/eli/Dropbox/org/daily.org"
