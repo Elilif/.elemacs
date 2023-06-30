@@ -71,10 +71,11 @@
 		  org-capture)
   (:option*
    org-special-ctrl-a/e t
-   org-modules '(ol-bbdb ol-bibtex ol-info)
+   org-modules '(ol-bibtex ol-info)
    org-indirect-buffer-display 'current-window
    org-export-preserve-breaks nil
-   org-adapt-indentation t
+   org-adapt-indentation nil
+   org-hide-leading-stars t
    org-blank-before-new-entry '((heading . nil)
                                 (plain-list-item . auto))
    org-fontify-quote-and-verse-blocks t
