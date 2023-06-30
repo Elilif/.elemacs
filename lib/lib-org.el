@@ -412,7 +412,11 @@ Throw an error when not in a list."
 
 (defun eli/add-done-note (arg)
   "Add log after an item is marked DONE."
-  (when (and eli/org-clock-marker
+  (when (and (marker-position eli/org-clock-marker)
+			 org-clock-out-when-done
+			 (< (point) eli/org-clock-marker)
+			 (> (org-with-wide-buffer (org-entry-end-position))
+				eli/org-clock-marker)
 			 (equal (plist-get arg :to) "DONE"))
 	(save-excursion
 	  (save-restriction
@@ -422,7 +426,7 @@ Throw an error when not in a list."
 		(org-add-log-setup
 		 'clock-out nil nil nil
 		 (concat "# Task: " (org-get-heading t) "\n\n"))
-		(setq eli/org-clock-marker nil)))))
+		(move-marker eli/org-clock-marker nil)))))
 
 
 ;; better list format
