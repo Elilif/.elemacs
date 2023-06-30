@@ -90,7 +90,7 @@
    org-use-fast-todo-selection 'expert
    org-log-note-clock-out t
    org-log-into-drawer t
-   org-log-done 'note
+   org-log-done 'time
    org-custom-properties '("CUSTOM_ID")
    org-startup-folded t
    org-hide-block-startup t
@@ -98,22 +98,23 @@
    org-startup-with-inline-images t
    org-footnote-auto-adjust t
    org-todo-keywords
-   (quote ((sequence "TODO(t/!)" "STARTED(s)" "|" "DONE(d)")
-		   (sequence "PROJECT(p)" "|" "DONE(d)" "CANCELLED(c@/!)")
+   (quote ((sequence "TODO(t/!)" "STARTED(s)" "|" "DONE(d!)")
+		   (sequence "PROJECT(p)" "|" "DONE(d!)" "CANCELLED(c@/!)")
 		   (sequence "WAITING(w@/!)" "NEXT(n!/!)"
                      "SOMEDAY(S)" "|" "CANCELLED(c@/!)")))
    org-ellipsis "▼")
   (:advice
    buffer-substring--filter :filter-return eli/unfill-string)
   (:hook
-   org-indent-mode
+   ;; org-indent-mode
    auto-fill-mode)
   (:bind 
    "<f8>" eli/rating
    "<f7>" eli/entry-rating
    "<f9>" eli/set-film-ratings
    "<f10>" eli/get-film-rating
-   "C-c C-l" ar/org-insert-link-dwim)
+   "C-c C-l" ar/org-insert-link-dwim
+   "M-[" org-media-note-hydra/body)
   (:global
    "C-c l" org-store-link
    "C-c c" org-capture))
@@ -338,8 +339,11 @@
    org-clock-mode-line-total 'today
    org-clock-out-remove-zero-time-clocks t
    org-clock-continuously t
-   org-clock-sound "~/.emacs.d/private/bellring.wav"
-   ))
+   org-clock-sound "~/.emacs.d/private/bellring.wav")
+  (:hooks
+   org-trigger-hook eli/add-done-note)
+  (:advice
+   org-clock-out-if-current :before eli/copy-org-clock-marker))
 
 ;;;; org-protocol
 (setup org-protocol

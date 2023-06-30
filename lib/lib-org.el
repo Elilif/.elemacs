@@ -404,6 +404,26 @@ Throw an error when not in a list."
 	 (progn (org-beginning-of-item) (point))
 	 (progn (org-end-of-item) (1- (point))))))
 
+(defvar eli/org-clock-marker nil)
+
+(defun eli/copy-org-clock-marker ()
+  "Copy current `org-clock-marker'."
+  (setq eli/org-clock-marker (copy-marker org-clock-marker)))
+
+(defun eli/add-done-note (arg)
+  "Add log after an item is marked DONE."
+  (when (and eli/org-clock-marker
+			 (equal (plist-get arg :to) "DONE"))
+	(save-excursion
+	  (save-restriction
+		(widen)
+		(goto-char eli/org-clock-marker)
+		(end-of-line)
+		(org-add-log-setup
+		 'clock-out nil nil nil
+		 (concat "# Task: " (org-get-heading t) "\n\n"))
+		(setq eli/org-clock-marker nil)))))
+
 
 ;; better list format
 ;; (defun org-list-struct-fix-bul (struct prevs)
