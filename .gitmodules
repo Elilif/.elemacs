@@ -282,6 +282,9 @@
 [submodule "org-download"]
 	path = site-lisp/org-download
 	url = https://github.com/abo-abo/org-download
+[submodule "org-heatmap"]
+	path = site-lisp/org-heatmap
+	url = https://github.com/Elilif/org-heatmap
 [submodule "org-media-note"]
 	path = site-lisp/org-media-note
 	url = https://github.com/yuchen-lea/org-media-note

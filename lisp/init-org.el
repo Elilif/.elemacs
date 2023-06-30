@@ -821,12 +821,11 @@
 
 ;;;; org-heatmap
 (setup org-heatmap
-  (:after org
-	(require 'org-heatmap)
+  (:after org-agenda
 	(org-heatmap-mode))
   (:with-feature org-agenda
 	(:bind-into org-agenda-mode-map
-	  "C" org-heatmap-habit-calendar)))
+	  [remap org-agenda-convert-date] org-heatmap-habit-calendar)))
 ;;;; provide
 (provide 'init-org)
 ;;; init-org.el ends here.
