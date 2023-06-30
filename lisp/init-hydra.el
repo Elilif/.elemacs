@@ -548,7 +548,8 @@
    (("r" quickrun "quickrun")
     ("s" quickrun-shell "quickrun shell")
     ("g" gdb "gdb")
-    ("c" compile))
+    ("c" compile)
+	("a" eli/helpful-remove-advice-i))
    ""
    (("t" toggle-debug-on-error)
     ("e" edebug-defun)

@@ -50,6 +50,66 @@ create new one."
                       (match-beginning 0) (match-end 0))
                      'face 'help-argument-name)))))
 
+;;; SRC:
+;;; https://gist.github.com/twlz0ne/f93debe098e0e39ebce5476b62c8ebbb#file-advice-remove-button-el
+(defun function-advices (function)
+  "Return FUNCTION's advices.
+Last-Updated 2022-06-29 00:01:07 +8000"
+  (let ((flist (indirect-function function)) advices)
+    (when (and (consp flist)
+               (or (eq 'macro (car flist))
+                   (and (autoloadp flist) (memq (nth 4 flist) '(macro t)))))
+      (setq flist (cdr flist)))
+    (while (advice--p flist)
+      (setq advices `(,@advices ,(advice--car flist)))
+      (setq flist (advice--cdr flist)))
+    advices))
+
+(defun helpful-remove-advice ()
+  "Add a button to remove advice.
+Based on @xuchunyang's work in https://emacs-china.org/t/advice/7566
+Last-Updated 2022-06-29 00:01:07 +8000"
+  (save-excursion
+    (goto-char (point-min))
+    (let* ((function helpful--sym)
+		   (ad-list (function-advices function)))
+      (while (re-search-forward "^\\(?:This \\(?:function\\|macro\\) has \\)?:[-a-z]+ advice: \\(.+\\)\\.?$" nil t)
+        (let* ((name (string-trim (match-string 1) "[‘'`]" "[’']"))
+               (symbol (intern-soft name))
+               (advice (or symbol (car ad-list))))
+          (when advice
+            (when symbol
+              (cl-assert (eq symbol (car ad-list))))
+            (let ((inhibit-read-only t))
+              (insert " » ")
+              (insert-text-button
+               "Remove"
+               'cursor-sensor-functions `((lambda (&rest _) (message "%s" ',advice)))
+               'help-echo (format "%s" advice)
+               'action
+               ;; In case lexical-binding is off
+               `(lambda (_)
+                  (when (yes-or-no-p (format "Remove %s ? " ',advice))
+                    (message "Removing %s of advice from %s" ',function ',advice)
+                    (advice-remove ',function ',advice)
+                    (helpful-update)))
+               'follow-link t))))
+        (setq ad-list (cdr ad-list))))))
+
+(defun eli/helpful-remove-advice-i (function)
+  "Select and remove an advice for FUNCTION."
+  (interactive (list (helpful--read-symbol
+					  "Callable: "
+					  (helpful--callable-at-point)
+					  #'fboundp)))
+  (let* ((ads (function-advices function))
+		 (ads-alist (mapcar (lambda (sexp) (cons (prin1-to-string sexp)
+												 (list sexp)))
+							ads))
+		 (ad (elemacs-completing-read "Select an advice: "
+									  ads-alist)))
+	(advice-remove function ad)))
+
 
 ;;;; provide
 (provide 'lib-helpful)

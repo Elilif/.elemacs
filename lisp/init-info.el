@@ -47,6 +47,7 @@
   (:option* helpful-max-buffers 2
             helpful-switch-buffer-function #'+helpful-switch-to-buffer)
   (:advice helpful--update-and-switch-buffer :after  helpful-set-arguments-face
+		   helpful-update :after helpful-remove-advice
 		   ;; remove `##' from functions list
 		   helpful--callable-at-point :before  (lambda (&rest _arg) (aset obarray 0 nil))))
 
