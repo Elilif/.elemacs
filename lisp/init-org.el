@@ -406,7 +406,7 @@
 ;;;; org-superstar
 (setup org-superstar
   (:option*
-   org-superstar-headline-bullets-list '("⦿" "⊚" "🞊" "𐰧" "🞅" "►" "▻")
+   org-superstar-headline-bullets-list '("⦿" "⌾" "⊚" "🞊" "►" "▻")
    org-superstar-prettify-item-bullets nil)
   (:hook-into org-mode))
 
