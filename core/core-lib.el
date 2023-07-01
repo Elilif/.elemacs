@@ -88,12 +88,24 @@ the _value_ of the choice, not the selected choice. "
 		choice))))
 
 
+(defun eli/delete-byte-compile-window-if-success (&rest _arg)
+  "Delete byte-compilation window if succeeded without warnings or errors."
+  (let ((buf (get-buffer byte-compile-log-buffer)))
+	(with-current-buffer buf
+	  (unless (re-search-forward "Warning\\|Error" nil t)
+		(when-let ((win (get-buffer-window buf)))
+		  (delete-window win))))))
+
 (defun auto-recompile-file-maybe ()
   (when (and (fboundp 'vc-root-dir)
 			 (string= (vc-root-dir) user-emacs-directory))
-	(byte-compile-file buffer-file-name)
-	(when (native-comp-available-p)
-	  (native-compile buffer-file-name))))
+	(if (native-comp-available-p)
+		(native-compile buffer-file-name)
+	  (byte-compile-file buffer-file-name))))
+
+(if (native-comp-available-p)
+	(advice-add 'native-compile :after #'eli/delete-byte-compile-window-if-success)
+  (advice-add 'byte-compile-file :after #'eli/delete-byte-compile-window-if-success))
 
 (defun add-after-save-hook ()
   (add-hook 'after-save-hook 'auto-recompile-file-maybe nil t))
