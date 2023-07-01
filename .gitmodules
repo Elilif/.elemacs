@@ -28,6 +28,14 @@
 [submodule "async"]
 	path = site-lisp/async
 	url = https://github.com/jwiegley/emacs-async
+[submodule "auctex"]
+	path = site-lisp/auctex
+	url = git@github.com:emacsmirror/auctex.git
+	info-path = doc  
+	build-step = ./autogen.sh
+	build-step = ./configure
+	build-step = make
+	build-step = sudo make install
 [submodule "autoscratch"]
 	path = site-lisp/autoscratch
 	url = https://github.com/TLINDEN/autoscratch
