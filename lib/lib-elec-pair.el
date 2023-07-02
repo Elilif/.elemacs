@@ -30,13 +30,27 @@
 
 ;;; Code:
 
+(defmacro eli/add-mode-pairs (hook pairs)
+  `(add-hook ,hook
+             (lambda ()
+               (setq-local electric-pair-pairs (append electric-pair-pairs ,pairs))
+               (setq-local electric-pair-text-pairs electric-pair-pairs))))
+
+(eli/add-mode-pairs 'org-mode-hook '((?/ . ?/)
+									 (?= . ?=)
+									 (?* . ?*)
+									 (?+ . ?+)
+									 (?~ . ?~)
+									 (?_ . ?_)))
+
 (defun eli/electric-pair-inhibit (char)
   (cond
    ((eq major-mode 'org-mode)
 	(or
 	 (eq (char-before (1- (point))) ?#)
-	 (and (fboundp #'texmathp)
-		  (texmathp))))
+	 (and (fboundp #'org-inside-LaTeX-fragment-p)
+		  (org-inside-LaTeX-fragment-p)
+		  (memq char '(?= ?/ ?* ?+ ?~)))))
    (t
 	(if electric-pair-preserve-balance
 		(electric-pair-inhibit-if-helps-balance char)

@@ -120,13 +120,8 @@
    electric-pair-pairs `(,electric-pair-pairs
 						 ("《" . "》")
 						 ("（" . "）")))
-  (:after org
-	(modify-syntax-entry ?/ "(/" org-mode-syntax-table)
-	(modify-syntax-entry ?* "(*" org-mode-syntax-table)
-	(modify-syntax-entry ?= "(=" org-mode-syntax-table)
-	(modify-syntax-entry ?+ "(+" org-mode-syntax-table)
-	(modify-syntax-entry ?_ "(_" org-mode-syntax-table)
-	(modify-syntax-entry ?~ "(~" org-mode-syntax-table))
+  (:after text-mode
+	(modify-syntax-entry ?` "(`" text-mode-syntax-table))
   (:hooks
    minibuffer-setup-hook electric-pair-mode))
 
