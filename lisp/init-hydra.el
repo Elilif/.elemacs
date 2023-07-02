@@ -549,7 +549,8 @@
     ("s" quickrun-shell "quickrun shell")
     ("g" gdb "gdb")
     ("c" compile)
-	("a" eli/helpful-remove-advice-i))
+	("a" eli/helpful-remove-advice-i)
+	("h" remove-hook))
    ""
    (("t" toggle-debug-on-error)
     ("e" edebug-defun)
@@ -559,8 +560,7 @@
     ("N" edebug-cancel-on-entry))
    "leetcode"
    (("k" eli/leetcode-kill-problems-buffer)
-    ("d" leetcode))
-   ))
+    ("d" leetcode))))
 
 (pretty-hydra-define hydra-rectangle
   (:color amaranth :exit t

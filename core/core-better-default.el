@@ -114,6 +114,8 @@
 
 (setq custom-file null-device)
 
+(keymap-global-set "C-c C-k" #'kill-buffer-and-window)
+
 ;; (setq scroll-conservatively 100)
 
 ;;;; hippie-expand
