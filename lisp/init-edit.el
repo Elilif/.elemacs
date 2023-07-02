@@ -155,15 +155,23 @@
 	(:hooks
 	 prog-mode-hook tempel-setup-capf
 	 org-mode-hook tempel-setup-capf
-	 ;; post-self-insert-hook my/tempel-try-expanding-auto-snippets
-	 ))
+	 lisp-data-mode-hook (lambda ()
+						   (setq-local completion-at-point-functions
+									   (cdr completion-at-point-functions)))))
   (:bind-into tempel-map
 	"<tab>" tempel-next
 	"C-<tab>" tempel-previous
 	"M-a" tempel-beginning
 	"M-e" tempel-end
 	"C-g" tempel-abort
-	"C-<return>" tempel-done))
+	"C-<return>" tempel-done)
+  (:with-feature org
+	(:bind-into org-mode-map
+	  "TAB" smarter-tab-to-expand))
+  (:global
+   "TAB" smarter-tab-to-expand)
+  (:advice
+   tempel--exit :override eli/tempel--exit))
 
 ;;;; electric-operator
 (setup electric-operator

@@ -30,6 +30,13 @@
 
 ;;; Code:
 
+(defun eli/tempel-expand ()
+  "Complete with CAPF."
+  (let ((completion-at-point-functions (list #'tempel-expand))
+		completion-cycle-threshold)
+	(tempel--save)
+	(completion-at-point)))
+
 (defun tempel-setup-capf ()
   ;; Add the Tempel Capf to `completion-at-point-functions'.
   ;; `tempel-expand' only triggers on exact matches. Alternatively use
@@ -39,14 +46,106 @@
   ;; `tempel-expand' *before* the main programming mode Capf, such
   ;; that it will be tried first.
   (setq-local completion-at-point-functions
-			  (cons #'tempel-complete
+			  (cons #'eli/tempel-expand
 					completion-at-point-functions)))
 
-(defun my/tempel-try-expanding-auto-snippets ()
-  (when (memq this-command '(org-self-insert-command
-                             self-insert-command))
-	(cl-letf (((symbol-function 'user-error) (lambda (&rest _args) nil)))
-      (call-interactively #'tempel-expand))))
+(defun eli/tempel--exit (templates region name status)
+  "Exit function for completion for template NAME and STATUS.
+TEMPLATES is the list of templates.
+REGION are the current region bounds."
+  (unless (eq status 'exact)
+    (when-let ((sym (intern-soft name))
+               (template (alist-get sym templates))
+			   (plist template))
+	  (while (and plist (not (keywordp (car plist))))
+		(pop plist))
+      (when (or (eval (plist-get plist :auto) 'lexical)
+				(eq this-command 'smarter-tab-to-expand))
+		(tempel--delete-word name)
+		(when tempel-trigger-prefix
+          (tempel--delete-word tempel-trigger-prefix))
+		(tempel--insert template region)))))
+
+(defvar smarter-tab-to-expand-in-use nil)
+
+(defun smarter-tab-to-expand ()
+  "Try to `org-cycle', `tempel-expand' at current cursor position.
+If all failed, try to complete the common part with `indent-for-tab-command'."
+  (interactive)
+  (if (and (not smarter-tab-to-expand-in-use)
+		   (featurep 'tempel))
+      (let ((old-point (point))
+			(old-tick (buffer-chars-modified-tick))
+			(func-list
+			 (if (equal major-mode 'org-mode) '(org-cycle tempel-expand tempel-next)
+               '(tempel-expand tempel-next))))
+		(catch 'func-suceed
+		  (setq smarter-tab-to-expand-in-use t)
+          (dolist (func func-list)
+			(ignore-errors (call-interactively func))
+			(unless (and (eq old-point (point))
+						 (eq old-tick (buffer-chars-modified-tick)))
+			  (setq smarter-tab-to-expand-in-use nil)
+              (throw 'func-suceed t)))
+		  (setq smarter-tab-to-expand-in-use nil)
+          (indent-for-tab-command)))
+	(indent-for-tab-command)))
+
+(defun eli/org-inside-LaTeX-fragment-p ()
+  (and (fboundp #'org-inside-LaTeX-fragment-p)
+	   (org-inside-LaTeX-fragment-p)))
+
+;; Try after every insertion
+(defvar eli/latex-smart-numerator t)
+
+(defun eli/latex-smart-kill ()
+  "Kill equations, numbers or something else before point in latex math mode.
+
+This function is dedicated for auto yasnippet expanding, for
+instance: \"$4\pi^2 //$\" will be expand into
+\"\\frac{4\pi^2}{*}\", and this function must be used with
+`eli/latex-smart-paste'."
+  (condition-case nil
+      (save-excursion
+        (let* ((orig-point (point))
+               (pre-sexp-point (progn
+                                 (backward-sexp)
+                                 (point)))
+               (bol (line-beginning-position))
+               (bound-before-target (re-search-backward "\s\\|\\\\(\\|\\$" bol t)))
+		  (setq eli/latex-smart-numerator t)
+          (cond
+           ((null bound-before-target)
+			(kill-region bol orig-point))
+           ((= (1- pre-sexp-point) bound-before-target)
+			(kill-region pre-sexp-point orig-point))
+           ((member (match-string 0) '(" " "$"))
+			(kill-region (1+ bound-before-target) orig-point))
+           ((string= (match-string 0) "\\(")
+			(kill-region (+ bound-before-target 2) orig-point)))))
+	(error (setq eli/latex-smart-numerator 'nil))))
+
+(defun eli/latex-smart-paste ()
+  "Paste text killed by `eli/latex-smart-kill'."
+  (if eli/latex-smart-numerator
+      (let ((temp (string-clean-whitespace (current-kill 0))))
+        (if (string-match "^(\\(.*\\))$" temp)
+            (match-string 1 temp)
+          temp))))
+
+;; C/C++ mode
+;; (defun eli/c-fun-has-namespace-p (namespace)
+;;   "Predicate whether the current function has NAMESPACE namespace."
+;;   (save-excursion
+;;     (c-beginning-of-defun)
+;;     (unless (re-search-forward
+;;              (concat "using namespace "
+;;                      namespace
+;;                      ";")
+;;              (save-excursion
+;;                (c-end-of-defun)
+;;                (point)) 'no-errer)
+;;       (concat namespace "::"))))
 
 
 ;;;; provide
