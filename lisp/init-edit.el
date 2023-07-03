@@ -105,12 +105,7 @@
   (:also-load
    lib-elec-pair)
   (:option*
-   electric-pair-inhibit-predicate #'eli/electric-pair-inhibit
-   electric-pair-pairs `(,electric-pair-pairs
-						 ("《" . "》")
-						 ("（" . "）")))
-  (:after text-mode
-	(modify-syntax-entry ?` "(`" text-mode-syntax-table))
+   electric-pair-inhibit-predicate #'eli/electric-pair-inhibit)
   (:hooks
    minibuffer-setup-hook electric-pair-mode))
 
