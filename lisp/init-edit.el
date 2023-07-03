@@ -41,10 +41,12 @@
 (setup super-save
   (:once (list :hooks 'find-file-hook)
     (:once (list :hooks 'post-self-insert-hook)
+	  (setq super-save-idle-duration 60)
 	  (super-save-mode)))
   (:option*
    super-save-auto-save-when-idle t
    super-save-triggers '(magit-status
+						 tab-bar-select-tab
                          ace-window
                          switch-to-buffer
                          other-window
@@ -59,25 +61,12 @@
                               focus-out-hook)
    super-save-remote-files nil
    super-save-predicates
-   '((lambda () buffer-file-name)
-     (lambda () (buffer-modified-p (current-buffer)))
-	 (lambda () (and (boundp 'org-noter-notes-mode)
-					 (not org-noter-notes-mode)))
-     (lambda () (file-writable-p buffer-file-name))
-     (lambda () (if (and super-save-max-buffer-size (> super-save-max-buffer-size 0))
-                    (< (buffer-size) super-save-max-buffer-size)
-                  t))
-     (lambda ()
-       (if (file-remote-p buffer-file-name) super-save-remote-files t))
-     (lambda () (super-save-include-p buffer-file-name))
-     (lambda ()
-       (not (or (and (functionp 'xenops-math-parse-algorithm-at-point)
-                     (xenops-math-parse-algorithm-at-point))
-                (and (functionp 'texmathp)
-                     (texmathp)))))))
-  
+   `(,@super-save-predicates
+	 (lambda ()
+	   (not (eq major-mode 'emacs-lisp-mode)))))
   (:advice super-save-command :override (lambda () (let ((inhibit-message t))
-													 (save-some-buffers t)))
+													 (when (super-save-p)
+													   (save-some-buffers t))))
 		   save-buffer :around suppress-messages))
 
 ;;;; mwim
