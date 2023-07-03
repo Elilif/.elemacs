@@ -52,12 +52,6 @@
   :version "30.0.50"
   :group 'tab-bar-faces)
 
-
-(defun eli/tab-bar-tab-space-face (tab)
-  (if (eq (car tab) 'current-tab)
-	  'tab-bar-tab-space-active
-	'tab-bar-tab-space-inactive))
-
 ;;;; tabspaces
 (defvar consult--source-workspace
   (list :name     "Workspace Buffers"
@@ -83,6 +77,22 @@
          ;; reset consult-buffer to show all buffers 
          (consult-customize consult--source-buffer :hidden nil :default t)
          (setq consult-buffer-sources (remove 'consult--source-workspace consult-buffer-sources)))))
+
+(defvar eli/tabspaces-kill-buffer-exclude '("*scratch*"))
+
+;;;###autoload
+(defun eli/tabspaces-kill-buffers-close-workspace ()
+  "Kill all buffers in the workspace and then close the workspace itself."
+  (interactive)
+  (if current-prefix-arg
+	  (let ((buf (tabspaces--buffer-list)))
+		(unwind-protect
+			(cl-loop for b in buf
+					 do (unless (member (buffer-name b)
+										eli/tabspaces-kill-buffer-exclude)
+						  (kill-buffer b)))
+		  (tab-bar-close-tab)))
+	(tab-bar-close-tab)))
 
 ;;;; provide
 (provide 'lib-tab-bar)
