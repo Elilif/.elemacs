@@ -227,8 +227,6 @@
 						   "* %<%H:%M> %?"
 						   :empty-lines 1
 						   :prepend t
-						   :clock-resume t
-						   :clock-in t
 						   )
 						  ("e" "Events" entry (file+function
 											   "~/Elilif.github.io/Eli's timeline.org"
@@ -258,7 +256,8 @@
 													(eli/org-capture-template-goto-today
 													 "TODO %Y-%m-%d [/]" 5 15 114)))
 						   "[ ] %(v-i-or-nothing-word)%?"
-						   :prepend t)
+						   :prepend t
+						   :immediate-finish t)
 						  ("f" "Français" entry (file "~/Dropbox/org/Français.org")
 						   "* TODO %u [/]\n%?"
 						   :jump-to-captured t)
@@ -313,7 +312,7 @@
 	(:option*
 	 org-confirm-babel-evaluate nil
 	 org-babel-default-header-args '((:session . "none")
-									 (:results . "output replace")
+									 (:results . "replace")
 									 (:exports . "code")
 									 (:cache . "no")
 									 (:noweb . "no")
@@ -507,7 +506,9 @@
 ;;;; org-appear-mode
 (setup org-appear
   (:hook-into
-   org-mode))
+   org-mode)
+  (:option*
+   org-appear-delay 0.1))
 
 ;;;; org-download
 (setup org-download
