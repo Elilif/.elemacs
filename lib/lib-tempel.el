@@ -30,6 +30,22 @@
 
 ;;; Code:
 
+(defun tempel-include (elt)
+  (when (eq (car-safe elt) 'i)
+    (if-let (template (alist-get (cadr elt) (tempel--templates)))
+        (cons 'l template)
+	  (message "Template %s not found" (cadr elt))
+      nil)))
+
+(add-to-list 'tempel-user-elements #'tempel-include)
+
+(defun eli/abbrev--case-fixed (args)
+  (when (length= args 3)
+	(setq args (append args '(nil))))
+  (plist-put args :case-fixed t)
+  args)
+(advice-add 'define-abbrev :filter-args #'eli/abbrev--case-fixed)
+
 (defun eli/tempel-expand ()
   "Complete with CAPF."
   (let ((completion-at-point-functions (list #'tempel-expand))
@@ -65,6 +81,42 @@ REGION are the current region bounds."
 		(when tempel-trigger-prefix
           (tempel--delete-word tempel-trigger-prefix))
 		(tempel--insert template region)))))
+
+(defun eli/bounds-of-thing-at-point (thing)
+  (let* ((bounds (bounds-of-thing-at-point thing))
+		 (a (car bounds))
+		 (b (cdr bounds))
+		 a-r b-r)
+	(when bounds
+	  (save-excursion
+		(goto-char a)
+		(setq b-r (or (1- (re-search-forward " \\|$" (line-end-position) t)) 0)))
+	  (save-excursion
+		(goto-char b)
+		(setq a-r (or (1+ (re-search-backward "^\\| " (line-beginning-position) t)) 0)))
+	  (cons (min a-r a)
+			(max b-r b)))))
+
+(defun eli/tempel--get-prefix-bounds ()
+  (let* ((beg (save-excursion
+				(re-search-backward " "
+									(line-beginning-position) 'noerror)))
+		 (beg (if beg (1+ beg) (line-beginning-position))))
+	(cons beg (point))))
+
+(defun tempel--prefix-bounds ()
+  "Return prefix bounds."
+  (if tempel-trigger-prefix
+      (let ((end (point))
+            (beg (save-excursion
+                   (search-backward tempel-trigger-prefix
+                                    (line-beginning-position) 'noerror))))
+        (when (and beg (save-excursion
+                         (not (re-search-backward "\\s-" beg 'noerror))))
+          (cons (+ beg (length tempel-trigger-prefix)) end)))
+    ;; (eli/bounds-of-thing-at-point 'symbol)
+	(eli/tempel--get-prefix-bounds)))
+
 
 (defvar smarter-tab-to-expand-in-use nil)
 
