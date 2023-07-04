@@ -95,43 +95,37 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
   (and (fboundp #'org-inside-LaTeX-fragment-p)
 	   (org-inside-LaTeX-fragment-p)))
 
-;; Try after every insertion
-(defvar eli/latex-smart-numerator t)
+(defun eli/tempel-get-tex-object ()
+  "Get tex object before point."
+  (save-excursion
+	(pcase (progn
+			 (skip-chars-backward " \t" (line-beginning-position))
+			 (char-before))
+	  ((or ?\) ?\])
+	   (backward-sexp)
+	   (point))
+	  (?\}
+	   (cl-loop do (backward-sexp)
+				while (= (char-before) ?\}))
+	   (or (save-excursion
+			 (re-search-backward "\\\\" (line-beginning-position) 'noerror))
+		   (point)))
+	  ((pred (lambda (char)
+			   (not (memq char '(?\C-j)))))
+	   (backward-word)
+	   (point)))))
 
-(defun eli/latex-smart-kill ()
-  "Kill equations, numbers or something else before point in latex math mode.
+(defun eli/tempel-tex-smart-kill ()
+  (when-let* ((beg (eli/tempel-get-tex-object))
+			  (end (point)))
+	(kill-region beg end)))
 
-This function is dedicated for auto yasnippet expanding, for
-instance: \"$4\pi^2 //$\" will be expand into
-\"\\frac{4\pi^2}{*}\", and this function must be used with
-`eli/latex-smart-paste'."
-  (condition-case nil
-      (save-excursion
-        (let* ((orig-point (point))
-               (pre-sexp-point (progn
-                                 (backward-sexp)
-                                 (point)))
-               (bol (line-beginning-position))
-               (bound-before-target (re-search-backward "\s\\|\\\\(\\|\\$" bol t)))
-		  (setq eli/latex-smart-numerator t)
-          (cond
-           ((null bound-before-target)
-			(kill-region bol orig-point))
-           ((= (1- pre-sexp-point) bound-before-target)
-			(kill-region pre-sexp-point orig-point))
-           ((member (match-string 0) '(" " "$"))
-			(kill-region (1+ bound-before-target) orig-point))
-           ((string= (match-string 0) "\\(")
-			(kill-region (+ bound-before-target 2) orig-point)))))
-	(error (setq eli/latex-smart-numerator 'nil))))
-
-(defun eli/latex-smart-paste ()
+(defun eli/tempel-tex-smart-paste ()
   "Paste text killed by `eli/latex-smart-kill'."
-  (if eli/latex-smart-numerator
-      (let ((temp (string-clean-whitespace (current-kill 0))))
-        (if (string-match "^(\\(.*\\))$" temp)
-            (match-string 1 temp)
-          temp))))
+  (let ((temp (string-clean-whitespace (current-kill 0))))
+	(if (string-match "^(\\(.*\\))$" temp)
+		(match-string 1 temp)
+	  temp)))
 
 ;; C/C++ mode
 ;; (defun eli/c-fun-has-namespace-p (namespace)
