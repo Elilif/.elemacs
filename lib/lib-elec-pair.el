@@ -140,7 +140,8 @@ The decision is taken by order of preference:
 	 (eq (char-before (1- (point))) ?#)
 	 (and (fboundp #'org-inside-LaTeX-fragment-p)
 		  (org-inside-LaTeX-fragment-p)
-		  (member char '(?/ ?= ?* ?+ ?~ ?_)))))
+		  (member char '(?/ ?= ?* ?+ ?~ ?_)))
+	 (not (member (char-before (1- (point))) '(?\ ?\t)))))
    (t
 	(if electric-pair-preserve-balance
 		(electric-pair-inhibit-if-helps-balance char)
