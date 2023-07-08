@@ -89,7 +89,7 @@
    org-id-link-to-org-use-id 'create-if-interactive
    org-id-locations-file "~/.emacs.d/var/org/.org-id-locations"
    org-use-fast-todo-selection 'expert
-   org-log-note-clock-out t
+   org-log-note-clock-out nil
    org-log-into-drawer t
    org-log-done 'time
    org-custom-properties '("CUSTOM_ID")
@@ -340,10 +340,8 @@
    org-clock-out-remove-zero-time-clocks t
    org-clock-continuously t
    org-clock-sound "~/.emacs.d/private/bellring.wav")
-  (:hooks
-   org-trigger-hook eli/add-done-note)
   (:advice
-   org-clock-out-if-current :before eli/copy-org-clock-marker))
+   org-clock-out :around eli/org-add-log-note))
 
 ;;;; org-protocol
 (setup org-protocol

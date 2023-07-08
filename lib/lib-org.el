@@ -404,30 +404,20 @@ Throw an error when not in a list."
 	 (progn (org-beginning-of-item) (point))
 	 (progn (org-end-of-item) (1- (point))))))
 
-(defvar eli/org-clock-marker nil)
-
-(defun eli/copy-org-clock-marker ()
-  "Copy current `org-clock-marker'."
-  (setq eli/org-clock-marker (copy-marker org-clock-marker)))
-
-(defun eli/add-done-note (arg)
-  "Add log after an item is marked DONE."
-  (when (and (marker-position eli/org-clock-marker)
-			 org-clock-out-when-done
-			 (< (point) eli/org-clock-marker)
-			 (> (org-with-wide-buffer (org-entry-end-position))
-				eli/org-clock-marker)
-			 (equal (plist-get arg :to) "DONE"))
-	(save-excursion
-	  (save-restriction
-		(widen)
-		(goto-char eli/org-clock-marker)
-		(end-of-line)
-		(org-add-log-setup
-		 'clock-out nil nil nil
-		 (concat "# Task: " (org-get-heading t) "\n\n"))
-		(move-marker eli/org-clock-marker nil)))))
-
+(defun eli/org-add-log-note (orig &rest args)
+  (let* ((marker (copy-marker org-clock-marker))
+		 (buffer (marker-buffer marker))
+		 (pos (marker-position marker)))
+	(apply orig args)
+	(with-current-buffer buffer
+	  (org-with-point-at pos
+		(let* ((hd (nth 4 (org-heading-components)))
+			   (prompt (concat "# Insert note for stopped clock."
+							   "\n# Task: " hd "\n"))
+			   (log (read-string-from-buffer prompt "")))
+		  (unless (string-empty-p log)
+			(end-of-line)
+			(insert (format "\n- %s" log))))))))
 
 ;; better list format
 ;; (defun org-list-struct-fix-bul (struct prevs)
