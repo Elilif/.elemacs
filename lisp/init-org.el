@@ -72,6 +72,11 @@
   (:option*
    org-special-ctrl-a/e t
    org-modules '(ol-bibtex ol-info)
+   org-fold-show-context-detail '((empty-headline . minimal)
+								  (agenda . tree)
+								  (bookmark-jump . lineage)
+								  (isearch . lineage)
+								  (default . ancestors))
    org-indirect-buffer-display 'current-window
    org-export-preserve-breaks nil
    org-adapt-indentation nil
@@ -565,11 +570,6 @@
   (:iload org-anki)
   (:also-load lib-org-anki)
   (:option*
-   org-fold-show-context-detail '((empty-headline . minimal)
-								  (agenda . lineage)
-								  (bookmark-jump . lineage)
-								  (isearch . lineage)
-								  (default . ancestors))
    org-anki-default-deck "Default"
    org-anki-default-match "+LEVEL=2"
    org-anki-model-fields '(("Basic" "Front" "Back")
