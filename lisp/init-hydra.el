@@ -148,7 +148,8 @@
    ))
 
 (pretty-hydra-define hydra-puni
-  (:color amaranth :exit t :quit-key "q")
+  (:color amaranth :exit t
+		  :quit-key "q" :idle 2)
   (""
    (("k" puni-squeeze)
 	("r" puni-raise)
@@ -481,7 +482,8 @@
   ("Input"
    (("s" eli/input-switch "switch input")
     ("k" eli/insert-key-sequence "insert key sequence")
-	("w" whisper-run))
+	("w" whisper-run)
+	("t" eli/org-table-create "matrices"))
    "Yank"
    (("p" consult-yank-pop "Clipboard"))
    "Emoji & Pic"
@@ -490,9 +492,7 @@
     ("m" eli/select-images "images"))
    "LaTeX"
    (("l" mathpix-screenshot "mathpix")
-    ("r" eli/org-ref-insert-ref-link "insert org ref")
-    ("x" eli/LaTeX-swap-display-math "swap display math")
-    ("L" xenops-mode "xenops mode"))))
+    ("r" eli/org-ref-insert-ref-link "insert org ref"))))
 
 (pretty-hydra-define hydra-player
   (:color amaranth :exit t :quit-key "q"
