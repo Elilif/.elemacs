@@ -30,6 +30,10 @@
 
 ;;; Code:
 
+(defun eli/org-fold--reveal-outline-maybe (orig &rest args)
+  (unless (<= (cdar args) (- (point) 2))
+	(apply orig args)))
+
 ;; prevent org emphases from being split by `fill-paragraph'.
 (defun eli/adjust-line-break-point (linebeg)
   (let* ((re "\\([-[:space:]('\"{[:nonascii:]]\\|^\\)\\([~=*/_+]\\)\\(?:[^ ~=*/_+].*?\\|[^ ~=*/_+].*?\n.+?\\)[~=*/_+]")
