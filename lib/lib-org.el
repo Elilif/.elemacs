@@ -116,8 +116,7 @@ Assume point is at first MARK."
                           (forward-char 1)
                           (get-pos-property (point) 'org-emphasis)))
                    ;; Do not match in latex fragments.
-                   (not (when (functionp 'texmathp)
-						  (texmathp)))
+                   (not (org-inside-LaTeX-fragment-p))
                    (not (when (functionp 'xenops-math-parse-algorithm-at-point)
                           (xenops-math-parse-algorithm-at-point)))
                    ;; Do not match in Drawer.

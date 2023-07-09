@@ -338,6 +338,10 @@
 								   (racket . t)
 								   (jupyter . t)))))
 
+(setup org-src
+  (:option*
+   org-src-block-faces '(("latex" (:background "#F5F5F5" :inherit fixed-pitch :extend t)))))
+
 ;;;; org-clock
 (setup org-clock
   (:option*
@@ -592,7 +596,7 @@
   (:once (list :before 'org-self-insert-command)
 	(require 'ox-latex))
   (:option*
-   org-highlight-latex-and-related nil
+   org-highlight-latex-and-related '(native script entities)
    ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
    org-entities-user '(("ws" "\\ " nil " " " " " " " "))
    org-latex-prefer-user-labels t
@@ -629,7 +633,8 @@
    org-latex-minted-options '(("breaklines")
                               ("bgcolor" "bg"))
    org-latex-compiler "xelatex"
-   org-latex-packages-alist '(("" "amsthm")
+   org-latex-packages-alist '(("" "amsmath")
+							  ("" "amsthm")
 							  ("" "amsfonts")
 							  ("" "tikz")
 							  ("" "xcolor" t)
