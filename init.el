@@ -187,7 +187,8 @@
   (:once (list :before 'hydra-org-agenda/body 'hydra-org/body
 			   'citar-open
 			   :packages 'org)
-	(require 'init-org)))
+	(require 'init-org)
+	(require 'init-tex)))
 
 (setup init-vc
   (:iload init-vc)
