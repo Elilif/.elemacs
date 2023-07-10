@@ -838,6 +838,10 @@
   (:with-feature org-agenda
 	(:bind-into org-agenda-mode-map
 	  [remap org-agenda-convert-date] org-heatmap-habit-calendar)))
+;;;; org-matable
+(setup org-matable
+  (:after org
+	(require 'org-matable)))
 ;;;; provide
 (provide 'init-org)
 ;;; init-org.el ends here.

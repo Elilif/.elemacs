@@ -483,7 +483,7 @@
    (("s" eli/input-switch "switch input")
     ("k" eli/insert-key-sequence "insert key sequence")
 	("w" whisper-run)
-	("t" eli/org-table-create "matrices"))
+	("t" org-matable-create "matrices"))
    "Yank"
    (("p" consult-yank-pop "Clipboard"))
    "Emoji & Pic"

@@ -179,6 +179,22 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
 		(match-string 1 temp)
 	  temp)))
 
+(defun eli/tempel-quick-array ()
+  (let* ((bound (save-excursion
+				  (forward-line -1)
+				  (line-beginning-position)))
+		 (count (save-excursion
+				  (re-search-backward "\\\\begin{array}{\\(.*?\\)}"
+									  bound
+									  'noerror)
+				  (count-matches "[lcrp]" (match-beginning 1) (match-end 1)))))
+	
+	(if (> count 0)
+		(org-matable-create
+		 (number-to-string count)
+		 t)
+	  (org-matable-create))))
+
 ;; C/C++ mode
 ;; (defun eli/c-fun-has-namespace-p (namespace)
 ;;   "Predicate whether the current function has NAMESPACE namespace."

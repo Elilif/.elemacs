@@ -422,67 +422,6 @@ Throw an error when not in a list."
 			(end-of-line)
 			(insert (format "\n- %s" log))))))))
 
-;;; SRC: https://github.com/karthink/lazytab/tree/master
-(defun lazytab-orgtbl-to-amsmath (table params)
-  (orgtbl-to-generic
-   table
-   (org-combine-plists
-    '(:splice t
-			  :lstart ""
-			  :lend " \\\\"
-			  :sep " & "
-			  :hline nil
-			  :llend "")
-    params)))
-
-;;;###autoload
-(defun lazytab-orgtbl-replace (_)
-  (interactive "P")
-  (save-excursion
-	(goto-char (org-table-begin))
-	(let* ((table (org-table-to-lisp))
-		   (params '(:backend latex :raw t))
-		   (replacement-table
-			(if (texmathp)
-				(lazytab-orgtbl-to-amsmath table params)
-			  (orgtbl-to-latex table params))))
-	  (kill-region (org-table-begin) (org-table-end))
-	  (open-line 1)
-	  (push-mark)
-	  (insert replacement-table)
-	  (align-regexp (region-beginning) (region-end) "\\(\\s-*\\) &" 1 0 t)
-	  (setq eli/smarter-tab-commands
-			(remove 'org-table-next-field eli/smarter-tab-commands))
-	  (advice-remove #'org-ctrl-c-ctrl-c #'lazytab-orgtbl-replace))))
-
-;;;###autoload
-(defun eli/org-table-create (&optional size)
-  "Query for a size and insert a table skeleton.
-SIZE is a string Rows x Columns like for example \"3x2\"."
-  (interactive "P")
-  (unless size
-    (setq size (read-string
-				(concat "Table size Rows x Columns [e.g. "
-						org-table-default-size "]: ")
-				"" nil org-table-default-size)))
-  (let* ((pos (point))
-		 (indent (make-string (current-column) ?\ ))
-		 (split (org-split-string size " *x *"))
-		 (columns (string-to-number (nth 1 split)))
-		 (rows (string-to-number (car split)))
-		 (line (concat (apply 'concat indent "|" (make-list columns "  |"))
-					   "\n")))
-    (if (string-match "^[ \t]*$" (buffer-substring-no-properties
-                                  (line-beginning-position) (point)))
-		(beginning-of-line 1)
-      (newline))
-    (dotimes (_ rows) (insert line))
-	(delete-line)
-    (goto-char pos)
-    (org-table-align))
-  (add-to-list 'eli/smarter-tab-commands 'org-table-next-field)
-  (advice-add 'org-ctrl-c-ctrl-c :before #'lazytab-orgtbl-replace))
-
 ;;;; provide
 (provide 'lib-org)
 ;;; lib-org.el ends here.
