@@ -89,14 +89,8 @@
            "M-`" #'popper-cycle
            "C-M-`" #'popper-toggle-type)
   (:option* popper-reference-buffers '("scratch\\*"
-                                       "Output\\*$"
-                                       "\\*Async Shell Command\\*"
-                                       "\\*Xenops-Doctor\\*"
                                        "\\*Emms\\*.*"
-                                       "\\*Org LATEX Export\\*"
-									   "\\*Pp Macroexpand Output\\*"
-                                       emms-browser-mode
-                                       compilation-mode)
+                                       emms-browser-mode)
             popper-mode-line t
             popper-echo-dispatch-keys '("0" "1" "2" "3" "4" "5" "6" "7" "8" "9")
             popper-display-control nil)
@@ -118,7 +112,6 @@
 			                ("*WordNut*" :select t :align right :size 0.4)
 			                ("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
 			                (emms-browser-mode :select t :align right :size 0.5)
-							(emacs-lisp-compilation-mode :ignore t)
 			                (org-agenda-mode :select t)
 			                ("*Org Select*" :select t :align right :size 0.3)
 							("*Reconcile*" :select t :align right :size 0.5))))
@@ -146,7 +139,7 @@
   (:autoload cal-china-x-setup)
   (:after calendar
     (cal-china-x-setup))
-  (:option* calendar-mark-holidays-flag t
+  (:option* calendar-mark-holidays-flag nil
             cal-china-x-important-holidays cal-china-x-chinese-holidays
             cal-china-x-general-holidays '((holiday-lunar 1 15 "元宵节")
                                            (holiday-lunar 7 7 "七夕节")
@@ -232,6 +225,7 @@
   (:iload gptel)
   (:also-load
    lib-gptel)
+  (:autoload gptel-mode)
   (:init
    (add-to-list 'auto-mode-alist '("\\.chat\\'" . org-mode)))
   (:when-loaded
@@ -250,7 +244,7 @@
    gptel-default-mode 'org-mode
    gptel-temperature 0.7
    gptel-prompt-prefix-alist `((markdown-mode . "### ")
-							   (org-mode . ,(concat (make-string 125 ?\-) "\n"))
+							   (org-mode . ,(concat (make-string 110 ?\-) "\n"))
 							   (text-mode . "### "))
    gptel-directives '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
 					  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
@@ -412,7 +406,7 @@
 								("#" autoscratch-select
 								 '(("python" python-mode)
 								   ("shell" shell-script-mode)))
-								("[*-a-zA-Z0-9]" org-mode)
+								("\\cc\\|[\"*-a-zA-Z0-9]" org-mode)
 								("/" c-mode)
 								("." fundamental-mode)))
   (:advice
@@ -422,15 +416,15 @@
    [remap yank] eli/autoscratch--yank))
 
 ;;;; beacon
-(setup beacon
-  (:once (list :before
-			   'scroll-up-command 'scroll-down-command)
-	(beacon-mode))
-  (:option*
-   beacon-blink-delay 0.1
-   beacon-blink-duration 0.2
-   beacon-blink-when-window-changes nil
-   beacon-blink-when-buffer-changes nil))
+;; (setup beacon
+;;   (:once (list :before
+;; 			   'scroll-up-command 'scroll-down-command)
+;; 	(beacon-mode))
+;;   (:option*
+;;    beacon-blink-delay 0.1
+;;    beacon-blink-duration 0.2
+;;    beacon-blink-when-window-changes nil
+;;    beacon-blink-when-buffer-changes nil))
 ;;;; provide
 (provide 'init-misc)
 ;;; init-misc.el ends here.
