@@ -55,6 +55,7 @@
 	"v" +pdf-keyboard-select-region
 	"O" pdf-occur)
   (:hooks pdf-tools-enabled-hook pdf-view-auto-slice-minor-mode
+		  pdf-tools-enabled-hook pdf-cache-prefetch-minor-mode
 		  pdf-tools-enabled-hook pdf-isearch-minor-mode))
 
 (setup pdf-view-pagemark
