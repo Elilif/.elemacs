@@ -302,6 +302,10 @@
   (:with-map emacs-lisp-compilation-mode-map
 	(:bind
 	 "q" kill-buffer-and-window)))
+;;;; abbrev
+(setup abbrev
+  (:hook-into
+   minibuffer-setup-hook))
 ;;;; midnight
 ;; (setup midnight
 ;;   (once (list :before 'eli/consult-buffer)
