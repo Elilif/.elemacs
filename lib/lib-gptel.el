@@ -92,7 +92,9 @@
 			(and max-entries (cl-decf max-entries))))
 		(cons (list :role "system"
 					:content (if (and pm (< (point-min) pm))
-								 (buffer-substring-no-properties (point-min) (1- pm))
+								 (let ((head (buffer-substring-no-properties (point-min) (- pm 2))))
+								   (or (gethash head gptel--crowdsourced-prompts)
+									   head))
 							   gptel--system-message))
 			  prompts)))))
 
@@ -122,6 +124,34 @@
     (gptel--update-header-line " Waiting..." 'warning)))
 
 ;;;###autoload
+(defun eli/gptel--read-crowdsourced-prompt ()
+  "Pick a crowdsourced system prompt for gptel.
+
+This uses the prompts in the variable
+`gptel--crowdsourced-prompts', which see."
+  (interactive)
+  (if (not (hash-table-empty-p (gptel--crowdsourced-prompts)))
+      (let ((choice
+             (completing-read
+              "Pick and edit prompt: "
+              (lambda (str pred action)
+                (if (eq action 'metadata)
+                    `(metadata
+                      (affixation-function .
+										   (lambda (cands)
+											 (mapcar
+											  (lambda (c)
+												(list c ""
+													  (concat (propertize " " 'display '(space :align-to 22))
+															  " " (propertize (gethash c gptel--crowdsourced-prompts)
+																			  'face 'completions-annotations))))
+											  cands))))
+                  (complete-with-action action gptel--crowdsourced-prompts str pred)))
+              nil t)))
+        (insert choice))
+    (message "No prompts available.")))
+
+;;;###autoload
 (defun eli/gptel-close ()
   "Close current gptel posframe."
   (interactive)
@@ -131,12 +161,19 @@
 	  (eli/gptel-posframe-toggle))))
 
 ;;;###autoload
-(defun eli/gptel-clean ()
+(defun eli/gptel-clean (arg)
   "Clean the content of a conversation."
-  (interactive)
-  (let ((beg (save-excursion
-			   (goto-char (point-min))
-			   (search-forward (alist-get 'org-mode gptel-prompt-prefix-alist)))))
+  (interactive "P")
+  (let* ((pos (if arg (point-min) (point-max)))
+		 (prompt (gptel-prompt-string))
+		 (string (if arg
+					 prompt
+				   (concat "\n" (string-limit prompt (/ (length prompt) 2)) "\n")))
+		 (beg (save-excursion
+				(goto-char pos)
+				(if arg
+					(search-forward string)
+				  (search-backward string)))))
 	(delete-region beg (point-max))))
 
 (defun eli/gptel-query-get-from-region ()
@@ -342,12 +379,22 @@ reading RSS."
   "Hidehandler used by `eli/gptel-posframe-toggle'."
   (not (eq (selected-frame) eli/gptel--posframe)))
 
+(defun eli/posframe-poshandler-frame-center (info)
+  "Posframe's position handler."
+  (cons (/ (- (plist-get info :parent-frame-width)
+              (plist-get info :posframe-width))
+           2)
+        (round (/ (- (plist-get info :parent-frame-height)
+					 (plist-get info :posframe-height))
+				  3.5))))
+
 (defun eli/gptel-make-posframe-maybe (prefix)
   (unless (and eli/gptel--posframe
 			   (frame-live-p eli/gptel--posframe)
 			   (not prefix)
-			   (eq (floor (/ (frame-width eli/gptel--posframe) 0.62))
-				   (frame-width)))
+			   (<= (abs (- (floor (/ (frame-width eli/gptel--posframe) 0.62))
+						   (frame-width)))
+				   1))
 	(let* ((width  (round (* (frame-width) 0.62)))
 		   (height (round (* (frame-height) 0.62)))
 		   (buffer-name-or-name (elemacs-completing-read "Select a conversation: "
@@ -357,8 +404,8 @@ reading RSS."
 					 (eli/gptel-create-conversation buffer-name-or-name))))
 	  (setq eli/gptel--posframe (posframe-show
 								 buffer
-								 :poshandler #'posframe-poshandler-frame-center
-								 :hidehandler #'eli/gptel-posframe-hidehandler
+								 :poshandler #'eli/posframe-poshandler-frame-center
+								 ;; :hidehandler #'eli/gptel-posframe-hidehandler
 								 :width width
 								 :height height
 								 :border-width 2
