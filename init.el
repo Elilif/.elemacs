@@ -197,8 +197,7 @@
 
 (setup init-lang
   (:iload init-lang)
-  (:once (list :hooks 'find-file-hook 
-			   :before 'consult-recent-file 'consult-dir 'consult-bookmark)
+  (:once (list :before 'consult-recent-file 'consult-dir 'consult-bookmark)
 	(require 'init-lang)))
 
 (setup init-news
