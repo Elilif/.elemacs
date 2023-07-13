@@ -43,12 +43,13 @@
 	(require 'lib-magit)
 	(:hooks
 	 git-rebase-mode-hook eli/magit-reverse-rebase-commits))
-  (:iload* magit)
+  (:iload magit)
   (:once (list :before 'magit-auto-revert-mode--init-kludge)
 	(:option magit-no-message '("Turning on magit-auto-revert-mode...")))  
   (:option* magit-display-buffer-function     'magit-display-buffer-fullframe-status-v1
 			magit-clone-default-directory      (expand-file-name (expand-file-name "src/Clone/" (getenv "HOME")))
 			magit-clone-set-remote.pushDefault t
+			magit-status-margin '(t age magit-log-margin-width nil 18)
 			git-commit-summary-max-length      50
 			git-commit-fill-column             72
 			git-commit-finish-query-functions '(my-git-commit-check-style-conventions
@@ -65,7 +66,7 @@
 
 ;;;; forge
 (setup forge
-  (:iload* forge)
+  (:iload forge)
   (:with-feature magit
     (:also-load forge))
   (:init

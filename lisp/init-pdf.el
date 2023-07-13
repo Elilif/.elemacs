@@ -40,7 +40,7 @@
   (require 'lib-nov))
 
 (setup pdf-tools
-  (:iload* pdf-tools)
+  (:iload pdf-tools)
   (:init
    (pdf-loader-install))
   (:also-load

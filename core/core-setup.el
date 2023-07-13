@@ -39,6 +39,7 @@
 (require 'setup)
 (require 'once-setup)
 
+
 
 ;;;; setup
 ;;;  custom local variables
@@ -48,26 +49,26 @@
   :documentation "Load packages incrementally.")
 
 
-(defmacro epkg-get-subpkgs (pkg)
-  "Get sub-package list from epkg."
-  (let* ((name (symbol-name pkg))
-		 (provided (thread-last
-					 (oref (epkg name) provided)
-					 (mapcar (lambda (x) (car x)))))
-		 (no-byte-compile (thread-last
-							(borg-get-all name "no-byte-compile")
-							(mapcar (lambda (x) (file-name-base x))))))
-	`',(cl-remove-if (lambda (x) (let ((name (symbol-name x)))
-								   (or (string-match-p "test" name)
-									   (member name no-byte-compile))))
-					 provided)))
+;; (defmacro epkg-get-subpkgs (pkg)
+;;   "Get sub-package list from epkg."
+;;   (let* ((name (symbol-name pkg))
+;; 		 (provided (thread-last
+;; 					 (oref (epkg name) provided)
+;; 					 (mapcar (lambda (x) (car x)))))
+;; 		 (no-byte-compile (thread-last
+;; 							(borg-get-all name "no-byte-compile")
+;; 							(mapcar (lambda (x) (file-name-base x))))))
+;; 	`',(cl-remove-if (lambda (x) (let ((name (symbol-name x)))
+;; 								   (or (string-match-p "test" name)
+;; 									   (member name no-byte-compile))))
+;; 					 provided)))
 
-(setup-define :iload*
-  (lambda (body)
-	`(once (list :packages 'epkg)
-	   (elemacs-load-packages-incrementally
-		(epkg-get-subpkgs ,body))))
-  :documentation "Load packages incrementally.")
+;; (setup-define :iload*
+;;   (lambda (body)
+;; 	`(once (list :packages 'epkg)
+;; 	   (elemacs-load-packages-incrementally
+;; 		(epkg-get-subpkgs ,body))))
+;;   :documentation "Load packages incrementally.")
 
 
 (setup-define :silence
@@ -141,6 +142,12 @@ loaded."
   :ensure '(nil nil func)
   :repeatable t)
 
+
+;;;; epkg
+(setup epkg
+  (:iload epkg)
+  (:option* epkg-repository "~/.emacs.d/var/epkgs/"))
+
 ;;;; borg
 (defun elemacs/borg-clean (clone)
   (let* ((path (borg--expand-load-path clone nil))
@@ -158,12 +165,6 @@ loaded."
    borg-compile-function #'borg-byte+native-compile-async)
   (:when-loaded
     (advice-add 'borg-clean :after #'elemacs/borg-clean)))
-
-
-;;;; epkg
-(setup epkg
-  (:iload epkg)
-  (:option* epkg-repository "~/.emacs.d/var/epkgs/"))
 
 ;;;; provide
 (provide 'core-setup)

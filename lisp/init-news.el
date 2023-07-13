@@ -49,7 +49,7 @@
    visual-fill-column-extra-text-width nil))
 ;;;; elfeed
 (setup elfeed
-  (:iload* elfeed)
+  (:iload elfeed)
   (:when-loaded
 	(require 'lib-elfeed))
   (:hooks elfeed-show-mode-hook visual-fill-column-mode
@@ -94,7 +94,7 @@
 
 ;;;; elfeed googdies
 (setup elfeed-goodies
-  (:iload* elfeed-goodies)
+  (:iload elfeed-goodies)
   (:after elfeed
 	(elfeed-goodies/setup)
 	(setq elfeed-show-entry-switch #'pop-to-buffer
@@ -107,7 +107,7 @@
 		   (lambda () (keymap-set elfeed-show-mode-map "M-v" #'scroll-down-command))))
 ;;;; Mu4e
 (setup mu4e
-  (:iload* mu4e)
+  (:iload mu4e)
   (:also-load lib-mu4e)
   (:hooks mu4e-view-mode-hook visual-fill-column-mode
 		  mu4e-view-mode-hook hide-mode-line-mode)

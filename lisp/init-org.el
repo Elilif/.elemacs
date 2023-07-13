@@ -422,7 +422,7 @@
 
 ;;;; org-roam
 (setup org-roam
-  (:iload* org-roam)
+  (:iload org-roam)
   (:also-load lib-org-roam)
   (:also-load org-roam-headline)
   (:option*
@@ -522,7 +522,7 @@
 
 ;;;; org-download
 (setup org-download
-  (:iload* org-download)
+  (:iload org-download)
   (:option*
    org-download-method 'directory
    org-download-image-dir "~/Documents/org-images/org/"
