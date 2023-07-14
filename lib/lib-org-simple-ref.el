@@ -116,8 +116,8 @@ font-lock."
        ;; Now check if buffer has changed since last time we looked. We check
        ;; this with the buffer-chars-modified-tick which keeps track of changes.
        ;; If this hasn't changed, no chars have been modified.
-       (not (= (buffer-chars-modified-tick)
-	           org-ref-buffer-chars-modified-tick)))
+       (/= (buffer-chars-modified-tick)
+	       org-ref-buffer-chars-modified-tick))
       ;; We need to search for all the labels either because we don't have them,
       ;; or the buffer has changed since we looked last time.
       (let ((case-fold-search t)
