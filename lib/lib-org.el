@@ -383,19 +383,6 @@ Assume point is at first MARK."
                   beg))))
     (apply orig-fun beg end args)))
 
-
-;;; adjust image size while adjusting the font size
-(defvar eli/org-image-scale-mode-step 1.2
-  "Scale factor used by `eli/org-image-scale-increase'.")
-
-(defun eli/org-image-scale-increase (&rest _inc)
-  (when org-inline-image-overlays
-	(dolist (ov org-inline-image-overlays)
-	  (image--set-property (overlay-get ov 'display)
-						   :scale
-						   (expt eli/org-image-scale-mode-step
-								 text-scale-mode-amount)))))
-
 ;;;###autoload
 (defun eli/org-narrow-to-item ()
   "Narrow buffer to the current item.

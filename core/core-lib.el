@@ -156,5 +156,29 @@ the _value_ of the choice, not the selected choice. "
 		  (find-file file-path)))
 	(error "Not in a setup expression!")))
 
+;;; adjust image size while adjusting the font size
+(defvar eli/image-scale-mode-step 1.2
+  "Image scale factor.")
+
+(defun eli/overlay-image-scale (&rest _inc)
+  (when org-inline-image-overlays
+	(dolist (ov org-inline-image-overlays)
+	  (image--set-property (overlay-get ov 'display)
+						   :scale
+						   (expt eli/image-scale-mode-step
+								 text-scale-mode-amount)))))
+
+(defun eli/property-image-scale (&rest _args)
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (let ((img (get-text-property (point) 'display)))
+        (when (and img (eq (car-safe img) 'image))
+          (image--set-property img
+							   :scale
+							   (expt eli/image-scale-mode-step
+									 text-scale-mode-amount))))
+      (goto-char (next-single-property-change (point) 'display nil (point-max))))))
+
 (provide 'core-lib)
 ;;; core-lib.el ends here.

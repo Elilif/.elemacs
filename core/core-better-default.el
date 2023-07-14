@@ -306,6 +306,12 @@
 (setup abbrev
   (:hook-into
    minibuffer-setup-hook))
+
+(setup face-remap
+  (:advice
+   text-scale-mode :after #'eli/property-image-scale
+   text-scale-mode :after #'eli/overlay-image-scale))
+
 ;;;; midnight
 ;; (setup midnight
 ;;   (once (list :before 'eli/consult-buffer)

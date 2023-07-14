@@ -58,7 +58,6 @@
 		   org-do-emphasis-faces :override eli/org-do-emphasis-faces
 		   org-element--parse-generic-emphasis :override eli/org-element--parse-generic-emphasis
 		   fill-move-to-break-point :before eli/adjust-line-break-point
-		   text-scale-mode :after eli/org-image-scale-increase
 		   org-fold--reveal-outline-maybe :around eli/org-fold--reveal-outline-maybe)
   (:bind
    "C-<tab>" eli/org-expand-all
