@@ -133,15 +133,30 @@ The decision is taken by order of preference:
 									 (?~ . ?~)
 									 (?_ . ?_)))
 
+(defun eli/elec-pair-delete-pair-1 (&rest _args)
+  (add-hook 'post-self-insert-hook #'eli/elec-pair-delete-pair)
+  (advice-remove 'electric-pair--insert #'eli/elec-pair-delete-pair-1))
+
+(defun eli/elec-pair-delete-pair ()
+  (when (eq (char-before) ?\ )
+	(delete-char 1))
+  (remove-hook 'post-self-insert-hook #'eli/elec-pair-delete-pair))
+
 (defun eli/electric-pair-inhibit (char)
   (cond
    ((eq major-mode 'org-mode)
 	(or
-	 (eq (char-before (1- (point))) ?#)
-	 (and (fboundp #'org-inside-LaTeX-fragment-p)
-		  (org-inside-LaTeX-fragment-p)
-		  (member char '(?/ ?= ?* ?+ ?~ ?_)))
-	 (not (member (char-before (1- (point))) '(?\ ?\t)))))
+	 (and
+	  (member char '(?/ ?= ?* ?+ ?~ ?_))
+	  (not (member (char-before (1- (point))) '(?\ ?\t))))
+	 (and
+	  (member char '(?/ ?= ?* ?+ ?~ ?_))
+	  (member (char-before (1- (point))) '(?\ ?\t))
+	  (advice-add 'electric-pair--insert :after #'eli/elec-pair-delete-pair-1)
+	  nil)
+	 (and 
+	  (org-inside-LaTeX-fragment-p)
+	  (member char '(?/ ?= ?* ?+ ?~ ?_)))))
    (t
 	(if electric-pair-preserve-balance
 		(electric-pair-inhibit-if-helps-balance char)
