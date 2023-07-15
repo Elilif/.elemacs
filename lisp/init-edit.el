@@ -46,7 +46,6 @@
   (:option*
    super-save-auto-save-when-idle t
    super-save-triggers '(magit-status
-						 tab-bar-select-tab
                          ace-window
                          switch-to-buffer
                          other-window
@@ -55,6 +54,7 @@
                          windmove-left
                          windmove-right
                          next-buffer
+						 tab-bar-select-tab
                          previous-buffer)
    super-save-hook-triggers '(find-file-hook
                               mouse-leave-buffer-hook
@@ -64,10 +64,8 @@
    `(,@super-save-predicates
 	 (lambda ()
 	   (not (eq major-mode 'emacs-lisp-mode)))))
-  (:advice super-save-command :override (lambda () (let ((inhibit-message t))
-													 (when (super-save-p)
-													   (save-some-buffers t))))
-		   save-buffer :around suppress-messages))
+  (:advice 
+   save-buffer :around suppress-messages))
 
 ;;;; mwim
 (setup mwim
