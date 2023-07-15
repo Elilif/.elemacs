@@ -170,7 +170,7 @@
 	        corfu-auto        t
 	        corfu-separator ?\s
 	        corfu-max-width 150
-	        corfu-auto-prefix 2
+	        corfu-auto-prefix 3
             corfu-excluded-modes nil
 			corfu-auto-delay 0.1
 	        corfu-on-exact-match 'insert
