@@ -135,9 +135,8 @@ and style elements ARGS."
     (while keyword
       (save-excursion
         (while (re-search-forward (nth 0 keyword) nil t)
-          (overlay-put (make-overlay
-                        (match-beginning 0) (match-end 0))
-                       'display  (nth 3 (eval (nth 2 keyword)))) ))
+          (put-text-property (match-beginning 0) (match-end 0)
+							 'display  (nth 3 (eval (nth 2 keyword)))) ))
       (pop keywords)
       (setq keyword (car keywords)))))
 
