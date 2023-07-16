@@ -31,12 +31,16 @@
 ;;; Code:
 
 (defun +helpful-switch-to-buffer (buffer-or-name)
-  "Switch to helpful BUFFER-OR-NAME. The logic is simple, if we are
-currently in the helpful buffer, reuse it's window, otherwise
-create new one."
-  (if (eq major-mode 'helpful-mode)
-	  (switch-to-buffer buffer-or-name)
-    (pop-to-buffer buffer-or-name)))
+  "Switch to helpful BUFFER-OR-NAME."
+  (if-let ((helpful-window (cl-some (lambda (window)
+									  (with-current-buffer (window-buffer window)
+										(when (eq major-mode 'helpful-mode)
+										  window)))
+									(window-list))))
+	  (progn
+		(select-window helpful-window)
+		(switch-to-buffer buffer-or-name))
+	(pop-to-buffer buffer-or-name)))
 
 (defun helpful-set-arguments-face (&rest _args)
   (save-excursion
