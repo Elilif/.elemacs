@@ -116,6 +116,7 @@
   (push '(ns-transparent-titlebar . t) default-frame-alist))
 (push '(internal-border-width . 15) default-frame-alist)
 (push '(line-spacing . 10) default-frame-alist)
+(push '(alpha-background . 85) default-frame-alist)
 
 (provide 'early-init)
 ;;; early-init.el ends here.
