@@ -182,6 +182,9 @@
 [submodule "hydra"]
 	path = site-lisp/hydra
 	url = https://github.com/abo-abo/hydra
+[submodule "info-colors"]
+	path = site-lisp/info-colors
+	url = https://github.com/ubolonton/info-colors
 [submodule "js2-mode"]
 	path = site-lisp/js2-mode
 	url = https://github.com/mooz/js2-mode

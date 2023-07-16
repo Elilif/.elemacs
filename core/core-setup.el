@@ -157,6 +157,7 @@ loaded."
 (setup borg
   (:iload borg)
   (:once (list :before 'info)
+	(require 'borg)
     (info-initialize)
     (borg-do-drones (drone)
       (dolist (dir (borg-info-path drone))

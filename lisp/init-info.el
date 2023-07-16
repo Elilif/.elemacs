@@ -63,7 +63,9 @@
     (:hook (lambda ()
              (switch-to-buffer-other-window "*Apropos*")))))
 
-
+(setup info-colors
+  (:hooks
+   Info-selection-hook info-colors-fontify-node))
 
 (provide 'init-info)
 ;;; init-info.el ends here.
