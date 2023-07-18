@@ -120,6 +120,9 @@
 [submodule "elisp-refs"]
 	path = site-lisp/elisp-refs
 	url = https://github.com/Wilfred/elisp-refs
+[submodule "emacs-immersive-translate"]
+	path = site-lisp/emacs-immersive-translate
+	url = git@github.com:Elilif/emacs-immersive-translate.git
 [submodule "emacsql"]
 	path = site-lisp/emacsql
 	url = git@github.com:skeeto/emacsql.git
