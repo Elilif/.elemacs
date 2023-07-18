@@ -50,9 +50,45 @@
 	(grammar . (:sys "You are a grammar checker that looks for mistakes and makes sentence’s more fluent."
 					 :user "You will be provided with text delimited by triple backticks. Your task is to correct grammar errors in the wrapped text. You should only output the revised text and list the changes one by one. You should output in the following format:\nCorrected text:\n ...\nChanges:\n1. ...\n2. ...\nIf the user input is grammatically correct and fluent, just reply “sounds good”. \n```%s```"))))
 
+(defvar eli/gptel-quick-prompts
+  '(("Feynman" . "你将扮演一个提问者，每当我向你发送一段文本时，针对我说的内容，理解其中的意思，在此基础上向我提一个相关的问题。每当我回答完毕后，你要评估我的回答，如果有错误则指出，如果没有错误，则根据上下文再向我提一个其他的问题。当我回答不知道时，你将回答这个提问，并根据上下文再向我提一个相关的问题。记住，你的每次回复都必须以提问结束。")))
+
 (defvar eli/gptel-conversations '())
 (defvar eli/gptel--posframe nil)
 (defvar eli/gptel--last-posframe nil)
+
+(defun eli/gptel--get-sys-prompt (pm)
+  (if (and pm (< (point-min) pm))
+	  (let ((pos (save-excursion
+				   (goto-char (point-min))
+				   (re-search-forward "\\(#.*\n\\)+" nil 'noerror))))
+		(if (and pos (= pos pm))
+			gptel--system-message
+		  (let ((prompt (buffer-substring-no-properties (or pos (point-min)) (- pm 1))))
+			(or (gethash prompt gptel--crowdsourced-prompts)
+				prompt))))
+	gptel--system-message))
+
+(defun eli/gptel-propertize ()
+  "Add gptel text for saved chats."
+  (when (buffer-file-name)
+	(save-excursion
+	  (goto-char (point-min))
+	  (while (re-search-forward (concat
+								 "^"
+								 (string-limit (gptel-prompt-string)
+											   (/ (length (gptel-prompt-string)) 2))
+								 "\n\n"
+								 "\\(\\(.*\n\\)*?\\)"
+								 "\n"
+								 (gptel-prompt-string))
+								(point-max)
+								'noerror)
+		(put-text-property (match-beginning 1)
+						   (match-end 1)
+						   'gptel
+						   'response)))
+	(set-buffer-modified-p nil)))
 
 (defun eli/gptel--create-prompt (&optional prompt-end)
   "Advice for `gptel--create-prompt'."
@@ -91,11 +127,7 @@
 				  prompts)
 			(and max-entries (cl-decf max-entries))))
 		(cons (list :role "system"
-					:content (if (and pm (< (point-min) pm))
-								 (let ((head (buffer-substring-no-properties (point-min) (- pm 2))))
-								   (or (gethash head gptel--crowdsourced-prompts)
-									   head))
-							   gptel--system-message))
+					:content (eli/gptel--get-sys-prompt pm))
 			  prompts)))))
 
 ;;;###autoload
@@ -124,32 +156,34 @@
     (gptel--update-header-line " Waiting..." 'warning)))
 
 ;;;###autoload
-(defun eli/gptel--read-crowdsourced-prompt ()
+(defun eli/gptel-read-crowdsourced-prompt ()
   "Pick a crowdsourced system prompt for gptel.
 
 This uses the prompts in the variable
 `gptel--crowdsourced-prompts', which see."
   (interactive)
-  (if (not (hash-table-empty-p (gptel--crowdsourced-prompts)))
-      (let ((choice
-             (completing-read
-              "Pick and edit prompt: "
-              (lambda (str pred action)
-                (if (eq action 'metadata)
-                    `(metadata
-                      (affixation-function .
-										   (lambda (cands)
-											 (mapcar
-											  (lambda (c)
-												(list c ""
-													  (concat (propertize " " 'display '(space :align-to 22))
-															  " " (propertize (gethash c gptel--crowdsourced-prompts)
-																			  'face 'completions-annotations))))
-											  cands))))
-                  (complete-with-action action gptel--crowdsourced-prompts str pred)))
-              nil t)))
-        (insert choice))
-    (message "No prompts available.")))
+  (if (hash-table-empty-p (gptel--crowdsourced-prompts))
+	  (message "No prompts available.")
+	(dolist (prompt eli/gptel-quick-prompts)
+	  (puthash (car prompt) (cdr prompt) gptel--crowdsourced-prompts))
+    (let ((choice
+           (completing-read
+            "Pick and edit prompt: "
+            (lambda (str pred action)
+              (if (eq action 'metadata)
+                  `(metadata
+                    (affixation-function .
+										 (lambda (cands)
+										   (mapcar
+											(lambda (c)
+											  (list c ""
+													(concat (propertize " " 'display '(space :align-to 22))
+															" " (propertize (gethash c gptel--crowdsourced-prompts)
+																			'face 'completions-annotations))))
+											cands))))
+                (complete-with-action action gptel--crowdsourced-prompts str pred)))
+            nil t)))
+      (insert choice))))
 
 ;;;###autoload
 (defun eli/gptel-close ()
