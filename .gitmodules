@@ -117,6 +117,9 @@
 [submodule "elfeed-score"]
 	path = site-lisp/elfeed-score
 	url = https://github.com/sp1ff/elfeed-score
+[submodule "elfeed-tube"]
+	path = site-lisp/elfeed-tube
+	url = https://github.com/karthink/elfeed-tube
 [submodule "elisp-refs"]
 	path = site-lisp/elisp-refs
 	url = https://github.com/Wilfred/elisp-refs
@@ -361,6 +364,12 @@
 [submodule "powerline"]
 	path = site-lisp/powerline
 	url = https://github.com/milkypostman/powerline
+[submodule "prescient"]
+	path = site-lisp/prescient
+	url = https://github.com/radian-software/prescient.el
+    no-byte-compile = ivy-prescient.el
+    no-byte-compile = company-prescient.el
+    no-byte-compile = selectrum-prescient.el
 [submodule "promise"]
 	path = site-lisp/promise
 	url = https://github.com/chuntaro/emacs-promise
