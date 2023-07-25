@@ -139,7 +139,7 @@
 	(require 'lib-orderless)
     (require 'orderless))
   (:also-load pinyinlib)
-  (:option* completion-styles              '(orderless basic)
+  (:option* completion-styles              '(prescient orderless)
             completion-category-defaults   nil
             completion-category-overrides  '((buffer (styles basic partial-completion))
                                              (file (styles partial-completion))
@@ -157,6 +157,14 @@
     ;; Define orderless style with initialism by default
     (orderless-define-completion-style +orderless-with-initialism
       (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))))
+
+;;; prescient
+(setup prescient
+  (:autoload prescient-persist-mode)
+  (:once (list :packages 'vertico)
+    (prescient-persist-mode))
+  (:hooks
+   corfu-mode-hook corfu-prescient-mode))
 
 
 ;;;; corfu
