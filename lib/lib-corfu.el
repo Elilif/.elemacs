@@ -39,6 +39,25 @@
                 corfu-popupinfo-delay nil)
     (corfu-mode 1)))
 
+;;; SRC: https://github.com/minad/corfu/issues/170#issuecomment-1221011131
+(defun corfu-complete-common-or-next ()
+  "Complete common prefix or go to next candidate."
+  (declare (completion #'ignore))
+  (interactive)
+  (if (= corfu--total 1)
+      (progn
+        (corfu--goto 1)
+        (corfu-insert))
+    (let* ((input (car corfu--input))
+           (str (if (thing-at-point 'filename) (file-name-nondirectory input) input))
+           (pt (length str))
+           (common (try-completion str corfu--candidates)))
+      (if (and (> pt 0)
+               (stringp common)
+               (not (string= str common)))
+          (insert (substring common pt))
+        (corfu-next)))))
+
 
 ;;;; provide
 (provide 'lib-corfu)

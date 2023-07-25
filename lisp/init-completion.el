@@ -175,6 +175,9 @@
 			corfu-auto-delay 0.1
 	        corfu-on-exact-match 'insert
             corfu-margin-formatters '(kind-all-the-icons-margin-formatter))
+  (:with-map corfu-map
+    (:bind
+     "C-n" corfu-complete-common-or-next))
   (:when-loaded
 	(:hooks minibuffer-setup-hook corfu-enable-in-minibuffer)))
 
