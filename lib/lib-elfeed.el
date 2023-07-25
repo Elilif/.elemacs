@@ -93,7 +93,8 @@
     (dolist (feed elfeed-feeds)
       (let* ((lexical-binding t)
              (filter (elfeed-search-parse-filter
-                      (concat "=" (car feed))))
+                      (concat "=" (or (car-safe feed)
+                                      feed))))
              (func (byte-compile (elfeed-search-compile-filter filter))))
         (with-elfeed-db-visit (entry feed)
           (when (funcall func entry feed count)
