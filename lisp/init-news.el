@@ -54,11 +54,11 @@
 	(require 'lib-elfeed))
   (:hooks elfeed-show-mode-hook visual-fill-column-mode
 		  ;; elfeed-show-mode-hook hide-mode-line-mode
-		  ;; elfeed-search-update-hook hide-mode-line-mode
+		  elfeed-search-update-hook hide-mode-line-mode
 		  elfeed-search-update-hook hl-line-mode)
   (:option*
    shr-width 90
-   shr-inhibit-images nil
+   shr-inhibit-images t
    shr-use-colors t
 
    elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890")
@@ -68,6 +68,7 @@
   (:bind-into elfeed-search-mode-map
 	"q" eli/elfeed-search-quit-and-kill-buffers
 	"R" eli/filter-read
+    "o" eli/elfeed-overview
 	"m" elfeed-toggle-star
 	"f" eli/elfeed-search-filter-source
 	"M" eli/elfeed-search-starred-entries
