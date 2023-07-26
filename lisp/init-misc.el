@@ -224,7 +224,8 @@
 (setup gptel
   (:iload gptel)
   (:also-load
-   lib-gptel)
+   lib-gptel
+   gptel-transient)
   (:autoload gptel-mode)
   (:init
    (add-to-list 'auto-mode-alist '("\\.chat\\'" . org-mode)))
@@ -236,6 +237,7 @@
 	(eli/gptel-restore-conversations))
   (:option*
    gptel-model "gpt-3.5-turbo-0613"
+   gptel-crowdsourced-prompts-file "~/.emacs.d/etc/gptel/gptel-crowdsourced-prompts.csv"
    gptel-stream t
    ;; gptel-host "api.openai.com"
    gptel-host "api.openai-sb.com"
@@ -255,6 +257,7 @@
 		   gptel-send :override eli/gptel-send)
   (:bind
    "s-p" eli/gptel-close
+   "s-i" eli/gptel-read-crowdsourced-prompt
    "s-\]" eli/gptel-close
    "C-c C-k" eli/gptel-clean)
   (:with-feature elfeed

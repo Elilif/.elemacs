@@ -59,14 +59,9 @@
 
 (defun eli/gptel--get-sys-prompt (pm)
   (if (and pm (< (point-min) pm))
-	  (let ((pos (save-excursion
-				   (goto-char (point-min))
-				   (re-search-forward "\\(#.*\n\\)+" nil 'noerror))))
-		(if (and pos (= pos pm))
-			gptel--system-message
-		  (let ((prompt (buffer-substring-no-properties (or pos (point-min)) (- pm 1))))
-			(or (gethash prompt gptel--crowdsourced-prompts)
-				prompt))))
+	  (let ((prompt (buffer-substring-no-properties (point-min) (- pm 1))))
+		(or (gethash prompt gptel--crowdsourced-prompts)
+			prompt))
 	gptel--system-message))
 
 (defun eli/gptel-propertize ()
@@ -505,7 +500,8 @@ create one."
 	(dolist (conv convs)
 	  (find-file-noselect (file-name-concat eli/gptel-conversations-dir conv))
 	  (with-current-buffer conv
-		(gptel-mode))
+		(gptel-mode)
+        (eli/gptel-propertize))
 	  (add-to-list 'eli/gptel-conversations
 				   (cons
 					(string-trim conv "\\*ChatGPT-" "\\*\\.chat")
