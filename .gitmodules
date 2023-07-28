@@ -133,6 +133,12 @@
 [submodule "embark"]
 	path = site-lisp/embark
 	url = https://github.com/oantolin/embark
+[submodule "emms"]
+	path = site-lisp/emms
+	url = git@github.com:emacsmirror/emms.git
+    build-step = make
+    build-step = make install
+    build-step = borg-update-autoloads
 [submodule "epkg"]
 	path = site-lisp/epkg
 	url = git@github.com:emacscollective/epkg.git

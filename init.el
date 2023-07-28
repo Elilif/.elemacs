@@ -213,4 +213,11 @@
 	(require 'init-pdf)
 	(require 'init-bib)))
 
+(setup init-music
+  (:once (list :before 'hydra-player/body)
+    (require 'init-music)
+    (emms-all)
+    (emms-history-load)
+    (emms-mode-line-disable)))
+
 ;;; init.el ends here.
