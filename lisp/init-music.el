@@ -30,21 +30,8 @@
 
 ;;; Code:
 
-;; check whether a musical file is lossless.
-(defun eli/sox-spectrogram (file)
-  "Show spectrogram for FILE."
-  (interactive (list (let ((default-directory "~/Music/"))
-                       (read-file-name "Select a file: "))))
-  (let ((output (concat (make-temp-name "/tmp/sox-")
-                        ".png")))
-    (shell-command (format
-                    "sox %s -n spectrogram -o %s"
-                    (shell-quote-argument file)
-                    output))
-    (find-file output)))
-
-(setq )
-(setq )
+(cl-eval-when (compile)
+  (require 'lyrics-fetcher))
 
 (setup emms
   (:also-load
@@ -52,15 +39,43 @@
   (:option*
    emms-score-max-score 10
    emms-player-list '(emms-player-mpv)
-   emms-lyrics-display-on-modeline nil
-   emms-lyrics-display-on-minibuffer t
-   emms-lyrics-display-on-minibuffer t
-   emms-lyrics-dir "~/Music/lyrics"
+   emms-lyrics-display-on-modeline t
+   emms-lyrics-scroll-p nil
+   emms-lyrics-display-on-minibuffer nil
+   emms-lyrics-dir "~/Music/lyrics/"
    emms-source-file-default-directory "~/Music/"
    emms-playlist-buffer-name "*Emms*"
    emms-browser-covers #'emms-browser-cache-thumbnail-async
    emms-browser-thumbnail-medium-size 128
-   emms-browser-thumbnail-small-size 64))
+   emms-browser-thumbnail-small-size 64
+   emms-player-mpv-update-metadata t))
+
+(setup emms-info
+  (:also-load
+   emms-info-libtag)
+  (:option*
+   emms-info-functions '(emms-info-libtag)))
+
+(setup lyrics-fetcher
+  (:also-load
+   lib-lyrics-fetcher)
+  (:option*
+   ;; use neteasecloud backend
+   lyrics-fetcher-format-file-name-method #'eli/lyrics-fetcher-neteasecloud-format-file-name
+   lyrics-fetcher-fetch-method #'lyrics-fetcher-neteasecloud-do-search
+   lyrics-fetcher-format-song-name-method #'lyrics-fetcher-neteasecloud-format-song-name
+   lyrics-fetcher-lyrics-file-extension ".lrc"
+   emms-lyrics-dir lyrics-fetcher-lyrics-folder)
+  (:bind-into lyrics-fetcher-view-mode-map
+    "RET" lyrics-fetcher-neteasecloud-lyrics-jump)
+  (:with-feature emms
+    (:bind-into emms-browser-mode-map
+      "l" lyrics-fetcher-show-lyrics
+      "L" lyrics-fetcher-emms-browser-show-at-point))
+  (:advice
+   emms-lyrics-display-handler :after eli/emms-lyrics-highlight)
+  (:hooks
+   lyrics-fetcher-view-mode-hook eli/emms-lyrics-sync))
 
 
 ;;;; provide

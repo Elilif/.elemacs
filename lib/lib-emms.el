@@ -31,6 +31,20 @@
 ;;; Code:
 
 
+;; check whether a musical file is lossless.
+(defun eli/sox-spectrogram (file)
+  "Show spectrogram for FILE."
+  (interactive (list (let ((default-directory "~/Music/"))
+                       (read-file-name "Select a file: "))))
+  (let* ((output (concat (make-temp-name "/tmp/sox-")
+                         ".png"))
+         (command (format
+                   "sox %s -n spectrogram -o %s"
+                   (shell-quote-argument file)
+                   output)))
+    (if (= (shell-command command) 0)
+        (find-file output)
+      "Something wrong!")))
 
 ;;;; provide
 (provide 'lib-emms)

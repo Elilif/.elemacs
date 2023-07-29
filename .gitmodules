@@ -137,7 +137,8 @@
 	path = site-lisp/emms
 	url = git@github.com:emacsmirror/emms.git
     build-step = make
-    build-step = make install
+    build-step = make emms-print-metadata
+    build-step = sudo make install
     build-step = borg-update-autoloads
 [submodule "epkg"]
 	path = site-lisp/epkg
@@ -233,6 +234,9 @@
 [submodule "lsp-ui"]
 	path = site-lisp/lsp-ui
 	url = https://github.com/emacs-lsp/lsp-ui
+[submodule "lyrics-fetcher"]
+	path = site-lisp/lyrics-fetcher
+	url = https://github.com/SqrtMinusOne/lyrics-fetcher.el
 [submodule "magit"]
 	path = site-lisp/magit
 	url = https://github.com/magit/magit
