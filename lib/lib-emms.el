@@ -34,8 +34,7 @@
 ;; check whether a musical file is lossless.
 (defun eli/sox-spectrogram (file)
   "Show spectrogram for FILE."
-  (interactive (list (let ((default-directory "~/Music/"))
-                       (read-file-name "Select a file: "))))
+  (interactive (list (read-file-name "Select a file: " "~/Music/")))
   (let* ((output (concat (make-temp-name "/tmp/sox-")
                          ".png"))
          (command (format
