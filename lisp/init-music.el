@@ -91,6 +91,10 @@
   (:option*
    consult-emms--sort-album-function #'string<))
 
+(setup lrc-maker
+  (:hooks
+   lyrics-fetcher-view-mode-hook lrc-maker-timer-set))
+
 
 ;;;; provide
 (provide 'init-music)
