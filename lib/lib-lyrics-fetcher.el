@@ -81,7 +81,8 @@ tracks' name except extensions."
     (setq eli/emms-lyrics-current-lyrics line))
   (when (eq major-mode 'lyrics-fetcher-view-mode)
     (save-excursion
-      (goto-line line)
+      (goto-char (point-min))
+      (forward-line (1- (or line 1)))
       (let* ((end (line-end-position))
              (beg (line-beginning-position))
              (ov (make-overlay beg end)))
@@ -91,7 +92,8 @@ tracks' name except extensions."
 
 (defun eli/emms-lyrics-sync ()
   (when (eq this-command 'lyrics-fetcher-show-lyrics)
-    (goto-line eli/emms-lyrics-current-lyrics)
+    (goto-char (point-min))
+    (forward-line (1- (or eli/emms-lyrics-current-lyrics 1)))
     (eli/emms-lyrics-highlight nil nil eli/emms-lyrics-current-lyrics nil t)))
 
 ;;;; provide
