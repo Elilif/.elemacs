@@ -75,6 +75,7 @@ tracks' name except extensions."
 
 (defvar eli/emms-lyrics-current-lyrics nil)
 
+;;;###autoload
 (defun eli/emms-lyrics-highlight (_lyric _next-lyric line _diff &optional hookp)
   "Highlight the current lyrics."
   (unless hookp

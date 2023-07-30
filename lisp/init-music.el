@@ -68,12 +68,13 @@
    emms-lyrics-dir lyrics-fetcher-lyrics-folder)
   (:bind-into lyrics-fetcher-view-mode-map
     "RET" lyrics-fetcher-neteasecloud-lyrics-jump)
-  (:with-feature emms
+  (:with-feature emms-browser
     (:bind-into emms-browser-mode-map
       "l" lyrics-fetcher-show-lyrics
       "L" lyrics-fetcher-emms-browser-show-at-point))
-  (:advice
-   emms-lyrics-display-handler :after eli/emms-lyrics-highlight)
+  (:with-feature emms
+    (:advice
+     emms-lyrics-display-handler :after eli/emms-lyrics-highlight))
   (:hooks
    lyrics-fetcher-view-mode-hook eli/emms-lyrics-sync))
 
