@@ -48,7 +48,16 @@
    emms-browser-covers #'emms-browser-cache-thumbnail-async
    emms-browser-thumbnail-medium-size 128
    emms-browser-thumbnail-small-size 64
-   emms-player-mpv-update-metadata t))
+   emms-player-mpv-update-metadata t)
+  (:advice
+   emms-browser-track-number :override eli/emms-browser-track-number
+   ;; disable original emms mode line message
+   ;; see `mood-line-segment-misc-info'
+   emms-playing-time-mode-line :override ignore
+   emms-lyrics-mode-line :override ignore)
+  (:after emms-browser
+    (:bind-into emms-browser-mode-map
+      "C-c C-p" emms-browser-move-up-level)))
 
 (setup emms-info
   (:also-load
@@ -68,7 +77,7 @@
    emms-lyrics-dir lyrics-fetcher-lyrics-folder)
   (:bind-into lyrics-fetcher-view-mode-map
     "RET" lyrics-fetcher-neteasecloud-lyrics-jump)
-  (:with-feature emms-browser
+  (:after emms-browser
     (:bind-into emms-browser-mode-map
       "l" lyrics-fetcher-show-lyrics
       "L" lyrics-fetcher-emms-browser-show-at-point))

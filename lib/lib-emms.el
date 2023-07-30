@@ -46,6 +46,27 @@
         (find-file output)
       "Something wrong!")))
 
+;; align track numbers
+(defun eli/emms-browser-track-number (track)
+  "Return a string representation of a track number.
+The string will end in a space. If no track number is available,
+return an empty string."
+  (let ((tracknum (emms-track-get track 'info-tracknumber)))
+    (cond
+     ((or (not (stringp tracknum)) (string= tracknum "0"))
+      "")
+     ((or (eq (length tracknum) 1)
+          (string-match-p "^[[:digit:]]/[[:digit:]]+" tracknum))
+      (concat "0" tracknum))
+     (t
+      tracknum))))
+
+(defun eli/emms-echo-current ()
+  "Display the currently playing song in the echo area."
+  (interactive)
+  (message (emms-track-description
+            (emms-playlist-current-selected-track))))
+
 ;;;; provide
 (provide 'lib-emms)
 ;;; lib-emms.el ends here.
