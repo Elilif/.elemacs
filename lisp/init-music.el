@@ -77,6 +77,10 @@
   (:hooks
    lyrics-fetcher-view-mode-hook eli/emms-lyrics-sync))
 
+(setup consult-emms
+  (:option*
+   consult-emms--sort-album-function #'string<))
+
 
 ;;;; provide
 (provide 'init-music)

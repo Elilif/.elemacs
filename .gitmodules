@@ -90,6 +90,9 @@
 [submodule "consult-dir"]
 	path = site-lisp/consult-dir
 	url = https://github.com/karthink/consult-dir
+[submodule "consult-emms"]
+	path = site-lisp/consult-emms
+	url = https://github.com/Hugo-Heagren/consult-emms
 [submodule "corfu"]
 	path = site-lisp/corfu
 	url = https://github.com/minad/corfu
