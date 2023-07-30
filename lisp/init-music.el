@@ -74,6 +74,9 @@
    lyrics-fetcher-fetch-method #'lyrics-fetcher-neteasecloud-do-search
    lyrics-fetcher-format-song-name-method #'lyrics-fetcher-neteasecloud-format-song-name
    lyrics-fetcher-lyrics-file-extension ".lrc"
+   request-curl-options
+   (nconc '("--proxy" "127.0.0.1:7891"))
+   lyrics-fetcher-genius-access-token (auth-source-pick-first-password :host "genius.com" :user "eli")
    emms-lyrics-dir lyrics-fetcher-lyrics-folder)
   (:bind-into lyrics-fetcher-view-mode-map
     "RET" lyrics-fetcher-neteasecloud-lyrics-jump)
