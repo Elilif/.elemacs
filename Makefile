@@ -8,7 +8,9 @@ CONFIG_CLEAN_ARG = --eval "(when (fboundp 'comp-el-to-eln-filename)\
 	(dolist (el (directory-files dir t \"\\\\.el\\\\'\"))\
 	  (delete-file (comp-el-to-eln-filename el)))))"
 EMACS_EXTRA ?= -L ~/.emacs.d/site-lisp/once/ -L ~/.emacs.d/site-lisp/once/once-setup/ \
--L ~/.emacs.d/site-lisp/setup/ -L ~/.emacs.d/site-lisp/epkg/ --load ~/.emacs.d/core/core-setup.el
+-L ~/.emacs.d/site-lisp/setup/ -L ~/.emacs.d/site-lisp/epkg/ \
+--load ~/.emacs.d/core/core-incremental-loading.el \
+--load ~/.emacs.d/core/core-setup.el
 
 -include $(DRONES_DIR)/borg/borg.mk
 
@@ -18,15 +20,10 @@ bootstrap-borg:
 		@cd $(DRONES_DIR)/borg; git symbolic-ref HEAD refs/heads/master
 		@cd $(DRONES_DIR)/borg; git reset --hard HEAD
 
-update:
+update: 
 	git submodule update --init --recursive
-	rebuild
 
-rebuild:
-	clean
-	native
-	config-clean
-	config-native
+rebuild: clean native config-clean config-native
 
 config-clean:
 ifeq "$(BORG_CLEAN_ELN)" "true"
