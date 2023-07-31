@@ -86,9 +86,9 @@
       "L" lyrics-fetcher-emms-browser-show-at-point))
   (:with-feature emms
     (:advice
-     emms-lyrics-display-handler :after eli/emms-lyrics-highlight))
+     emms-lyrics-display-handler :after eli/lyrics-fetcher-highlight))
   (:hooks
-   lyrics-fetcher-view-mode-hook eli/emms-lyrics-sync))
+   lyrics-fetcher-view-mode-hook eli/lyrics-fetcher-goto-current))
 
 (setup consult-emms
   (:option*

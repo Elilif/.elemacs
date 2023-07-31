@@ -73,29 +73,33 @@ tracks' name except extensions."
        ""
        full-name))))
 
-(defvar eli/emms-lyrics-current-lyrics nil)
+(defun eli/lyrics-fetcher-hl-current-line ()
+  (let* ((end (line-end-position))
+         (beg (line-beginning-position))
+         (ov (make-overlay beg end)))
+    (remove-overlays (point-min) (point-max) 'lyrics-hl t)
+    (overlay-put ov 'face 'mindre-keyword)
+    (overlay-put ov 'lyrics-hl t)))
 
 ;;;###autoload
-(defun eli/emms-lyrics-highlight (_lyric _next-lyric line _diff &optional hookp)
+(defun eli/lyrics-fetcher-highlight (&rest _args)
   "Highlight the current lyrics."
-  (unless hookp
-    (setq eli/emms-lyrics-current-lyrics line))
   (when (eq major-mode 'lyrics-fetcher-view-mode)
     (save-excursion
-      (goto-char (point-min))
-      (forward-line (1- (or line 1)))
-      (let* ((end (line-end-position))
-             (beg (line-beginning-position))
-             (ov (make-overlay beg end)))
-        (remove-overlays (point-min) (point-max) 'lyrics-hl t)
-        (overlay-put ov 'face 'mindre-keyword)
-        (overlay-put ov 'lyrics-hl t)))))
+      (let* ((m (/ (floor emms-playing-time) 60))
+             (s (% (floor emms-playing-time) 60))
+             (regexp (format "\\[%02d:%02d.*?\\]" m s)))
+        (goto-char (point-min))
+        (when (re-search-forward regexp (point-max) 'noerror)
+          (eli/lyrics-fetcher-hl-current-line))))))
 
-(defun eli/emms-lyrics-sync ()
-  (when (eq this-command 'lyrics-fetcher-show-lyrics)
-    (goto-char (point-min))
-    (forward-line (1- (or eli/emms-lyrics-current-lyrics 1)))
-    (eli/emms-lyrics-highlight nil nil eli/emms-lyrics-current-lyrics nil t)))
+(defun eli/lyrics-fetcher-goto-current ()
+  "Goto the position of the current lyrics when opening the lyrics file. "
+  (let* ((lyrics (string-trim emms-lyrics-mode-line-string)))
+    (if (search-forward lyrics (point-max) 'noerror)
+        (eli/lyrics-fetcher-hl-current-line)
+      (goto-char (point-min)))))
+
 
 ;;;; provide
 (provide 'lib-lyrics-fetcher)
