@@ -142,12 +142,15 @@ and style elements ARGS."
       (setq keyword (car keywords)))))
 
 (defun eli/svg-tag-todo-keywords-tag (tag face)
-  (let ((scale 0.9))
+  (let ((scale 1.0))
     (when (org-at-heading-p)
       (let* ((level (number-to-string (org-current-level)))
              (face (intern (concat "org-level-" level)))
              (height (face-attribute face :height)))
-        (setq scale (- height 0.1))))
+        (setq scale height)))
+    (when text-scale-mode
+      (setq scale (* scale (expt eli/image-scale-mode-step
+							     text-scale-mode-amount))))
     (svg-tag-make tag :face face
 				  :inverse t :margin 0
 				  :height 1.1 :ascent 16

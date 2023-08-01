@@ -160,24 +160,49 @@ the _value_ of the choice, not the selected choice. "
 (defvar eli/image-scale-mode-step 1.2
   "Image scale factor.")
 
+;; TODO: remove overlays after leaving `text-scale-mode'.
+(defun eli/set-image-original-scale (beg end img)
+  (let* ((ovs (overlays-in beg end))
+         (original-scale))
+    (dolist (ov ovs)
+      (when-let ((scale (overlay-get ov 'original-scale)))
+        (setq original-scale scale)))
+    (unless original-scale
+      (let ((ov (make-overlay beg end)))
+        (setq original-scale (or (image-property img :scale) 1.0))
+        (overlay-put ov 'original-scale original-scale)))
+    original-scale))
+
 (defun eli/overlay-image-scale (&rest _inc)
   (when org-inline-image-overlays
 	(dolist (ov org-inline-image-overlays)
-	  (image--set-property (overlay-get ov 'display)
-						   :scale
-						   (expt eli/image-scale-mode-step
-								 text-scale-mode-amount)))))
+	  (let* ((img (overlay-get ov 'display))
+             (width (image-property img :width))
+             (original-width (or (image-property img :original-width)
+                                 (image--set-property img
+                                                      :original-width width)))
+             (beg (overlay-start ov))
+             (original-scale (eli/set-image-original-scale beg (1+ beg) img)))
+        (when (and (not width)
+                   original-width)
+          (image--set-property img :width original-width))
+        (image--set-property img
+		                     :scale
+		                     (* original-scale
+                                (expt eli/image-scale-mode-step
+			                          text-scale-mode-amount)))))))
 
 (defun eli/property-image-scale (&rest _args)
   (save-excursion
     (goto-char (point-min))
     (while (not (eobp))
-      (let ((img (get-text-property (point) 'display)))
+      (when-let* ((img (get-text-property (point) 'display))
+                  (original-scale (eli/set-image-original-scale (point) (1+ (point)) img)))
         (when (and img (eq (car-safe img) 'image))
           (image--set-property img
 							   :scale
-							   (expt eli/image-scale-mode-step
-									 text-scale-mode-amount))))
+							   (* original-scale (expt eli/image-scale-mode-step
+									                   text-scale-mode-amount)))))
       (goto-char (next-single-property-change (point) 'display nil (point-max))))))
 
 (provide 'core-lib)
