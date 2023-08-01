@@ -754,37 +754,12 @@
 													 (substring tag 1 -1)))))
 
 				  ;; TODO / DONE
-				  ("\\** \\(TODO\\)" . ((lambda (tag)
-										  (svg-tag-make "TODO" :face 'org-todo
-														:inverse t :margin 0
-														:height 1.1 :ascent 16))))
-				  ("\\** \\(NEXT\\)" . ((lambda (tag)
-										  (svg-tag-make "NEXT" :face 'mindre-keyword
-														:margin 0 :height 1.1
-														:ascent 16))))
-				  ("\\** \\(STARTED\\)" . ((lambda (tag)
-											 (svg-tag-make "STARTED"
-														   :face 'mindre-keyword
-														   :inverse t :margin 0
-														   :height 1.1 :ascent 16))))
-				  ("\\** \\(SOMEDAY\\)" . ((lambda (tag)
-											 (svg-tag-make "SOMEDAY"
-														   :face 'mindre-keyword
-														   :inverse t :margin 0
-														   :height 1.1 :ascent 16))))
-				  ("\\** \\(PROJECT\\)" . ((lambda (tag)
-											 (svg-tag-make "PROJECT"
-														   :face 'mindre-keyword
-														   :inverse t :margin 0
-														   :height 1.1 :ascent 16))))
-				  ("\\** \\(DONE\\)" . ((lambda (tag)
-										  (svg-tag-make "DONE" :face 'mindre-faded
-														:inverse t :margin 0 :height 1.1
-														:ascent 16))))
-				  ;; ("FIXME" . ((lambda (tag)
-				  ;;               (svg-tag-make "FIXME" :face 'mindre-critical :margin 0
-				  ;;                             :height 1.1 :ascent 16))))
-
+				  ("\\** \\(TODO\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+				  ("\\** \\(NEXT\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+				  ("\\** \\(STARTED\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+				  ("\\** \\(SOMEDAY\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+				  ("\\** \\(PROJECT\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+				  ("\\** \\(DONE\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-done))))
 
 				  ;; Citation of the form [cite:@Knuth:1984] 
 				  ("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)

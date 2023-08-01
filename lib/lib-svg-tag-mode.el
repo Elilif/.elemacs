@@ -66,6 +66,7 @@ and style elements ARGS."
          (font-size       (aref font-info 2)) ;; redefine font-size
          ;; (ascent          (aref font-info 8))
          (ascent          (plist-get style :ascent))
+         (scale          (plist-get style :scale))
          (tag-char-width  (aref font-info 11))
          ;; (tag-char-height (aref font-info 3))
          (tag-width       (* (+ (length label) padding) txt-char-width))
@@ -96,7 +97,7 @@ and style elements ARGS."
     (svg-text svg label
               :font-family font-family :font-weight font-weight
               :font-size font-size :fill foreground :x text-x :y  text-y)
-    (svg-lib--image svg :ascent 'center)))
+    (svg-lib--image svg :ascent 'center :scale scale)))
 
 (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
 (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
@@ -139,6 +140,18 @@ and style elements ARGS."
 							 'display  (nth 3 (eval (nth 2 keyword)))) ))
       (pop keywords)
       (setq keyword (car keywords)))))
+
+(defun eli/svg-tag-todo-keywords-tag (tag face)
+  (let ((scale 0.9))
+    (when (org-at-heading-p)
+      (let* ((level (number-to-string (org-current-level)))
+             (face (intern (concat "org-level-" level)))
+             (height (face-attribute face :height)))
+        (setq scale (- height 0.1))))
+    (svg-tag-make tag :face face
+				  :inverse t :margin 0
+				  :height 1.1 :ascent 16
+                  :scale scale)))
 
 
 ;;;; provide
