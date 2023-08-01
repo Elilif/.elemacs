@@ -134,6 +134,7 @@
    mu4e-get-mail-command "proxychains mbsync -a"
    mu4e-update-interval 600
    mu4e-modeline-support nil
+   mu4e-query-rewrite-function 'mu4e-goodies~break-cjk-query
    mu4e-bookmarks '(("flag:unread"                       "Unread messages"                  ?u)
 					("NOT flag:trashed"                  "All messages"                     ?a)
 					("date:today..now"                   "Today's messages"                 ?t)
@@ -177,12 +178,6 @@
 			(:thread-subject :name "Subject" :shortname "Subject" :help "Subject of the thread" :sortable :subject)
 			(:to :name "To" :shortname "To" :help "Recipient of the message" :sortable t)))))
 
-;; filter
-(defun eli/mu4e-search-filter-source ()
-  (interactive)
-  (let* ((msg (mu4e-message-at-point))
-	     (sender-email (plist-get (car (plist-get msg :from)) :email)))
-    (mu4e--search-execute (concat "from:" sender-email) nil)))
 
 ;;;; mu4e alert
 (setup mu4e-alert
