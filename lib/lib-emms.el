@@ -55,8 +55,14 @@ return an empty string."
      ((or (not (stringp tracknum)) (string= tracknum "0"))
       "")
      ((or (eq (length tracknum) 1)
-          (string-match-p "^[[:digit:]]/[[:digit:]]+" tracknum))
+          (string-match-p "^[[:digit:]]/[[:digit:]]\\{2,\\}" tracknum))
       (concat "0" tracknum))
+     ((string-match-p "^[[:digit:]]/[[:digit:]]" tracknum)
+      (concat
+       "0"
+       (substring tracknum 0 1)
+       "/0"
+       (substring tracknum 2 3)))
      (t
       tracknum))))
 
