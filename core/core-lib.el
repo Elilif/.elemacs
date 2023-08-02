@@ -160,8 +160,8 @@ the _value_ of the choice, not the selected choice. "
 (defvar eli/image-scale-mode-step 1.2
   "Image scale factor.")
 
-;; TODO: remove overlays after leaving `text-scale-mode'.
-(defun eli/set-image-original-scale (beg end img)
+(defun eli/set-image-original-scale-factor (beg end img)
+  "Set original scale factors."
   (let* ((ovs (overlays-in beg end))
          (original-scale))
     (dolist (ov ovs)
@@ -173,7 +173,16 @@ the _value_ of the choice, not the selected choice. "
         (overlay-put ov 'original-scale original-scale)))
     original-scale))
 
-(defun eli/overlay-image-scale (&rest _inc)
+(defun eli/delete-image-scale-factor-overlay ()
+  "Delete all scale factors overlays."
+  (let ((ovs (overlays-in (point-min) (point-max))))
+    (mapc (lambda (ov)
+            (when (overlay-get ov 'original-scale)
+              (delete-overlay ov)))
+          ovs)))
+
+(defun eli/overlay-image-scale (arg)
+  "Displaying buffer images(overlay property) in a larger/smaller size."
   (when org-inline-image-overlays
 	(dolist (ov org-inline-image-overlays)
 	  (let* ((img (overlay-get ov 'display))
@@ -182,7 +191,7 @@ the _value_ of the choice, not the selected choice. "
                                  (image--set-property img
                                                       :original-width width)))
              (beg (overlay-start ov))
-             (original-scale (eli/set-image-original-scale beg (1+ beg) img)))
+             (original-scale (eli/set-image-original-scale-factor beg (1+ beg) img)))
         (when (and (not width)
                    original-width)
           (image--set-property img :width original-width))
@@ -190,20 +199,25 @@ the _value_ of the choice, not the selected choice. "
 		                     :scale
 		                     (* original-scale
                                 (expt eli/image-scale-mode-step
-			                          text-scale-mode-amount)))))))
+			                          text-scale-mode-amount)))))
+    (when (< arg 0)
+      (eli/delete-image-scale-factor-overlay))))
 
-(defun eli/property-image-scale (&rest _args)
+(defun eli/property-image-scale (arg)
+  "Displaying buffer images(text property) in a larger/smaller size."
   (save-excursion
     (goto-char (point-min))
     (while (not (eobp))
       (when-let* ((img (get-text-property (point) 'display))
-                  (original-scale (eli/set-image-original-scale (point) (1+ (point)) img)))
+                  (original-scale (eli/set-image-original-scale-factor (point) (1+ (point)) img)))
         (when (and img (eq (car-safe img) 'image))
           (image--set-property img
 							   :scale
 							   (* original-scale (expt eli/image-scale-mode-step
 									                   text-scale-mode-amount)))))
-      (goto-char (next-single-property-change (point) 'display nil (point-max))))))
+      (goto-char (next-single-property-change (point) 'display nil (point-max))))
+    (when (< arg 0)
+      (eli/delete-image-scale-factor-overlay))))
 
 (provide 'core-lib)
 ;;; core-lib.el ends here.
