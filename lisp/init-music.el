@@ -78,9 +78,11 @@
    lyrics-fetcher-format-song-name-method #'lyrics-fetcher-neteasecloud-format-song-name
    lyrics-fetcher-lyrics-file-extension ".lrc"
    request-curl-options
-   (nconc '("--proxy" "127.0.0.1:7891"))
+   (nconc '("-x" "http://127.0.0.1:7890"))
    lyrics-fetcher-genius-access-token (auth-source-pick-first-password :host "genius.com" :user "eli")
    emms-lyrics-dir lyrics-fetcher-lyrics-folder)
+  (:when-loaded
+    (add-to-list 'auto-mode-alist '("\\.lrc\\'" . lyrics-fetcher-view-mode)))
   (:bind-into lyrics-fetcher-view-mode-map
     "RET" lyrics-fetcher-neteasecloud-lyrics-jump)
   (:after emms-browser
@@ -89,9 +91,7 @@
       "L" lyrics-fetcher-emms-browser-show-at-point))
   (:with-feature emms
     (:advice
-     emms-lyrics-display-handler :after eli/lyrics-fetcher-highlight))
-  (:hooks
-   lyrics-fetcher-view-mode-hook eli/lyrics-fetcher-goto-current))
+     emms-lyrics-display-handler :after eli/lyrics-fetcher-highlight)))
 
 (setup consult-emms
   (:option*
