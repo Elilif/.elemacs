@@ -62,6 +62,14 @@
   (interactive)
   (let ((inhibit-read-only t))
     (undo)))
+;;;###autoload
+(defun lrc-maker-delete ()
+  "Delete the current timestamp."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (beginning-of-line)
+    (when (looking-at-p "\\[.*\\]")
+      (kill-sexp))))
 
 ;;;###autoload
 (defun lrc-maker-timer-pause ()
@@ -101,6 +109,19 @@
   (emms-seek-backward))
 
 ;;;###autoload
+(defun lrc-maker-seek-next (&optional arg)
+  (interactive "P")
+  (forward-line (or arg 1))
+  (lyrics-fetcher-neteasecloud-lyrics-jump)
+  (when-let ((time (lyrics-fetcher-neteasecloud-lyrics-get-time)))
+    (setq lrc-maker-timer-start-time (time-since time))))
+
+;;;###autoload
+(defun lrc-maker-seek-previous (&optional arg)
+  (interactive "P")
+  (lrc-maker-seek-next (- (or arg 1))))
+
+;;;###autoload
 (defun lrc-maker-timer-set ()
   "Set the relative time when toggle `lyrics-fetcher-view-mode-hook'."
   (when emms-player-playing-p
@@ -138,9 +159,12 @@
     "s" #'lrc-maker-timer-stop
     "r" #'lrc-maker-timer-start
     "b" #'lrc-maker-seek-backward
+    "d" #'lrc-maker-delete
     "f" #'lrc-maker-seek-forward
     "u" #'lrc-marker-undo
-    "C-x C-s" #'lrc-maker-save)
+    "C-x C-s" #'lrc-maker-save
+    "n" #'lrc-maker-seek-next
+    "p" #'lrc-maker-seek-previous)
   (cond
    (lrc-maker-mode
     (read-only-mode 1))
