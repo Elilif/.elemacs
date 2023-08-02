@@ -30,23 +30,26 @@
 
 ;;; Code:
 
+(defun lyrics-fetcher-neteasecloud-lyrics-get-time ()
+  (when-let* ((timestamp (save-excursion
+			               (beginning-of-line)
+                           (re-search-forward "\\([[:digit:]]\\{2\\}\\):\\([[:digit:]]\\{2\\}\\)"
+                                              (line-end-position)
+                                              'noerror)))
+	          (minutes (string-to-number (match-string 1)))
+	          (seconds (string-to-number (match-string 2))))
+	(+ (* 60 minutes) seconds)))
+
 ;;;###autoload
 (defun lyrics-fetcher-neteasecloud-lyrics-jump ()
   "Seek the current player to the current timestamp."
   (declare (completion #'ignore))
   (interactive)
-  (let* ((timestamp (save-excursion
-			          (beginning-of-line)
-			          (thing-at-point 'sexp ':no-properties)))
-	     (minutes (string-to-number
-			       (progn
-			         (string-match "\\([[:digit:]]\\{2\\}\\):\\([[:digit:]]\\{2\\}\\)" timestamp)
-			         (match-string 1 timestamp))))
-	     (seconds (string-to-number
-			       (match-string 2 timestamp))))
-	(if timestamp
-	    (emms-seek-to (+ (* 60 minutes) seconds))
-	  (message "No timestamp found!"))))
+  (if-let ((time (lyrics-fetcher-neteasecloud-lyrics-get-time)))
+      (progn
+        (emms-seek-to time)
+        (eli/lyrics-fetcher-hl-current-line))
+    (message "No timestamp found!")))
 
 (defun eli/lyrics-fetcher-neteasecloud-format-file-name (track)
   "TRACK should be either a string or EMMS alist.
