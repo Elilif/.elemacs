@@ -54,7 +54,10 @@
    ;; disable original emms mode line message
    ;; see `mood-line-segment-misc-info'
    emms-playing-time-mode-line :override ignore
-   emms-lyrics-mode-line :override ignore)
+   emms-lyrics-mode-line :override ignore
+   emms-lyrics-seek :after (lambda (&rest _args)
+                             (when emms-player-paused-p
+                               (emms-lyrics-pause))))
   (:after emms-browser
     (:bind-into emms-browser-mode-map
       "C-c C-p" emms-browser-move-up-level)))
