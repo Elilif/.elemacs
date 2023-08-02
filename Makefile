@@ -7,7 +7,8 @@ CONFIG_CLEAN_ARG = --eval "(when (fboundp 'comp-el-to-eln-filename)\
 				 \"~/.emacs.d/lib/\"))\
 	(dolist (el (directory-files dir t \"\\\\.el\\\\'\"))\
 	  (delete-file (comp-el-to-eln-filename el)))))"
-EMACS_EXTRA ?= -L ~/.emacs.d/site-lisp/once/ -L ~/.emacs.d/site-lisp/once/once-setup/ \
+EMACS_EXTRA ?= --load "/usr/local/share/emacs/29.1/lisp/emacs-lisp/cl-lib.el.gz" \
+-L ~/.emacs.d/site-lisp/once/ -L ~/.emacs.d/site-lisp/once/once-setup/ \
 -L ~/.emacs.d/site-lisp/setup/ -L ~/.emacs.d/site-lisp/epkg/ \
 --load ~/.emacs.d/core/core-incremental-loading.el \
 --load ~/.emacs.d/core/core-setup.el
