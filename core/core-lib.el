@@ -103,9 +103,10 @@ the _value_ of the choice, not the selected choice. "
 		(native-compile buffer-file-name)
 	  (byte-compile-file buffer-file-name))))
 
-(if (native-comp-available-p)
-	(advice-add 'native-compile :after #'eli/delete-byte-compile-window-if-success)
-  (advice-add 'byte-compile-file :after #'eli/delete-byte-compile-window-if-success))
+(when initial-window-system
+  (if (native-comp-available-p)
+	  (advice-add 'native-compile :after #'eli/delete-byte-compile-window-if-success)
+    (advice-add 'byte-compile-file :after #'eli/delete-byte-compile-window-if-success)))
 
 (defun add-after-save-hook ()
   (add-hook 'after-save-hook 'auto-recompile-file-maybe nil t))

@@ -132,7 +132,8 @@
                          (file-attribute-modification-time
 						  (file-attributes "~/.emacs.d/.gitmodules")))
                         ".el")))
-	  (if (file-exists-p file)
+	  (if (and (file-exists-p file)
+               initial-window-system)
 		  (load file nil t)
         (require 'borg)
         (borg-initialize)
