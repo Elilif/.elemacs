@@ -507,11 +507,11 @@
   (:option*
    org-clock-convenience-clocked-agenda-re "^ +\\([^:]+\\):[[:space:]]*\\(\\([ 	012][0-9]\\):\\([0-5][0-9]\\)\\)-\\(\\([ 012]*[0-9]\\):\\([0-5][0-9]\\)\\|.*\\)?[[:space:]]+Clocked:[[:space:]]+\\(([0-9]+:[0-5][0-9])\\|(-)\\)")
   (:with-feature org-agenda
-	(:bind-into org-agenda-mode-map
-	  "M-<up>" org-clock-convenience-timestamp-up
-	  "M-<down>" org-clock-convenience-timestamp-down
-	  "<f9>" org-clock-convenience-fill-gap
-	  "<f10>" org-clock-convenience-fill-gap-both)))
+	(:bind
+	 "M-<up>" org-clock-convenience-timestamp-up
+	 "M-<down>" org-clock-convenience-timestamp-down
+	 "<f9>" org-clock-convenience-fill-gap
+	 "<f10>" org-clock-convenience-fill-gap-both)))
 
 ;;;; org-appear-mode
 (setup org-appear
@@ -810,8 +810,8 @@
   (:after org-agenda
 	(org-heatmap-mode))
   (:with-feature org-agenda
-	(:bind-into org-agenda-mode-map
-	  [remap org-agenda-convert-date] org-heatmap-habit-calendar)))
+	(:bind
+	 [remap org-agenda-convert-date] org-heatmap-habit-calendar)))
 ;;;; org-matable
 (setup org-matable
   (:after org

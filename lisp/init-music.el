@@ -85,10 +85,13 @@
     (add-to-list 'auto-mode-alist '("\\.lrc\\'" . lyrics-fetcher-view-mode)))
   (:bind-into lyrics-fetcher-view-mode-map
     "RET" lyrics-fetcher-neteasecloud-lyrics-jump)
-  (:after emms-browser
-    (:bind-into emms-browser-mode-map
-      "l" lyrics-fetcher-show-lyrics
-      "L" lyrics-fetcher-emms-browser-show-at-point))
+  (:with-feature emms-browser
+    (:bind
+     "l" lyrics-fetcher-show-lyrics
+     "L" lyrics-fetcher-emms-browser-show-at-point))
+  (:with-feature emms-playlist
+    (:bind
+     "l" lyrics-fetcher-show-lyrics))
   (:with-feature emms
     (:advice
      emms-lyrics-display-handler :after eli/lyrics-fetcher-highlight)))

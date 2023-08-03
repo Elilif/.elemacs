@@ -204,9 +204,9 @@
 			 (forward-paragraph)
 			 (point)))
 		  (avy--style-fn avy-style))))))
-  (:after org
-	(:bind-into org-mode-map
-	  "<remap> <org-cycle-agenda-files>" avy-goto-char))
+  (:with-feature org
+    (:bind
+	 "<remap> <org-cycle-agenda-files>" avy-goto-char))
   (:option*
    avy-all-windows nil)
   (:global
@@ -260,12 +260,12 @@
    "s-i" eli/gptel-read-crowdsourced-prompt
    "s-\]" eli/gptel-close
    "C-c C-k" eli/gptel-clean)
-  (:with-feature elfeed
-	(:bind-into elfeed-show-mode-map
-	  "s" eli/gptel-summary))
-  (:with-feature pdf-tools
-	(:bind-into pdf-view-mode-map
-	  "<mouse-8>" eli/gptel-translate))
+  (:with-feature elfeed-show
+	(:bind
+	 "s" eli/gptel-summary))
+  (:with-feature pdf-view
+	(:bind
+	 "<mouse-8>" eli/gptel-translate))
   (:global
    "s-p" eli/gptel-posframe-toggle
    "C-c DEL" gptel-abort
