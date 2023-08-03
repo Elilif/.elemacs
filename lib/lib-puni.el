@@ -109,6 +109,117 @@ See `puni-backward-delete-char' for more information."
     (puni-backward-delete-char)))
 
 
+;;;; LaTeX
+(setq eli/tex-delimiters (cl-loop for (l r)
+								  in '(( "(" ")" )
+									   ( "[" "]" )
+									   ( "\\{" "\\}" )
+									   ( "\\langle" "\\rangle" )
+									   ( "\\lvert" "\\rvert" )
+									   ( "\\lVert" "\\rVert" ))
+								  nconc
+								  (cl-loop for (pre-l pre-r)
+										   in '(( "" "" )
+												( "\\left"  "\\right")
+												( "\\bigl"  "\\bigr")  ("\\big"  "\\big")
+												( "\\biggl" "\\biggr") ("\\bigg" "\\bigg")
+												( "\\Bigl"  "\\Bigr")  ("\\Big"  "\\Big")
+												( "\\Biggl" "\\Biggr") ("\\Bigg" "\\Bigg"))
+										   collect (cons (concat pre-l l) (concat pre-r r)))))
+
+(setq eli/tex-delimiters (append eli/tex-delimiters '(("\\[" . "\\]")
+													  ("\\(" . "\\)"))))
+
+(defun eli/latex-backward-sexp-1 (&optional arg)
+  (dotimes (_ (abs arg))
+	(let ((case-fold-search nil))
+	  (if-let* ((lim (save-excursion
+					   (re-search-backward (concat "^\\(" paragraph-start "\\)") nil
+										   'move)
+					   (point)))
+				(rcmd (when (looking-back "\\(?:\\s-\\|^\\)\\(\\\\.*?\\)\\s-?" lim)
+						(match-string 1)))
+				(lcmd (car-safe (rassoc rcmd eli/tex-delimiters))))
+		  (re-search-backward (regexp-quote lcmd))
+		(if (and rcmd (equal rcmd (car-safe (assoc rcmd eli/tex-delimiters))))
+			(user-error "Beginning of sexp!")
+		  (goto-char (or (scan-sexps (point) -1) (buffer-end arg)))
+		  (if (< arg 0) (backward-prefix-chars)))))))
+
+(defun eli/latex-forward-sexp-1 (&optional arg)
+  (dotimes (_ (abs arg))
+	(let ((case-fold-search nil))
+	  (if-let* ((lcmd (when (looking-at "\\s-?\\(\\\\.*?\\)\\s-")
+						(match-string 1)))
+				(rcmd (cdr-safe (assoc lcmd eli/tex-delimiters #'equal))))
+		  (re-search-forward (regexp-quote rcmd))
+		(if (or (and lcmd (equal lcmd (cdr-safe (rassoc lcmd eli/tex-delimiters))))
+				(and (eq (char-before) ?\\)
+					 (memq (char-after) '(?\( ?\[ ?\{)))
+				(and (org-inside-latex-macro-p)
+					 (not (eq (char-before) ?\}))
+					 (eq (char-after) ?\[))
+				(and (org-inside-latex-macro-p)
+					 (not (eq (char-before) ?\ ))
+					 (eq (char-after) ?\()))
+			(user-error "End of sexp!")
+		  (goto-char (or (scan-sexps (point) 1) (buffer-end arg))))))))
+
+(defun eli/latex-forward-sexp (&optional arg)
+  (condition-case _
+	  (if (> arg 0)
+		  (eli/latex-forward-sexp-1 arg)
+		(eli/latex-backward-sexp-1 arg))
+	(scan-error (user-error (if (> arg 0)
+								"No next sexp"
+							  "No previous sexp")))))
+
+(defun eli/puni-latex-mark ()
+  (puni-beginning-of-sexp)
+  (skip-chars-forward "[:space:]")
+  (set-mark (point))
+  (puni-end-of-sexp)
+  (skip-chars-backward "[:space:]"))
+
+;;;###autoload
+(defun eli/puni-latex-raise ()
+  (interactive)
+  (save-excursion
+	(eli/puni-latex-mark)
+	(puni-raise)
+	(deactivate-mark)))
+
+(defun eli/puni-latex--wrap-region (beg end ldelim rdelim)
+  (save-excursion
+	(goto-char end)
+	(insert (concat " " rdelim))
+	(goto-char beg)
+	(insert (concat ldelim " "))))
+
+;;;###autoload
+(defun eli/puni-latex-rewrap (lpair &optional new)
+  (interactive (list (completing-read "Select: " eli/tex-delimiters)
+					 current-prefix-arg))
+  (let ((rpair (cdr (assoc lpair eli/tex-delimiters #'equal)))
+		beg end)
+	(save-excursion
+	  (unless (region-active-p)
+		(eli/puni-latex-mark))
+	  (unless new
+		(puni-raise))
+	  (setq beg (region-beginning)
+			end (region-end))
+	  (deactivate-mark)
+	  (eli/puni-latex--wrap-region beg end lpair rpair))))
+
+(defun eli/puni--forward-sexp-wrapper (orig &rest arg)
+  (if (eq major-mode 'org-mode)
+	  (let ((forward-sexp-function #'eli/latex-forward-sexp))
+		(apply orig arg))
+	(apply orig arg)))
+(advice-add 'puni--forward-sexp-wrapper :around #'eli/puni--forward-sexp-wrapper)
+(advice-add 'kill-sexp :around #'eli/puni--forward-sexp-wrapper)
+
 ;;;; provide
 (provide 'lib-puni)
 ;;; lib-puni.el ends here.
