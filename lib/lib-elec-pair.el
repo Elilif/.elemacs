@@ -134,13 +134,13 @@ The decision is taken by order of preference:
 									 (?_ . ?_)))
 
 (defun eli/elec-pair-delete-pair-1 (&rest _args)
-  (add-hook 'post-self-insert-hook #'eli/elec-pair-delete-pair)
+  (add-hook 'post-command-hook #'eli/elec-pair-delete-pair)
   (advice-remove 'electric-pair--insert #'eli/elec-pair-delete-pair-1))
 
 (defun eli/elec-pair-delete-pair ()
   (when (eq (char-before) ?\ )
 	(delete-char 1))
-  (remove-hook 'post-self-insert-hook #'eli/elec-pair-delete-pair))
+  (remove-hook 'post-command-hook #'eli/elec-pair-delete-pair))
 
 (defun eli/electric-pair-inhibit (char)
   (cond
