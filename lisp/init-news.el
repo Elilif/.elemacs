@@ -132,7 +132,7 @@
    mu4e-mu-binary "~/.emacs.d/site-lisp/mu4e/build/mu/mu"
    mu4e-compose-format-flowed t
    mu4e-get-mail-command "proxychains mbsync -a"
-   mu4e-update-interval 600
+   mu4e-update-interval 1800
    mu4e-modeline-support nil
    mu4e-query-rewrite-function 'mu4e-goodies~break-cjk-query
    mu4e-bookmarks '(("flag:unread"                       "Unread messages"                  ?u)
