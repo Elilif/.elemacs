@@ -1,4 +1,4 @@
-;; core-ui.el --- Initialize core-ui.el.	-*- lexical-binding: t; -*-
+;; core-ui.el --- Initialize core-ui.el.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -47,44 +47,44 @@
   (progn
     ;; Setting English Font
     (set-face-attribute 'default nil :font "Cascadia Mono 13")
-	
+
     ;; Chinese fonts
     (dolist (charset '(kana han cjk-misc bopomofo))
       (set-fontset-font (frame-parameter nil 'font) charset
-			            (font-spec :family "Sarasa Term SC Nerd")))
+                        (font-spec :family "Sarasa Term SC Nerd")))
 
-	;;; modeline font setting
-	(create-fontset-from-fontset-spec
-	 (font-xlfd-name
-	  (font-spec :family "Cascadia Mono"
-				 :registry "fontset-modeline fontset")))
+    ;;; modeline font setting
+    (create-fontset-from-fontset-spec
+     (font-xlfd-name
+      (font-spec :family "Cascadia Mono"
+                 :registry "fontset-modeline fontset")))
 
-	(dolist (charset '(kana han cjk-misc bopomofo unicode))
+    (dolist (charset '(kana han cjk-misc bopomofo unicode))
       (set-fontset-font "fontset-modeline fontset"  charset
-			            (font-spec :family "InconsolataGo QiHei NF")))
-	(set-fontset-font "fontset-modeline fontset" 'latin
-					  (font-spec :family "Cascadia Mono"))
-	
-	(dolist (face '(mode-line mode-line-inactive mode-line-buffer-id
-							  mode-line-highlight mode-line-active
-							  mode-line-emphasis
-							  tab-bar-tab tab-bar-tab-inactive))
-	  (set-face-attribute face nil :fontset "fontset-modeline fontset"))
-	(dolist (sym '(?● ?■ ?◢))
-	  (set-fontset-font "fontset-modeline fontset" sym
-						(font-spec :family "Sarasa Term SC Nerd" :size 13)))
-	;;; modeline font setting ends here
+                        (font-spec :family "InconsolataGo QiHei NF")))
+    (set-fontset-font "fontset-modeline fontset" 'latin
+                      (font-spec :family "Cascadia Mono"))
 
-	(dolist (font '("Meslo LG S DZ" "HanaMinA" "Noto Color Emoji"))
-	  (set-fontset-font "fontset-default" 'unicode font nil 'prepend))
-	
+    (dolist (face '(mode-line mode-line-inactive mode-line-buffer-id
+                              mode-line-highlight mode-line-active
+                              mode-line-emphasis
+                              tab-bar-tab tab-bar-tab-inactive))
+      (set-face-attribute face nil :fontset "fontset-modeline fontset"))
+    (dolist (sym '(?● ?■ ?◢))
+      (set-fontset-font "fontset-modeline fontset" sym
+                        (font-spec :family "Sarasa Term SC Nerd" :size 13)))
+    ;;; modeline font setting ends here
+
+    (dolist (font '("Meslo LG S DZ" "HanaMinA" "Noto Color Emoji"))
+      (set-fontset-font "fontset-default" 'unicode font nil 'prepend))
+
     (set-fontset-font nil ?ㄓ (font-spec :family "Sarasa Term SC Nerd" :size 12))
     (set-fontset-font nil ?⎙ "PragmataPro Liga")
-	
+
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
                                     ("Sarasa" . 1.2)
                                     ("Amazon Ember" . 1.3)
-									("Bookerly" . 1.3)))))
+                                    ("Bookerly" . 1.3)))))
 
 (add-hook 'after-init-hook #'eli/set-font)
 

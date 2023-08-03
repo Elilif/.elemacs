@@ -1,4 +1,4 @@
-;; core-incremental-loading.el --- Initialize configurations.	-*- lexical-binding: t; -*-
+;; core-incremental-loading.el --- Initialize configurations.   -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -95,10 +95,10 @@ in `elemacs-incremental-idle-timer' intervals."
              (message "Error: failed to incrementally load %S because: %s" req e)
              (setq elemacs-incremental-packages nil)))
           (when packages
-			(run-with-idle-timer elemacs-incremental-idle-timer
-								 nil #'elemacs-load-packages-incrementally
-								 elemacs-incremental-packages t)
-			(setq packages nil)))))))
+            (run-with-idle-timer elemacs-incremental-idle-timer
+                                 nil #'elemacs-load-packages-incrementally
+                                 elemacs-incremental-packages t)
+            (setq packages nil)))))))
 
 (defun elemacs-load-packages-incrementally-h ()
   "Begin incrementally loading packages in `elemacs-incremental-packages'.
@@ -115,9 +115,9 @@ If this is a daemon session, load them all immediately instead."
 
 ;; (elemacs-load-packages-incrementally
 ;;  '(borg init-hydra calendar find-func format-spec org-macs org-compat
-;; 	    org-faces org-entities org-list org-pcomplete org-src
-;; 	    org-footnote org-macro ob org org-clock org-agenda
-;; 	    org-capture dired-x ispell all-the-icons mu4e embark emms-setup org-roam
+;;          org-faces org-entities org-list org-pcomplete org-src
+;;          org-footnote org-macro ob org org-clock org-agenda
+;;          org-capture dired-x ispell all-the-icons mu4e embark emms-setup org-roam
 ;;         tex-site texmath))
 
 ;; ;; pdf

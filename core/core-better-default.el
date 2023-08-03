@@ -1,4 +1,4 @@
-;; core-better-default.el --- Initialize core-better-default configurations.	-*- lexical-binding: t; -*-
+;; core-better-default.el --- Initialize core-better-default configurations.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 ;;
-;;  
+;;
 ;;
 
 ;;; Code:
@@ -107,7 +107,7 @@
 (setq url-proxy-services '(("http" . "127.0.0.1:7890")
                            ("https" . "127.0.0.1:7890")
                            ;; ("socks5" . "127.0.0.1:7891")
-			               ))
+                           ))
 
 (setq use-short-answers t)
 
@@ -123,15 +123,15 @@
 (setup hippie-exp
   (:when-loaded
     (setq hippie-expand-try-functions-list '(try-expand-dabbrev
-					                         try-expand-dabbrev-all-buffers
-					                         try-expand-dabbrev-from-kill
-					                         try-complete-file-name-partially
-					                         try-complete-file-name
-					                         try-expand-all-abbrevs
-					                         try-expand-list
-					                         try-expand-line
-					                         try-complete-lisp-symbol-partially
-					                         try-complete-lisp-symbol)))
+                                             try-expand-dabbrev-all-buffers
+                                             try-expand-dabbrev-from-kill
+                                             try-complete-file-name-partially
+                                             try-complete-file-name
+                                             try-expand-all-abbrevs
+                                             try-expand-list
+                                             try-expand-line
+                                             try-complete-lisp-symbol-partially
+                                             try-complete-lisp-symbol)))
   (:global "s-/" hippie-expand)
   (:option*
    dabbrev-ignored-buffer-modes '(archive-mode image-mode pdf-view-mode)))
@@ -148,13 +148,13 @@
   "Call `occur' with a sane default."
   (interactive)
   (push (if (region-active-p)
-	        (buffer-substring-no-properties
-	         (region-beginning)
-	         (region-end))
-	      (let ((sym (thing-at-point 'symbol)))
-	        (when (stringp sym)
-	          (regexp-quote sym))))
-	    regexp-history)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
   (call-interactively 'occur))
 
 (setup replace
@@ -210,18 +210,18 @@
   (:when-loaded
     (:option recentf-auto-cleanup 'never
              recentf-exclude '("/home/eli/.emacs.d/.cache/treemacs-persist-at-last-error"
-	                           "/home/eli/.emacs.d/.cache/treemacs-persist"
-	                           "\\.txt$"
-							   "\\.chat$"
+                               "/home/eli/.emacs.d/.cache/treemacs-persist"
+                               "\\.txt$"
+                               "\\.chat$"
                                "/home/eli/.emacs.d/emms/history"
-	                           "/home/eli/.emacs.d/elpa/*"
-	                           "/home/eli/.elfeed/index"
-							   "~/.elfeed/index"
-	                           "/home/eli/.mail/*"
+                               "/home/eli/.emacs.d/elpa/*"
+                               "/home/eli/.elfeed/index"
+                               "~/.elfeed/index"
+                               "/home/eli/.mail/*"
                                "/tmp/*")
              recentf-max-menu-items 50
              recentf-max-saved-items 50
-			 recentf-save-file "~/.emacs.d/var/recentf")))
+             recentf-save-file "~/.emacs.d/var/recentf")))
 
 ;;;; saveplace
 (setup saveplace
@@ -235,38 +235,38 @@
   (:global [remap list-buffers] ibuffer)
   (:option*
    ibuffer-formats '((mark modified read-only locked " "
-						   (name 30 30 :left :elide)
-						   " "
-						   (size 9 -1 :right)
-						   " "
-						   (mode 16 16 :left :elide)
-						   " " filename-and-process)
-					 (mark " "
-						   (name 16 -1)
-						   " " filename))
+                           (name 30 30 :left :elide)
+                           " "
+                           (size 9 -1 :right)
+                           " "
+                           (mode 16 16 :left :elide)
+                           " " filename-and-process)
+                     (mark " "
+                           (name 16 -1)
+                           " " filename))
    ibuffer-saved-filter-groups
    '(("default"
-	  ("dired" (mode . dired-mode))
-	  ("emacs" (or
-				(mode . emacs-lisp-mode)
-				(name . ".*scratch.*")
-				(name . "^\\*Messages\\*$")))
-	  ("magit" (or
-				(mode . magit-status-mode)
-				(mode . magit-process-mode)
-				(mode . magit-diff-mode)
-				(mode . magit-revision-mode)
-				(mode . magit-log-mode)))
-	  ("pdf" (or
-			  (file-extension . "pdf")
-			  (mode . pdf-outline-buffer-mode)))
-	  ("roam"  (or
-				(filename . "/home/eli/Dropbox/org/roam/main/")
-				(filename . "/home/eli/Dropbox/org/roam/references/")))
-	  ("books" (filename . "/home/eli/Dropbox/org/roam/books/"))
-	  ("agenda" (or
-				 (filename . "/home/eli/Dropbox/org/")
-				 (name . "^\\*Org Agenda\\*$"))))))
+      ("dired" (mode . dired-mode))
+      ("emacs" (or
+                (mode . emacs-lisp-mode)
+                (name . ".*scratch.*")
+                (name . "^\\*Messages\\*$")))
+      ("magit" (or
+                (mode . magit-status-mode)
+                (mode . magit-process-mode)
+                (mode . magit-diff-mode)
+                (mode . magit-revision-mode)
+                (mode . magit-log-mode)))
+      ("pdf" (or
+              (file-extension . "pdf")
+              (mode . pdf-outline-buffer-mode)))
+      ("roam"  (or
+                (filename . "/home/eli/Dropbox/org/roam/main/")
+                (filename . "/home/eli/Dropbox/org/roam/references/")))
+      ("books" (filename . "/home/eli/Dropbox/org/roam/books/"))
+      ("agenda" (or
+                 (filename . "/home/eli/Dropbox/org/")
+                 (name . "^\\*Org Agenda\\*$"))))))
   (:hook (lambda ()
            (ibuffer-switch-to-saved-filter-groups "default"))))
 
@@ -301,8 +301,8 @@
 ;;;; bytecompile
 (setup bytecomp
   (:with-map emacs-lisp-compilation-mode-map
-	(:bind
-	 "q" kill-buffer-and-window)))
+    (:bind
+     "q" kill-buffer-and-window)))
 ;;;; abbrev
 (setup abbrev
   (:hook-into

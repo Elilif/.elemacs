@@ -1,4 +1,4 @@
-;; init.el 	-*- lexical-binding: t -*-
+;; init.el      -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -60,14 +60,14 @@
 
     ;; cleanup obsolete autoloads file
     (dolist (f (directory-files single-autoload-path t "autoload-[0-9]+-[0-9]+\\.elc?\\'"))
-	  (unless (string= file f)
+      (unless (string= file f)
         (delete-file f)))
 
     (message "Generating single big autoload file.")
     (condition-case-unless-debug e
         (with-temp-file file
-		  (setq-local coding-system-for-write 'utf-8)
-		  (let ((standard-output (current-buffer))
+          (setq-local coding-system-for-write 'utf-8)
+          (let ((standard-output (current-buffer))
                 (print-quoted t)
                 (print-level nil)
                 (print-length nil)
@@ -81,18 +81,18 @@
 
             ;; replace absolute path to ~
             (dolist (p load-path)
-			  ;; collect all drone's load-path
-			  (when (string-prefix-p (expand-file-name user-emacs-directory) (expand-file-name p))
+              ;; collect all drone's load-path
+              (when (string-prefix-p (expand-file-name user-emacs-directory) (expand-file-name p))
                 (push p drones-path))
 
-			  (if (string-prefix-p home p)
-				  (push (concat "~" (string-remove-prefix home p)) path-list)
+              (if (string-prefix-p home p)
+                  (push (concat "~" (string-remove-prefix home p)) path-list)
                 (push p path-list)))
 
             (dolist (p custom-theme-load-path)
-			  (if (and (stringp p)
-					   (string-prefix-p home p))
-				  (push (concat "~" (string-remove-prefix home p)) theme-path-list)
+              (if (and (stringp p)
+                       (string-prefix-p home p))
+                  (push (concat "~" (string-remove-prefix home p)) theme-path-list)
                 (push p theme-path-list)))
 
             (prin1 `(set `load-path ',path-list))
@@ -102,15 +102,15 @@
 
             ;; insert all drone's autoloads.el to this file
             (dolist (p drones-path)
-			  (when (file-exists-p p)
+              (when (file-exists-p p)
                 (setq auto (car (directory-files p t ".*-autoloads.el\\'")))
                 (when (and auto
-						   (file-exists-p auto))
-				  (insert-file-contents auto))))
+                           (file-exists-p auto))
+                  (insert-file-contents auto))))
             ;; remove all #$ load code
             (goto-char (point-min))
             (while (re-search-forward "\(add-to-list 'load-path.*#$.*\n" nil t)
-			  (replace-match ""))
+              (replace-match ""))
 
             ;; write local variables region
             (goto-char (point-max))
@@ -120,8 +120,8 @@
                      "\n;; no-update-autoloads: t"
                      "\n;; End:"
                      ))
-		  t)
-	  (error (delete-file file)
+          t)
+      (error (delete-file file)
              (signal 'collect-autoload-error (list file e)))))
 
   (defun lld-initialize ()
@@ -130,30 +130,30 @@
                         (format-time-string
                          "%+4Y%m%d-%H%M%S"
                          (file-attribute-modification-time
-						  (file-attributes "~/.emacs.d/.gitmodules")))
+                          (file-attributes "~/.emacs.d/.gitmodules")))
                         ".el")))
-	  (if (and (file-exists-p file)
+      (if (and (file-exists-p file)
                initial-window-system)
-		  (load file nil t)
+          (load file nil t)
         (require 'borg)
         (borg-initialize)
         (lld-collect-autoloads file))))
 
   (defun latest-file (path)
-	"Get latest file (including directory) in PATH."
-	(file-name-nondirectory (car (seq-find
-								  (lambda (x) (not (nth 1 x))) ; non-directory
-								  (sort
-								   (directory-files-and-attributes path 'full nil t)
-								   (lambda (x y) (time-less-p (nth 5 y) (nth 5 x))))))))
+    "Get latest file (including directory) in PATH."
+    (file-name-nondirectory (car (seq-find
+                                  (lambda (x) (not (nth 1 x))) ; non-directory
+                                  (sort
+                                   (directory-files-and-attributes path 'full nil t)
+                                   (lambda (x y) (time-less-p (nth 5 y) (nth 5 x))))))))
 
   (defun eli/collect-lib-autoloads ()
-	(unless (string= (latest-file "~/.emacs.d/lib/") "lib-autoloads.el")
-	  (require 'loaddefs-gen nil t)
-	  (loaddefs-generate "~/.emacs.d/lib/"
-						 "~/.emacs.d/lib/lib-autoloads.el"
-						 nil nil nil t))
-	(load "~/.emacs.d/lib/lib-autoloads.el" nil t))
+    (unless (string= (latest-file "~/.emacs.d/lib/") "lib-autoloads.el")
+      (require 'loaddefs-gen nil t)
+      (loaddefs-generate "~/.emacs.d/lib/"
+                         "~/.emacs.d/lib/lib-autoloads.el"
+                         nil nil nil t))
+    (load "~/.emacs.d/lib/lib-autoloads.el" nil t))
 
   (lld-initialize)
   (eli/collect-lib-autoloads))
@@ -176,7 +176,7 @@
   (require 'init-edit))
 
 ;; (require 'init-lang)
-;; (require 'init-news)  
+;; (require 'init-news)
 ;; (require 'init-org)
 ;; (require 'init-pdf)
 ;; (require 'init-bib)
@@ -186,33 +186,33 @@
 (setup org
   (:iload init-org)
   (:once (list :before 'hydra-org-agenda/body 'hydra-org/body
-			   'citar-open
-			   :packages 'org)
-	(require 'init-org)
-	(require 'init-tex)))
+               'citar-open
+               :packages 'org)
+    (require 'init-org)
+    (require 'init-tex)))
 
 (setup init-vc
   (:iload init-vc)
   (:once (list :before 'magit-status)
-	(require 'init-vc)))
+    (require 'init-vc)))
 
 (setup init-lang
   (:iload init-lang)
   (:once (list
-		  :hooks 'find-file-hook 
-		  :before 'consult-recent-file 'consult-dir 'consult-bookmark)
-	(require 'init-lang)))
+          :hooks 'find-file-hook
+          :before 'consult-recent-file 'consult-dir 'consult-bookmark)
+    (require 'init-lang)))
 
 (setup init-news
   (:iload init-news)
   (once (list :before 'hydra-reader/body)
-	(require 'init-news)))
+    (require 'init-news)))
 
 (setup reader
   (:iload init-pdf init-bib)
   (:once (list :before 'hydra-bibtex/body)
-	(require 'init-pdf)
-	(require 'init-bib)))
+    (require 'init-pdf)
+    (require 'init-bib)))
 
 (setup init-music
   (:once (list :before 'hydra-player/body)

@@ -1,4 +1,4 @@
-;; core-lib.el --- Initialize core lib configurations.	-*- lexical-binding: t; -*-
+;; core-lib.el --- Initialize core lib configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -34,7 +34,7 @@
   (cl-letf (((symbol-function 'message)
              (lambda (&rest _args) nil)))
     (let ((inhibit-message t))
-	  (apply func args))))
+      (apply func args))))
 
 ;;; SRC: https://emacs-china.org/t/doom-modeline-2-1-0/9251/189?u=vagrantjoker
 (defun my/require (orig-func &rest orig-args)
@@ -59,7 +59,7 @@
   (interactive)
   (let ((target (read-string "Search for: ")))
     (browse-url (concat "http://www.google.com/search?q="
-			            (url-hexify-string target)))))
+                        (url-hexify-string target)))))
 
 ;; insert key-sequence
 
@@ -70,7 +70,10 @@
            (read-key-sequence-vector "Press a keystrokes:"))))
 
 ;; src: https://howardism.org/Technical/Emacs/alt-completing-read.html
-(defun elemacs-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
+(defun elemacs-completing-read (prompt collection
+                                       &optional predicate require-match
+                                       initial-input hist def
+                                       inherit-input-method)
   "Calls `completing-read' but returns the value from COLLECTION.
 
 Simple wrapper around the `completing-read' function that assumes
@@ -78,35 +81,40 @@ the collection is either an alist, or a hash-table, and returns
 the _value_ of the choice, not the selected choice. "
   (cl-flet ((assoc-list-p (obj) (and (listp obj) (consp (car obj)))))
     (let* ((choice
-            (completing-read prompt collection predicate require-match initial-input hist def inherit-input-method))
+            (completing-read prompt collection predicate require-match
+                             initial-input hist def inherit-input-method))
            (results (cond
-                     ((hash-table-p collection) (gethash choice collection))
-                     ((assoc-list-p collection) (alist-get choice collection def nil 'equal))
+                     ((hash-table-p collection)
+                      (gethash choice collection))
+                     ((assoc-list-p collection)
+                      (alist-get choice collection def nil 'equal))
                      (t                         choice))))
       (if results
-		  (if (listp results) (car results) results)
-		choice))))
+          (if (listp results) (car results) results)
+        choice))))
 
 
 (defun eli/delete-byte-compile-window-if-success (&rest _arg)
   "Delete byte-compilation window if succeeded without warnings or errors."
   (let ((buf (get-buffer byte-compile-log-buffer)))
-	(with-current-buffer buf
-	  (unless (re-search-forward "Warning\\|Error" nil t)
-		(when-let ((win (get-buffer-window buf)))
-		  (delete-window win))))))
+    (with-current-buffer buf
+      (unless (re-search-forward "Warning\\|Error" nil t)
+        (when-let ((win (get-buffer-window buf)))
+          (delete-window win))))))
 
 (defun auto-recompile-file-maybe ()
   (when (and (fboundp 'vc-root-dir)
-			 (string= (vc-root-dir) user-emacs-directory))
-	(if (native-comp-available-p)
-		(native-compile buffer-file-name)
-	  (byte-compile-file buffer-file-name))))
+             (string= (vc-root-dir) user-emacs-directory))
+    (if (native-comp-available-p)
+        (native-compile buffer-file-name)
+      (byte-compile-file buffer-file-name))))
 
 (when initial-window-system
   (if (native-comp-available-p)
-	  (advice-add 'native-compile :after #'eli/delete-byte-compile-window-if-success)
-    (advice-add 'byte-compile-file :after #'eli/delete-byte-compile-window-if-success)))
+      (advice-add 'native-compile :after
+                  #'eli/delete-byte-compile-window-if-success)
+    (advice-add 'byte-compile-file :after
+                #'eli/delete-byte-compile-window-if-success)))
 
 (defun add-after-save-hook ()
   (add-hook 'after-save-hook 'auto-recompile-file-maybe nil t))
@@ -116,11 +124,11 @@ the _value_ of the choice, not the selected choice. "
   (interactive "FFind file: ")
   (cond
    ((and (not (file-exists-p file))
-		 (directory-name-p file))
-	(make-directory file t))
+         (directory-name-p file))
+    (make-directory file t))
    ((not (file-exists-p (file-name-parent-directory file)))
-	(make-directory (file-name-parent-directory file) t)
-	(find-file file))
+    (make-directory (file-name-parent-directory file) t)
+    (find-file file))
    (t (find-file file))))
 
 
@@ -138,24 +146,24 @@ the _value_ of the choice, not the selected choice. "
   (save-excursion
     (when (thing-at-point 'defun)
       (beginning-of-defun)
-	  (let* ((sexp (read (current-buffer))))
-		(when (equal (car sexp) 'setup)
-		  (cadr sexp))))))
+      (let* ((sexp (read (current-buffer))))
+        (when (equal (car sexp) 'setup)
+          (cadr sexp))))))
 
 ;;;###autoload
 (defun eli/setup-open-lib ()
   "Open the lib file corresponding to the current package."
   (interactive)
   (if-let* ((pkg (eli/setup-get-package))
-			(file-name (concat "lib-" (symbol-name pkg) ".el"))
-			(file-path (file-name-concat user-emacs-directory
-										 "lib"
-										 file-name)))
-	  (if (file-exists-p file-path)
-		  (find-file file-path)
-		(when (y-or-n-p (format "File %s does not exit, create it? " file-path))
-		  (find-file file-path)))
-	(error "Not in a setup expression!")))
+            (file-name (concat "lib-" (symbol-name pkg) ".el"))
+            (file-path (file-name-concat user-emacs-directory
+                                         "lib"
+                                         file-name)))
+      (if (file-exists-p file-path)
+          (find-file file-path)
+        (when (y-or-n-p (format "File %s does not exit, create it? " file-path))
+          (find-file file-path)))
+    (error "Not in a setup expression!")))
 
 ;;; adjust image size while adjusting the font size
 (defvar eli/image-scale-mode-step 1.2
@@ -185,22 +193,23 @@ the _value_ of the choice, not the selected choice. "
 (defun eli/overlay-image-scale (arg)
   "Displaying buffer images(overlay property) in a larger/smaller size."
   (when org-inline-image-overlays
-	(dolist (ov org-inline-image-overlays)
-	  (let* ((img (overlay-get ov 'display))
+    (dolist (ov org-inline-image-overlays)
+      (let* ((img (overlay-get ov 'display))
              (width (image-property img :width))
              (original-width (or (image-property img :original-width)
                                  (image--set-property img
                                                       :original-width width)))
              (beg (overlay-start ov))
-             (original-scale (eli/set-image-original-scale-factor beg (1+ beg) img)))
+             (original-scale
+              (eli/set-image-original-scale-factor beg (1+ beg) img)))
         (when (and (not width)
                    original-width)
           (image--set-property img :width original-width))
         (image--set-property img
-		                     :scale
-		                     (* original-scale
+                             :scale
+                             (* original-scale
                                 (expt eli/image-scale-mode-step
-			                          text-scale-mode-amount)))))
+                                      text-scale-mode-amount)))))
     (when (< arg 0)
       (eli/delete-image-scale-factor-overlay))))
 
@@ -210,13 +219,19 @@ the _value_ of the choice, not the selected choice. "
     (goto-char (point-min))
     (while (not (eobp))
       (when-let* ((img (get-text-property (point) 'display))
-                  (original-scale (eli/set-image-original-scale-factor (point) (1+ (point)) img)))
+                  (original-scale
+                   (eli/set-image-original-scale-factor (point)
+                                                        (1+ (point))
+                                                        img)))
         (when (and img (eq (car-safe img) 'image))
           (image--set-property img
-							   :scale
-							   (* original-scale (expt eli/image-scale-mode-step
-									                   text-scale-mode-amount)))))
-      (goto-char (next-single-property-change (point) 'display nil (point-max))))
+                               :scale
+                               (* original-scale
+                                  (expt
+                                   eli/image-scale-mode-step
+                                   text-scale-mode-amount)))))
+      (goto-char (next-single-property-change (point)
+                                              'display nil (point-max))))
     (when (< arg 0)
       (eli/delete-image-scale-factor-overlay))))
 

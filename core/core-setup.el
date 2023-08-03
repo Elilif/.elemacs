@@ -1,4 +1,4 @@
-;; core-setup.el --- Initialize core-setup.	-*- lexical-binding: t; -*-
+;; core-setup.el --- Initialize core-setup.     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -52,22 +52,22 @@
 ;; (defmacro epkg-get-subpkgs (pkg)
 ;;   "Get sub-package list from epkg."
 ;;   (let* ((name (symbol-name pkg))
-;; 		 (provided (thread-last
-;; 					 (oref (epkg name) provided)
-;; 					 (mapcar (lambda (x) (car x)))))
-;; 		 (no-byte-compile (thread-last
-;; 							(borg-get-all name "no-byte-compile")
-;; 							(mapcar (lambda (x) (file-name-base x))))))
-;; 	`',(cl-remove-if (lambda (x) (let ((name (symbol-name x)))
-;; 								   (or (string-match-p "test" name)
-;; 									   (member name no-byte-compile))))
-;; 					 provided)))
+;;           (provided (thread-last
+;;                       (oref (epkg name) provided)
+;;                       (mapcar (lambda (x) (car x)))))
+;;           (no-byte-compile (thread-last
+;;                              (borg-get-all name "no-byte-compile")
+;;                              (mapcar (lambda (x) (file-name-base x))))))
+;;      `',(cl-remove-if (lambda (x) (let ((name (symbol-name x)))
+;;                                     (or (string-match-p "test" name)
+;;                                         (member name no-byte-compile))))
+;;                       provided)))
 
 ;; (setup-define :iload*
 ;;   (lambda (body)
-;; 	`(once (list :packages 'epkg)
-;; 	   (elemacs-load-packages-incrementally
-;; 		(epkg-get-subpkgs ,body))))
+;;      `(once (list :packages 'epkg)
+;;         (elemacs-load-packages-incrementally
+;;          (epkg-get-subpkgs ,body))))
 ;;   :documentation "Load packages incrementally.")
 
 
@@ -107,7 +107,8 @@ loaded."
   (lambda (time &rest body)
     `(run-with-idle-timer ,time nil
                           (lambda () ,@body)))
-  :documentation "Delay loading BODY until a certain amount of idle time has passed."
+  :documentation "Delay loading BODY until a certain amount of idle time
+has passed."
   :indent 1)
 
 ;;  src: https://emacs.nasy.moe/#Setup-EL
@@ -152,12 +153,12 @@ loaded."
 (defun elemacs/borg-clean (clone)
   (let* ((path (borg--expand-load-path clone nil))
          (file (expand-file-name (format "%s-autoloads.el" clone) (car path))))
-	(delete-file file)))
+    (delete-file file)))
 
 (setup borg
   (:iload borg)
   (:once (list :before 'info)
-	(require 'borg)
+    (require 'borg)
     (info-initialize)
     (borg-do-drones (drone)
       (dolist (dir (borg-info-path drone))
