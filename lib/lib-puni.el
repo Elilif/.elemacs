@@ -32,6 +32,17 @@
 
 ;; the following code are taken from `expand-region'
 ;;;###autoload
+(defun er/mark-word ()
+  "Mark the entire word around or in front of point."
+  (interactive)
+  (let ((word-regexp "\\sw"))
+    (when (or (looking-at word-regexp)
+              (looking-back word-regexp (line-beginning-position)))
+      (skip-syntax-forward "w")
+      (set-mark (point))
+      (skip-syntax-backward "w"))))
+
+;;;###autoload
 (defun er/mark-symbol ()
   "Mark the entire symbol around or in front of point."
   (interactive)
@@ -52,17 +63,40 @@
   (forward-sentence 1)
   (exchange-point-and-mark))
 
+(defun eli/mark-symbol-maybe ()
+  (let ((current-length (- (region-end)
+						   (region-beginning)))
+		(symbol-length (length (thing-at-point 'symbol))))
+	(if (/= current-length symbol-length)
+		(er/mark-symbol)
+	  (setq eli/expand-region-count
+			(1+ eli/expand-region-count))
+	  (funcall (nth eli/expand-region-count
+					eli/expand-region-commands)))))
+
+(defvar eli/expand-region-count 1)
+(defvar eli/expand-region-commands '(er/mark-word
+									 eli/mark-symbol-maybe
+									 er/mark-sentence))
+
 ;;;###autoload
 (defun eli/expand-region ()
   (interactive)
   (if (eq last-command this-command)
-	  (cond
-	   ((derived-mode-p 'prog-mode)
-		(puni-expand-region))
-	   (t (er/mark-sentence)))
-	(if (thing-at-point 'symbol)
-		(er/mark-symbol)
-	  (puni-expand-region))))
+	  (progn
+		(cond
+		 ((derived-mode-p 'prog-mode)
+		  (puni-expand-region))
+		 (t (if (< eli/expand-region-count 3)
+				(funcall (nth eli/expand-region-count
+							  eli/expand-region-commands))
+			  (puni-expand-region))))
+		(setq eli/expand-region-count
+			  (1+ eli/expand-region-count)))
+	(if (thing-at-point 'word)
+		(er/mark-word)
+	  (puni-expand-region))
+	(setq eli/expand-region-count 1)))
 
 ;;;###autoload
 (defun eli/puni-hungry-backward-delete-char ()
