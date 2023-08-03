@@ -32,6 +32,7 @@
 
 
 ;; check whether a musical file is lossless.
+;;;###autoload
 (defun eli/sox-spectrogram (file)
   "Show spectrogram for FILE."
   (interactive (list (read-file-name "Select a file: " "~/Music/")))
@@ -66,6 +67,7 @@ return an empty string."
      (t
       tracknum))))
 
+;;;###autoload
 (defun eli/emms-echo-current ()
   "Display the currently playing song in the echo area."
   (interactive)
