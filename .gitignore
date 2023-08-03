@@ -25,7 +25,7 @@ mydictionaryfr-en
 nov-places
 /epkgs/
 /etc/
-*.elc
+**/*.elc
 network-security.data
 projects
 tramp
