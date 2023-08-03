@@ -1,4 +1,4 @@
-;; init-vc.el<elemacs> --- Initialize vc configurations.	-*- lexical-binding: t -*-
+;; init-vc.el<elemacs> --- Initialize vc configurations.    -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -40,22 +40,26 @@
 ;;;; magit
 (setup magit
   (:when-loaded
-	(require 'lib-magit)
-	(:hooks
-	 git-rebase-mode-hook eli/magit-reverse-rebase-commits))
+    (require 'lib-magit)
+    (:hooks
+     git-rebase-mode-hook eli/magit-reverse-rebase-commits))
   (:iload magit)
   (:once (list :before 'magit-auto-revert-mode--init-kludge)
-	(:option magit-no-message '("Turning on magit-auto-revert-mode...")))  
-  (:option* magit-display-buffer-function     'magit-display-buffer-fullframe-status-v1
-			magit-clone-default-directory      (expand-file-name (expand-file-name "src/Clone/" (getenv "HOME")))
-			magit-clone-set-remote.pushDefault t
-			magit-status-margin '(t age magit-log-margin-width nil 18)
-			git-commit-summary-max-length      50
-			git-commit-fill-column             72
-			git-commit-finish-query-functions '(my-git-commit-check-style-conventions
-												git-commit-check-style-conventions))
+    (:option magit-no-message '("Turning on magit-auto-revert-mode...")))
+  (:option*
+   magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
+   magit-clone-default-directory (expand-file-name
+                                  (expand-file-name
+                                   "src/Clone/"
+                                   (getenv "HOME")))
+   magit-clone-set-remote.pushDefault t
+   magit-status-margin '(t age magit-log-margin-width nil 18)
+   git-commit-summary-max-length      50
+   git-commit-fill-column             72
+   git-commit-finish-query-functions '(my-git-commit-check-style-conventions
+                                       git-commit-check-style-conventions))
   (:bind-into magit-status-mode-map
-	"q" mu-magit-kill-buffers
+    "q" mu-magit-kill-buffers
     "C" eli/magit-commit-add-log)
   (:bind-into magit-diff-section-map
     "C" eli/magit-commit-add-log))
@@ -72,12 +76,18 @@
   (:iload forge)
   (:with-feature magit
     (:also-load forge))
+  (:when-loaded
+    (require 'lib-forge))
   (:init
    (setq forge-bug-reference-hooks '(forge-post-mode-hook
-									 git-commit-setup-hook
-									 magit-mode-hook)))
+                                     ;; git-commit-setup-hook
+                                     ;; magit-mode-hook
+                                     )))
   (:option* forge-owned-accounts '(("eli" . (remote-name "personal")))
-			forge-database-file "~/.emacs.d/var/forge/forge-database.sqlite"))
+            forge-database-file "~/.emacs.d/var/forge/forge-database.sqlite")
+  (:advice
+   forge-insert-pullreqs :around eli/forge-insert
+   forge-insert-issues :around eli/forge-insert))
 
 
 ;;;; provide
