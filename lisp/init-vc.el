@@ -55,7 +55,10 @@
 			git-commit-finish-query-functions '(my-git-commit-check-style-conventions
 												git-commit-check-style-conventions))
   (:bind-into magit-status-mode-map
-	"q" mu-magit-kill-buffers))
+	"q" mu-magit-kill-buffers
+    "C" eli/magit-commit-add-log)
+  (:bind-into magit-diff-section-map
+    "C" eli/magit-commit-add-log))
 
 (setup magit-todos
   (:once (list :before 'magit-status)

@@ -164,6 +164,22 @@ This function returns nil if it cannot parse REMOTE."
 	(reverse-region beg end))
   (add-hook 'with-editor-pre-finish-hook #'eli/magit-reverse-rebase-commits nil t))
 
+;;;###autoload
+(defun eli/magit-commit-add-log (&rest _args)
+  "Like `magit-commit-add-log', but add all staged files."
+  (interactive)
+  (pcase-let ((files (magit-staged-files))
+              (buffer (magit-commit-message-buffer)))
+    (magit-commit-create)
+    (while (not (setq buffer (magit-commit-message-buffer)))
+      (sit-for 0.01))
+    (with-current-buffer buffer
+      (save-excursion
+        (forward-line 1)
+        (insert "\n")
+        (dolist (file files)
+          (insert (format "* %s: \n" file)))))))
+
 
 ;;;; provide
 (provide 'lib-magit)
