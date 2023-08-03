@@ -313,6 +313,15 @@
    text-scale-mode :after #'eli/property-image-scale
    text-scale-mode :after #'eli/overlay-image-scale))
 
+;;;; whitespace
+(setup whitespace
+  (:hook-into
+   prog-mode-hook)
+  (:option*
+   whitespace-style '(face tabs spaces trailing lines space-before-tab newline
+                           indentation empty space-after-tab space-mark
+                           tab-mark)))
+
 ;;;; midnight
 ;; (setup midnight
 ;;   (once (list :before 'eli/consult-buffer)
