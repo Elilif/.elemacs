@@ -50,8 +50,8 @@
 ;;;###autoload
 (defun eli/select-images ()
   (interactive)
-  (let ((default-directory "~/Documents/org-images/"))
-    (call-interactively 'find-file)))
+  (read-file-name "Select a file: "
+                  "~/Documents/org-images/"))
 
 (defun eli/remove-image-preview-hook ()
   (remove-hook 'post-command-hook #'eli/image-preview)
