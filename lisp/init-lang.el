@@ -1,4 +1,4 @@
-;; init-lang.el --- Initialize lang configurations.	-*- lexical-binding: t -*-
+;; init-lang.el --- Initialize lang configurations.     -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -59,7 +59,7 @@
 (setup leetcode
   (:iload leetcode)
   (:when-loaded
-	(require 'lib-leetcode))
+    (require 'lib-leetcode))
   (:option* leetcode-prefer-language "cpp"
             leetcode-save-solutions t)
   (:bind-into leetcode--problems-mode-map
@@ -71,31 +71,31 @@
 (setup cc-mode
   (:iload ccls)
   (:option* c-default-style '((java-mode . "java")
-							  (awk-mode . "awk")
-							  (c-mode . "gnu")
-							  (c++-mode . "stroustrup")
-							  (other . "gnu")))
+                              (awk-mode . "awk")
+                              (c-mode . "gnu")
+                              (c++-mode . "stroustrup")
+                              (other . "gnu")))
   (:also-load
    ccls)
   (:hooks c-mode-common-hook eli/compile-set
-		  c++-mode-hook modern-c++-font-lock-mode)
+          c++-mode-hook modern-c++-font-lock-mode)
   (:bind-into c-mode-base-map
-	"(" nil
-	"{" nil
-	"C-c C-o" ff-find-other-file)
+    "(" nil
+    "{" nil
+    "C-c C-o" ff-find-other-file)
   (:when-loaded
-	(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-	(add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))))
+    (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+    (add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))))
 
 
 (defun eli/compile-set ()
   (let* ((file-name (buffer-file-name))
-	     (is-windows (equal 'windows-nt system-type))
-	     (exec-suffix (if is-windows ".exe" ".out")))
+         (is-windows (equal 'windows-nt system-type))
+         (exec-suffix (if is-windows ".exe" ".out")))
     (when file-name
-	  (setq file-name (file-name-nondirectory file-name))
-	  (let ((out-file (concat (file-name-sans-extension file-name) exec-suffix)))
-	    (setq-local compile-command (format "g++ -std=c++11 -g %s -o %s" file-name out-file))))))
+      (setq file-name (file-name-nondirectory file-name))
+      (let ((out-file (concat (file-name-sans-extension file-name) exec-suffix)))
+        (setq-local compile-command (format "g++ -std=c++11 -g %s -o %s" file-name out-file))))))
 ;;;; gdb
 (setup gdb-mi
   (:also-load
@@ -119,7 +119,7 @@
 
 (setup ess-smart-equals
   (:after ess
-	(ess-smart-equals-activate))
+    (ess-smart-equals-activate))
   (:option*
    ess-smart-equals-extra-ops '(brace paren percent)))
 ;;;; lisp
@@ -134,8 +134,8 @@
 (setup lsp-mode
   (:iload lsp-mode)
   (:when-loaded
-	(require 'lib-lsp)
-	(setenv "LSP_USE_PLISTS" "true"))
+    (require 'lib-lsp)
+    (setenv "LSP_USE_PLISTS" "true"))
   (:option*
    lsp-session-file "/home/eli/.emacs.d/var/.lsp-session-v1"
    lsp-warn-no-matched-clients nil
@@ -159,16 +159,16 @@
    lsp-lens-enable nil
    lsp-idle-delay 0.5)
   (:hooks prog-mode-hook (lambda ()
-						   (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode
-												   'snippet-mode)
-							 (lsp-deferred)))
-		  ;; lsp-mode-hook (lambda ()
-		  ;; 				  ;; Integrate `which-key'
-		  ;; 				  ;; (lsp-enable-which-key-integration)
-		  ;; 				  ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
-		  ;; 				  ;; (add-hook 'before-save-hook #'lsp-organize-imports t t)
-		  ;; 				  )
-		  lsp-completion-mode-hook my/lsp-mode-setup-completion))
+                           (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode
+                                                   'snippet-mode)
+                             (lsp-deferred)))
+          ;; lsp-mode-hook (lambda ()
+          ;;                  ;; Integrate `which-key'
+          ;;                  ;; (lsp-enable-which-key-integration)
+          ;;                  ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
+          ;;                  ;; (add-hook 'before-save-hook #'lsp-organize-imports t t)
+          ;;                  )
+          lsp-completion-mode-hook my/lsp-mode-setup-completion))
 
 (setup lsp-ui
   (:iload lsp-ui)
@@ -190,13 +190,13 @@
 ;;;; eglot
 ;; (setup eglot
 ;;   (:option* eglot-confirm-server-initiated-edits nil
-;; 			eglot-autoreconnect 60
-;; 			eglot-autoshutdown t)
+;;              eglot-autoreconnect 60
+;;              eglot-autoshutdown t)
 ;;   (:hooks c++-mode-hook eglot-ensure)
 ;;   (:when-loaded
-;; 	(custom-set-faces
-;; 	 '(eglot-mode-line ((t (:foreground "#B0BEC5")))))
-;; 	(add-to-list 'eglot-server-programs '(c++-mode . ("ccls")))
+;;      (custom-set-faces
+;;       '(eglot-mode-line ((t (:foreground "#B0BEC5")))))
+;;      (add-to-list 'eglot-server-programs '(c++-mode . ("ccls")))
 ;;     (add-to-list 'eglot-server-programs '(c-mode . ("ccls")))))
 ;;;; flymake
 ;; (setup flymake

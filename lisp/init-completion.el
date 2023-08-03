@@ -1,4 +1,4 @@
-;; init-completion.el --- Initialize completion configurations.	-*- lexical-binding: t -*-
+;; init-completion.el --- Initialize completion configurations.     -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -38,7 +38,7 @@
 ;;;; savehist
 (setup savehist
   (:once (list :before 'vertico-mode)
-	(setq savehist-file "~/.emacs.d/var/history")
+    (setq savehist-file "~/.emacs.d/var/history")
     (savehist-mode t))
   (:option*
    savehist-additional-variables '((kill-ring . 10)
@@ -63,36 +63,36 @@
 (setup marginalia
   (:after vertico
     (marginalia-mode t)
-	(require 'lib-marginalia))
+    (require 'lib-marginalia))
   (:option*
    marginalia-align 'right
    marginalia-prompt-categories '(("\\<customize group\\>" . customize-group)
-								  ("\\<M-x\\>" . command)
-								  ("\\<package\\>" . package)
-								  ("\\<bookmark\\>" . bookmark)
-								  ("\\<color\\>" . color)
-								  ("\\<face\\>" . face)
-								  ("\\<environment variable\\>" . environment-variable)
-								  ("\\<function\\|Callable\\|hook to remove\\>" . function)
-								  ("\\<variable\\>" . variable)
-								  ("\\<input method\\>" . input-method)
-								  ("\\<charset\\>" . charset)
-								  ("\\<coding system\\>" . coding-system)
-								  ("\\<minor mode\\>" . minor-mode)
-								  ("\\<kill-ring\\>" . kill-ring)
-								  ("\\<tab by name\\>" . tab)
-								  ("\\<[Ll]ibrary\\>" . library)))
+                                  ("\\<M-x\\>" . command)
+                                  ("\\<package\\>" . package)
+                                  ("\\<bookmark\\>" . bookmark)
+                                  ("\\<color\\>" . color)
+                                  ("\\<face\\>" . face)
+                                  ("\\<environment variable\\>" . environment-variable)
+                                  ("\\<function\\|Callable\\|hook to remove\\>" . function)
+                                  ("\\<variable\\>" . variable)
+                                  ("\\<input method\\>" . input-method)
+                                  ("\\<charset\\>" . charset)
+                                  ("\\<coding system\\>" . coding-system)
+                                  ("\\<minor mode\\>" . minor-mode)
+                                  ("\\<kill-ring\\>" . kill-ring)
+                                  ("\\<tab by name\\>" . tab)
+                                  ("\\<[Ll]ibrary\\>" . library)))
   (:bind-into minibuffer-local-map
-	"M-a" marginalia-cycle)
+    "M-a" marginalia-cycle)
   (:when-loaded
-	(setf (alist-get 'command marginalia-annotator-registry)
-		  '(eli/marginalia-annotate-command marginalia-annotate-binding builtin none))))
+    (setf (alist-get 'command marginalia-annotator-registry)
+          '(eli/marginalia-annotate-command marginalia-annotate-binding builtin none))))
 
 
 ;;;; consult
 (setup consult
   (:after vertico
-	(require 'lib-consult)
+    (require 'lib-consult)
     (require 'consult))
   (:also-load lib-mcfly)
   (:once (list :before 'consult-recent-file)
@@ -101,28 +101,28 @@
            [remap find-file-read-only] consult-recent-file
            [remap list-directory]      consult-dir
            ;; [remap switch-to-buffer]    eli/consult-buffer
-		   ;; workaround for `tabspaces.el'
-		   "C-x b"                     eli/consult-buffer
+           ;; workaround for `tabspaces.el'
+           "C-x b"                     eli/consult-buffer
            "C-c \\"                    consult-register
-           "C-c -"                     consult-register-store 
+           "C-c -"                     consult-register-store
            "C-c ="                     consult-register-load
            "M-g o"                     consult-outline)
   (:option* consult-fontify-max-size       100000
             xref-show-xrefs-function       #'consult-xref
             xref-show-definitions-function #'consult-xref
-			consult-buffer-filter '("\\` "
-									"\\`\\*Completions\\*\\'"
-									"\\`\\*Flymake log\\*\\'"
-									"\\`\\*Semantic SymRef\\*\\'"
-									"\\`\\*tramp/.*\\*\\'"))
+            consult-buffer-filter '("\\` "
+                                    "\\`\\*Completions\\*\\'"
+                                    "\\`\\*Flymake log\\*\\'"
+                                    "\\`\\*Semantic SymRef\\*\\'"
+                                    "\\`\\*tramp/.*\\*\\'"))
   (:when-loaded
     (consult-customize
      consult-theme
      :preview-key '(:debounce 0.2 any)
-     consult-ripgrep consult-git-grep consult-grep eli/consult-org-file 
+     consult-ripgrep consult-git-grep consult-grep eli/consult-org-file
      consult-bookmark consult-recent-file consult-xref consult-org-heading
      consult--source-bookmark consult--source-recent-file eli/consult-buffer
-	 consult--source-project-recent-file eli/consult-git-ripgrep eli/consult-org-roam-heading
+     consult--source-project-recent-file eli/consult-git-ripgrep eli/consult-org-roam-heading
      :preview-key "M-."))
   (:advice consult-ripgrep :around consult--with-orderless
            consult-imenu :around my/consult-imenu-around-advice
@@ -136,7 +136,7 @@
 ;;;; orderless
 (setup orderless
   (:once (list :packages 'vertico)
-	(require 'lib-orderless)
+    (require 'lib-orderless)
     (require 'orderless))
   (:also-load pinyinlib)
   (:option* completion-styles              '(prescient orderless)
@@ -175,34 +175,34 @@
   (:once (list :hooks 'prog-mode-hook 'org-mode-hook)
     (global-corfu-mode))
   (:option* corfu-cycle       t
-	        corfu-auto        t
-	        corfu-separator ?\s
-	        corfu-max-width 150
-	        corfu-auto-prefix 3
+            corfu-auto        t
+            corfu-separator ?\s
+            corfu-max-width 150
+            corfu-auto-prefix 3
             corfu-excluded-modes nil
-			corfu-auto-delay 0.1
-	        corfu-on-exact-match 'insert
+            corfu-auto-delay 0.1
+            corfu-on-exact-match 'insert
             corfu-margin-formatters '(kind-all-the-icons-margin-formatter))
   (:with-map corfu-map
     (:bind
      "C-n" corfu-complete-common-or-next))
   (:when-loaded
-	(:hooks minibuffer-setup-hook corfu-enable-in-minibuffer)))
+    (:hooks minibuffer-setup-hook corfu-enable-in-minibuffer)))
 
 
 ;;;; cape
 (setup cape
   (:once (list :before 'global-corfu-mode)
-	(add-hook 'completion-at-point-functions #'cape-file)))
+    (add-hook 'completion-at-point-functions #'cape-file)))
 
 ;;;; embark
 (setup embark
   (:after consult
-	(require 'embark))
+    (require 'embark))
   (:once (list :before 'hydra-bibtex/body)
-	(require 'all-the-icons))
+    (require 'all-the-icons))
   (:also-load lib-embark
-			  embark-consult)
+              embark-consult)
   (:global
    "C-." embark-act
    "M-." embark-dwim
@@ -211,56 +211,56 @@
    "s-d" eli/embark-deselect
    "C-c ;" (kbd "C-. SPC"))
   (:bind-into embark-buffer-map
-	"r" tabspaces-remove-selected-buffer
-	"R" embark-rename-buffer)
+    "r" tabspaces-remove-selected-buffer
+    "R" embark-rename-buffer)
   (:bind-into embark-file-map
-	"C" eli/copy-file
-	"D" eli/delete-file
-	"R" eli/move-file)
+    "C" eli/copy-file
+    "D" eli/delete-file
+    "R" eli/move-file)
   (:bind-into vertico-map
-	"C-s" (kbd "C-. SPC"))
+    "C-s" (kbd "C-. SPC"))
   (:when-loaded
-	(add-to-list 'embark-post-action-hooks
-				 '(eli/move-file eli/move-file-after-action))
-	(cl-callf cl-union embark-multitarget-actions eli/multitarget-actions))
+    (add-to-list 'embark-post-action-hooks
+                 '(eli/move-file eli/move-file-after-action))
+    (cl-callf cl-union embark-multitarget-actions eli/multitarget-actions))
   (:option*
    prefix-help-command #'embark-prefix-help-command
    embark-quit-after-action '((t . t)
-							  (eli/move-file . nil))
+                              (eli/move-file . nil))
    embark-confirm-act-all nil
    embark-pre-action-hooks '((eval-last-sexp embark--end-of-target)
-							 (indent-pp-sexp embark--beginning-of-target)
-							 (backward-up-list embark--beginning-of-target)
-							 (backward-list embark--beginning-of-target)
-							 (forward-list embark--end-of-target)
-							 (forward-sexp embark--end-of-target)
-							 (backward-sexp embark--beginning-of-target)
-							 (raise-sexp embark--beginning-of-target)
-							 (kill-sexp embark--beginning-of-target)
-							 (mark-sexp embark--beginning-of-target)
-							 (transpose-sexps embark--end-of-target)
-							 (transpose-sentences embark--end-of-target)
-							 (transpose-paragraphs embark--end-of-target)
-							 (forward-sentence embark--end-of-target)
-							 (backward-sentence embark--beginning-of-target)
-							 (backward-paragraph embark--beginning-of-target)
-							 (embark-insert embark--end-of-target)
-							 (find-library embark--xref-push-marker)
-							 (delete-file embark--confirm)
-							 (delete-directory embark--confirm)
-							 ;; (kill-buffer embark--confirm)
-							 ;; (embark-kill-buffer-and-window embark--confirm)
-							 (bookmark-delete embark--confirm)
-							 (package-delete embark--confirm)
-							 (tab-bar-close-tab-by-name embark--confirm)
-							 (embark-isearch embark--unmark-target)
-							 (occur embark--unmark-target)
-							 (query-replace embark--beginning-of-target embark--unmark-target)
-							 (query-replace-regexp embark--beginning-of-target embark--unmark-target)
-							 (mark embark--mark-target)
-							 (shell embark--universal-argument)
-							 (eshell embark--universal-argument)
-							 (embark-select embark--select))))
+                             (indent-pp-sexp embark--beginning-of-target)
+                             (backward-up-list embark--beginning-of-target)
+                             (backward-list embark--beginning-of-target)
+                             (forward-list embark--end-of-target)
+                             (forward-sexp embark--end-of-target)
+                             (backward-sexp embark--beginning-of-target)
+                             (raise-sexp embark--beginning-of-target)
+                             (kill-sexp embark--beginning-of-target)
+                             (mark-sexp embark--beginning-of-target)
+                             (transpose-sexps embark--end-of-target)
+                             (transpose-sentences embark--end-of-target)
+                             (transpose-paragraphs embark--end-of-target)
+                             (forward-sentence embark--end-of-target)
+                             (backward-sentence embark--beginning-of-target)
+                             (backward-paragraph embark--beginning-of-target)
+                             (embark-insert embark--end-of-target)
+                             (find-library embark--xref-push-marker)
+                             (delete-file embark--confirm)
+                             (delete-directory embark--confirm)
+                             ;; (kill-buffer embark--confirm)
+                             ;; (embark-kill-buffer-and-window embark--confirm)
+                             (bookmark-delete embark--confirm)
+                             (package-delete embark--confirm)
+                             (tab-bar-close-tab-by-name embark--confirm)
+                             (embark-isearch embark--unmark-target)
+                             (occur embark--unmark-target)
+                             (query-replace embark--beginning-of-target embark--unmark-target)
+                             (query-replace-regexp embark--beginning-of-target embark--unmark-target)
+                             (mark embark--mark-target)
+                             (shell embark--universal-argument)
+                             (eshell embark--universal-argument)
+                             (embark-select embark--select))))
 
 ;;;; provide
 (provide 'init-completion)

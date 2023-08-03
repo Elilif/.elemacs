@@ -1,4 +1,4 @@
-;; init-info.el --- Initialize info configurations.	-*- lexical-binding: t -*-
+;; init-info.el --- Initialize info configurations.     -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -38,7 +38,7 @@
 (setup helpful
   (:iload helpful)
   (:when-loaded
-	(require 'lib-helpful))
+    (require 'lib-helpful))
   (:global [remap describe-function] helpful-callable
            [remap describe-variable] helpful-variable
            [remap describe-key]      helpful-key
@@ -47,18 +47,18 @@
   (:option* helpful-max-buffers 2
             helpful-switch-buffer-function #'+helpful-switch-to-buffer)
   (:advice helpful--update-and-switch-buffer :after  helpful-set-arguments-face
-		   helpful-update :after helpful-remove-advice
-		   ;; remove `##' from functions list
-		   helpful--callable-at-point :before  (lambda (&rest _arg) (aset obarray 0 nil))))
+           helpful-update :after helpful-remove-advice
+           ;; remove `##' from functions list
+           helpful--callable-at-point :before  (lambda (&rest _arg) (aset obarray 0 nil))))
 
 ;;;; Info
 (setup info
   (:when-loaded
-	(require 'lib-info))
+    (require 'lib-info))
   (:with-feature Info
-	(:hook variable-pitch-mode))
+    (:hook variable-pitch-mode))
   (:bind-into Info-mode-map
-	"C" eli/Info-copy-node-url)
+    "C" eli/Info-copy-node-url)
   (:with-feature apropos
     (:hook (lambda ()
              (switch-to-buffer-other-window "*Apropos*")))))

@@ -1,4 +1,4 @@
-;; init-edit.el --- Initialize edit configurations.	-*- lexical-binding: t -*-
+;; init-edit.el --- Initialize edit configurations.     -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -32,17 +32,20 @@
 
 (cl-eval-when (compile)
   (require 'org-fold-core)
+  (require 'org)
   (require 'leetcode)
   (require 'electric-operator)
+  (require 'elfeed)
   (require 'cc-cmds)
+  (require 'racket-mode)
   (require 'lib-markmacro))
 
 ;;;; supser save
 (setup super-save
   (:once (list :hooks 'find-file-hook)
     (:once (list :hooks 'post-self-insert-hook)
-	  (setq super-save-idle-duration 60)
-	  (super-save-mode)))
+      (setq super-save-idle-duration 60)
+      (super-save-mode)))
   (:option*
    super-save-auto-save-when-idle t
    super-save-triggers '(magit-status
@@ -54,7 +57,7 @@
                          windmove-left
                          windmove-right
                          next-buffer
-						 tab-bar-select-tab
+                         tab-bar-select-tab
                          previous-buffer)
    super-save-hook-triggers '(find-file-hook
                               mouse-leave-buffer-hook
@@ -62,9 +65,9 @@
    super-save-remote-files nil
    super-save-predicates
    `(,@super-save-predicates
-	 (lambda ()
-	   (not (member major-mode '(gptel-mode emacs-lisp-mode))))))
-  (:advice 
+     (lambda ()
+       (not (member major-mode '(gptel-mode emacs-lisp-mode))))))
+  (:advice
    save-buffer :around suppress-messages))
 
 ;;;; mwim
@@ -75,7 +78,7 @@
 ;;;; hungry-delete
 (setup hungry-delete
   (once (list :before 'backward-delete-char-untabify 'delete-backward-char
-			  :hooks 'post-self-insert-hook)
+              :hooks 'post-self-insert-hook)
     (global-hungry-delete-mode)))
 
 ;;;; markmacro
@@ -99,7 +102,7 @@
 ;;;; electric pair
 (setup elec-pair
   (:once (list :before 'self-insert-command)
-	(electric-pair-mode))
+    (electric-pair-mode))
   (:also-load
    lib-elec-pair)
   (:option*
@@ -110,43 +113,55 @@
 (setup puni
   (:also-load
    lib-puni)
-  (:hook-into prog-mode)
+  (:hook-into
+   prog-mode
+   org-mode
+   tex-mode)
   (:global
-   "C-=" eli/expand-region)
+   "C-=" puni-expand-region)
+  (:with-feature elfeed-show
+    (:bind
+     "C-=" eli/expand-region))
   (:bind
    "<DEL>" eli/puni-hungry-backward-delete-char
    "C-M-a" beginning-of-defun
    "C-M-e" end-of-defun
    "C-M-p" puni-beginning-of-sexp
-   "C-M-n" puni-end-of-sexp))
+   "C-M-n" puni-end-of-sexp
+   "C-c <DEL>" nil))
 
 ;;;; tempel
 (setup tempel
   (:once (list :hooks 'pre-command-hook)
-	(require 'tempel))
+    (require 'tempel))
   (:also-load
    lib-tempel)
   (:init
    (setq tempel-path "~/.emacs.d/snippets/tempel/templates"))
   (:when-loaded
-	(:hooks
-	 prog-mode-hook tempel-setup-capf
-	 org-mode-hook tempel-setup-capf
-	 lisp-data-mode-hook (lambda ()
-						   (setq-local completion-at-point-functions
-									   (cdr completion-at-point-functions)))))
+    (:hooks
+     prog-mode-hook tempel-setup-capf
+     org-mode-hook tempel-setup-capf
+     latex-mode-hook tempel-setup-capf
+     lisp-data-mode-hook (lambda ()
+                           (setq-local completion-at-point-functions
+                                       (cdr completion-at-point-functions)))))
   (:bind-into tempel-map
-	"<tab>" tempel-next
-	"C-<tab>" tempel-previous
-	"M-a" tempel-beginning
-	"M-e" tempel-end
-	"C-g" tempel-abort
-	"C-<return>" tempel-done)
+    "<tab>" tempel-next
+    "C-<tab>" tempel-previous
+    "M-a" tempel-beginning
+    "M-e" tempel-end
+    "C-g" tempel-abort
+    "C-<return>" tempel-done)
   (:with-feature org
-	(:bind-into org-mode-map
-	  "TAB" smarter-tab-to-expand))
+    (:bind-into org-mode-map
+      "TAB" smarter-tab-to-expand))
+  (:with-feature racket-mode
+    (:bind-into racket-mode-map
+      "TAB" smarter-tab-to-expand))
   (:global
-   "TAB" smarter-tab-to-expand)
+   "TAB" smarter-tab-to-expand
+   "M-]" tempel-expand)
   (:advice
    tempel--exit :override eli/tempel--exit))
 
@@ -157,21 +172,22 @@
   (:hook-into python-base-mode-hook)
   ;; (:hook-into org-mode)
   (:when-loaded
-	(electric-operator-add-rules-for-mode 'c++-mode
-										  (cons "&" nil))
-	(electric-operator-add-rules-for-mode 'c++-mode
-										  (cons "*" nil))))
+    (electric-operator-add-rules-for-mode 'c++-mode
+                                          (cons "&" nil))
+    (electric-operator-add-rules-for-mode 'c++-mode
+                                          (cons "*" nil))))
 
 ;;;; aggressive-indent
 (setup aggressive-indent
   (:hook-into emacs-lisp-mode-hook)
   (:hook-into c-mode-common-hook)
   (:option*  aggressive-indent-dont-indent-if
-			 '((memq (char-before) '(?\t ?\n)) ;; used by hungry-delete
-			   (and (or (derived-mode-p 'c++-mode)
-						(derived-mode-p 'c-mode))
-					(null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|else\\|while\\|return\\)\\b\\)"
-										(thing-at-point 'line)))))))
+             '((and (memq (char-before) '(?\t ?\n))
+                    (eq this-command #'eli/puni-hungry-backward-delete-char)) ;; used by hungry-delete
+               (and (or (derived-mode-p 'c++-mode)
+                        (derived-mode-p 'c-mode))
+                    (null (string-match "\\([;{}]\\|\\b*\\(if\\|for\\|else\\|while\\|return\\)\\b\\)"
+                                        (thing-at-point 'line)))))))
 
 ;;;; misc
 (setup prog-mode
@@ -182,48 +198,53 @@
 ;;;; outli
 (setup outli
   (:when-loaded
-	(require 'lib-outli))
+    (require 'lib-outli))
   (:hook-into emacs-lisp-mode-hook)
   (:bind-into outline-minor-mode-map
-	"<backtab>" outline-cycle-buffer
-	"C-c C-p" outline-previous-visible-heading
-	"C-c C-n" outline-next-visible-heading)
+    "<backtab>" outline-cycle-buffer
+    "C-c C-p" outline-previous-visible-heading
+    "C-c C-n" outline-next-visible-heading)
   (:option* outli-heading-config '((emacs-lisp-mode ";;;" ?\; t)
-								   (tex-mode "%%" ?% t))
-			outli-blend nil
-			outli-speed-commands
-			'(("Outline Navigation")
-			  ("n" . outline-next-visible-heading)
-			  ("p" . outline-previous-visible-heading)
-			  ("f" . outline-forward-same-level)
-			  ("b" . outline-backward-same-level)
-			  ("u" . outline-up-heading)
-			  ("Outline Visibility")
-			  ("c" . outline-cycle)
-			  ("C" . elemacs/outline-comment-subtree)
-			  ("s" . outli-toggle-narrow-to-subtree)
-			  ("h" . outline-hide-sublevels)
-			  ("1" . (outline-hide-sublevels 1))
-			  ("2" . (outline-hide-sublevels 2))
-			  ("3" . (outline-hide-sublevels 3))
-			  ("4" . (outline-hide-sublevels 4))
-			  ("5" . (outline-hide-sublevels 5))
-			  ("Outline Structure Editing")
-			  ("U" . outline-move-subtree-up)
-			  ("D" . outline-move-subtree-down)
-			  ("r" . outline-demote)
-			  ("l" . outline-promote)
-			  ("i" . outli-insert-heading-respect-content)
-			  ("@" . outline-mark-subtree) 
-			  ("?" . outli-speed-command-help))))
+                                   (tex-mode "%%" ?% t))
+            outli-blend nil
+            outli-speed-commands
+            '(("Outline Navigation")
+              ("n" . outline-next-visible-heading)
+              ("p" . outline-previous-visible-heading)
+              ("f" . outline-forward-same-level)
+              ("b" . outline-backward-same-level)
+              ("u" . outline-up-heading)
+              ("Outline Visibility")
+              ("c" . outline-cycle)
+              ("C" . elemacs/outline-comment-subtree)
+              ("s" . outli-toggle-narrow-to-subtree)
+              ("h" . outline-hide-sublevels)
+              ("1" . (outline-hide-sublevels 1))
+              ("2" . (outline-hide-sublevels 2))
+              ("3" . (outline-hide-sublevels 3))
+              ("4" . (outline-hide-sublevels 4))
+              ("5" . (outline-hide-sublevels 5))
+              ("Outline Structure Editing")
+              ("U" . outline-move-subtree-up)
+              ("D" . outline-move-subtree-down)
+              ("r" . outline-demote)
+              ("l" . outline-promote)
+              ("i" . outli-insert-heading-respect-content)
+              ("@" . outline-mark-subtree)
+              ("?" . outli-speed-command-help))))
 ;;;; smart-mark
 (setup smart-mark
   (:once (list :hooks 'pre-command-hook)
-	(smart-mark-mode))
-  (:option* smart-mark-mark-functions `(,@smart-mark-mark-functions
-										eli/expand-region
-										org-capture-finalize
-										hydra-gpt/body)))
+    (smart-mark-mode))
+  (:option*
+   smart-mark-mark-functions `(,@smart-mark-mark-functions
+                               eli/expand-region
+                               puni-expand-region
+                               org-mark-element)
+   smart-mark-advice-functions `(,@smart-mark-advice-functions
+                                 (posframe-show . :before)
+                                 (kill-ring-save . :after)
+                                 (markmacro-secondary-region-set . :after))))
 
 ;;;; provide
 (provide 'init-edit)

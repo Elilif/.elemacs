@@ -1,4 +1,4 @@
-;; init-pdf.el --- Initialize init-pdf configurations.	-*- lexical-binding: t; -*-
+;; init-pdf.el --- Initialize init-pdf configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -52,11 +52,11 @@
    pdf-view-use-imagemagick nil
    pdf-annot-activate-created-annotations t)
   (:bind-into pdf-view-mode-map
-	"v" +pdf-keyboard-select-region
-	"O" pdf-occur)
+    "v" +pdf-keyboard-select-region
+    "O" pdf-occur)
   (:hooks pdf-tools-enabled-hook pdf-view-auto-slice-minor-mode
-		  pdf-tools-enabled-hook pdf-cache-prefetch-minor-mode
-		  pdf-tools-enabled-hook pdf-isearch-minor-mode))
+          pdf-tools-enabled-hook pdf-cache-prefetch-minor-mode
+          pdf-tools-enabled-hook pdf-isearch-minor-mode))
 
 (setup pdf-view-pagemark
   (:option*
@@ -74,10 +74,10 @@
    org-noter-notes-search-path '("~/Dropbox/org/roam")
    org-noter-always-create-frame nil)
   (:bind-into org-noter-notes-mode-map
-	"M-]" eli/org-noter-scroll-up-other-window
-	"M-[" eli/org-noter-scroll-down-other-window)
+    "M-]" eli/org-noter-scroll-up-other-window
+    "M-[" eli/org-noter-scroll-down-other-window)
   (:bind-into org-noter-doc-mode-map
-	"c" eli/org-noter-screenshot)
+    "c" eli/org-noter-screenshot)
   (:hooks org-noter-insert-heading-hook eli/org-noter-set-highlight)
   (:advice
    org-noter--focus-notes-region :after eli/org-noter-set-highlight
@@ -89,7 +89,7 @@
   (:also-load
    lib-nov)
   (:when-loaded
-	(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+    (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
   (:bind
    "o" nov-goto-toc)
   (:advice

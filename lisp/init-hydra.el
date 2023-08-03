@@ -1,4 +1,4 @@
-;; init-hydra.el --- Initialize hydra configurations.	-*- lexical-binding: t -*-
+;; init-hydra.el --- Initialize hydra configurations.   -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -53,8 +53,8 @@
 
 (pretty-hydra-define hydra-search
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil) ))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil) ))
   ("Dicts"
    (("t" eli/te-search "search TE")
     ("d" eli/dict-search "search Dicts"))
@@ -65,7 +65,7 @@
    "rg"
    (("g" eli/consult-git-grep)
     ("r" eli/consult-git-ripgrep)
-	("f" consult-find)
+    ("f" consult-find)
     ("e" (eli/consult-git-ripgrep "~/.emacs.d/site-lisp/") "lib"))
    "Google"
    (("s" my-search-with-chrome)
@@ -75,20 +75,20 @@
   (:color amaranth :exit t :quit-key "q")
   (""
    (("k" eli/gptel-exit)
-	("b" eli/gptel-translate)
-	("c" eli/gptel-translate-cc)
-	("s" eli/gptel-summary))
+    ("b" eli/gptel-translate)
+    ("c" eli/gptel-translate-cc)
+    ("s" eli/gptel-summary))
    ""
    (("r" eli/gptel-translate-and-insert)
-	("e" eli/gptel-program)
-	("p" eli/gptel-polish)
-	("w" eli/gptel-translate-word)
-	("g" eli/gptel-grammar-correct))))
+    ("e" eli/gptel-program)
+    ("p" eli/gptel-polish)
+    ("w" eli/gptel-translate-word)
+    ("g" eli/gptel-grammar-correct))))
 
 (pretty-hydra-define hydra-edit
   (:color amaranth :exit t
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil)))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil)))
   ("Format"
    (("f" smart-align "align"))
    "Beacon"
@@ -103,8 +103,8 @@
 
 (pretty-hydra-define hydra-roam
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil) ))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil) ))
   ("Roam"
    (("l" org-roam-buffer-toggle "toggle roam buffer")
     ("f" eli/org-roam-node-find "find roam node")
@@ -130,13 +130,13 @@
 
 (pretty-hydra-define hydra-emacs
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil) ))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil) ))
   ("basic"
    (("E" eval-buffer)
     ("f" (let ((default-directory "~/.emacs.d/lisp/"))
            (call-interactively 'find-file)) "config files")
-	("l" eli/setup-open-lib)
+    ("l" eli/setup-open-lib)
     ("R" restart-emacs)
     ("c" (byte-recompile-directory "~/.emacs.d/lisp/") "recompile"))
    "Bookmark"
@@ -144,23 +144,24 @@
     ("bj" consult-bookmark "jump bookmark")
     ("bd" bookmark-delete "delete bookmark"))
    "basic"
-   (("s" scratch-buffer))
+   (("s" scratch-buffer)
+    ("i" consult-info))
    ))
 
 (pretty-hydra-define hydra-puni
   (:color amaranth :exit t
-		  :quit-key "q" :idle 2)
+          :quit-key "q" :idle 2)
   (""
    (("k" puni-squeeze)
-	("r" puni-raise)
-	("c" puni-convolute)
-	("p" puni-split)
-	("s" puni-splice))
+    ("r" puni-raise)
+    ("c" puni-convolute)
+    ("p" puni-split)
+    ("s" puni-splice))
    "slurp & barf"
    (("lf" puni-slurp-forward)
-	("lb" puni-slurp-backward)
-	("bf" puni-barf-forward)
-	("bb" puni-barf-backward))))
+    ("lb" puni-slurp-backward)
+    ("bf" puni-barf-forward)
+    ("bb" puni-barf-backward))))
 
 (pretty-hydra-define hydra-org
   (:color amaranth :exit t :quit-key "q")
@@ -168,7 +169,7 @@
    (("h" org-mode "org mode")
     ("j" consult-org-heading "headings")
     ("f" eli/consult-org-file "agenda filter")
-	("m" org-heatmap-calendar "heatmap"))
+    ("m" org-heatmap-calendar "heatmap"))
    "Org link"
    (("li" grab-x-link-chromium-insert-link "insert web link")
     ("lo" grab-x-link-chromium-insert-org-link "insert org link")
@@ -221,8 +222,8 @@
 
 (pretty-hydra-define jp-window
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t)  )
-	      :post (progn (setq which-key-inhibit nil) ))
+          :pre (progn (setq which-key-inhibit t)  )
+          :post (progn (setq which-key-inhibit nil) ))
   ("Actions"
    (("TAB" other-window "switch")
     ("m" ace-delete-window "maximize")
@@ -257,8 +258,8 @@
 ;;                                  :hint none))
 (pretty-hydra-define hydra-org-agenda
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t)  )
-	      :post (progn (setq which-key-inhibit nil) ))
+          :pre (progn (setq which-key-inhibit t)  )
+          :post (progn (setq which-key-inhibit nil) ))
   ("Entry"
    (("a" org-agenda)
     ("g" (org-agenda nil "g") "GTD")
@@ -316,8 +317,8 @@
 
 (pretty-hydra-define hydra-bibtex
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil) ))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil) ))
   ("Reference"
    (("o" citar-open "citar open")
     ("s" ex/search-pdf-contents "search pdf")
@@ -429,8 +430,8 @@
 
 (pretty-hydra-define hydra-org-noter
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t)  )
-	      :post (progn (setq which-key-inhibit nil) ))
+          :pre (progn (setq which-key-inhibit t)  )
+          :post (progn (setq which-key-inhibit nil) ))
   ("Noter"
    (("n" org-noter "noter")
     ("c" org-noter-create-skeleton "create skeleton"))
@@ -443,8 +444,8 @@
 
 (pretty-hydra-define hydra-reader
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t)  )
-	      :post (progn (setq which-key-inhibit nil) ))
+          :pre (progn (setq which-key-inhibit t)  )
+          :post (progn (setq which-key-inhibit nil) ))
   ("Elfeed"
    (("e" elfeed "elfeed"))
    "Mu4e"
@@ -453,10 +454,10 @@
 
 (pretty-hydra-define hydra-skan-user-buffers-next
   (:body-pre (next-buffer)
-	         :hint nil
-	         :quit-key "q"
-	         :pre (progn (setq which-key-inhibit t)  )
-	         :post (progn (setq which-key-inhibit nil) ))
+             :hint nil
+             :quit-key "q"
+             :pre (progn (setq which-key-inhibit t)  )
+             :post (progn (setq which-key-inhibit nil) ))
   ("skan user buffers"
    (("\]" next-buffer)
     ("\[" previous-buffer)
@@ -465,10 +466,10 @@
 
 (pretty-hydra-define hydra-skan-user-buffers-prev
   (:body-pre (previous-buffer)
-	         :hint nil
-	         :quit-key "q"
-	         :pre (progn (setq which-key-inhibit t)  )
-	         :post (progn (setq which-key-inhibit nil) ))
+             :hint nil
+             :quit-key "q"
+             :pre (progn (setq which-key-inhibit t)  )
+             :post (progn (setq which-key-inhibit nil) ))
   ("skan user buffers"
    (("\]" next-buffer)
     ("\[" previous-buffer)
@@ -477,13 +478,13 @@
 
 (pretty-hydra-define hydra-insert
   (:color amaranth :exit t
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil)))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil)))
   ("Input"
    (("s" eli/input-switch "switch input")
     ("k" eli/insert-key-sequence "insert key sequence")
-	("w" whisper-run)
-	("t" org-matable-create "matrices"))
+    ("w" whisper-run)
+    ("t" org-matable-create "matrices"))
    "Yank"
    (("p" consult-yank-pop "Clipboard"))
    "Emoji & Pic"
@@ -496,16 +497,16 @@
 
 (pretty-hydra-define hydra-player
   (:color amaranth :exit t :quit-key "q"
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil)
-		               ))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil)
+                       ))
   ("Playlists"
    (("e" emms)
     ;; ("g" emms-play-directory "open dir")
     ("a" consult-emms-library "add library")
     ("m" emms-metaplaylist-mode-go "metaplaylist")
     ("c" consult-emms-current-playlist "choose to play")
-    )
+    ("h" eli/emms-echo-current))
    "Controls"
    (("n" emms-next "next" :exit nil)
     ("p" emms-previous "previous" :exit nil)
@@ -524,7 +525,7 @@
    "lyrics"
    (("l" lyrics-fetcher-show-lyrics "lyrics")
     ("C" lyrics-fetcher-lyrics-catchup "lyrics catchup")
-    ("t" emms-lyrics-toggle-display-on-minibuffer "toggle lyrics")
+    ("t" emms-lyrics-toggle-display-on-modeline "toggle lyrics")
     )
    "Browser"
    (("b" emms-browser "browser")
@@ -537,10 +538,11 @@
     ("st" emms-score-set-tolerance "tolerance")
     ("f"  eli/emms-filter "filter"))
    ))
+
 (pretty-hydra-define hydra-develop
   (:color amaranth :exit t
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil)))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil)))
   ("LSP"
    (("p" lsp-ui-peek-find-definitions "peek")
     ("i" lsp-ui-imenu "imenu"))
@@ -549,8 +551,8 @@
     ("s" quickrun-shell "quickrun shell")
     ("g" gdb "gdb")
     ("c" compile)
-	("a" eli/helpful-remove-advice-i)
-	("h" remove-hook))
+    ("a" eli/helpful-remove-advice-i)
+    ("h" remove-hook))
    ""
    (("t" toggle-debug-on-error)
     ("e" edebug-defun)
@@ -564,8 +566,8 @@
 
 (pretty-hydra-define hydra-rectangle
   (:color amaranth :exit t
-	      :pre (progn (setq which-key-inhibit t))
-	      :post (progn (setq which-key-inhibit nil)))
+          :pre (progn (setq which-key-inhibit t))
+          :post (progn (setq which-key-inhibit nil)))
   ("rectangle"
    (("k" kill-rectangle)
     ("w" copy-rectangle-as-kill)

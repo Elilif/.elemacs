@@ -1,4 +1,4 @@
-;; init-bib.el --- Initialize init-bib configurations.	-*- lexical-binding: t; -*-
+;; init-bib.el --- Initialize init-bib configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -48,17 +48,17 @@
   (setq org-cite-global-bibliography eli/bibliography)
   (setq org-cite-csl-styles-dir "~/Documents/styles")
   (setq org-cite-export-processors '((beamer natbib)
-    			                     (latex biblatex)
-    			                     (t csl)))
+                                     (latex biblatex)
+                                     (t csl)))
   (require 'oc-natbib)
   (require 'oc-biblatex))
 
 (with-eval-after-load 'citar
   (setq citar-templates
-		'((main . "${author:30}     ${date year issued:4}     ${title:48}")
-		  (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords keywords:*}")
-		  (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
-		  (note . "${title}
+        '((main . "${author:30}     ${date year issued:4}     ${title:48}")
+          (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords keywords:*}")
+          (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
+          (note . "${title}
 #+filetags: :book:
 - bibliography ::
 - tags :: ${tags}
@@ -74,10 +74,10 @@
 :NOANKI: t
 :END:")))
   (setq citar-symbols
-		`((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
-		  (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-		  (link ,(all-the-icons-octicon "link" :face
-										'all-the-icons-orange :v-adjust 0.01) . " ")))
+        `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
+          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+          (link ,(all-the-icons-octicon "link" :face
+                                        'all-the-icons-orange :v-adjust 0.01) . " ")))
   (setq citar-symbol-separator "  ")
   (setq citar-bibliography eli/bibliography)
   (setq citar-at-point-function 'citar-dwim)
@@ -106,51 +106,51 @@ STR is the searching string."
 (with-eval-after-load 'citar
   (citar-org-roam-mode)
   (setq citar-org-roam-note-title-template (cdr (assoc 'note citar-templates))
-		citar-org-roam-subdir "books"))
+        citar-org-roam-subdir "books"))
 
 (with-eval-after-load 'citar
   (citar-embark-mode))
 
 (with-eval-after-load 'bibtex-completion
   (setq bibtex-completion-bibliography eli/bibliography
-		bibtex-completion-library-path "/home/eli/Documents/Thesis"
-		bibtex-completion-notes-path "/home/eli/Dropbox/org/roam/books"
-		bibtex-completion-pdf-field "file"
-		;; bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
+        bibtex-completion-library-path "/home/eli/Documents/Thesis"
+        bibtex-completion-notes-path "/home/eli/Dropbox/org/roam/books"
+        bibtex-completion-pdf-field "file"
+        ;; bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
 
-		bibtex-completion-additional-search-fields '(keywords)
-		bibtex-completion-display-formats
-		'((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
-		  (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
-		  (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-		  (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-		  (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
+        bibtex-completion-additional-search-fields '(keywords)
+        bibtex-completion-display-formats
+        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
 
 (with-eval-after-load 'bibtex
   (setq bibtex-autokey-year-length 4
-		bibtex-autokey-name-year-separator "-"
-		bibtex-autokey-year-title-separator "-"
-		bibtex-autokey-titleword-separator "-"
-		bibtex-autokey-titlewords 2
-		bibtex-autokey-titlewords-stretch 1
-		bibtex-autokey-titleword-length 5
-		bibtex-dialect 'biblatex
-		)
+        bibtex-autokey-name-year-separator "-"
+        bibtex-autokey-year-title-separator "-"
+        bibtex-autokey-titleword-separator "-"
+        bibtex-autokey-titlewords 2
+        bibtex-autokey-titlewords-stretch 1
+        bibtex-autokey-titleword-length 5
+        bibtex-dialect 'biblatex
+        )
   (setq my/primary-bibtex-biblatex-entry-alist
-		'(("MastersThesis" "MastersThesis"
+        '(("MastersThesis" "MastersThesis"
            (("author")
-			("title")
-			("school")
-			("year")
-			("tertiaryauthor")
-			("keywords")
-			("abstract")
-			("databaseprovider")
-			("url"))
+            ("title")
+            ("school")
+            ("year")
+            ("tertiaryauthor")
+            ("keywords")
+            ("abstract")
+            ("databaseprovider")
+            ("url"))
            nil
            nil)))
   (setq bibtex-biblatex-entry-alist
-		(append bibtex-biblatex-entry-alist my/primary-bibtex-biblatex-entry-alist)))
+        (append bibtex-biblatex-entry-alist my/primary-bibtex-biblatex-entry-alist)))
 
 
 
