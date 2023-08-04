@@ -53,16 +53,13 @@
   (read-file-name "Select a file: "
                   "~/Documents/org-images/"))
 
-(defun eli/remove-image-preview-hook ()
-  (remove-hook 'post-command-hook #'eli/image-preview)
-  (posframe--kill-buffer "*image*")
-  (remove-hook 'minibuffer-exit-hook #'eli/remove-image-preview-hook))
-
-(advice-add 'eli/select-images
-            :before
-            (lambda (&rest _args)
-              (add-hook 'post-command-hook #'eli/image-preview)
-              (add-hook 'minibuffer-exit-hook #'eli/remove-image-preview-hook)))
+(advice-add 'eli/select-images :before (lambda (&rest _args)
+                                         (letrec ((eli/remove-preview (lambda ()
+                                                                        (remove-hook 'post-command-hook #'eli/image-preview)
+                                                                        (posframe--kill-buffer "*image*")
+                                                                        (remove-hook 'minibuffer-exit-hook eli/remove-preview))))
+                                           (add-hook 'post-command-hook #'eli/image-preview)
+                                           (add-hook 'minibuffer-exit-hook eli/remove-preview))))
 
 
 (defvar-keymap embark-org-roam-map

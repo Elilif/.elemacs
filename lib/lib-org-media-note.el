@@ -32,21 +32,19 @@
 
 (defvar org-media-note-edit-commands '(org-self-insert-command))
 
-(defun eli/org-media-note-auto-pause ()
-  "Pause the vedio when taking notes. "
-  (cond
-   ((not mpv--process)
-    (remove-hook 'pre-command-hook #'eli/org-media-note-auto-pause t))
-   ((member this-command org-media-note-edit-commands)
-    (mpv-pause)
-    (remove-hook 'pre-command-hook #'eli/org-media-note-auto-pause t))))
-
 ;;;###autoload
 (defun eli/org-media-note-vedio-pause ()
   (interactive)
   (when mpv--process
     (mpv-pause)
-    (add-hook 'pre-command-hook #'eli/org-media-note-auto-pause nil t)))
+    (letrec ((eli/auto-pause (lambda ()
+                               (cond
+                                ((not mpv--process)
+                                 (remove-hook 'pre-command-hook eli/auto-pause t))
+                                ((member this-command org-media-note-edit-commands)
+                                 (mpv-pause)
+                                 (remove-hook 'pre-command-hook eli/auto-pause t))))))
+      (add-hook 'pre-command-hook eli/auto-pause nil t))))
 
 
 ;;;; provide

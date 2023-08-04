@@ -133,15 +133,6 @@ The decision is taken by order of preference:
 									 (?~ . ?~)
 									 (?_ . ?_)))
 
-(defun eli/elec-pair-delete-pair-1 (&rest _args)
-  (add-hook 'post-command-hook #'eli/elec-pair-delete-pair)
-  (advice-remove 'electric-pair--insert #'eli/elec-pair-delete-pair-1))
-
-(defun eli/elec-pair-delete-pair ()
-  (when (eq (char-before) ?\ )
-	(delete-char 1))
-  (remove-hook 'post-command-hook #'eli/elec-pair-delete-pair))
-
 (defun eli/electric-pair-inhibit (char)
   (cond
    ((eq major-mode 'org-mode)
@@ -152,7 +143,16 @@ The decision is taken by order of preference:
 	 (and
 	  (member char '(?/ ?= ?* ?+ ?~ ?_))
 	  (member (char-before (1- (point))) '(?\ ?\t))
-	  (advice-add 'electric-pair--insert :after #'eli/elec-pair-delete-pair-1)
+      (letrec ((eli/delete-pair-advice (lambda (&rest _args)
+                                         (add-hook 'post-self-insert-hook eli/delete-pair)
+                                         (advice-remove 'electric-pair--insert eli/delete-pair-advice)
+                                         (message "advice")))
+               (eli/delete-pair (lambda ()
+                                  (when (eq (char-before) ?\ )
+	                                (delete-char 1))
+                                  (message "delete")
+                                  (remove-hook 'post-self-insert-hook eli/delete-pair))))
+        (advice-add 'electric-pair--insert :after eli/delete-pair-advice))
 	  nil)
 	 (and 
 	  (org-inside-LaTeX-fragment-p)
