@@ -42,7 +42,9 @@
   (:when-loaded
     (require 'lib-magit)
     (:hooks
-     git-rebase-mode-hook eli/magit-reverse-rebase-commits))
+     git-rebase-mode-hook eli/magit-reverse-rebase-commits)
+    (transient-append-suffix 'magit-commit "c"
+      '("l" "Commit with changelog" eli/magit-commit-with-changelog)))
   (:iload magit)
   (:once (list :before 'magit-auto-revert-mode--init-kludge)
     (:option magit-no-message '("Turning on magit-auto-revert-mode...")))
@@ -59,10 +61,7 @@
    git-commit-finish-query-functions '(my-git-commit-check-style-conventions
                                        git-commit-check-style-conventions))
   (:bind-into magit-status-mode-map
-    "q" mu-magit-kill-buffers
-    "C" eli/magit-commit-add-log)
-  (:bind-into magit-diff-section-map
-    "C" eli/magit-commit-add-log))
+    "q" mu-magit-kill-buffers))
 
 (setup magit-todos
   (:once (list :before 'magit-status)

@@ -169,21 +169,20 @@ This function returns nil if it cannot parse REMOTE."
     (reverse-region beg end))
   (add-hook 'with-editor-pre-finish-hook #'eli/magit-reverse-rebase-commits nil t))
 
+(defun eli/magit-commit-insert-changelog ()
+  "Insert ChangeLog entries into the current buffer."
+  (save-excursion
+    (insert "\n\n")
+    (magit-generate-changelog))
+  (setq-local fill-paragraph-function #'log-edit-fill-entry)
+  (remove-hook 'git-commit-setup-hook #'eli/magit-commit-insert-changelog))
+
 ;;;###autoload
-(defun eli/magit-commit-add-log (&rest _args)
+(defun eli/magit-commit-with-changelog (&rest _args)
   "Like `magit-commit-add-log', but add all staged files."
   (interactive)
-  (pcase-let ((files (magit-staged-files))
-              (buffer (magit-commit-message-buffer)))
-    (magit-commit-create)
-    (while (not (setq buffer (magit-commit-message-buffer)))
-      (sit-for 0.01))
-    (with-current-buffer buffer
-      (save-excursion
-        (forward-line 1)
-        (insert "\n")
-        (dolist (file files)
-          (insert (format "* %s: \n" file)))))))
+  (add-hook 'git-commit-setup-hook #'eli/magit-commit-insert-changelog)
+  (magit-commit-create))
 
 
 ;;;; provide
