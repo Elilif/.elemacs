@@ -78,7 +78,9 @@
          (consult-customize consult--source-buffer :hidden nil :default t)
          (setq consult-buffer-sources (remove 'consult--source-workspace consult-buffer-sources)))))
 
-(defvar eli/tabspaces-kill-buffer-exclude '("*scratch*"))
+(defvar eli/tabspaces-kill-buffer-exclude '("*scratch*"
+											"*org-scratch*"
+											"*lisp-interaction-scratch*"))
 
 ;;;###autoload
 (defun eli/tabspaces-kill-buffers-close-workspace ()
