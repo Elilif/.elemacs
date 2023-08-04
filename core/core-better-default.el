@@ -318,7 +318,7 @@
   (:hook-into
    prog-mode-hook)
   (:option*
-   whitespace-style '(face tabs spaces trailing lines space-before-tab newline
+   whitespace-style '(face tabs spaces trailing space-before-tab newline
                            indentation empty space-after-tab space-mark
                            tab-mark)))
 
