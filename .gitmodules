@@ -1,33 +1,43 @@
 [submodule "ace-pinyin"]
 	path = site-lisp/ace-pinyin
 	url = https://github.com/cute-jumper/ace-pinyin
+	ignore = untracked
 [submodule "ace-window"]
 	path = site-lisp/ace-window
 	url = https://github.com/abo-abo/ace-window
+	ignore = untracked
 [submodule "ag"]
 	path = site-lisp/ag
 	url = https://github.com/Wilfred/ag.el
+	ignore = untracked
 [submodule "aggressive-indent"]
 	path = site-lisp/aggressive-indent
 	url = https://github.com/Malabarba/aggressive-indent-mode
+	igvnore = untracked
 [submodule "aio"]
 	path = site-lisp/aio
 	url = https://github.com/skeeto/emacs-aio
+	ignore = untracked
 [submodule "alert"]
 	path = site-lisp/alert
 	url = https://github.com/jwiegley/alert
+	ignore = untracked
 [submodule "all-the-icons"]
 	path = site-lisp/all-the-icons
 	url = https://github.com/domtronn/all-the-icons.el
+	ignore = untracked
 [submodule "all-the-icons-dired"]
 	path = site-lisp/all-the-icons-dired
 	url = https://github.com/wyuenho/all-the-icons-dired
+	ignore = untracked
 [submodule "all-the-icons-ibuffer"]
 	path = site-lisp/all-the-icons-ibuffer
 	url = https://github.com/seagle0128/all-the-icons-ibuffer
+	ignore = untracked
 [submodule "async"]
 	path = site-lisp/async
 	url = https://github.com/jwiegley/emacs-async
+	ignore = untracked
 [submodule "auctex"]
 	path = site-lisp/auctex
 	url = git@github.com:emacsmirror/auctex.git
@@ -36,106 +46,139 @@
 	build-step = ./configure
 	build-step = make
 	build-step = sudo make install
+	ignore = untracked
 [submodule "autoscratch"]
 	path = site-lisp/autoscratch
 	url = https://github.com/TLINDEN/autoscratch
+	ignore = untracked
 [submodule "avy"]
 	path = site-lisp/avy
 	url = https://github.com/abo-abo/avy
+	ignore = untracked
 [submodule "beacon"]
 	path = site-lisp/beacon
 	url = https://github.com/Malabarba/beacon
+	ignore = untracked
 [submodule "biblio"]
 	path = site-lisp/biblio
 	url = https://github.com/cpitclaudel/biblio.el
+	ignore = untracked
 [submodule "bibtex-completion"]
 	path = site-lisp/bibtex-completion
 	url = https://github.com/tmalsburg/helm-bibtex
 	no-byte-compile = helm-bibtex.el
     no-byte-compile = ivy-bibtex.el
+	ignore = untracked
 [submodule "borg"]
 	path = site-lisp/borg
 	url = git@github.com:emacscollective/borg.git
+	ignore = untracked
 [submodule "cal-china-x"]
 	path = site-lisp/cal-china-x
 	url = https://github.com/xwl/cal-china-x
+	ignore = untracked
 [submodule "cape"]
 	path = site-lisp/cape
 	url = https://github.com/minad/cape
+	ignore = untracked
 [submodule "ccls"]
 	path = site-lisp/ccls
 	url = https://github.com/emacs-lsp/emacs-ccls
+	ignore = untracked
 [submodule "cdlatex"]
 	path = site-lisp/cdlatex
 	url = https://github.com/cdominik/cdlatex
+	ignore = untracked
 [submodule "citar"]
 	path = site-lisp/citar
 	url = https://github.com/emacs-citar/citar
+	ignore = untracked
 [submodule "citar-org-roam"]
 	path = site-lisp/citar-org-roam
 	url = https://github.com/emacs-citar/citar-org-roam
+	ignore = untracked
 [submodule "citeproc"]
 	path = site-lisp/citeproc
 	url = https://github.com/andras-simonyi/citeproc-el
+	ignore = untracked
 [submodule "closql"]
 	path = site-lisp/closql
 	url = git@github.com:emacscollective/closql.git
+	ignore = untracked
 [submodule "compat"]
 	path = site-lisp/compat
 	url = https://git.sr.ht/~pkal/compat
+	ignore = untracked
 [submodule "consult"]
 	path = site-lisp/consult
 	url = https://github.com/minad/consult
 	no-byte-compile	= consult-icomplete.el
+	ignore = untracked
 [submodule "consult-dir"]
 	path = site-lisp/consult-dir
 	url = https://github.com/karthink/consult-dir
+	ignore = untracked
 [submodule "consult-emms"]
 	path = site-lisp/consult-emms
 	url = https://github.com/Hugo-Heagren/consult-emms
+	ignore = untracked
 [submodule "corfu"]
 	path = site-lisp/corfu
 	url = https://github.com/minad/corfu
+	ignore = untracked
 [submodule "dash"]
 	path = site-lisp/dash
 	url = https://github.com/magnars/dash.el
+	ignore = untracked
 [submodule "deferred"]
 	path = site-lisp/deferred
 	url = https://github.com/kiwanami/emacs-deferred
+	ignore = untracked
 [submodule "diredfl"]
 	path = site-lisp/diredfl
 	url = https://github.com/Elilif/diredfl
+	ignore = untracked
 [submodule "electric-operator"]
 	path = site-lisp/electric-operator
 	url = https://github.com/davidshepherd7/electric-operator
+	ignore = untracked
 [submodule "elfeed"]
 	path = site-lisp/elfeed
 	url = https://github.com/skeeto/elfeed
+	ignore = untracked
 [submodule "elfeed-goodies"]
 	path = site-lisp/elfeed-goodies
 	url = https://github.com/Elilif/elfeed-goodies
+	ignore = untracked
 [submodule "elfeed-org"]
 	path = site-lisp/elfeed-org
 	url = https://github.com/remyhonig/elfeed-org
+	ignore = untracked
 [submodule "elfeed-score"]
 	path = site-lisp/elfeed-score
 	url = https://github.com/sp1ff/elfeed-score
+	ignore = untracked
 [submodule "elfeed-tube"]
 	path = site-lisp/elfeed-tube
 	url = https://github.com/karthink/elfeed-tube
+	ignore = untracked
 [submodule "elisp-refs"]
 	path = site-lisp/elisp-refs
 	url = https://github.com/Wilfred/elisp-refs
+	ignore = untracked
 [submodule "emacs-immersive-translate"]
 	path = site-lisp/emacs-immersive-translate
 	url = git@github.com:Elilif/emacs-immersive-translate.git
+	ignore = untracked
 [submodule "emacsql"]
 	path = site-lisp/emacsql
 	url = git@github.com:skeeto/emacsql.git
 	no-byte-compile = emacsql-pg.el
+	ignore = untracked
 [submodule "embark"]
 	path = site-lisp/embark
 	url = https://github.com/oantolin/embark
+	ignore = untracked
 [submodule "emms"]
 	path = site-lisp/emms
 	url = git@github.com:emacsmirror/emms.git
@@ -143,329 +186,430 @@
     build-step = make emms-print-metadata
     build-step = sudo make install
     build-step = borg-update-autoloads
+	ignore = untracked
 [submodule "epkg"]
 	path = site-lisp/epkg
 	url = git@github.com:emacscollective/epkg.git
+	ignore = untracked
 [submodule "ess"]
 	path = site-lisp/ess
 	load-path = lisp
 	url = https://github.com/emacs-ess/ESS
+	ignore = untracked
 [submodule "ess-smart-equals"]
 	path = site-lisp/ess-smart-equals
 	url = https://github.com/genovese/ess-smart-equals
+	ignore = untracked
 [submodule "esxml"]
 	path = site-lisp/esxml
 	url = https://github.com/tali713/esxml
+	ignore = untracked
 [submodule "expand-region"]
 	path = site-lisp/expand-region
 	url = https://github.com/magnars/expand-region.el
 [submodule "f"]
 	path = site-lisp/f
 	url = https://github.com/rejeep/f.el
+	ignore = untracked
 [submodule "flycheck"]
 	path = site-lisp/flycheck
 	url = https://github.com/flycheck/flycheck
+	ignore = untracked
 [submodule "forge"]
 	path = site-lisp/forge
 	url = https://github.com/magit/forge
+	ignore = untracked
 [submodule "gcmh"]
 	path = site-lisp/gcmh
 	url = https://gitlab.com/koral/gcmh
+	ignore = untracked
 [submodule "ghub"]
 	path = site-lisp/ghub
 	url = https://github.com/magit/ghub
+	ignore = untracked
 [submodule "gptel"]
 	path = site-lisp/gptel
 	url = https://github.com/karthink/gptel
+	ignore = untracked
 [submodule "graphql"]
 	path = site-lisp/graphql
 	url = https://github.com/vermiculus/graphql.el
+	ignore = untracked
 [submodule "helpful"]
 	path = site-lisp/helpful
 	url = https://github.com/Wilfred/helpful
+	ignore = untracked
 [submodule "hide-mode-line"]
 	path = site-lisp/hide-mode-line
 	url = https://github.com/hlissner/emacs-hide-mode-line
+	ignore = untracked
 [submodule "hl-todo"]
 	path = site-lisp/hl-todo
 	url = https://github.com/tarsius/hl-todo
+	ignore = untracked
 [submodule "ht"]
 	path = site-lisp/ht
 	url = https://github.com/Wilfred/ht.el
+	ignore = untracked
 [submodule "hungry-delete"]
 	path = site-lisp/hungry-delete
 	url = https://github.com/nflath/hungry-delete
+	ignore = untracked
 [submodule "hydra"]
 	path = site-lisp/hydra
 	url = https://github.com/abo-abo/hydra
+	ignore = untracked
 [submodule "info-colors"]
 	path = site-lisp/info-colors
 	url = https://github.com/ubolonton/info-colors
+	ignore = untracked
 [submodule "js2-mode"]
 	path = site-lisp/js2-mode
 	url = https://github.com/mooz/js2-mode
+	ignore = untracked
 [submodule "jupyter"]
 	path = site-lisp/jupyter
 	url = https://github.com/nnicandro/emacs-jupyter
+	ignore = untracked
 [submodule "keycast"]
 	path = site-lisp/keycast
 	url = https://github.com/tarsius/keycast
+	ignore = untracked
 [submodule "kv"]
 	path = site-lisp/kv
 	url = https://github.com/nicferrier/emacs-kv
+	ignore = untracked
 [submodule "ledger-mode"]
 	path = site-lisp/ledger-mode
 	url = https://github.com/ledger/ledger-mode
+	ignore = untracked
 [submodule "leetcode"]
 	path = site-lisp/leetcode
 	url = https://github.com/Elilif/leetcode.el
+	ignore = untracked
 [submodule "link-hint"]
 	path = site-lisp/link-hint
 	url = https://github.com/noctuid/link-hint.el
+	ignore = untracked
 [submodule "llama"]
 	path = site-lisp/llama
 	url = https://git.sr.ht/~tarsius/llama
+	ignore = untracked
 [submodule "log4e"]
 	path = site-lisp/log4e
 	url = https://github.com/aki2o/log4e
+	ignore = untracked
 [submodule "lsp-mode"]
 	path = site-lisp/lsp-mode
 	url = https://github.com/emacs-lsp/lsp-mode
+	ignore = untracked
 [submodule "lsp-pyright"]
 	path = site-lisp/lsp-pyright
 	url = https://github.com/emacs-lsp/lsp-pyright
+	ignore = untracked
 [submodule "lsp-ui"]
 	path = site-lisp/lsp-ui
 	url = https://github.com/emacs-lsp/lsp-ui
+	ignore = untracked
 [submodule "lyrics-fetcher"]
 	path = site-lisp/lyrics-fetcher
 	url = https://github.com/SqrtMinusOne/lyrics-fetcher.el
+	ignore = untracked
 [submodule "magit"]
 	path = site-lisp/magit
 	url = https://github.com/magit/magit
 	no-byte-compile = lisp/magit-libgit.el
+	ignore = untracked
 [submodule "magit-todos"]
 	path = site-lisp/magit-todos
 	url = https://github.com/alphapapa/magit-todos
+	ignore = untracked
 [submodule "major-mode-hydra"]
 	path = site-lisp/major-mode-hydra
 	url = https://github.com/jerrypnz/major-mode-hydra.el
 	no-byte-compile	= major-mode-hydra.el
+	ignore = untracked
 [submodule "marginalia"]
 	path = site-lisp/marginalia
 	url = https://github.com/minad/marginalia
+	ignore = untracked
 [submodule "markdown-mode"]
 	path = site-lisp/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
+	ignore = untracked
 [submodule "markmacro"]
 	path = site-lisp/markmacro
 	url = https://github.com/Elilif/markmacro
+	ignore = untracked
 [submodule "mindre-theme"]
 	path = site-lisp/mindre-theme
 	url = https://github.com/Elilif/mindre-theme
+	ignore = untracked
 [submodule "mixed-pitch"]
 	path = site-lisp/mixed-pitch
 	url = https://gitlab.com/jabranham/mixed-pitch
+	ignore = untracked
 [submodule "modern-cpp-font-lock"]
 	path = site-lisp/modern-cpp-font-lock
 	url = https://github.com/ludwigpacifici/modern-cpp-font-lock
+	ignore = untracked
 [submodule "mood-line"]
 	path = site-lisp/mood-line
 	url = https://github.com/Elilif/mood-line
+	ignore = untracked
 [submodule "mpv"]
 	path = site-lisp/mpv
 	url = https://github.com/kljohann/mpv.el
+	ignore = untracked
 [submodule "mu4e"]
 	path = site-lisp/mu4e
 	url = https://github.com/djcb/mu
 	build-step = ./autogen.sh && make
     load-path = build/mu4e
+	ignore = untracked
 [submodule "mu4e-alert"]
 	path = site-lisp/mu4e-alert
 	url = https://github.com/xzz53/mu4e-alert
+	ignore = untracked
 [submodule "mwim"]
 	path = site-lisp/mwim
 	url = https://github.com/alezost/mwim.el
+	ignore = untracked
 [submodule "nov"]
 	path = site-lisp/nov
 	url = https://depp.brause.cc/nov.el.git
+	ignore = untracked
 [submodule "ob-racket"]
 	path = site-lisp/ob-racket
 	url = https://github.com/hasu/emacs-ob-racket
+	ignore = untracked
 [submodule "once"]
 	path = site-lisp/once
 	url = https://github.com/emacs-magus/once
 	load-path = .
 	load-path = once-setup
+	ignore = untracked
 [submodule "orderless"]
 	path = site-lisp/orderless
 	url = https://github.com/oantolin/orderless
+	ignore = untracked
 [submodule "org-anki"]
 	path = site-lisp/org-anki
 	url = https://github.com/eyeinsky/org-anki
+	ignore = untracked
 [submodule "org-appear"]
 	path = site-lisp/org-appear
 	url = https://github.com/awth13/org-appear
+	ignore = untracked
 [submodule "org-clock-convenience"]
 	path = site-lisp/org-clock-convenience
 	url = https://github.com/dfeich/org-clock-convenience
+	ignore = untracked
 [submodule "org-download"]
 	path = site-lisp/org-download
 	url = https://github.com/abo-abo/org-download
+	ignore = untracked
 [submodule "org-heatmap"]
 	path = site-lisp/org-heatmap
 	url = https://github.com/Elilif/org-heatmap
+	ignore = untracked
 [submodule "org-media-note"]
 	path = site-lisp/org-media-note
 	url = https://github.com/yuchen-lea/org-media-note
+	ignore = untracked
 [submodule "org-mru-clock"]
 	path = site-lisp/org-mru-clock
 	url = https://github.com/unhammer/org-mru-clock
+	ignore = untracked
 [submodule "org-noter"]
 	path = site-lisp/org-noter
 	url = https://github.com/weirdNox/org-noter
+	ignore = untracked
 [submodule "org-pdftools"]
 	path = site-lisp/org-pdftools
 	url = https://github.com/fuxialexander/org-pdftools
 	no-byte-compile = org-noter-pdftools.el
+	ignore = untracked
 [submodule "org-reverse-datetree"]
 	path = site-lisp/org-reverse-datetree
 	url = https://github.com/akirak/org-reverse-datetree
+	ignore = untracked
 [submodule "org-roam"]
 	path = site-lisp/org-roam
 	url = https://github.com/org-roam/org-roam
 	load-path = .
     load-path = extensions
+	ignore = untracked
 [submodule "org-roam-ui"]
 	path = site-lisp/org-roam-ui
 	url = https://github.com/org-roam/org-roam-ui
+	ignore = untracked
 [submodule "org-superstar"]
 	path = site-lisp/org-superstar
 	url = https://github.com/integral-dw/org-superstar-mode
+	ignore = untracked
 [submodule "outli"]
 	path = site-lisp/outli
 	url = https://github.com/jdtsmith/outli
+	ignore = untracked
 [submodule "ox-pandoc"]
 	path = site-lisp/ox-pandoc
 	url = https://github.com/emacsorphanage/ox-pandoc
+	ignore = untracked
 [submodule "parsebib"]
 	path = site-lisp/parsebib
 	url = https://github.com/joostkremers/parsebib
+	ignore = untracked
 [submodule "pcre2el"]
 	path = site-lisp/pcre2el
 	url = https://github.com/joddie/pcre2el
+	ignore = untracked
 [submodule "pdf-tools"]
 	path = site-lisp/pdf-tools
 	url = https://github.com/vedang/pdf-tools
 	load-path = .
 	load-path = lisp
+	ignore = untracked
 [submodule "pdf-view-pagemark"]
 	path = site-lisp/pdf-view-pagemark
 	url = https://github.com/kimim/pdf-view-pagemark
+	ignore = untracked
 [submodule "pinyinlib"]
 	path = site-lisp/pinyinlib
 	url = https://github.com/Elilif/pinyinlib.el
+	ignore = untracked
 [submodule "popper"]
 	path = site-lisp/popper
 	url = https://github.com/karthink/popper
+	ignore = untracked
 [submodule "popwin"]
 	path = site-lisp/popwin
 	url = https://github.com/emacsorphanage/popwin
+	ignore = untracked
 [submodule "posframe"]
 	path = site-lisp/posframe
 	url = https://github.com/tumashu/posframe
+	ignore = untracked
 [submodule "powerline"]
 	path = site-lisp/powerline
 	url = https://github.com/milkypostman/powerline
+	ignore = untracked
 [submodule "prescient"]
 	path = site-lisp/prescient
 	url = https://github.com/radian-software/prescient.el
     no-byte-compile = ivy-prescient.el
     no-byte-compile = company-prescient.el
     no-byte-compile = selectrum-prescient.el
+	ignore = untracked
 [submodule "promise"]
 	path = site-lisp/promise
 	url = https://github.com/chuntaro/emacs-promise
+	ignore = untracked
 [submodule "puni"]
 	path = site-lisp/puni
 	url = https://github.com/AmaiKinono/puni
+	ignore = untracked
 [submodule "queue"]
 	path = site-lisp/queue
 	url = git@github.com:emacsmirror/queue.git
+	ignore = untracked
 [submodule "quickrun"]
 	path = site-lisp/quickrun
 	url = https://github.com/emacsorphanage/quickrun
+	ignore = untracked
 [submodule "racket-mode"]
 	path = site-lisp/racket-mode
 	url = https://github.com/greghendershott/racket-mode
+	ignore = untracked
 [submodule "rainbow-delimiters"]
 	path = site-lisp/rainbow-delimiters
 	url = https://github.com/Fanael/rainbow-delimiters
+	ignore = untracked
 [submodule "request"]
 	path = site-lisp/request
 	url = https://github.com/tkf/emacs-request
+	ignore = untracked
 [submodule "rime"]
 	path = site-lisp/rime
 	url = https://github.com/DogLooksGood/emacs-rime
+	ignore = untracked
 [submodule "s"]
 	path = site-lisp/s
 	url = https://github.com/magnars/s.el
+	ignore = untracked
 [submodule "saveplace-pdf-view"]
 	path = site-lisp/saveplace-pdf-view
 	url = https://github.com/nicolaisingh/saveplace-pdf-view
+	ignore = untracked
 [submodule "setup"]
 	path = site-lisp/setup
 	url = git@github.com:emacsmirror/setup.git
+	ignore = untracked
 [submodule "shackle"]
 	path = site-lisp/shackle
 	url = https://depp.brause.cc/shackle.git
+	ignore = untracked
 [submodule "simple-httpd"]
 	path = site-lisp/simple-httpd
 	url = https://github.com/skeeto/emacs-web-server
+	ignore = untracked
 [submodule "skewer-mode"]
 	path = site-lisp/skewer-mode
 	url = https://github.com/skeeto/skewer-mode
+	ignore = untracked
 [submodule "smart-mark"]
 	path = site-lisp/smart-mark
 	url = https://github.com/Elilif/smart-mark
+	ignore = untracked
 [submodule "smartparens"]
 	path = site-lisp/smartparens
 	url = https://github.com/Fuco1/smartparens
 [submodule "spinner"]
 	path = site-lisp/spinner
 	url = https://github.com/Malabarba/spinner.el
+	ignore = untracked
 [submodule "string-inflection"]
 	path = site-lisp/string-inflection
 	url = https://github.com/akicho8/string-inflection
+	ignore = untracked
 [submodule "super-save"]
 	path = site-lisp/super-save
 	url = https://github.com/bbatsov/super-save
+	ignore = untracked
 [submodule "svg-lib"]
 	path = site-lisp/svg-lib
 	url = https://github.com/rougier/svg-lib
+	ignore = untracked
 [submodule "svg-tag-mode"]
 	path = site-lisp/svg-tag-mode
 	url = https://github.com/rougier/svg-tag-mode
+	ignore = untracked
 [submodule "tablist"]
 	path = site-lisp/tablist
 	url = https://github.com/politza/tablist
+	ignore = untracked
 [submodule "tabspaces"]
 	path = site-lisp/tabspaces
 	url = https://github.com/mclear-tools/tabspaces
+	ignore = untracked
 [submodule "tempel"]
 	path = site-lisp/tempel
 	url = https://github.com/minad/tempel
+	ignore = untracked
 [submodule "treepy"]
 	path = site-lisp/treepy
 	url = https://github.com/volrath/treepy.el
+	ignore = untracked
 [submodule "vertico"]
 	path = site-lisp/vertico
 	url = https://github.com/minad/vertico
 	load-path = .
 	load-path = extensions
+	ignore = untracked
 [submodule "visual-fill-column"]
 	path = site-lisp/visual-fill-column
 	url = git@github.com:emacsmirror/visual-fill-column.git
+	ignore = untracked
 [submodule "vterm"]
 	path = site-lisp/vterm
 	url = https://github.com/akermu/emacs-libvterm
@@ -473,27 +617,36 @@
 	build-step = cd build && cmake .. && make
 	build-step = borg-byte-compile
     build-step = borg-update-autoloads
+	ignore = untracked
 [submodule "websocket"]
 	path = site-lisp/websocket
 	url = https://github.com/ahyatt/emacs-websocket
+	ignore = untracked
 [submodule "wgrep"]
 	path = site-lisp/wgrep
 	url = https://github.com/mhayashi1120/Emacs-wgrep
+	ignore = untracked
 [submodule "whisper"]
 	path = site-lisp/whisper
 	url = https://github.com/natrys/whisper.el
+	ignore = untracked
 [submodule "with-editor"]
 	path = site-lisp/with-editor
 	url = https://github.com/magit/with-editor
+	ignore = untracked
 [submodule "wordnut"]
 	path = site-lisp/wordnut
 	url = https://github.com/gromnitsky/wordnut
+	ignore = untracked
 [submodule "yaml"]
 	path = site-lisp/yaml
 	url = https://github.com/zkry/yaml.el
+	ignore = untracked
 [submodule "yasnippet"]
 	path = site-lisp/yasnippet
 	url = https://github.com/joaotavora/yasnippet
+	ignore = untracked
 [submodule "zmq"]
 	path = site-lisp/zmq
 	url = https://github.com/nnicandro/emacs-zmq
+	ignore = untracked
