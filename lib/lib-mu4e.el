@@ -1,4 +1,4 @@
-;; lib-mu4e.el --- Initialize lib-mu4e configurations.	-*- lexical-binding: t; -*-
+;; lib-mu4e.el --- Initialize lib-mu4e configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -63,14 +63,14 @@ Also number them so they can be opened using `mu4e-view-go-to-url'."
 (defun eli/mu4e-search-filter-source ()
   (interactive)
   (let* ((msg (mu4e-message-at-point))
-	     (sender-email (plist-get (car (plist-get msg :from)) :email)))
+         (sender-email (plist-get (car (plist-get msg :from)) :email)))
     (mu4e--search-execute (concat "from:" sender-email) nil)))
 
 
 ;; SRC: https://emacs-china.org/t/topic/305/77?u=vagrantjoker
 ;; Xapian, the search engine of mu has a poor support of CJK characters,
 ;; which causes only query contains no more than 2 CJK characters works.
-;; 
+;;
 ;; https://researchmap.jp/?page_id=457
 ;;
 ;; This workaroud breaks any CJK words longer than 2 characters into
@@ -85,11 +85,11 @@ Also number them so they can be opened using `mu4e-view-go-to-url'."
           (char-list nil)
           (br-word nil))
       (if (setq pos (string-match ":" word))     ; like: "s:abc"
-          (concat (substring word 0 (+ 1 pos)) 
+          (concat (substring word 0 (+ 1 pos))
                   (mu4e-goodies~break-cjk-word (substring word (+ 1 pos))))
         (if (memq 'ascii (find-charset-string word)) ; ascii mixed with others like: abcあいう
             word
-          (progn 
+          (progn
             (setq char-list (split-string word "" t))
             (while (cdr char-list)
               (setq br-word (concat br-word (concat (car char-list) (cadr char-list)) " "))

@@ -173,14 +173,13 @@ This function returns nil if it cannot parse REMOTE."
 (defun eli/magit-commit-with-changelog (&rest _args)
   "Like `magit-commit-add-log', but add all staged files."
   (interactive)
-  (letrec
-      ((eli/insert-changelog
-        (lambda ()
-          (save-excursion
-            (insert "\n\n")
-            (magit-generate-changelog))
-          (setq-local fill-paragraph-function #'log-edit-fill-entry)
-          (remove-hook 'git-commit-setup-hook eli/insert-changelog))))
+  (letrec ((eli/insert-changelog
+            (lambda ()
+              (save-excursion
+                (insert "\n\n")
+                (magit-generate-changelog))
+              (setq-local fill-paragraph-function #'log-edit-fill-entry)
+              (remove-hook 'git-commit-setup-hook eli/insert-changelog))))
     (add-hook 'git-commit-setup-hook eli/insert-changelog)
     (magit-commit-create)))
 

@@ -1,4 +1,4 @@
-;; lib-lyrics-fetcher.el --- Initialize lib-lyrics-fetcher configurations.	-*- lexical-binding: t; -*-
+;; lib-lyrics-fetcher.el --- Initialize lib-lyrics-fetcher configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -32,13 +32,13 @@
 
 (defun lyrics-fetcher-neteasecloud-lyrics-get-time ()
   (when-let* ((timestamp (save-excursion
-			               (beginning-of-line)
+                           (beginning-of-line)
                            (re-search-forward "\\([[:digit:]]\\{2\\}\\):\\([[:digit:]]\\{2\\}\\)"
                                               (line-end-position)
                                               'noerror)))
-	          (minutes (string-to-number (match-string 1)))
-	          (seconds (string-to-number (match-string 2))))
-	(+ (* 60 minutes) seconds)))
+              (minutes (string-to-number (match-string 1)))
+              (seconds (string-to-number (match-string 2))))
+    (+ (* 60 minutes) seconds)))
 
 ;;;###autoload
 (defun lyrics-fetcher-neteasecloud-lyrics-jump ()
@@ -65,8 +65,8 @@ tracks' name except extensions."
            (full-name (if (not album)
                           (emms-track-get track 'name)
                         (unless (and (file-exists-p dir)
-		                             (directory-name-p dir))
-	                      (make-directory dir t))
+                                     (directory-name-p dir))
+                          (make-directory dir t))
                         (concat album
                                 "/"
                                 (file-name-nondirectory

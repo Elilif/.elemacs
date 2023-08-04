@@ -1,4 +1,4 @@
-;; lib-embark.el --- Initialize lib-embark configurations.	-*- lexical-binding: t; -*-
+;; lib-embark.el --- Initialize lib-embark configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -87,38 +87,38 @@
   "Deselect all selected candidates."
   (interactive)
   (when embark--selection
-	(dolist (target embark--selection)
-	  (when-let ((overlay (cdr target)))
-		(delete-overlay overlay)))
-	(setq embark--selection nil)))
+    (dolist (target embark--selection)
+      (when-let ((overlay (cdr target)))
+        (delete-overlay overlay)))
+    (setq embark--selection nil)))
 
 ;;; file manipulations
 (defun eli/common-parent (paths)
   "Return the deepest common parent directory of PATHS."
   (if (cdr paths)
-	  (when paths
-		(let ((common-prefix (car paths)))
-		  (dolist (path (cdr paths))
-			(let ((components1 (file-name-split common-prefix))
-				  (components2 (file-name-split path)))
-			  (setq common-prefix "")
-			  (while (and components1 components2
-						  (string= (car components1) (car components2)))
-				(setq common-prefix (file-name-concat common-prefix  (car components1)))
-				(setq components1 (cdr components1))
-				(setq components2 (cdr components2)))))
-		  (expand-file-name (file-name-as-directory common-prefix))))
-	(file-name-parent-directory (car paths))))
+      (when paths
+        (let ((common-prefix (car paths)))
+          (dolist (path (cdr paths))
+            (let ((components1 (file-name-split common-prefix))
+                  (components2 (file-name-split path)))
+              (setq common-prefix "")
+              (while (and components1 components2
+                          (string= (car components1) (car components2)))
+                (setq common-prefix (file-name-concat common-prefix  (car components1)))
+                (setq components1 (cdr components1))
+                (setq components2 (cdr components2)))))
+          (expand-file-name (file-name-as-directory common-prefix))))
+    (file-name-parent-directory (car paths))))
 
 (defun directory-same-p (lst)
   "Return t if all elements in LST are same."
   (let ((first-elem (car lst))
-		(result t))
-	(while lst
-	  (unless (string= first-elem (car lst))
-		(setq result nil))
-	  (setq lst (cdr lst)))
-	result))
+        (result t))
+    (while lst
+      (unless (string= first-elem (car lst))
+        (setq result nil))
+      (setq lst (cdr lst)))
+    result))
 
 (defun eli/quit-minibuffer (&rest _)
   (if (fboundp 'minibuffer-quit-recursive-edit)
@@ -130,62 +130,62 @@
 (defun eli/move-file (files)
   "Move FILES to the specific directory."
   (if-let*
-	  ((same-parent-p (directory-same-p
-					   (mapcar #'file-name-parent-directory files)))
-	   (parent (eli/common-parent files))
-	   (dest (read-directory-name
-			  (format "Move %d file(s) to: " (length files))
-			  parent)))
-	  (progn
-		(unless (file-exists-p dest)
-		  (make-directory dest))
-		(when (y-or-n-p (format "Move %d file(s) to %s ?"
-								(length files)
-								dest))
-		  (dolist (file files)
-			(if-let ((bf (get-file-buffer file))
-					 (new-name (file-name-concat dest
-												 (file-name-nondirectory file))))
-				(with-current-buffer bf
-				  (rename-file file new-name)
-				  (set-visited-file-name new-name)
-				  (set-buffer-modified-p nil)
-				  (push (cons bf (expand-file-name dest))
-						eli/move-file-list)
-				  ;; (setq default-directory (expand-file-name dest))
-				  (recentf-push new-name))
-			  (rename-file file dest)))))
-	(error "All files must be in the same directory!")))
+      ((same-parent-p (directory-same-p
+                       (mapcar #'file-name-parent-directory files)))
+       (parent (eli/common-parent files))
+       (dest (read-directory-name
+              (format "Move %d file(s) to: " (length files))
+              parent)))
+      (progn
+        (unless (file-exists-p dest)
+          (make-directory dest))
+        (when (y-or-n-p (format "Move %d file(s) to %s ?"
+                                (length files)
+                                dest))
+          (dolist (file files)
+            (if-let ((bf (get-file-buffer file))
+                     (new-name (file-name-concat dest
+                                                 (file-name-nondirectory file))))
+                (with-current-buffer bf
+                  (rename-file file new-name)
+                  (set-visited-file-name new-name)
+                  (set-buffer-modified-p nil)
+                  (push (cons bf (expand-file-name dest))
+                        eli/move-file-list)
+                  ;; (setq default-directory (expand-file-name dest))
+                  (recentf-push new-name))
+              (rename-file file dest)))))
+    (error "All files must be in the same directory!")))
 
 (defun eli/move-file-after-action (&rest _)
   (dolist (pair eli/move-file-list)
-	(with-current-buffer (car pair)
-	  (setq default-directory (cdr pair))))
+    (with-current-buffer (car pair)
+      (setq default-directory (cdr pair))))
   (setq eli/move-file-list nil)
   (eli/quit-minibuffer))
 
 (defun eli/delete-file (files)
   (when (y-or-n-p (format "Move %d file(s) to the trash?" (length files)))
-	(dolist (file files)
-	  (dired-delete-file file 'always t))))
+    (dolist (file files)
+      (dired-delete-file file 'always t))))
 
 (defun eli/copy-file (files)
   (let*
-	  ((parent (eli/common-parent files))
-	   (dest (read-directory-name
-			  (format "Move %d file(s) to: " (length files))
-			  parent)))
-	(unless (file-exists-p dest)
-	  (make-directory dest))
-	(when (y-or-n-p (format "Copy %d file(s) to %s ?"
-							(length files)
-							dest))
-	  (dolist (file files)
-		(copy-file file dest)))))
+      ((parent (eli/common-parent files))
+       (dest (read-directory-name
+              (format "Move %d file(s) to: " (length files))
+              parent)))
+    (unless (file-exists-p dest)
+      (make-directory dest))
+    (when (y-or-n-p (format "Copy %d file(s) to %s ?"
+                            (length files)
+                            dest))
+      (dolist (file files)
+        (copy-file file dest)))))
 
 (defvar eli/multitarget-actions '(eli/copy-file
-								  eli/move-file
-								  eli/delete-file))
+                                  eli/move-file
+                                  eli/delete-file))
 
 ;;;; provide
 (provide 'lib-embark)

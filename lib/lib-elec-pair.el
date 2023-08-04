@@ -1,4 +1,4 @@
-;; lib-elec-pair.el --- Initialize lib-elec-pair configurations.	-*- lexical-binding: t; -*-
+;; lib-elec-pair.el --- Initialize lib-elec-pair configurations.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -113,7 +113,7 @@ The decision is taken by order of preference:
         ;; Insert matching pair.
         ((and (memq syntax '(?\( ?\" ?\$))
               (not overwrite-mode)
-			  ;;; always use `electric-pair-inhibit-predicate'
+              ;;; always use `electric-pair-inhibit-predicate'
               (not (electric-pair--save-literal-point-excursion
                     (goto-char pos)
                     (funcall electric-pair-inhibit-predicate
@@ -127,39 +127,39 @@ The decision is taken by order of preference:
                (setq-local electric-pair-text-pairs electric-pair-pairs))))
 
 (eli/add-mode-pairs 'org-mode-hook '((?/ . ?/)
-									 (?= . ?=)
-									 (?* . ?*)
-									 (?+ . ?+)
-									 (?~ . ?~)
-									 (?_ . ?_)))
+                                     (?= . ?=)
+                                     (?* . ?*)
+                                     (?+ . ?+)
+                                     (?~ . ?~)
+                                     (?_ . ?_)))
 
 (defun eli/electric-pair-inhibit (char)
   (cond
    ((eq major-mode 'org-mode)
-	(or
-	 (and
-	  (member char '(?/ ?= ?* ?+ ?~ ?_))
-	  (not (member (char-before (1- (point))) '(?\ ?\t))))
-	 (and
-	  (member char '(?/ ?= ?* ?+ ?~ ?_))
-	  (member (char-before (1- (point))) '(?\ ?\t))
+    (or
+     (and
+      (member char '(?/ ?= ?* ?+ ?~ ?_))
+      (not (member (char-before (1- (point))) '(?\ ?\t))))
+     (and
+      (member char '(?/ ?= ?* ?+ ?~ ?_))
+      (member (char-before (1- (point))) '(?\ ?\t))
       (letrec ((eli/delete-pair-advice (lambda (&rest _args)
                                          (add-hook 'post-self-insert-hook eli/delete-pair)
                                          (advice-remove 'electric-pair--insert eli/delete-pair-advice)
                                          (message "advice")))
                (eli/delete-pair (lambda ()
                                   (when (eq (char-before) ?\ )
-	                                (delete-char 1))
+                                    (delete-char 1))
                                   (message "delete")
                                   (remove-hook 'post-self-insert-hook eli/delete-pair))))
         (advice-add 'electric-pair--insert :after eli/delete-pair-advice))
-	  nil)
-	 (and 
-	  (org-inside-LaTeX-fragment-p)
-	  (member char '(?/ ?= ?* ?+ ?~ ?_)))))
+      nil)
+     (and
+      (org-inside-LaTeX-fragment-p)
+      (member char '(?/ ?= ?* ?+ ?~ ?_)))))
    (t
-	(if electric-pair-preserve-balance
-		(electric-pair-inhibit-if-helps-balance char)
+    (if electric-pair-preserve-balance
+        (electric-pair-inhibit-if-helps-balance char)
       (electric-pair-conservative-inhibit char)))))
 
 

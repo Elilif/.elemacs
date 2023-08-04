@@ -1,4 +1,4 @@
-;; lib-svg-tag-mode.el --- Initialize lib-svg-tag-mode configurations.	-*- lexical-binding: t; -*-
+;; lib-svg-tag-mode.el --- Initialize lib-svg-tag-mode configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -64,7 +64,6 @@ and style elements ARGS."
                             txt-char-height))
          (font-info       (font-info (format "%s-%d" font-family font-size)))
          (font-size       (aref font-info 2)) ;; redefine font-size
-         ;; (ascent          (aref font-info 8))
          (ascent          (plist-get style :ascent))
          (scale          (plist-get style :scale))
          (tag-char-width  (aref font-info 11))
@@ -137,7 +136,7 @@ and style elements ARGS."
       (save-excursion
         (while (re-search-forward (nth 0 keyword) nil t)
           (put-text-property (match-beginning 0) (match-end 0)
-							 'display  (nth 3 (eval (nth 2 keyword)))) ))
+                             'display  (nth 3 (eval (nth 2 keyword)))) ))
       (pop keywords)
       (setq keyword (car keywords)))))
 
@@ -150,10 +149,10 @@ and style elements ARGS."
         (setq scale height)))
     (when text-scale-mode
       (setq scale (* scale (expt eli/image-scale-mode-step
-							     text-scale-mode-amount))))
+                                 text-scale-mode-amount))))
     (svg-tag-make tag :face face
-				  :inverse t :margin 0
-				  :height 1.1 :ascent 16
+                  :inverse t :margin 0
+                  :height 1.1 :ascent 16
                   :scale scale)))
 
 
