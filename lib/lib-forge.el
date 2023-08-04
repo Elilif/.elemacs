@@ -30,11 +30,6 @@
 
 ;;; Code:
 
-(defun eli/forge-insert (origin)
-  "Disable forge refresh in some conditions."
-  (unless (member this-command '(magit-stage magit-unstage))
-    (funcall origin)))
-
 
 ;;;; provide
 (provide 'lib-forge)

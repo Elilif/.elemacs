@@ -69,7 +69,9 @@
     (magit-todos-mode))
   (:option*
    magit-todos-auto-group-items 3
-   magit-todos-branch-list nil))
+   magit-todos-branch-list nil)
+  (:advice
+   magit-todos--insert-todos :around eli/magit-insert))
 
 ;;;; forge
 (setup forge
@@ -86,8 +88,8 @@
   (:option* forge-owned-accounts '(("eli" . (remote-name "personal")))
             forge-database-file "~/.emacs.d/var/forge/forge-database.sqlite")
   (:advice
-   forge-insert-pullreqs :around eli/forge-insert
-   forge-insert-issues :around eli/forge-insert))
+   forge-insert-pullreqs :around eli/magit-insert
+   forge-insert-issues :around eli/magit-insert))
 
 
 ;;;; provide
