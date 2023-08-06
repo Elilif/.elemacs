@@ -166,7 +166,15 @@ has passed."
   (:option*
    borg-compile-function #'borg-byte+native-compile-async)
   (:when-loaded
-    (advice-add 'borg-clean :after #'elemacs/borg-clean)))
+    (advice-add 'borg-clean :after #'elemacs/borg-clean)
+    (advice-add 'borg-assimilate
+                :after
+                (lambda (package &rest _args)
+                  (borg--call-git package "config" "-f"
+                                  borg-gitmodules-file
+                                  (format "submodule.%s.ignore" package)
+                                  "untracked")
+                  (borg--call-git package "add" ".gitmodules")))))
 
 ;;;; provide
 (provide 'core-setup)
