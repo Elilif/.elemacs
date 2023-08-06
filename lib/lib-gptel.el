@@ -195,9 +195,11 @@ This uses the prompts in the variable
   "Get query string from selected region."
   (replace-regexp-in-string "\n" " "
                             (if (or (use-region-p)
-                                    pdf-view-active-region)
+                                    (and (boundp 'pdf-view-active-region)
+                                         pdf-view-active-region))
                                 (cond
-                                 ((eq major-mode 'pdf-view-mode)
+                                 ((and (eq major-mode 'pdf-view-mode)
+                                       (fboundp 'pdf-view-active-region-text))
                                   (car (pdf-view-active-region-text)))
                                  (t
                                   (buffer-substring-no-properties (region-beginning)
