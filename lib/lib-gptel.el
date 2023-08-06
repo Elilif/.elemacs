@@ -59,31 +59,14 @@
 
 (defun eli/gptel--get-sys-prompt (pm)
   (if (and pm (< (point-min) pm))
-      (let ((prompt (buffer-substring-no-properties (point-min) (- pm 1))))
+      (let* ((start (save-excursion
+                      (if (re-search-backward "^[ 	]*:END:[ 	]*$" nil 'noerror)
+                          (1+ (line-end-position))
+                        (point-min))))
+             (prompt (buffer-substring-no-properties start (- pm 1))))
         (or (gethash prompt gptel--crowdsourced-prompts)
             prompt))
     gptel--system-message))
-
-(defun eli/gptel-propertize ()
-  "Add gptel text for saved chats."
-  (when (buffer-file-name)
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward (concat
-                                 "^"
-                                 (string-limit (gptel-prompt-string)
-                                               (/ (length (gptel-prompt-string)) 2))
-                                 "\n\n"
-                                 "\\(\\(.*\n\\)*?\\)"
-                                 "\n"
-                                 (gptel-prompt-string))
-                                (point-max)
-                                'noerror)
-        (put-text-property (match-beginning 1)
-                           (match-end 1)
-                           'gptel
-                           'response)))
-    (set-buffer-modified-p nil)))
 
 (defun eli/gptel--create-prompt (&optional prompt-end)
   "Advice for `gptel--create-prompt'."
@@ -490,6 +473,7 @@ create one."
     (dolist (conv eli/gptel-conversations)
       (let ((buf (cdr conv)))
         (with-current-buffer buf
+          (gptel--save-state)
           (write-file (file-name-concat
                        eli/gptel-conversations-dir
                        (file-name-with-extension buf ".chat"))))))))
@@ -501,7 +485,7 @@ create one."
       (find-file-noselect (file-name-concat eli/gptel-conversations-dir conv))
       (with-current-buffer conv
         (gptel-mode)
-        (eli/gptel-propertize))
+        (setq buffer-save-without-query t))
       (add-to-list 'eli/gptel-conversations
                    (cons
                     (string-trim conv "\\*ChatGPT-" "\\*\\.chat")
