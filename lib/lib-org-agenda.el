@@ -85,7 +85,8 @@
 		 (done (or (not org-state) ;; nil when no TODO list
                    (member org-state org-done-keywords)))
          (file (buffer-file-name))
-         (agenda (funcall (ad-get-orig-definition 'org-agenda-files)) ))
+         (agenda (funcall (ad-get-orig-definition 'org-agenda-files)))
+         (custom-file (expand-file-name "custom.el" user-emacs-directory)))
     (unless (member file agenda)
 	  (if done
           (save-excursion

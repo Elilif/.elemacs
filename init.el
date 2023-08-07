@@ -189,7 +189,8 @@
                'citar-open
                :packages 'org)
     (require 'init-org)
-    (require 'init-tex)))
+    (require 'init-tex)
+    (load "~/.emacs.d/custom.el")))
 
 (setup init-vc
   (:iload init-vc)
