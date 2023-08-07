@@ -89,7 +89,7 @@
     (:bind
      "l" lyrics-fetcher-show-lyrics
      "L" lyrics-fetcher-emms-browser-show-at-point))
-  (:with-feature emms-playlist
+  (:with-feature emms-playlist-mode
     (:bind
      "l" lyrics-fetcher-show-lyrics))
   (:with-feature emms
