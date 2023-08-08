@@ -1,4 +1,4 @@
-;; init-misc.el --- Initialize misc configurations.	-*- lexical-binding: t -*-
+;; init-misc.el --- Initialize misc configurations.     -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -56,20 +56,20 @@
   (:hook all-the-icons-ibuffer-mode)
   (:option* all-the-icons-ibuffer-icon t
             all-the-icons-ibuffer-color-icon t
-			all-the-icons-ibuffer-formats '((mark modified read-only locked " "
-												  (icon 2 2 :left :elide)
-												  #(" " 0 1
-													(display
-													 (space :align-to 8)))
-												  (name 30 30 :left :elide)
-												  " "
-												  (size-h 9 -1 :right)
-												  " "
-												  (mode+ 16 16 :left :elide)
-												  " " filename-and-process+)
-											(mark " "
-												  (name 16 -1)
-												  " " filename))))
+            all-the-icons-ibuffer-formats '((mark modified read-only locked " "
+                                                  (icon 2 2 :left :elide)
+                                                  #(" " 0 1
+                                                    (display
+                                                     (space :align-to 8)))
+                                                  (name 30 30 :left :elide)
+                                                  " "
+                                                  (size-h 9 -1 :right)
+                                                  " "
+                                                  (mode+ 16 16 :left :elide)
+                                                  " " filename-and-process+)
+                                            (mark " "
+                                                  (name 16 -1)
+                                                  " " filename))))
 
 
 ;;;; hl-todo
@@ -88,44 +88,43 @@
   (:global "C-`" #'popper-toggle-latest
            "M-`" #'popper-cycle
            "C-M-`" #'popper-toggle-type)
-  (:option* popper-reference-buffers '("scratch\\*"
-                                       "\\*Emms\\*.*"
+  (:option* popper-reference-buffers '(emms-playlist-mode
                                        emms-browser-mode)
             popper-mode-line t
             popper-echo-dispatch-keys '("0" "1" "2" "3" "4" "5" "6" "7" "8" "9")
             popper-display-control nil)
   (:advice popper-raise-popup :after (lambda (&optional _arg)
                                        (delete-other-windows))
-		   popper-open-latest :before eli/popper-remove-autoscratch))
+           popper-open-latest :before eli/popper-remove-autoscratch))
 
 ;;;; shackle
 (setup shackle
   (:once (list :hooks 'find-file-hook)
     (shackle-mode))
   (:option* shackle-rules '(("*Messages*" :align below :size 0.3 :select t)
-			                (".*scratch\\*$" :regexp t :select t :align right)
-			                (helpful-mode :select t :align right)
-							(help-mode :select t :align right)
-			                (elfeed-show-mode :select t :align bottom :size 0.85)
-							("\\*Pp Macroexpand Output\\*" :regexp t :select t)
-			                ("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
-			                ("*WordNut*" :select t :align right :size 0.4)
-			                ("\\*Emms\\*.*" :regexp t:align right :select t :size 0.5)
-			                (emms-browser-mode :select t :align right :size 0.5)
-			                (org-agenda-mode :select t)
-			                ("*Org Select*" :select t :align right :size 0.3)
-							("*Reconcile*" :select t :align right :size 0.5))))
+                            (".*scratch\\*$" :regexp t :select t :align right)
+                            (helpful-mode :select t :align right)
+                            (help-mode :select t :align right)
+                            (elfeed-show-mode :select t :align bottom :size 0.85)
+                            ("\\*Pp Macroexpand Output\\*" :regexp t :select t)
+                            ("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
+                            ("*WordNut*" :select t :align right :size 0.4)
+                            (emms-playlist-mode :align right :select t :size 0.4)
+                            (emms-browser-mode :select t :align right :size 0.4)
+                            (org-agenda-mode :select t)
+                            ("*Org Select*" :select t :align right :size 0.3)
+                            ("*Reconcile*" :select t :align right :size 0.5))))
 
 ;;;; gcmh
 (setup gcmh
   (:once (list :hooks 'pre-command-hook)
-	(gcmh-mode))
+    (gcmh-mode))
   (:option*
    gcmh-high-cons-threshold 1073741824
    gcmh-verbose nil
    gcmh-idle-delay 5)
   (:when-loaded
-	(add-function :after after-focus-change-function #'garbage-collect)))
+    (add-function :after after-focus-change-function #'garbage-collect)))
 
 ;;;; ace-window
 (setup ace-window
@@ -162,51 +161,51 @@
 (setup rime
   (:iload rime)
   (:when-loaded
-	(require 'lib-rime))
+    (require 'lib-rime))
   (:once (list :hooks 'pre-command-hook)
-	(setq default-input-method "rime"))
+    (setq default-input-method "rime"))
   (:option*
    rime-user-data-dir "~/.emacs.d/var/rime/"
    rime-disable-predicates '(rime-predicate-prog-in-code-p
-				             rime-predicate-space-after-ascii-p
-				             rime-predicate-after-ascii-char-p
-				             +rime-predicate-punctuation-line-begin-p
-				             rime-predicate-org-in-src-block-p
-				             rime-predicate-space-after-cc-p
-				             rime-predicate-current-uppercase-letter-p
-				             rime-predicate-hydra-p
-				             rime-predicate-after-latin-char-p)
+                             rime-predicate-space-after-ascii-p
+                             rime-predicate-after-ascii-char-p
+                             +rime-predicate-punctuation-line-begin-p
+                             rime-predicate-org-in-src-block-p
+                             rime-predicate-space-after-cc-p
+                             rime-predicate-current-uppercase-letter-p
+                             rime-predicate-hydra-p
+                             rime-predicate-after-latin-char-p)
    rime-show-candidate 'nil
    rime-inline-ascii-trigger 'shift-l
    rime-deactivate-when-exit-minibuffer nil)
   (:when-loaded
-	(:global
-	 "C-s-k" rime-inline-ascii
-	 "C-s-j" +rime-convert-string-at-point)))
+    (:global
+     "C-s-k" rime-inline-ascii
+     "C-s-j" +rime-convert-string-at-point)))
 
 ;;;; avy
 (setup avy
   (:when-loaded
-	(ace-pinyin-global-mode))
+    (ace-pinyin-global-mode))
   (:init
    (defun avy-goto-char-near-point (char)
-	 "Jump to the currently visible CHAR in the few lines near point."
-	 (interactive (list (read-char "char: " t)))
-	 (let ((avy-all-windows nil))
+     "Jump to the currently visible CHAR in the few lines near point."
+     (interactive (list (read-char "char: " t)))
+     (let ((avy-all-windows nil))
        (avy-with avy-goto-char
-		 (avy-process
-		  (avy--regex-candidates
-		   (regexp-quote (string char))
-		   (save-excursion
-			 (backward-paragraph)
-			 (point))
-		   (save-excursion
-			 (forward-paragraph)
-			 (point)))
-		  (avy--style-fn avy-style))))))
+         (avy-process
+          (avy--regex-candidates
+           (regexp-quote (string char))
+           (save-excursion
+             (backward-paragraph)
+             (point))
+           (save-excursion
+             (forward-paragraph)
+             (point)))
+          (avy--style-fn avy-style))))))
   (:with-feature org
     (:bind
-	 "<remap> <org-cycle-agenda-files>" avy-goto-char))
+     "<remap> <org-cycle-agenda-files>" avy-goto-char))
   (:option*
    avy-all-windows nil)
   (:global
@@ -215,12 +214,6 @@
    "C-\"" avy-goto-char-near-point))
 
 ;;;; GPT
-;; (setup doctor-chatgpt
-;;   (:iload doctor-chatgpt)
-;;   (:bind "C-g" eli/doctor-chatgpt-quit)
-;;   (:global
-;;    "s-p" doctor-chatgpt-pop-posframe-toggle))
-
 (setup gptel
   (:iload gptel)
   (:also-load
@@ -230,42 +223,42 @@
   (:init
    (add-to-list 'auto-mode-alist '("\\.chat\\'" . org-mode)))
   (:when-loaded
-	(toggle-word-wrap)
-	(:hooks
-	 kill-emacs-hook eli/gptel-save-conversations))
+    (toggle-word-wrap)
+    (:hooks
+     kill-emacs-hook eli/gptel-save-conversations))
   (:once (list :before 'eli/gptel-posframe-toggle)
-	(eli/gptel-restore-conversations))
+    (eli/gptel-restore-conversations))
   (:option*
    gptel-model "gpt-3.5-turbo-0613"
    gptel-crowdsourced-prompts-file "~/.emacs.d/etc/gptel/gptel-crowdsourced-prompts.csv"
    gptel-stream t
    ;; gptel-host "api.openai.com"
    gptel-host "api.openai-sb.com"
-   ;; gptel-proxy "socks://127.0.0.1:7891"
-   gptel-proxy ""
+   gptel-proxy "socks://127.0.0.1:7891"
+   ;; gptel-proxy ""
    gptel-default-mode 'org-mode
    gptel-temperature 0.7
    gptel-prompt-prefix-alist `((markdown-mode . "### ")
-							   (org-mode . ,(concat (make-string 110 ?\-) "\n"))
-							   (text-mode . "### "))
+                               (org-mode . ,(concat (make-string 110 ?\-) "\n"))
+                               (text-mode . "### "))
    gptel-directives '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
-					  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
-					  (emacs . "You are an expert in Emacs.")))
+                      (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+                      (emacs . "You are an expert in Emacs.")))
   (:hook visual-fill-column-mode
-		 visual-line-mode)
+         visual-line-mode)
   (:advice gptel--create-prompt :override eli/gptel--create-prompt
-		   gptel-send :override eli/gptel-send)
+           gptel-send :override eli/gptel-send)
   (:bind
    "s-p" eli/gptel-close
    "s-i" eli/gptel-read-crowdsourced-prompt
    "s-\]" eli/gptel-close
    "C-c C-k" eli/gptel-clean)
   (:with-feature elfeed-show
-	(:bind
-	 "s" eli/gptel-summary))
+    (:bind
+     "s" eli/gptel-summary))
   (:with-feature pdf-view
-	(:bind
-	 "<mouse-8>" eli/gptel-translate))
+    (:bind
+     "<mouse-8>" eli/gptel-translate))
   (:global
    "s-p" eli/gptel-posframe-toggle
    "C-c DEL" gptel-abort
@@ -294,17 +287,17 @@
    tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
    tab-bar-tab-name-function #'tab-bar-tab-name-truncated
    tab-bar-tab-name-format-function (lambda (tab i)
-									  (concat
-									   (propertize (if tab-bar-tab-hints (format "%d" i) "")
-												   'face 'tab-bar-hints)
-									   (propertize (if tab-bar-tab-hints " " "")
-												   'face (funcall (lambda (tab)
-																	(if (eq (car tab) 'current-tab)
-																		'tab-bar-tab-space-active
-																	  'tab-bar-tab-space-inactive))
-																  tab))
-									   (propertize (alist-get 'name tab)
-												   'face (funcall tab-bar-tab-face-function tab)))))
+                                      (concat
+                                       (propertize (if tab-bar-tab-hints (format "%d" i) "")
+                                                   'face 'tab-bar-hints)
+                                       (propertize (if tab-bar-tab-hints " " "")
+                                                   'face (funcall (lambda (tab)
+                                                                    (if (eq (car tab) 'current-tab)
+                                                                        'tab-bar-tab-space-active
+                                                                      'tab-bar-tab-space-inactive))
+                                                                  tab))
+                                       (propertize (alist-get 'name tab)
+                                                   'face (funcall tab-bar-tab-face-function tab)))))
   (:global
    "s--" eli/tabspaces-kill-buffers-close-workspace
    "s-=" tab-bar-new-tab
@@ -328,7 +321,7 @@
 
 (setup tabspaces
   (:once (list :before 'tab-bar-new-tab)
-	(tabspaces-mode))
+    (tabspaces-mode))
   (:also-load
    project
    lib-tab-bar)
@@ -359,20 +352,20 @@
 (setup ledger-mode
   (:also-load lib-ledger-mode)
   (:option* ledger-reconcile-default-commodity "¥"
-			ledger-post-amount-alignment-column 80
-			ledger-report-auto-refresh-sticky-cursor t
-			ledger-report-auto-refresh t
-			ledger-copy-transaction-insert-blank-line-after t
-			ledger-reconcile-buffer-line-format "%(date)s %-4(code)s %-30(payee)s %-30(account)s %15(amount)s\n"
-			ledger-reports '(("bal" "%(binary) -f %(ledger-file) bal")
-							 ("bal this month" "%(binary) -f %(ledger-file) bal -p %(month) -S amount")
-							 ("bal this year" "%(binary) -f %(ledger-file) bal -p 'this year'")
-							 ("net worth"      "%(binary) -f %(ledger-file) bal Assets Liabilities")
-							 ("reg" "%(binary) -f %(ledger-file) reg")
-							 ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
-							 ("account" "%(binary) -f %(ledger-file) reg %(account)")))
+            ledger-post-amount-alignment-column 80
+            ledger-report-auto-refresh-sticky-cursor t
+            ledger-report-auto-refresh t
+            ledger-copy-transaction-insert-blank-line-after t
+            ledger-reconcile-buffer-line-format "%(date)s %-4(code)s %-30(payee)s %-30(account)s %15(amount)s\n"
+            ledger-reports '(("bal" "%(binary) -f %(ledger-file) bal")
+                             ("bal this month" "%(binary) -f %(ledger-file) bal -p %(month) -S amount")
+                             ("bal this year" "%(binary) -f %(ledger-file) bal -p 'this year'")
+                             ("net worth"      "%(binary) -f %(ledger-file) bal Assets Liabilities")
+                             ("reg" "%(binary) -f %(ledger-file) reg")
+                             ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
+                             ("account" "%(binary) -f %(ledger-file) reg %(account)")))
   (:when-loaded
-	(setq-default ledger-occur-use-face-shown nil))
+    (setq-default ledger-occur-use-face-shown nil))
   (:bind
    "C-M-p" ledger-navigate-previous-uncleared
    "C-M-n" ledger-navigate-next-uncleared
@@ -401,28 +394,37 @@
   (:also-load
    lib-autoscratch)
   (:delay 0.6
-	(with-current-buffer (get-buffer "*scratch*")
-	  (autoscratch-mode)))
+    (with-current-buffer (get-buffer "*scratch*")
+      (autoscratch-mode)))
   (:option*
    initial-major-mode 'autoscratch-mode
    autoscratch-triggers-alist '(("[(;]" lisp-interaction-mode)
-								("#" autoscratch-select
-								 '(("python" python-mode)
-								   ("shell" shell-script-mode)))
-								("\\cc\\|[\"*-a-zA-Z0-9]" org-mode)
-								("/" c-mode)
-								("." fundamental-mode)))
+                                ("#" autoscratch-select
+                                 '(("python" python-mode)
+                                   ("shell" shell-script-mode)))
+                                ("\\cc\\|[\"*-a-zA-Z0-9]" org-mode)
+                                ("/" c-mode)
+                                ("." fundamental-mode)))
   (:advice
    autoscratch--fork-and-rename-current
    :override eli/autoscratch--fork-and-rename-current)
   (:bind
    [remap yank] eli/autoscratch--yank))
 
+(setup immersive-translate
+  (:hooks
+   elfeed-show-mode-hook immersive-translate-setup
+   nov-pre-html-render-hook immersive-translate-setup)
+  (:option*
+   immersive-translate-backend 'trans
+   immersive-translate-baidu-appid "20230720001751104"
+   immersive-translate-chatgpt-host "api.openai-sb.com"))
+
 ;;;; beacon
 ;; (setup beacon
 ;;   (:once (list :before
-;; 			   'scroll-up-command 'scroll-down-command)
-;; 	(beacon-mode))
+;;                 'scroll-up-command 'scroll-down-command)
+;;      (beacon-mode))
 ;;   (:option*
 ;;    beacon-blink-delay 0.1
 ;;    beacon-blink-duration 0.2
