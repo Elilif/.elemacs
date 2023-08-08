@@ -51,6 +51,28 @@
   (:hook all-the-icons-dired-mode)
   (:option* all-the-icons-dired-monochrome nil))
 
+(setup dirvish
+  (:once (list :packages 'dired)
+    (dirvish-override-dired-mode))
+  (:option*
+   dirvish-attributes '(file-size)
+   dirvish-mode-line-height 20
+   dirvish-use-mode-line t
+   dirvish-quick-access-entries '(("h" "~/" "Home")
+                                  ("e" "~/.emacs.d/lisp/" "Emacs user directory")
+                                  ("l" "~/.emacs.d/site-lisp/" "Emacs site-lisp directory")))
+  (:with-feature dired
+    (:bind
+     "s" dirvish-quicksort
+     "a" dirvish-quick-access
+     "f" dirvish-file-info-menu
+     "y" dirvish-yank-menu
+     "l" dirvish-history-go-backward
+     "r" dirvish-history-go-forward
+     "h" dirvish-history-jump
+     "TAB" dirvish-subtree-toggle
+     "g" dirvish-emerge-menu)))
+
 ;;;; ibuffer
 (setup ibuffer
   (:hook all-the-icons-ibuffer-mode)

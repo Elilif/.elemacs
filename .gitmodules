@@ -138,6 +138,10 @@
 	path = site-lisp/diredfl
 	url = https://github.com/Elilif/diredfl
 	ignore = untracked
+[submodule "dirvish"]
+	path = site-lisp/dirvish
+	url = https://github.com/alexluigit/dirvish
+	ignore = untracked
 [submodule "electric-operator"]
 	path = site-lisp/electric-operator
 	url = https://github.com/davidshepherd7/electric-operator
