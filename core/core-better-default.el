@@ -85,6 +85,7 @@
 ;; disable backup
 (setq make-backup-files nil)
 (setq auto-save-default nil)
+(setq create-lockfiles nil)
 
 (setq initial-frame-alist '((fullscreen . maximized)))
 
