@@ -134,8 +134,9 @@
                                              try-complete-lisp-symbol-partially
                                              try-complete-lisp-symbol)))
   (:global "s-/" hippie-expand)
-  (:option*
-   dabbrev-ignored-buffer-modes '(archive-mode image-mode pdf-view-mode)))
+  (:with-feature dabbrev
+    (:option*
+     dabbrev-ignored-buffer-modes '(archive-mode image-mode pdf-view-mode))))
 
 
 ;;;; show minibuffer depth
