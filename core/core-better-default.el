@@ -171,13 +171,23 @@
 (defun transient-winner-undo ()
   "Transient version of winner-undo."
   (interactive)
-  (let ((echo-keystrokes nil))
-    (winner-undo)
+  (let ((echo-keystrokes nil)
+        (back (lambda ()
+                (interactive)
+                (if tab-bar-mode
+                    (tab-bar-history-back)
+                  (winner-undo))))
+        (forward (lambda ()
+                   (interactive)
+                   (if tab-bar-mode
+                       (tab-bar-history-forward)
+                     (winner-redo)))))
+    (funcall back)
     (message "Winner: [u]ndo [r]edo")
     (set-transient-map
      (let ((map (make-sparse-keymap)))
-       (define-key map [?u] #'winner-undo)
-       (define-key map [?r] #'winner-redo)
+       (define-key map [?u] back)
+       (define-key map [?r] forward)
        map)
      t)))
 
