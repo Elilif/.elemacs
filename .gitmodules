@@ -141,6 +141,8 @@
 [submodule "dirvish"]
 	path = site-lisp/dirvish
 	url = https://github.com/alexluigit/dirvish
+    load-path = .
+	load-path = extensions
 	ignore = untracked
 [submodule "electric-operator"]
 	path = site-lisp/electric-operator
@@ -649,6 +651,10 @@
 [submodule "yasnippet"]
 	path = site-lisp/yasnippet
 	url = https://github.com/joaotavora/yasnippet
+	ignore = untracked
+[submodule "zeal-at-point"]
+	path = site-lisp/zeal-at-point
+	url = https://github.com/jinzhu/zeal-at-point
 	ignore = untracked
 [submodule "zmq"]
 	path = site-lisp/zmq

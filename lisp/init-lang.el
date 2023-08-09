@@ -202,6 +202,11 @@
 ;; (setup flymake
 ;;   (:option*
 ;;    flymake-no-changes-timeout 0.5))
+
+(setup zeal-at-point
+  (:global
+   "C-h y" zeal-at-point))
+
 ;;;; provide
 (provide 'init-lang)
 ;;; init-lang.el ends here.
