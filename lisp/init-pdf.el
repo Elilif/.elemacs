@@ -90,6 +90,8 @@
    lib-nov)
   (:when-loaded
     (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+  (:option*
+   nov-text-width 80)
   (:bind
    "o" nov-goto-toc)
   (:advice
