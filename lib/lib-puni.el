@@ -98,15 +98,20 @@
 	  (puni-expand-region))
 	(setq eli/expand-region-count 1)))
 
+;; SRC: https://github.com/AmaiKinono/puni/issues/29
 ;;;###autoload
-(defun eli/puni-hungry-backward-delete-char ()
-  "Hungry delete char backward while keeping expressions balanced.
+(defun eli/puni-hungry-backward-delete-char (&optional n)
+  "Respect major mode keybindings.
 
 See `puni-backward-delete-char' for more information."
-  (interactive)
-  (if (memq (char-before) '(?\t ?\n ?\ ))
-      (hungry-delete-backward 1)
-    (puni-backward-delete-char)))
+  (interactive "p")
+  (unless (bobp)
+    (setq n (or n 1))
+    (if (puni-region-balance-p (- (point) n) (point))
+        (unwind-protect (progn (puni-mode -1)
+                               (execute-kbd-macro (kbd "DEL") n))
+          (puni-mode))
+      (puni-backward-delete-char n))))
 
 
 ;;;; LaTeX
