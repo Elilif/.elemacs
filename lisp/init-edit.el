@@ -179,8 +179,10 @@
 
 ;;;; aggressive-indent
 (setup aggressive-indent
-  (:hook-into emacs-lisp-mode-hook)
-  (:hook-into c-mode-common-hook)
+  (:hook-into
+   emacs-lisp-mode-hook
+   c-mode-common-hook
+   racket-mode)
   (:option*  aggressive-indent-dont-indent-if
              '((and (memq (char-before) '(?\t ?\n))
                     (eq this-command #'eli/puni-hungry-backward-delete-char)) ;; used by hungry-delete
