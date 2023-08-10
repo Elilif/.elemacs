@@ -306,7 +306,7 @@
    tab-bar-tab-name-truncated-max 15
    tab-bar-border nil
    tab-bar-auto-width nil
-   tab-bar-format '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
+   tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
    tab-bar-tab-name-function #'tab-bar-tab-name-truncated
    tab-bar-tab-name-format-function (lambda (tab i)
                                       (concat
@@ -324,7 +324,9 @@
    "s--" eli/tabspaces-kill-buffers-close-workspace
    "s-=" tab-bar-new-tab
    "s-<left>" tab-bar-move-tab-backward
-   "s-<right>" tab-bar-move-tab))
+   "s-<right>" tab-bar-move-tab)
+  (:hook
+   tab-bar-history-mode))
 
 (setup project
   (:option*
