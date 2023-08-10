@@ -66,7 +66,7 @@
    super-save-predicates
    `(,@super-save-predicates
      (lambda ()
-       (not (member major-mode '(gptel-mode emacs-lisp-mode))))))
+       (not (member major-mode '(emacs-lisp-mode))))))
   (:advice
    save-buffer :around suppress-messages))
 
