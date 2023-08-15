@@ -51,6 +51,7 @@
    emms-player-mpv-update-metadata t)
   (:advice
    emms-browser-track-number :override eli/emms-browser-track-number
+   emms-browser-clear :override eli/emms-browser-clear
    ;; disable original emms mode line message
    ;; see `mood-line-segment-misc-info'
    emms-playing-time-mode-line :override ignore

@@ -74,6 +74,39 @@ return an empty string."
   (message (emms-track-description
             (emms-playlist-current-selected-track))))
 
+
+(defun eli/emms-browser-clear ()
+  "Create or switch to a browser buffer, clearing it."
+  (let ((buf (emms-browser-get-buffer)))
+    (if buf
+        (with-current-buffer buf
+          (emms-with-inhibit-read-only-t
+           (delete-region (point-min) (point-max))))
+      (emms-browser-create))))
+
+(defvar eli/init-buffers '())
+
+;;;###autoload
+(defun eli/emms-init-browser ()
+  (require 'emms-browser)
+  (let ((buf (or
+              (emms-browser-get-buffer)
+              (generate-new-buffer
+               emms-browser-buffer-name))))
+    (with-current-buffer buf
+      (emms-browser-mode)
+      (emms-browser-run-mode-hooks 'emms-browser-show-display-hook)
+      (emms-browse-by emms-browser-default-browse-type))
+    (cl-pushnew (cons (buffer-name buf) buf) eli/init-buffers)))
+
+;; TODO: make it more generic, I think it deserves to be made into a package.
+;;;###autoload
+(defun eli/pop-to-buffer ()
+  (interactive)
+  (eli/emms-init-browser)
+  (let ((buf (elemacs-completing-read "Select: " eli/init-buffers)))
+    (pop-to-buffer buf)))
+
 ;;;; provide
 (provide 'lib-emms)
 ;;; lib-emms.el ends here.

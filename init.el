@@ -216,10 +216,12 @@
     (require 'init-bib)))
 
 (setup init-music
-  (:once (list :before 'hydra-player/body)
+  (:once (list :before 'hydra-player/body 'eli/pop-to-buffer)
     (require 'init-music)
     (emms-all)
     (emms-history-load)
-    (emms-mode-line-disable)))
+    (emms-mode-line-disable))
+  (:global
+   "C-\\" eli/pop-to-buffer))
 
 ;;; init.el ends here.
