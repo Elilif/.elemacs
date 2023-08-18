@@ -421,6 +421,15 @@
     (with-current-buffer (get-buffer "*scratch*")
       (autoscratch-mode)))
   (:option*
+   autoscratch-fork-after-trigger nil
+   autoscratch-post-trigger-hook '((lambda ()
+                                     (when-let ((map (current-local-map)))
+                                       (use-local-map (copy-keymap map)))
+                                     (keymap-local-set "C-c k"
+                                                       (lambda ()
+                                                         (interactive)
+                                                         (erase-buffer)
+                                                         (autoscratch-mode)))))
    initial-major-mode 'autoscratch-mode
    autoscratch-triggers-alist '(("[(;]" lisp-interaction-mode)
                                 ("#" autoscratch-select
