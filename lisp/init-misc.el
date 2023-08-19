@@ -420,18 +420,21 @@
    lib-autoscratch)
   (:delay 0.6
     (with-current-buffer (get-buffer "*scratch*")
-      (autoscratch-mode)))
+      (autoscratch-mode)
+      (eli/scratch-restore)))
   (:option*
    autoscratch-fork-after-trigger nil
    autoscratch-post-trigger-hook '((lambda ()
                                      (when-let ((map (current-local-map)))
                                        (use-local-map (copy-keymap map)))
-                                     (keymap-local-set "C-c k"
-                                                       (lambda ()
-                                                         (interactive)
-                                                         (erase-buffer)
-                                                         (autoscratch-mode)))))
+                                     (keymap-local-set "C-c k" #'eli/scratch-new)
+                                     (add-hook 'kill-buffer-query-functions
+                                               (lambda ()
+                                                 (y-or-n-p
+                                                  "Do you want to kill *scratch* buffer?"))
+                                               nil t)))
    initial-major-mode 'autoscratch-mode
+   autoscratch-trigger-after most-positive-fixnum
    autoscratch-triggers-alist '(("[(;]" lisp-interaction-mode)
                                 ("#" autoscratch-select
                                  '(("python" python-mode)
@@ -443,14 +446,16 @@
    autoscratch--fork-and-rename-current
    :override eli/autoscratch--fork-and-rename-current)
   (:bind
-   [remap yank] eli/autoscratch--yank))
+   [remap yank] eli/autoscratch--yank)
+  (:hooks
+   kill-emacs-hook eli/scratch-save))
 
 (setup immersive-translate
   (:hooks
    elfeed-show-mode-hook immersive-translate-setup
    nov-pre-html-render-hook immersive-translate-setup)
   (:option*
-   immersive-translate-backend 'trans
+   immersive-translate-backend 'chatgpt
    immersive-translate-baidu-appid "20230720001751104"
    immersive-translate-chatgpt-host "api.openai-sb.com"))
 

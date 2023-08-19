@@ -68,6 +68,7 @@ to $mode-scratch."
         )
       (setq autoscratch-trigger-after (point)))))
 
+;;;###autoload
 (defun eli/autoscratch--yank (&optional arg)
   "Look for autoscratch trigger, execute if found and call `yank'.
 
@@ -87,6 +88,42 @@ ARG is the content of the clipboard being yanked."
                           (when (buffer-live-p buf)
                             (string-match "-scratch" (buffer-name buf))))
                         buried-popups :key #'cdr))))
+
+;;;###autoload
+(defun eli/scratch-new ()
+  "Create a new scratch buffer(virtual)."
+  (interactive)
+  (widen)
+  (goto-char (point-max))
+  (newline)
+  (insert "")
+  (newline)
+  (narrow-to-page)
+  (autoscratch-mode))
+
+(defvar eli/scratch-save-file "~/.emacs.d/var/scratch")
+
+(defun eli/scratch-restore ()
+  "Restore the scratch buffer."
+  (add-hook 'kill-buffer-query-functions
+            (lambda ()
+              (y-or-n-p
+               "Do you want to kill the *scratch* buffer?"))
+            nil t)
+  (when (file-exists-p eli/scratch-save-file)
+    (insert-file-contents eli/scratch-save-file))
+  (goto-char (point-max))
+  (narrow-to-page))
+
+(defun eli/scratch-save ()
+  "Save the scratch buffer."
+  (with-current-buffer (get-buffer "*scratch*")
+    (eli/scratch-new)
+    (widen)
+    (setq-local kill-buffer-query-functions nil)
+    (with-temp-file eli/scratch-save-file
+      (insert (with-current-buffer (get-buffer "*scratch*")
+                (buffer-string))))))
 
 
 ;;;; provide
