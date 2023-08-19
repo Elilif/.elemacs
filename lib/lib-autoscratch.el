@@ -1,4 +1,4 @@
-;; lib-autoscratch.el --- Initialize lib-autoscratch configurations.	-*- lexical-binding: t; -*-
+;; lib-autoscratch.el --- Initialize lib-autoscratch configurations.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -36,37 +36,37 @@ If `autoscratch-fork-after-trigger' is t, create a
 new autoscratch buffer and rename the current one
 to $mode-scratch."
   (when (eq t autoscratch-fork-after-trigger)
-	(let* ((name (format "*%s-scratch*"
-						 (replace-regexp-in-string
-						  "-mode" ""
-						  (format "%s" major-mode))))
-		   (buf (get-buffer-create name))
-		   content)
-	  (rename-buffer (generate-new-buffer-name "*temp*"))
-	  (with-current-buffer buf
-		(setq content (buffer-substring (point-min)
-										(point-max)))
-		(erase-buffer)
-		(rename-buffer "*scratch*")
-		(when initial-scratch-message
+    (let* ((name (format "*%s-scratch*"
+                         (replace-regexp-in-string
+                          "-mode" ""
+                          (format "%s" major-mode))))
+           (buf (get-buffer-create name))
+           content)
+      (rename-buffer (generate-new-buffer-name "*temp*"))
+      (with-current-buffer buf
+        (setq content (buffer-substring (point-min)
+                                        (point-max)))
+        (erase-buffer)
+        (rename-buffer "*scratch*")
+        (when initial-scratch-message
           (insert (substitute-command-keys initial-scratch-message))
           (set-buffer-modified-p nil))
-		(autoscratch-mode))
-	  (save-excursion
-		(goto-char (point-min))
-		(insert content)
-		(unless (bobp)
-		  (insert "\n\n")))
-	  (rename-buffer name)
-	  (when (functionp 'sp-remove-active-pair-overlay)
-		(sp-remove-active-pair-overlay))
-	  (when popper-mode
-		(popper--find-buried-popups)
-		;; (setq popper-open-popup-alist
-		;; 	  (list (cons (get-buffer-window)
-		;; 				  (get-buffer (buffer-name)))))
-		)
-	  (setq autoscratch-trigger-after (point)))))
+        (autoscratch-mode))
+      (save-excursion
+        (goto-char (point-min))
+        (insert content)
+        (unless (bobp)
+          (insert "\n\n")))
+      (rename-buffer name)
+      (when (functionp 'sp-remove-active-pair-overlay)
+        (sp-remove-active-pair-overlay))
+      (when popper-mode
+        (popper--find-buried-popups)
+        ;; (setq popper-open-popup-alist
+        ;;        (list (cons (get-buffer-window)
+        ;;                    (get-buffer (buffer-name)))))
+        )
+      (setq autoscratch-trigger-after (point)))))
 
 (defun eli/autoscratch--yank (&optional arg)
   "Look for autoscratch trigger, execute if found and call `yank'.
@@ -74,19 +74,19 @@ to $mode-scratch."
 ARG is the content of the clipboard being yanked."
   (interactive "*P")
   (save-excursion
-	(yank arg))
+    (yank arg))
   (autoscratch--look-for-triggers t)
   (goto-char (point-max)))
 
 (defun eli/popper-remove-autoscratch (group)
   (popper--update-popups)
   (let ((buried-popups (cdr (assoc group popper-buried-popup-alist))))
-	(setf (alist-get group popper-buried-popup-alist
-					 nil nil 'equal)
-		  (cl-remove-if (lambda (buf)
-						  (when (buffer-live-p buf)
-							(string-match "-scratch" (buffer-name buf))))
-						buried-popups :key #'cdr))))
+    (setf (alist-get group popper-buried-popup-alist
+                     nil nil 'equal)
+          (cl-remove-if (lambda (buf)
+                          (when (buffer-live-p buf)
+                            (string-match "-scratch" (buffer-name buf))))
+                        buried-popups :key #'cdr))))
 
 
 ;;;; provide
