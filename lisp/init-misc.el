@@ -274,7 +274,8 @@
    "s-p" eli/gptel-close
    "s-i" eli/gptel-read-crowdsourced-prompt
    "s-\]" eli/gptel-close
-   "C-c C-k" eli/gptel-clean)
+   "C-c C-k" eli/gptel-clean
+   "C-c C-n" eli/gptel-narrow)
   (:with-feature elfeed-show
     (:bind
      "s" eli/gptel-summary))

@@ -191,12 +191,27 @@ This uses the prompts in the variable
                   (search-backward string)))))
     (delete-region beg (point-max))))
 
+;;;###autoload
+(defun eli/gptel-narrow ()
+  "Start a new topic under the same system prompt."
+  (interactive)
+  (let ((end (goto-char (point-max)))
+        (beg (save-excursion
+               (search-backward (alist-get gptel-default-mode
+                                           gptel-prompt-prefix-alist)))))
+    (widen)
+    (save-excursion
+      (goto-char (point-min))
+      (search-forward (alist-get gptel-default-mode gptel-prompt-prefix-alist))
+      (setq-local gptel--system-message (eli/gptel--get-sys-prompt
+                                         (match-beginning 0))))
+    (narrow-to-region beg end)))
+
 (defun eli/gptel-query-get-from-region ()
   "Get query string from selected region."
   (replace-regexp-in-string "\n" " "
                             (if (or (use-region-p)
-                                    (and (boundp 'pdf-view-active-region)
-                                         pdf-view-active-region))
+                                    (bound-and-true-p pdf-view-active-region))
                                 (cond
                                  ((and (eq major-mode 'pdf-view-mode)
                                        (fboundp 'pdf-view-active-region-text))
