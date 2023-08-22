@@ -462,6 +462,10 @@
 	path = site-lisp/ox-pandoc
 	url = https://github.com/emacsorphanage/ox-pandoc
 	ignore = untracked
+[submodule "package-lint"]
+	path = site-lisp/package-lint
+	url = https://github.com/purcell/package-lint
+	ignore = untracked
 [submodule "parsebib"]
 	path = site-lisp/parsebib
 	url = https://github.com/joostkremers/parsebib
