@@ -447,8 +447,9 @@
    :override eli/autoscratch--fork-and-rename-current)
   (:bind
    [remap yank] eli/autoscratch--yank)
-  (:hooks
-   kill-emacs-hook eli/scratch-save))
+  (:when-loaded
+    (:hooks
+     kill-emacs-hook eli/scratch-save)))
 
 (setup immersive-translate
   (:hooks
