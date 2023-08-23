@@ -145,7 +145,9 @@
     ("bd" bookmark-delete "delete bookmark"))
    "basic"
    (("s" scratch-buffer)
-    ("i" consult-info))
+    ("i" consult-info)
+    ("g" (let ((default-directory "~/.emacs.d/site-lisp/"))
+           (magit-status (read-directory-name "Select a package: ")))))
    ))
 
 (pretty-hydra-define hydra-puni
@@ -221,36 +223,23 @@
    ))
 
 (pretty-hydra-define jp-window
-  (:color amaranth :exit t :quit-key "q"
-          :pre (progn (setq which-key-inhibit t)  )
-          :post (progn (setq which-key-inhibit nil) ))
+  (:color amaranth :exit t :quit-key "q" :idle 2)
   ("Actions"
    (("TAB" other-window "switch")
     ("m" ace-delete-window "maximize")
     ("x" ace-delete-other-windows "delete")
     ("s" ace-swap-window "swap")
-    ("a" ace-select-window "select"))
-
-   ;; "Resize"
-   ;; (("h" move-border-left "←")
-   ;;  ("j" move-border-down "↓")
-   ;;  ("k" move-border-up "↑")
-   ;;  ("l" move-border-right "→")
-   ;;  ("n" balance-windows "balance")
-   ;;  ("f" toggle-frame-fullscreen "toggle fullscreen"))
-
-   "Split"
-   (("h" split-window-right "horizontally")
-    ("v" split-window-below "vertically")
-    )
-
+    ("a" ace-select-window "select")
+    ("l" window-lift))
    "Zoom"
-   (("=" text-scale-increase "in")
-    ("-" text-scale-decrease "out")
-    ("[" shrink-window-horizontally "h-shrink window" :exit nil)
+   (("[" shrink-window-horizontally "h-shrink window" :exit nil)
     ("]" enlarge-window-horizontally "h-shrink window" :exit nil)
-    ("b" balacne-windows "balacne windows")
-    )))
+    ("B" balacne-windows "balacne windows"))
+   "Windmove"
+   (("n" windmove-down)
+    ("p" windmove-up)
+    ("b" windmove-left)
+    ("f" windmove-right))))
 
 ;; Hydra for org agenda (graciously taken from Spacemacs)
 ;; (defhydra hydra-org-agenda (:pre (setq which-key-inhibit t)
