@@ -45,8 +45,7 @@
    (pdf-loader-install))
   (:also-load
    lib-pdf
-   ;; saveplace-pdf-view
-   )
+   saveplace-pdf-view)
   (:option*
    pdf-view-use-scaling t
    pdf-view-use-imagemagick nil
