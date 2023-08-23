@@ -75,6 +75,8 @@
 
 (setq custom-buffer-done-kill t)
 
+(setq switch-to-buffer-obey-display-actions t)
+
 (setup autorevert
   (:once (list :hooks 'find-file-hook)
     (:option global-auto-revert-non-file-buffers t)
@@ -190,6 +192,31 @@
        (define-key map [?r] forward)
        map)
      t)))
+
+;; SRC:
+;; https://github.com/ksqsf/emacs-config/blob/master/modules/prelude-ui.el#L419
+(defun window-lift ()
+  "Lift the selected window to replace its parent in the window tree."
+  (interactive)
+  (let ((sibling (or (window-prev-sibling)
+                     (window-next-sibling)))
+        (keymap (let ((keymap (make-sparse-keymap)))
+                  (define-key keymap (kbd "l") #'window-lift)
+                  keymap)))
+    ;; In the following configuration
+    ;;
+    ;; |-----|-----|
+    ;; | W1  |     |
+    ;; |-----| W3  |
+    ;; | W2  |     |
+    ;; |-----|-----|
+    ;;
+    ;; If W3 is selected, it's prev-sibling won't be a leaf.
+    (when (and sibling
+               (not (and (window-buffer sibling)
+                         (minibufferp (window-buffer sibling)))))
+      (set-transient-map keymap t nil nil 0.5)
+      (delete-window sibling))))
 
 (setup winner
   (:once (list :hooks 'pre-command-hook)
