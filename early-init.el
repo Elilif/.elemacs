@@ -114,7 +114,9 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 (when (featurep 'ns)
   (push '(ns-transparent-titlebar . t) default-frame-alist))
-(push '(internal-border-width . 15) default-frame-alist)
+(push '(internal-border-width . 8) default-frame-alist)
+(setq left-margin-width 1
+      right-margin-width 1)
 (push '(line-spacing . 10) default-frame-alist)
 (push '(alpha-background . 85) default-frame-alist)
 
