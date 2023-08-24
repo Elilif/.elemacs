@@ -117,8 +117,8 @@ ARG is the content of the clipboard being yanked."
 
 (defun eli/scratch-save ()
   "Save the scratch buffer."
-  (unless (= (point-min) (point-max))
-    (with-current-buffer (get-buffer "*scratch*")
+  (with-current-buffer (get-buffer "*scratch*")
+    (unless (= (point-min) (point-max))
       (eli/scratch-new)
       (widen)
       (setq-local kill-buffer-query-functions nil)
