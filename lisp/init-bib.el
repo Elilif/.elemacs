@@ -53,12 +53,14 @@
   (require 'oc-natbib)
   (require 'oc-biblatex))
 
-(with-eval-after-load 'citar
-  (setq citar-templates
-        '((main . "${author:30}     ${date year issued:4}     ${title:48}")
-          (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords keywords:*}")
-          (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
-          (note . "${title}
+(setup citar
+  (:also-load
+   lib-citar)
+  (:option*
+   citar-templates '((main . "${author:30}     ${date year issued:4}     ${title:48}")
+                     (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords keywords:*}")
+                     (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
+                     (note . "${title}
 #+filetags: :book:
 - bibliography ::
 - tags :: ${tags}
@@ -72,36 +74,16 @@
 :NOTER_DOCUMENT: ${file}
 :NOTER_PAGE:
 :NOANKI: t
-:END:")))
-  (setq citar-symbols
-        `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
-          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-          (link ,(all-the-icons-octicon "link" :face
-                                        'all-the-icons-orange :v-adjust 0.01) . " ")))
-  (setq citar-symbol-separator "  ")
-  (setq citar-bibliography eli/bibliography)
-  (setq citar-at-point-function 'citar-dwim)
-  (setq citar-notes-paths '("~/Dropbox/org/roam/books"))
-  (setq citar-library-paths '("~/Documents/Mybooks/"))
-
-  ;; search pdf contents
-  (defun eli/search-pdf-contents (keys-entries &optional str)
-    "Search pdf contents.
-
-KEYS-ENTRIES should be either a list citar KEYS or a single key.
-STR is the searching string."
-    (interactive (list (citar-select-refs)))
-    (let ((files (seq-filter
-                  (lambda (file)
-                    (member (file-name-extension file) '("pdf")))
-                  (mapcar (lambda (key)
-                            (car (gethash key (citar-get-files key))))
-                          keys-entries)))
-          (search-str (or str (read-string "Search string: "))))
-      (pdf-occur-search files search-str t)))
-  
-  ;; with this, you can exploit embark's multitarget actions, so that you can run `embark-act-all`
-  (add-to-list 'embark-multitarget-actions #'ex/search-pdf-contents))
+:END:"))
+   citar-symbol-separator "  "
+   citar-bibliography eli/bibliography
+   citar-at-point-function 'citar-dwim
+   citar-notes-paths '("~/Dropbox/org/roam/books")
+   citar-library-paths '("~/Documents/Mybooks/")
+   citar-indicators (list citar-indicator-files-icons
+                          citar-indicator-links-icons
+                          citar-indicator-notes-icons
+                          citar-indicator-cited-icons)))
 
 (with-eval-after-load 'citar
   (citar-org-roam-mode)
