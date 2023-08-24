@@ -146,6 +146,9 @@
      lisp-data-mode-hook (lambda ()
                            (setq-local completion-at-point-functions
                                        (cdr completion-at-point-functions)))))
+  (:option*
+   tempel-template-sources '(tempel-path-templates
+                             eli/tempel-temp-templates))
   (:bind-into tempel-map
     "<tab>" tempel-next
     "C-<tab>" tempel-previous

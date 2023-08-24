@@ -209,6 +209,40 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
 ;;                (point)) 'no-errer)
 ;;       (concat namespace "::"))))
 
+(defvar eli/tempel-temp-templates nil)
+
+(defun eli/tempel-temp-parse (str)
+  "Parse STR as a tempel template."
+  (let ((start 0)
+        (regex (format
+                "%s\\(?1:\\(?:%s\\)+\\|\\(?:(.*?)\\)\\)"
+                "~"
+                "\\sw\\|>"))
+        res)
+    (while (string-match regex str start)
+      (push (substring str start (match-beginning 0)) res)
+      (push (read (match-string 1 str)) res)
+      (setq start (match-end 0)))
+    (push (substring str start) res)
+    (nreverse res)))
+
+(defun eli/tempel-temp-create (beg end)
+  "Create a temporary tempel template."
+  (interactive "r")
+  (let ((template (eli/tempel-temp-parse
+                   (buffer-substring-no-properties beg end)))
+        (name (read-minibuffer "Create template name: ")))
+    (if (assq name (tempel--templates))
+        (user-error "%s already exists!" (symbol-name name))
+      (setf (alist-get major-mode eli/tempel-temp-templates)
+            (append
+             (alist-get major-mode eli/tempel-temp-templates)
+             (list (push name template))))
+      (delete-region beg end)
+      (insert (symbol-name name)))))
+
+(defun eli/tempel-temp-templates ()
+  (alist-get major-mode eli/tempel-temp-templates))
 
 ;;;; provide
 (provide 'lib-tempel)
