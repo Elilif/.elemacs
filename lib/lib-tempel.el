@@ -184,31 +184,40 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
   "Parse STR as a tempel template."
   (let ((start 0)
         (regex (format
-                "%s\\(?1:\\(?:%s\\)+\\|\\(?:(.*?)\\)\\)"
+                "%s\\(?1:\\(?:%s\\)+\\|\\(?:([^%s]*\\)\\)"
                 "~"
-                "\\sw\\|>"))
-        res)
+                "\\sw\\|>"
+                "~"))
+        res
+        obj)
     (while (string-match regex str start)
       (push (substring str start (match-beginning 0)) res)
-      (push (read (match-string 1 str)) res)
-      (setq start (match-end 0)))
+      (setq obj (read (match-string 1 str)))
+      (push obj res)
+      (setq start (- (match-end 0)
+                     (- (length (match-string 1 str))
+                        (length (prin1-to-string obj))))))
     (push (substring str start) res)
     (nreverse res)))
 
 (defun eli/tempel-temp-create (beg end)
   "Create a temporary tempel template."
   (interactive "r")
-  (let ((template (eli/tempel-temp-parse
-                   (buffer-substring-no-properties beg end)))
-        (name (read-minibuffer "Create template name: ")))
-    (if (assq name (tempel--templates))
+  (let* ((template (eli/tempel-temp-parse
+                    (buffer-substring-no-properties beg end)))
+         (name (read-minibuffer "Create template name: "))
+         (existp (assq name (alist-get major-mode eli/tempel-temp-templates))))
+    (if (and (assq name (tempel--templates))
+             (not existp))
         (user-error "%s already exists!" (symbol-name name))
-      (setf (alist-get major-mode eli/tempel-temp-templates)
-            (append
-             (alist-get major-mode eli/tempel-temp-templates)
-             (list (push name template))))
-      (delete-region beg end)
-      (insert (symbol-name name)))))
+      (when (or (not existp)
+                (and existp
+                     (y-or-n-p (format "%s already exists, override it?"
+                                       (symbol-name name)))))
+        (setf (alist-get name (alist-get major-mode eli/tempel-temp-templates))
+              template)
+        (delete-region beg end)
+        (insert (symbol-name name))))))
 
 (defun eli/tempel-temp-save ()
   "Save the selected temporary template."
