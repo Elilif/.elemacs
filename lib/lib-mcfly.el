@@ -39,7 +39,8 @@
                                     consult-git-grep
 									eli/consult-git-grep
                                     consult-ripgrep
-                                    my-search-with-chrome)
+                                    my-search-with-chrome
+                                    souyun-query-char)
   "Commands that need pre-insert candidate."
   :group 'elemacs-mcfly
   :type '(repeat function))
