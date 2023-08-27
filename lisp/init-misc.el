@@ -121,14 +121,16 @@
 
 ;;;; shackle
 (setup shackle
-  (:once (list :hooks 'find-file-hook)
+  (:once (list :hooks 'find-file-hook
+               :before 'eli/pop-to-buffer)
     (shackle-mode))
   (:option* shackle-rules '(("*Messages*" :align below :size 0.3 :select t)
                             (".*scratch\\*$" :regexp t :select t :align right)
                             (helpful-mode :select t :align right)
                             (help-mode :select t :align right)
+                            (souyun-mode :select t :align right)
                             (elfeed-show-mode :select t :align bottom :size 0.85)
-                            ("\\*Pp Macroexpand Output\\*" :regexp t :select t)
+                            ("*Pp Macroexpand Output*" :select t)
                             ("\\*Outline.*\\*" :regexp t :align right :select t :size 0.3)
                             ("*WordNut*" :select t :align right :size 0.4)
                             (emms-playlist-mode :align right :select t :size 0.4)
