@@ -16,20 +16,32 @@
   :group 'souyun
   :type 'directory)
 
-(defvar souyun-chardich-hash nil)
+(defcustom souyun-pingshuiyundict-path "~/src/Clone/pingShuiYun/data/oriYunDict.json"
+  "A file of char dict."
+  :group 'souyun
+  :type 'directory)
+
+(defvar souyun-chardict-hash nil)
+(defvar souyun-pingshuiyundict-hash nil)
 (defvar souyun-overlays nil)
 
-(defun souyun--parse-dict ()
+(defun souyun--parse-chardict ()
   (with-temp-buffer
     (insert-file-contents souyun-chardict-path)
     (goto-char (point-min))
-    (setq souyun-chardich-hash (json-parse-buffer))))
+    (setq souyun-chardict-hash (json-parse-buffer))))
+
+(defun souyun--parse-pingshuiyundict ()
+  (with-temp-buffer
+    (insert-file-contents souyun-pingshuiyundict-path)
+    (goto-char (point-min))
+    (setq souyun-pingshuiyundict-hash (json-parse-buffer))))
 
 (defun souyun--parse-sentence (sentence)
-  (unless souyun-chardich-hash
-    (souyun--parse-dict))
+  (unless souyun-chardict-hash
+    (souyun--parse-chardict))
   (mapcar (lambda (word)
-            (let ((result (gethash word souyun-chardich-hash)))
+            (let ((result (gethash word souyun-chardict-hash)))
               (cons word
                     (mapcar (lambda (vec)
                               (cons (aref vec 0)
@@ -144,17 +156,53 @@
   (souyun-get-tone-patterns beg end))
 
 ;;;###autoload
-(defun souyun-query (string)
-  (interactive "sInput a word: ")
-  (when (length> string 1)
+(defun souyun-query-char (char)
+  (interactive "sInput a character: ")
+  (when (length> char 1)
     (user-error "Only accept one char!"))
-  (if-let* ((result (gethash string souyun-chardich-hash))
+  (unless souyun-chardict-hash
+    (souyun--parse-chardict))
+  (if-let* ((result (gethash char souyun-chardict-hash))
             (rhymes (mapcar (lambda (vec) (cons (aref vec 0) (aref vec 1)))
                             result)))
-      (message
-       (mapconcat (lambda (rhyme) (concat (cdr rhyme) (car rhyme)))
-                  rhymes " "))
+      (souyun--show-result
+       (souyun--query-pingshuiyun
+        (mapconcat (lambda (rhyme) (concat (cdr rhyme) (car rhyme)))
+                   rhymes " ")))
     (message "No match!")))
+
+(defun souyun--query-pingshuiyun (rhymes)
+  (unless souyun-pingshuiyundict-hash
+    (souyun--parse-pingshuiyundict))
+  (mapcar (lambda (rhyme)
+            (cons rhyme (gethash rhyme souyun-pingshuiyundict-hash)))
+          (split-string rhymes " ")))
+
+(defun souyun--show-result (result)
+  (let ((buf (get-buffer-create "*souyun*")))
+    (with-current-buffer buf
+      (let ((inhibit-read-only t))
+        (save-excursion
+          (erase-buffer)
+          (mapc (lambda (rhyme)
+                  (insert (car rhyme))
+                  (insert "\n\n")
+                  (insert (cdr rhyme))
+                  (insert "\n\n"))
+                result)
+          (souyun-mode))))
+    (pop-to-buffer buf)))
+
+;;;###autoload
+(defun souyun-query-pingshuiyun (rhyme)
+  (interactive (list (completing-read "Select: "
+                                      (hash-table-keys
+                                       souyun-pingshuiyundict-hash))))
+  (souyun--show-result (souyun--query-pingshuiyun rhyme)))
+
+(define-derived-mode souyun-mode special-mode "SouYun")
+
+(keymap-set souyun-mode-map "q" #'quit-window)
 
 (provide 'souyun)
 ;;; souyun.el ends here
