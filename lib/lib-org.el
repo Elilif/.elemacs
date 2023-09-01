@@ -397,7 +397,8 @@ Throw an error when not in a list."
 (defun eli/org-add-log-note (orig &rest args)
   (let* ((marker (copy-marker org-clock-marker))
          (buffer (marker-buffer marker))
-         (pos (marker-position marker)))
+         (pos (marker-position marker))
+         (command this-command))
     (apply orig args)
     (with-current-buffer buffer
       (org-with-point-at pos
@@ -407,7 +408,9 @@ Throw an error when not in a list."
                (log (read-string-from-buffer prompt "")))
           (unless (string-empty-p log)
             (end-of-line)
-            (insert (format "\n- %s" log))))))))
+            (insert (format "\n- %s" log))))))
+    (when (eq command org-log-note-this-command)
+      (setq this-command org-log-note-this-command))))
 
 ;;;; provide
 (provide 'lib-org)
