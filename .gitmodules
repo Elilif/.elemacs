@@ -257,6 +257,10 @@
 	path = site-lisp/ht
 	url = https://github.com/Wilfred/ht.el
 	ignore = untracked
+[submodule "htmlize"]
+	path = site-lisp/htmlize
+	url = https://github.com/hniksic/emacs-htmlize
+	ignore = untracked
 [submodule "hungry-delete"]
 	path = site-lisp/hungry-delete
 	url = https://github.com/nflath/hungry-delete
