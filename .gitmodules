@@ -34,6 +34,10 @@
 	path = site-lisp/all-the-icons-ibuffer
 	url = https://github.com/seagle0128/all-the-icons-ibuffer
 	ignore = untracked
+[submodule "anki-helper"]
+	path = site-lisp/anki-helper
+	url = git@github.com:Elilif/emacs-anki-helper.git
+	ignore = untracked
 [submodule "async"]
 	path = site-lisp/async
 	url = https://github.com/jwiegley/emacs-async

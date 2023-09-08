@@ -561,35 +561,30 @@
 		  org-media-note-import)
   (:also-load 
    lib-org-media-note)
-  (:advice
-   org-media-note-play-online-video :after
-   (lambda ()
-	 (add-hook 'pre-command-hook #'eli/org-media-note-auto-pause nil t)))
   (:bind-into org
 	"s-[" eli/org-media-note-vedio-pause)
   (:option*
    org-media-note-screenshot-image-dir "~/Documents/org-images/"))
 
-;;;; org-anki
-(setup org-anki
-  (:iload org-anki)
-  (:also-load lib-org-anki)
+;;;; Anki
+(setup anki-helper
+  (:iload anki-helper)
+  (:also-load
+   lib-anki-helper)
   (:option*
-   org-anki-default-deck "Default"
-   org-anki-default-match "+LEVEL=2"
-   org-anki-model-fields '(("Basic" "Front" "Back")
-                           ("Basic-Français" "Front" "Back")
-                           ("Basic-English" "Front" "Back")
-                           ("Basic (and reversed card)" "Front" "Back")
-                           ("Basic (optional reversed card)" "Front" "Back")
-                           ("NameDescr" "Name" "Descr")
-                           ("Cloze" "Text"))
-   org-anki-skip-function #'org-anki-skip
-   )
-  (:advice org-anki-sync-all :around eli/org-anki-around
-		   org-anki-delete-all :around eli/org-anki-around)
-  (:global
-   "<f12>" #'org-anki-sync-region))
+   anki-helper-note-types '(("Basic" "Front" "Back")
+                            ("Basic (and reversed card)" "Front" "Back")
+                            ("Basic (with backlink)" "Front" "Back" "Source" "Location")
+                            ("Basic (optional reversed card)" "Front" "Back")
+                            ("Cloze" "Text" "Back Extra")
+                            ("Cloze (with backlink)" "Text" "Back Extra" "Source" "Location"))
+   anki-helper-fields-get-alist '(("Basic" . anki-helper-fields-get-default)
+                                  ("Cloze" . anki-helper-fields-get-cloze)
+                                  ("Basic (with backlink)" . anki-helper-fields-get-with-backlink)
+                                  ("Cloze (with backlink)" . anki-helper-cloze-fields-get-with-backlink))
+   anki-helper-default-note-type "Basic (with backlink)"
+   anki-helper-cloze-use-verbatim t
+   anki-helper-skip-function #'eli/anki-helper-skip))
 
 ;;;; LaTeX
 (setup ox-latex
