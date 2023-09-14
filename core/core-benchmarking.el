@@ -98,9 +98,10 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 (defun elemacs-show-init-time ()
   (message "init completed in %.2fms"
-           (elemacs-time-subtract-millis after-init-time before-init-time)))
+           ;; (elemacs-time-subtract-millis after-init-time before-init-time)
+           (* 1000 (float-time (time-since before-init-time)))))
 
-(add-hook 'after-init-hook 'elemacs-show-init-time)
+(add-hook 'window-setup-hook 'elemacs-show-init-time)
 
 (provide 'core-benchmarking)
 ;;; core-benchmarking.el ends here.
