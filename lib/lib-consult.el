@@ -187,35 +187,6 @@ entries are offered."
   (interactive)
   (consult-info "elisp" "emacs"))
 
-;;;; orderless lib
-;; src: https://github.com/minad/consult/wiki
-(defun +orderless--consult-suffix ()
-  "Regexp which matches the end of string with Consult tofu support."
-  (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
-      (format "[%c-%c]*$"
-              consult--tofu-char
-              (+ consult--tofu-char consult--tofu-range -1))
-    "$"))
-
-;; Recognizes the following patterns:
-;; * .ext (file extension)
-;; * regexp$ (regexp matching at end)
-(defun +orderless-consult-dispatch (word _index _total)
-  (cond
-   ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-   ((string-suffix-p "$" word)
-    `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
-   ;; File extensions
-   ((and (or minibuffer-completing-file-name
-             (derived-mode-p 'eshell-mode))
-         (string-match-p "\\`\\.." word))
-    `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
-
-(defun completion--regex-pinyin (str)
-  (orderless-regexp (pinyinlib-build-regexp-string str)))
-
-
-
 ;;;; provide
 (provide 'lib-consult)
 ;;; lib-consult.el ends here.
