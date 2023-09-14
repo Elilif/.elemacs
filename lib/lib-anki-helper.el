@@ -73,6 +73,12 @@ see `match-string-no-properties' for details."
                                             (? "\n"))))
                               '(1 2)))
 
+;;;###autoload
+(defun eli/anki-helper-snyc-poem (beg end)
+  (interactive "r")
+  (let ((anki-helper-default-deck "Poems"))
+    (anki-helper-make-two-sided-card beg end)))
+
 (defun eli/org-headline-empty-p ()
   "Return non-nil if current headline is empty."
   (not (org-element-property :robust-begin (org-element-at-point))))
