@@ -217,7 +217,7 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
         (setf (alist-get name (alist-get major-mode eli/tempel-temp-templates))
               template)
         (delete-region beg end)
-        (insert (symbol-name name))))))
+        (tempel-insert name)))))
 
 (defun eli/tempel-temp-save ()
   "Save the selected temporary template."
