@@ -69,9 +69,22 @@ see `match-string-no-properties' for details."
   (let ((anki-helper-default-deck "Poems"))
     (anki-helper-make-two-sided-card beg end)))
 
+;;;###autoload
+(defun eli/anki-helper-set-deck (deck)
+  "Set the deck for the current entry."
+  (interactive "MDeck Name: ")
+  (org-set-property anki-helper-prop-deck deck))
+
+;;;###autoload
+(defun eli/anki-helper-set-note-type (note-type)
+  "Set the note type for the current entry."
+  (interactive (list (completing-read "Select: " anki-helper-note-types)))
+  (org-set-property anki-helper-note-type note-type))
+
 (defun eli/org-headline-empty-p ()
   "Return non-nil if current headline is empty."
-  (not (org-element-property :robust-begin (org-element-at-point))))
+  (not (or (org-element-property :robust-begin (org-element-at-point))
+           (org-element-property :contents-begin (org-element-at-point)))))
 
 (defun eli/anki-helper-skip ()
   "Skip headlines with \"noanki\" property or with `org-anki-prop-note-id'.
