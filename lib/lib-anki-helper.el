@@ -5,26 +5,16 @@
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
-(defun anki-helper--entry-locate (filename entry-name)
+(defun anki-helper--entry-locate (_filename id)
   "Locate the entry of current Anki card."
-  (find-file filename)
-  (let* ((data (org-element-parse-buffer))
-         (pos (org-element-map data '(headline)
-                (lambda (elt)
-                  (when (string= (org-element-property :raw-value elt)
-                                 entry-name)
-                    (org-element-property :begin elt)))
-                nil t)))
-    (goto-char pos)
-    (org-reveal)))
+  (org-id-goto id))
 
 (defun anki-helper-fields-get-with-backlink ()
   "Get filed info of the current entry with backlink."
   (let* ((front-and-back (anki-helper-fields-get-default))
          (filename (file-name-nondirectory (buffer-file-name)))
-         (elt (plist-get (org-element-at-point) 'headline))
-         (entry (plist-get elt :raw-value)))
-    `(,@front-and-back ,filename ,entry)))
+         (id (org-id-get-create)))
+    `(,@front-and-back ,filename ,id)))
 
 (defun anki-helper-cloze-fields-get-with-backlink ()
   "Get filed info of the current entry with backlink."
