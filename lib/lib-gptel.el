@@ -195,11 +195,11 @@ This uses the prompts in the variable
 (defun eli/gptel-narrow ()
   "Start a new topic under the same system prompt."
   (interactive)
+  (widen)
   (let ((end (goto-char (point-max)))
         (beg (save-excursion
                (search-backward (alist-get gptel-default-mode
                                            gptel-prompt-prefix-alist)))))
-    (widen)
     (save-excursion
       (goto-char (point-min))
       (search-forward (alist-get gptel-default-mode gptel-prompt-prefix-alist))
@@ -493,6 +493,7 @@ create one."
     (dolist (conv eli/gptel-conversations)
       (let ((buf (cdr conv)))
         (with-current-buffer buf
+          (widen)
           (gptel--save-state)
           (write-file (file-name-concat
                        eli/gptel-conversations-dir
