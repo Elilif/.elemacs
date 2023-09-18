@@ -31,6 +31,7 @@
 ;;; Code:
 
 (defun eli/org-agenda-goto-started-task (orig)
+  (org-agenda-redo)
   (goto-char (point-min))
   (if (bound-and-true-p org-clock-current-task)
       (if (not (save-excursion
