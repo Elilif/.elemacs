@@ -1,4 +1,4 @@
-;; lib-orderless.el --- Initialize orderless config	-*- lexical-binding: t; -*-
+;; lib-orderless.el --- Initialize orderless config     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -59,7 +59,7 @@
 
 (defun completion--regex-pinyin (str)
   (unless (> (length str) 10)
-	(orderless-regexp (pinyinlib-build-regexp-string str))))
+    (orderless-regexp (pinyinlib-build-regexp-string str nil nil nil t))))
 
 
 ;;;; provide
