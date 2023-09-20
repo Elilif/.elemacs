@@ -636,6 +636,10 @@
 	build-step = borg-byte-compile
     build-step = borg-update-autoloads
 	ignore = untracked
+[submodule "web-mode"]
+	path = site-lisp/web-mode
+	url = https://github.com/fxbois/web-mode
+	ignore = untracked
 [submodule "websocket"]
 	path = site-lisp/websocket
 	url = https://github.com/ahyatt/emacs-websocket

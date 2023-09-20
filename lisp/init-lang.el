@@ -123,12 +123,19 @@
   (:option*
    ess-smart-equals-extra-ops '(brace paren percent)))
 ;;;; lisp
-(setup racket-mode)
+(setup racket-mode
+  (:hook
+   racket-xp-mode))
 
 (setup emacs-ob-racket)
 ;;;; python
 (setup lsp-pyright
   (:iload lsp-pyright))
+
+;;;; Web
+(setup web-mode
+  (:init
+   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))))
 
 ;;;; lsp
 (setup lsp-mode
