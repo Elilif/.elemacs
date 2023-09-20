@@ -66,8 +66,22 @@ see `match-string-no-properties' for details."
 ;;;###autoload
 (defun eli/anki-helper-snyc-poem (beg end)
   (interactive "r")
-  (let ((anki-helper-default-deck "Poems"))
-    (anki-helper-make-two-sided-card beg end)))
+  (let* ((anki-helper-default-deck "Poems")
+         (anki-helper-default-note-type "Poems")
+         (back (buffer-substring-no-properties beg end))
+         (anki-helper-default-tags
+          (progn
+            (string-match "\\[\\(.*?\\)\\] *\\(.*?\\)\n" back)
+            (list (match-string 1 back)
+                  (match-string 2 back)))))
+    (anki-helper-make-two-sided-card
+     beg end
+     (lambda (text)
+       (format
+        "<a href=https://so.gushiwen.cn/search.aspx?value=%s&valuej=%s>%s</a>"
+        (url-encode-url text)
+        (url-encode-url (substring text 0 1))
+        text)))))
 
 ;;;###autoload
 (defun eli/anki-helper-set-deck (deck)
