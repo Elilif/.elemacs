@@ -1,4 +1,4 @@
-;; lib-org-capture.el --- Initialize lib-org-capture configurations.	-*- lexical-binding: t; -*-
+;; lib-org-capture.el --- Initialize lib-org-capture configurations.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -33,8 +33,8 @@
 (defun eli/capture-report-date-file ()
   (let ((name (read-string "Name: ")))
     (expand-file-name (format "%s-%s.org"
-				              (format-time-string "%Y-%m-%d")
-				              name) "~/Dropbox/org/blog")))
+                              (format-time-string "%Y-%m-%d")
+                              name) "~/Dropbox/org/blog")))
 
 ;; add a property to create id
 (defun eli/org-capture-maybe-create-id ()
@@ -47,13 +47,13 @@
   (with-current-buffer (org-capture-get :original-buffer)
     (let ((v-i (plist-get org-store-link-plist :initial))
           (org-src-mode (replace-regexp-in-string
-			             "-mode"
-			             ""
-			             (format "%s" major-mode)))
+                         "-mode"
+                         ""
+                         (format "%s" major-mode)))
           (type (if (derived-mode-p 'prog-mode) "src" "quote")))
       (if (equal v-i "")
           ""
-	    (if (string= type "src")
+        (if (string= type "src")
             (concat (format "\n#+begin_%s %s\n" type org-src-mode)
                     v-i
                     (format "\n#+end_%s\n" type))
@@ -83,12 +83,12 @@
 
 (defun v-i-or-nothing-word ()
   (let* ((v-i (plist-get org-store-link-plist :initial))
-		 (sentence (with-current-buffer (org-capture-get :original-buffer)
-					 (thing-at-point 'sentence 'no-properties)))
+         (sentence (with-current-buffer (org-capture-get :original-buffer)
+                     (thing-at-point 'sentence 'no-properties)))
          (new-string (string-clean-whitespace
                       (replace-regexp-in-string "\n" " " (if (string-empty-p v-i)
-															 sentence
-														   v-i)))))
+                                                             sentence
+                                                           v-i)))))
     new-string))
 
 ;; better fill region in capture
@@ -119,14 +119,14 @@ with headline set to %l would do."
   (let ((hd (nth 2 (org-capture-get :target))))
     (goto-char (point-min))
     (if (re-search-forward
-	     (format org-complex-heading-regexp-format
+         (format org-complex-heading-regexp-format
                  (regexp-quote (substring hd start end)))
-	     nil t)
-	    (goto-char (line-beginning-position))
-	  (goto-char point)
-	  (insert "\n")
-	  (insert "* " hd "\n")
-	  (beginning-of-line 0))))
+         nil t)
+        (goto-char (line-beginning-position))
+      (goto-char point)
+      (insert "\n")
+      (insert "* " hd "\n")
+      (beginning-of-line 0))))
 
 
 ;;;; provide
