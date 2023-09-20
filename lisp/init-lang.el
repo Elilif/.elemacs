@@ -87,6 +87,10 @@
     (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
     (add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))))
 
+(setup ccls
+  (:option*
+   ccls-enable-skipped-ranges nil))
+
 
 (defun eli/compile-set ()
   (let* ((file-name (buffer-file-name))
@@ -158,7 +162,7 @@
 
    lsp-enable-file-watchers nil
    lsp-enable-folding nil
-   lsp-enable-symbol-highlighting t
+   lsp-enable-symbol-highlighting nil
    lsp-enable-text-document-color t
 
    lsp-enable-indentation nil
