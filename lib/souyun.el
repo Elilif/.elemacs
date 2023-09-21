@@ -9,7 +9,8 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (defgroup souyun nil
-  "Provide Chinese poetry rhyme query.")
+  "Provide Chinese poetry rhyme query."
+  :group 'applications)
 
 (defcustom souyun-chardict-path "~/src/Clone/pingShuiYun/data/baseCharDict.json"
   "A file of char dict."
@@ -102,17 +103,17 @@
 
 (defmacro souyun-make-overlay (beg end func)
   (declare (indent defun))
-  `(let* ((sentences (split-string (buffer-substring-no-properties ,beg ,end) "\n"))
+  `(let* ((sentences (split-string (buffer-substring-no-properties ,beg ,end)
+                                   "[。？！]"
+                                   t "\n"))
           (tones (mapcar ,func sentences)))
      (save-excursion
        (goto-char ,beg)
        (while (and (< (point) ,end)
                    (re-search-forward "[。？！]" nil t))
-         (end-of-line)
-         (let ((ov (make-overlay (point) (1+ (point)))))
+         (let ((ov (make-overlay (point) (point))))
            (overlay-put ov 'after-string (propertize (concat
-                                                      (unless (eq (char-after) 10)
-                                                        "\n")
+                                                      "\n"
                                                       (car tones)
                                                       "\n")
                                                      'face 'shadow))
@@ -135,13 +136,14 @@
 (defun souyun-get-rhymes (beg end)
   (interactive "r")
   (deactivate-mark)
-  (let* ((sentences (split-string (buffer-substring-no-properties beg end) "\n"))
+  (let* ((sentences (split-string (buffer-substring-no-properties beg end)
+                                  "[。？！]"
+                                  t "\n"))
          (rhymes (mapcar #'souyun--get-rhymes sentences)))
     (save-excursion
       (goto-char beg)
       (while (and (< (point) end)
                   (re-search-forward "[。？！]" nil t))
-        (end-of-line)
         (let ((ov (make-overlay (- (point) 2) (1- (point)))))
           (overlay-put ov 'after-string (propertize (format "(%s)"
                                                             (pop rhymes))
@@ -165,11 +167,14 @@
   (if-let* ((result (gethash char souyun-chardict-hash))
             (rhymes (mapcar (lambda (vec) (cons (aref vec 0) (aref vec 1)))
                             result)))
-      (souyun--show-result
-       (souyun--query-pingshuiyun
-        (mapconcat (lambda (rhyme) (concat (cdr rhyme) (car rhyme)))
-                   rhymes " ")))
-    (message "No match!")))
+      (if current-prefix-arg
+          (souyun--show-result
+           (souyun--query-pingshuiyun
+            (mapconcat (lambda (rhyme) (concat (cdr rhyme) (car rhyme)))
+                       rhymes " ")))
+        (message (mapconcat (lambda (rhyme) (concat (cdr rhyme) (car rhyme)))
+                            rhymes " ")))
+    (user-error "No match!")))
 
 (defun souyun--query-pingshuiyun (rhymes)
   (unless souyun-pingshuiyundict-hash
@@ -197,7 +202,8 @@
 (defun souyun-query-pingshuiyun (rhyme)
   (interactive (list (completing-read "Select: "
                                       (hash-table-keys
-                                       souyun-pingshuiyundict-hash))))
+                                       (or souyun-pingshuiyundict-hash
+                                           (souyun--parse-pingshuiyundict))))))
   (souyun--show-result (souyun--query-pingshuiyun rhyme)))
 
 (define-derived-mode souyun-mode special-mode "SouYun")
