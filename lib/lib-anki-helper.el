@@ -84,6 +84,20 @@ see `match-string-no-properties' for details."
         text)))))
 
 ;;;###autoload
+(defun eli/anki-helper-snyc-pingshuiyun ()
+  (interactive)
+  (when (region-active-p)
+    (copy-rectangle-as-kill (region-beginning) (region-end)))
+  (let (notes)
+    (dolist (char killed-rectangle)
+      (let* ((result (souyun-query-char char))
+             (anki-helper-default-note-type "Basic")
+             (anki-helper-default-deck "平水韵")
+             (anki-helper-default-tags (list result)))
+        (push (anki-helper-create-note (list char result)) notes)))
+    (anki-helper-request 'addNotes (anki-helper-create-notes notes))))
+
+;;;###autoload
 (defun eli/anki-helper-set-deck (deck)
   "Set the deck for the current entry."
   (interactive "MDeck Name: ")

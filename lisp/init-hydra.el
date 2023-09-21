@@ -210,6 +210,7 @@
     ("al" eli/anki-helper-sync-description-lists "description lists")
     ("af" anki-helper-set-front-region)
     ("ap" eli/anki-helper-snyc-poem)
+    ("ay" eli/anki-helper-snyc-pingshuiyun)
     ("ak" eli/anki-helper-set-deck)
     ("an" eli/anki-helper-set-note-type)
     ("s" eli/org-show-empty-headline "show empty headline"))
