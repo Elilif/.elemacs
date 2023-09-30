@@ -146,7 +146,7 @@ and style elements ARGS."
       (let* ((level (number-to-string (org-current-level)))
              (face (intern (concat "org-level-" level)))
              (height (face-attribute face :height)))
-        (setq scale height)))
+        (setq scale (if (eq height 'unspecified) 1.0 height))))
     (when text-scale-mode
       (setq scale (* scale (expt eli/image-scale-mode-step
                                  text-scale-mode-amount))))
