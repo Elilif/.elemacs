@@ -582,6 +582,7 @@
 [submodule "smartparens"]
 	path = site-lisp/smartparens
 	url = https://github.com/Fuco1/smartparens
+	ignore = untracked
 [submodule "spinner"]
 	path = site-lisp/spinner
 	url = https://github.com/Malabarba/spinner.el

@@ -35,6 +35,7 @@
   (require 'org)
   (require 'leetcode)
   (require 'electric-operator)
+  (require 'smartparens)
   (require 'elfeed)
   (require 'cc-cmds)
   (require 'racket-mode)
@@ -68,7 +69,8 @@
      (lambda ()
        (not (member major-mode '(emacs-lisp-mode))))))
   (:advice
-   save-buffer :around suppress-messages))
+   save-buffer :around suppress-messages
+   super-save-command :override (lambda () (save-some-buffers t #'super-save-p))))
 
 ;;;; mwim
 (setup mwim
@@ -99,16 +101,59 @@
    "s-f" markmacro-mark-current-or-next-target
    "s-b" markmacro-mark-current-or-previous-target
    "s-u" markmacro-unmark-current-target))
-;;;; electric pair
-(setup elec-pair
-  (:once (list :before 'self-insert-command)
-    (electric-pair-mode))
-  (:also-load
-   lib-elec-pair)
-  (:option*
-   electric-pair-inhibit-predicate #'eli/electric-pair-inhibit)
-  (:hooks
-   minibuffer-setup-hook electric-pair-mode))
+
+;; ;;;; electric pair
+;; (setup elec-pair
+;;   (:once (list :before 'self-insert-command)
+;;     (electric-pair-mode))
+;;   (:also-load
+;;    lib-elec-pair)
+;;   (:option*
+;;    electric-pair-inhibit-predicate #'eli/electric-pair-inhibit)
+;;   (:hooks
+;;    minibuffer-setup-hook electric-pair-mode))
+
+;;;; smartparens
+(setup smartparens
+  (:when-loaded
+    (require 'lib-smartparens))
+  (:once (list :hooks 'find-file-hook 'prog-mode-hook 'org-mode-hook)
+    (:once (list :hooks 'pre-command-hook)
+      (smartparens-global-mode)))
+  (:also-load smartparens-config)
+  (:when-loaded
+    (sp-pair "（" "）")
+    (sp-pair "《" "》")
+    (sp-pair "“" "”"))
+  (:after smartparens-org
+    (sp-with-modes 'org-mode
+      (sp-local-pair "/" "/"
+                     :unless '(sp-org-point-after-left-square-bracket-p sp-in-math-p)
+                     :post-handlers '((eli/sp-org-unpair "SPC"))
+                     :prefix "p")
+      (sp-local-pair "​*" "*​" ;;sp-point-after-word-p
+                     :unless '(sp-point-at-bol-p sp-in-math-p)
+                     :post-handlers '((eli/sp-org-unpair "SPC"))
+                     :skip-match 'sp--org-skip-asterisk
+                     :trigger "*"
+                     :trigger-wrap "*")
+      (sp-local-pair "=" "="
+                     :unless '(sp-in-math-p)
+                     :post-handlers '((eli/sp-org-unpair "SPC"))
+                     :prefix "p"
+                     :suffix "p")
+      (sp-local-pair "​_" "_​"
+                     :unless '(sp-in-math-p)
+                     :post-handlers '((eli/sp-org-unpair "SPC"))
+                     :trigger "_"
+                     :trigger-wrap "_")
+      (sp-local-pair "​~" "~​"
+                     :unless '(sp-in-math-p)
+                     :post-handlers '((eli/sp-org-unpair "SPC"))
+                     :trigger "~"
+                     :trigger-wrap "_")))
+  ;; (:advice show-paren-function :around fix-show-paren-function)
+  (:hooks minibuffer-setup-hook smartparens-mode))
 
 (setup puni
   (:also-load
@@ -119,7 +164,7 @@
    tex-mode)
   (:global
    "C-=" puni-expand-region)
-  (:with-feature elfeed-show
+  (:with-feature (elfeed-show org)
     (:bind
      "C-=" eli/expand-region))
   (:bind
