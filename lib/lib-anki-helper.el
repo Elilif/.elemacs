@@ -90,11 +90,12 @@ see `match-string-no-properties' for details."
     (copy-rectangle-as-kill (region-beginning) (region-end)))
   (let (notes)
     (dolist (char killed-rectangle)
-      (let* ((result (souyun-query-char char))
-             (anki-helper-default-note-type "Basic")
-             (anki-helper-default-deck "平水韵")
-             (anki-helper-default-tags (list result)))
-        (push (anki-helper-create-note (list char result)) notes)))
+      (let ((result (souyun-query-char char)))
+        (push (anki-helper-create-note (list char result)
+                                       :tags (list result)
+                                       :deck "平水韵"
+                                       :model "Basic")
+              notes)))
     (anki-helper-request 'addNotes (anki-helper-create-notes notes))))
 
 ;;;###autoload
