@@ -358,9 +358,12 @@
   (:hook-into
    prog-mode-hook)
   (:option*
+   whitespace-space-regexp "\\( +\\|\u200b\\)"
    whitespace-style '(face tabs spaces trailing space-before-tab newline
                            indentation empty space-after-tab space-mark
-                           tab-mark)))
+                           tab-mark)
+   whitespace-display-mappings `((space-mark #x200b [?_])
+                                 ,@whitespace-display-mappings)))
 
 ;;;; midnight
 ;; (setup midnight
