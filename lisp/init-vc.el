@@ -49,7 +49,7 @@
   (:once (list :before 'magit-auto-revert-mode--init-kludge)
     (:option magit-no-message '("Turning on magit-auto-revert-mode...")))
   (:option*
-   magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
+   magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
    magit-clone-default-directory (expand-file-name
                                   (expand-file-name
                                    "src/Clone/"
