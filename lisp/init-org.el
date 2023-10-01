@@ -201,100 +201,101 @@
    org-agenda-file-te (expand-file-name "words.org" org-agenda-dir)
    org-agenda-file-lists (expand-file-name "lists.org" org-agenda-dir)
    org-capture-templates'(("t" "Todo" entry (file org-agenda-file-inbox)
-						   "* TODO %?\n\n%i\n%U"
-						   :empty-lines 0)
-						  ("c" "Start-new" entry (file org-agenda-file-inbox)
-						   "* TODO %i"
-						   :empty-lines 0
-						   :immediate-finish t)
-						  ("1" "global notes" entry (file+headline org-agenda-file-inbox "Notes")
-						   "* %i"
-						   :prepend t
-						   :empty-lines 0
-						   :immediate-finish t)
-						  ("2" "global todo" entry (file org-agenda-file-inbox)
-						   "* TODO %i"
-						   :empty-lines 0
-						   :immediate-finish t)
-						  ("p" "Project" entry (file org-agenda-file-projects)
-						   "* PROJECT %?"
-						   :empty-lines 0)
-						  ("h" "Habit" entry (file org-agenda-file-habit)
-						   "* TODO %?\nSCHEDULED: <%(org-read-date nil nil \"+0d\") .+1d>\
+                           "* TODO %?\n\n%i\n%U"
+                           :empty-lines 0)
+                          ("c" "Start-new" entry (file org-agenda-file-inbox)
+                           "* TODO %i"
+                           :empty-lines 0
+                           :immediate-finish t)
+                          ("1" "global notes" entry (file+headline org-agenda-file-inbox "Notes")
+                           "* %i"
+                           :prepend t
+                           :empty-lines 0
+                           :immediate-finish t)
+                          ("2" "global todo" entry (file org-agenda-file-inbox)
+                           "* TODO %i"
+                           :empty-lines 0
+                           :immediate-finish t)
+                          ("p" "Project" entry (file org-agenda-file-projects)
+                           "* PROJECT %?"
+                           :empty-lines 0)
+                          ("h" "Habit" entry (file org-agenda-file-habit)
+                           "* TODO %?\nSCHEDULED: <%(org-read-date nil nil \"+0d\") .+1d>\
 \n:PROPERTIES:\n:STYLE:    habit\n:END:\n\n%U"
-						   :empty-lines 0)
-						  ("n" "Notes" entry (file+headline org-agenda-file-inbox "Notes")
-						   "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)\n%U"
-						   :empty-lines 0
-						   :prepend t)
-						  ("j" "Journals" entry (file+function
-												 org-agenda-file-journal
-												 org-reverse-datetree-goto-date-in-file)
-						   "* %<%H:%M> %?"
-						   :empty-lines 1
-						   :prepend t
-						   )
-						  ("e" "Events" entry (file+function
-											   "~/Elilif.github.io/Eli's timeline.org"
-											   (lambda ()
-												 (eli/org-capture-template-goto-today
-												  "%Y-%m-%d" 0 10 361)))
-						   "* %?"
-						   )
-						  ("B" "Blogs" plain (file eli/capture-report-date-file)
-						   "#+TITLE: %?\n#+DATE: %<%Y-%m-%d>\n#+STARTUP: showall\
+                           :empty-lines 0)
+                          ("n" "Notes" entry (file+headline org-agenda-file-inbox "Notes")
+                           "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)\n%U"
+                           :empty-lines 0
+                           :prepend t)
+                          ("j" "Journals" entry (file+function
+                                                 org-agenda-file-journal
+                                                 org-reverse-datetree-goto-date-in-file)
+                           "* %<%H:%M> %?"
+                           :empty-lines 1
+                           :prepend t
+                           )
+                          ("e" "Events" entry (file+function
+                                               "~/Elilif.github.io/Eli's timeline.org"
+                                               "%<%Y-%m-%d>")
+                           "* %?"
+                           :if-new t
+                           :prepend t
+                           )
+                          ("B" "Blogs" plain (file eli/capture-report-date-file)
+                           "#+TITLE: %?\n#+DATE: %<%Y-%m-%d>\n#+STARTUP: showall\
 \n#+OPTIONS: H:2 num:2\n#+HTML_HEAD_EXTRA: <style> .figure p {text-align: center;}</style>\n"
-						   )
-						  ("T" "Time Report" plain (file+function
-													"~/Dropbox/org/Clock_Report.org"
-													org-reverse-datetree-goto-date-in-file)
-						   "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6 \
+                           )
+                          ("T" "Time Report" plain (file+function
+                                                    "~/Dropbox/org/Clock_Report.org"
+                                                    org-reverse-datetree-goto-date-in-file)
+                           "#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 6 \
 :block %<%Y-%m-%d> :fileskip0 t \
 :indent t :link t :formula % :sort (3 . ?T)\n#+END:"
-						   :empty-lines 0
-						   :jump-to-captured t)
-						  ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
-						   "* %a\n%?\n%(v-i-or-nothing)\n%U"
-						   :empty-lines 0)
-						  ("w" "Words" checkitem (file+function
-												  org-agenda-file-te
-												  (lambda ()
-													(eli/org-capture-template-goto-today
-													 "TODO %Y-%m-%d [/]" 5 15 114)))
-						   "[ ] %(v-i-or-nothing-word)%?"
-						   :prepend t
-						   :immediate-finish t)
-						  ("f" "Français" entry (file "~/Dropbox/org/Français.org")
-						   "* TODO %u [/]\n%?"
-						   :jump-to-captured t)
-						  ("g" "古文" entry (file "~/Dropbox/org/古文.org")
-						   "* TODO %u [/]\n%?"
-						   :jump-to-captured t)
-						  ("b" "Book" entry (file+headline org-agenda-file-lists "Books")
-						   "* %?\n  %^{Title}p %^{Isbn}p %^{Types}p %^{Authors}p %^{Translator}p\
+                           :empty-lines 0
+                           :jump-to-captured t)
+                          ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
+                           "* %a\n%?\n%(v-i-or-nothing)\n%U"
+                           :empty-lines 0)
+                          ("w" "Words" checkitem (file+headline
+                                                  org-agenda-file-te
+                                                  "TODO %<%Y-%m-%d>")
+                           "[ ] %(v-i-or-nothing-word)%?"
+                           :if-new t
+                           :prepend t
+                           :immediate-finish t)
+                          ("f" "Français" entry (file "~/Dropbox/org/Français.org")
+                           "* TODO %u [/]\n%?"
+                           :jump-to-captured t)
+                          ("g" "古文" entry (file "~/Dropbox/org/古文.org")
+                           "* TODO %u [/]\n%?"
+                           :jump-to-captured t)
+                          ("b" "Book" entry (file+headline org-agenda-file-lists "Books")
+                           "* %?\n  %^{Title}p %^{Isbn}p %^{Types}p %^{Authors}p %^{Translator}p\
   %^{Publisher}p %^{Nation}p %^{Lang}p %^{Rating}p"
-						   :prepend t)
-						  ("m" "Movies and Musicals" entry (file+headline
-															org-agenda-file-lists
-															"Movies and Musicals")
-						   "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p\
+                           :prepend t)
+                          ("m" "Movies and Musicals" entry (file+headline
+                                                            org-agenda-file-lists
+                                                            "Movies and Musicals")
+                           "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p\
  %^{Actors}p %^{Types}p %^{Time}p %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
-						   :prepend t)
-						  ("s" "Series" entry (file+headline org-agenda-file-lists "Series")
-						   "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p\
+                           :prepend t)
+                          ("s" "Series" entry (file+headline org-agenda-file-lists "Series")
+                           "* %?\n %^{Title}p %^{IMDB}p %^{URL}p %^{Director}p %^{Writer}p\
  %^{Actors}p %^{Types}p %^{Time}p %^{Episodes}p\
  %^{Release}p %^{Nation}p %^{Lang}p %^{Rating}p"
-						   :prepend t)
-						  ("a" "Animes" entry (file+headline org-agenda-file-lists "Animes")
-						   "* %?\n %^{Title}p %^{URL}p %^{Episodes}p %^{Release}p\
+                           :prepend t)
+                          ("a" "Animes" entry (file+headline org-agenda-file-lists "Animes")
+                           "* %?\n %^{Title}p %^{URL}p %^{Episodes}p %^{Release}p\
  %^{Director}p %^{Authors}p %^{Publisher}p %^{Rating}p"
-						   :prepend t)
-						  ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
-						   "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
-						   :create-id t)))
+                           :prepend t)
+                          ("r" "NOTE" entry (file "~/Dropbox/org/roam/inbox.org")
+                           "* %?\n%(v-i-or-nothing)\n%(v-a-or-nothing)"
+                           :create-id t)))
   (:hooks
    org-capture-prepare-finalize-hook eli/org-capture-maybe-create-id
-   org-capture-prepare-finalize-hook eli/fill-quote-and-checklist))
+   org-capture-prepare-finalize-hook eli/fill-quote-and-checklist)
+  (:advice
+   org-capture-set-target-location :override eli/org-capture-set-target-location))
 
 ;;;; org-cycle
 (setup org-cycle
