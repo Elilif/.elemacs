@@ -84,10 +84,11 @@
 
 (setq set-mark-command-repeat-pop t)
 
-;; disable backup
 (setq make-backup-files nil)
-(setq auto-save-default nil)
-(setq create-lockfiles nil)
+(setq auto-save-default t
+      auto-save-interval 200
+      auto-save-timeout 20)
+(setq create-lockfiles t)
 
 (setq initial-frame-alist '((fullscreen . maximized)))
 
