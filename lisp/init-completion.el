@@ -139,7 +139,7 @@
     (require 'lib-orderless)
     (require 'orderless))
   (:also-load pinyinlib)
-  (:option* completion-styles              '(prescient orderless)
+  (:option* completion-styles              '(orderless prescient)
             completion-category-defaults   nil
             completion-category-overrides  '((buffer (styles basic partial-completion))
                                              (file (styles partial-completion))
