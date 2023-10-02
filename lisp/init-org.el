@@ -709,98 +709,99 @@
 ;;;; svg-tag-mode
 (setup svg-tag-mode
   (:after org
-	(require 'svg-tag-mode))
+    (require 'svg-tag-mode))
   (:also-load lib-svg-tag-mode)
   (:advice
    svg-tag-mode-on :around suppress-messages
    svg-tag-mode-off :around suppress-messages)
   (:option*
    svg-lib-style-default '(:background "#F5F5F5" :foreground "#37474f" :padding 0.5 :margin 0
-									   :stroke 2 :radius 5 :alignment 0.5 :width 20 :height 0.9
-									   :scale 0.75 :ascent center :crop-left nil :crop-right nil
-									   :collection "material" :font-family "Cascadia Mono"
-									   :font-size 11 :font-weight regular)
-   svg-tag-action-at-point 'edit
+                                       :stroke 2 :radius 5 :alignment 0.5 :width 20 :height 0.9
+                                       :scale 0.75 :ascent center :crop-left nil :crop-right nil
+                                       :collection "material" :font-family "Cascadia Mono"
+                                       :font-size 11 :font-weight regular)
+   svg-tag-action-at-point 'echo
    svg-lib-icon-collections '(("bootstrap" .
-							   "https://icons.getbootstrap.com/assets/icons/%s.svg")
-							  ("simple" .
-							   "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/%s.svg")
-							  ("material" .
-							   "https://raw.githubusercontent.com/Templarian/MaterialDesign/master/svg/%s.svg")
-							  ("octicons" .
-							   "https://raw.githubusercontent.com/primer/octicons/master/icons/%s-24.svg")
-							  ("boxicons" .
-							   "https://boxicons.com/static/img/svg/regular/bx-%s.svg"))
+                               "https://icons.getbootstrap.com/assets/icons/%s.svg")
+                              ("simple" .
+                               "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/%s.svg")
+                              ("material" .
+                               "https://raw.githubusercontent.com/Templarian/MaterialDesign/master/svg/%s.svg")
+                              ("octicons" .
+                               "https://raw.githubusercontent.com/primer/octicons/master/icons/%s-24.svg")
+                              ("boxicons" .
+                               "https://boxicons.com/static/img/svg/regular/bx-%s.svg"))
    svg-tag-tags `(
-				  ;; ;; Org tags
-				  ;; (":\\([A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag))))
-				  ;; (":\\([A-Za-z0-9]+[ \-]\\)" . ((lambda (tag) tag)))
+                  ;; ;; Org tags
+                  ;; (":\\([A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag))))
+                  ;; (":\\([A-Za-z0-9]+[ \-]\\)" . ((lambda (tag) tag)))
 
-				  ;; Task priority
-				  ("\\[#[A-Z]\\]" . ( (lambda (tag)
-										(svg-tag-make tag :face 'org-priority 
-													  :beg 2 :end -1 :margin 0
-													  :height 1.1 :ascent 16))))
+                  ;; Task priority
+                  ("\\[#[A-Z]\\]" . ( (lambda (tag)
+                                        (svg-tag-make tag :face 'org-priority 
+                                                      :beg 2 :end -1 :margin 0
+                                                      :height 1.1 :ascent 16))))
 
-				  ;; Progress
-				  ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
-													  (svg-progress-percent
-													   (substring tag 1 -2)))))
-				  ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
-													(svg-progress-count
-													 (substring tag 1 -1)))))
+                  ;; Progress
+                  ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
+                                                      (svg-progress-percent
+                                                       (substring tag 1 -2)))))
+                  ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
+                                                    (svg-progress-count
+                                                     (substring tag 1 -1)))))
 
-				  ;; TODO / DONE
-				  ("\\** \\(TODO\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
-				  ("\\** \\(NEXT\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
-				  ("\\** \\(STARTED\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
-				  ("\\** \\(SOMEDAY\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
-				  ("\\** \\(PROJECT\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
-				  ("\\** \\(DONE\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-done))))
+                  ;; TODO / DONE
+                  ("\\(TODO\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+                  ("\\(NEXT\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+                  ("\\(STARTED\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+                  ("\\(SOMEDAY\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+                  ("\\(PROJECT\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-todo))))
+                  ("\\(DONE\\)" . ((lambda (tag) (eli/svg-tag-todo-keywords-tag tag 'org-done))))
 
-				  ;; Citation of the form [cite:@Knuth:1984] 
-				  ("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)
-													(svg-tag-make tag
-																  :inverse t
-																  :beg 7 :end -1
-																  :crop-right t))))
-				  ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" . ((lambda (tag)
-															 (svg-tag-make
-															  tag
-															  :end -1
-															  :crop-left t))))
 
-				  ;; Active date (with or without day name, with or without time)
-				  (,(format "\\(<%s>\\)" date-re) .
-				   ((lambda (tag)
-					  (svg-tag-make tag :beg 1 :end -1 :margin 0 :ascent 14))))
-				  (,(format "\\(<%s \\)%s>" date-re day-time-re) .
-				   ((lambda (tag)
-					  (svg-tag-make tag :beg 1 :inverse nil :crop-right t
-									:margin 0 :ascent 14))))
-				  (,(format "<%s \\(%s>\\)" date-re day-time-re) .
-				   ((lambda (tag)
-					  (svg-tag-make tag :end -1 :inverse t :crop-left t
-									:margin 0 :ascent 14))))
-				  ;; Inactive date  (with or without day name, with or without time)
-				  (,(format "\\(\\[%s\\]\\)" date-re) .
-				   ((lambda (tag)
-					  (svg-tag-make tag :beg 1 :end -1 :margin 0
-									:face 'org-date :ascent 14))))
-				  (,(format "[^ ]\\{6\\}[^-]\\(\\[%s \\)%s\\][^-]" date-re day-time-re) .
-				   ((lambda (tag)
-					  (svg-tag-make tag :beg 1 :inverse nil
-									:crop-right t :margin 0 :face 'org-date
-									:ascent 14))))
-				  (,(format "[^ ]\\{6\\}[^-]\\[%s \\(%s\\]\\)[^-]" date-re day-time-re) .
-				   ((lambda (tag)
-					  (svg-tag-make tag :end -1 :inverse t
-									:crop-left t :margin 0 :face 'org-date
-									:ascent 14))))))
+                  ;; Citation of the form [cite:@Knuth:1984] 
+                  ("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)
+                                                    (svg-tag-make tag
+                                                                  :inverse t
+                                                                  :beg 7 :end -1
+                                                                  :crop-right t))))
+                  ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" . ((lambda (tag)
+                                                             (svg-tag-make
+                                                              tag
+                                                              :end -1
+                                                              :crop-left t))))
+
+                  ;; Active date (with or without day name, with or without time)
+                  (,(format "\\(<%s>\\)" date-re) .
+                   ((lambda (tag)
+                      (svg-tag-make tag :beg 1 :end -1 :margin 0 :ascent 14))))
+                  (,(format "\\(<%s \\)%s>" date-re day-time-re) .
+                   ((lambda (tag)
+                      (svg-tag-make tag :beg 1 :inverse nil :crop-right t
+                                    :margin 0 :ascent 14))))
+                  (,(format "<%s \\(%s>\\)" date-re day-time-re) .
+                   ((lambda (tag)
+                      (svg-tag-make tag :end -1 :inverse t :crop-left t
+                                    :margin 0 :ascent 14))))
+                  ;; Inactive date  (with or without day name, with or without time)
+                  (,(format "\\(\\[%s\\]\\)" date-re) .
+                   ((lambda (tag)
+                      (svg-tag-make tag :beg 1 :end -1 :margin 0
+                                    :face 'org-date :ascent 14))))
+                  (,(format "[^ ]\\{6\\}[^-]\\(\\[%s \\)%s\\][^-]" date-re day-time-re) .
+                   ((lambda (tag)
+                      (svg-tag-make tag :beg 1 :inverse nil
+                                    :crop-right t :margin 0 :face 'org-date
+                                    :ascent 14))))
+                  (,(format "[^ ]\\{6\\}[^-]\\[%s \\(%s\\]\\)[^-]" date-re day-time-re) .
+                   ((lambda (tag)
+                      (svg-tag-make tag :end -1 :inverse t
+                                    :crop-left t :margin 0 :face 'org-date
+                                    :ascent 14))))))
   (:hooks org-mode-hook (lambda ()
                           (make-local-variable 'font-lock-extra-managed-props)
                           (svg-tag-mode))
-		  org-agenda-finalize-hook eli/org-agenda-show-svg))
+          org-agenda-finalize-hook eli/org-agenda-show-svg))
 
 ;;;; org-heatmap
 (setup org-heatmap
