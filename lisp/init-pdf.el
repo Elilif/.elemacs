@@ -77,7 +77,9 @@
     "M-[" eli/org-noter-scroll-down-other-window)
   (:bind-into org-noter-doc-mode-map
     "c" eli/org-noter-screenshot)
-  (:hooks org-noter-insert-heading-hook eli/org-noter-set-highlight)
+  (:hooks
+   org-noter-insert-heading-hook eli/org-noter-set-highlight
+   org-noter-insert-heading-hook (lambda () (delete-char -1)))
   (:advice
    org-noter--focus-notes-region :after eli/org-noter-set-highlight
    org-noter--insert-heading :override eli/org-noter--insert-heading
