@@ -71,7 +71,7 @@
      "r" dirvish-history-go-forward
      "h" dirvish-history-jump
      "TAB" dirvish-subtree-toggle
-     "g" dirvish-emerge-menu)))
+     "G" dirvish-emerge-menu)))
 
 ;;;; ibuffer
 (setup ibuffer
@@ -101,7 +101,8 @@
 
 ;;;; popper
 (setup popper
-  (:once (list :hooks 'find-file-hook)
+  (:once (list :hooks 'find-file-hook
+               :before 'eli/pop-to-buffer)
     (popper-mode)
     (popper-echo-mode))
   (:autoload popper-toggle-latest)
@@ -229,7 +230,7 @@
           (avy--style-fn avy-style))))))
   (:with-feature org
     (:bind
-     "<remap> <org-cycle-agenda-files>" avy-goto-char))
+     "<remap> <org-cycle-agenda-files>" avy-goto-char-2))
   (:option*
    avy-all-windows nil)
   (:global
@@ -261,7 +262,7 @@
    gptel-proxy "socks://127.0.0.1:7891"
    ;; gptel-proxy ""
    gptel-default-mode 'org-mode
-   gptel-temperature 0.7
+   gptel-temperature 0.3
    gptel-prompt-prefix-alist `((markdown-mode . "### ")
                                (org-mode . ,(concat (make-string 110 ?\-) "\n"))
                                (text-mode . "### "))
@@ -302,7 +303,7 @@
    lib-tab-bar)
   (:option*
    tab-bar-close-button-show nil
-   tab-bar-separator " "
+   tab-bar-separator "​​"
    tab-bar-tab-hints t
    tab-bar-new-tab-choice "*scratch*"
    tab-bar-select-tab-modifiers '(super)
