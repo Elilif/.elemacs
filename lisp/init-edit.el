@@ -210,6 +210,10 @@
   (:advice
    tempel--exit :override eli/tempel--exit))
 
+(setup yasnippet
+  (:hooks
+   prog-mode-hook yas-minor-mode))
+
 ;;;; electric-operator
 (setup electric-operator
   (:hook-into c++-mode)
