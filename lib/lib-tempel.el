@@ -184,27 +184,39 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
   "Parse STR as a tempel template."
   (let ((start 0)
         (regex (format
-                "%s\\(?1:\\(?:%s\\)+\\|\\(?:([^%s]*\\)\\)"
+                "%s\\(?1:\\(?:%s\\)>?\\|\\(?:%s\\)\\|\\(?:([^%s]*\\)\\)"
                 "~"
-                "\\sw\\|>"
+                "\\sw"
+                ">"
                 "~"))
         res
         obj)
     (while (string-match regex str start)
-      (push (substring str start (match-beginning 0)) res)
+      (when-let ((text (substring str start (match-beginning 0)))
+                 ((not (string-empty-p text))))
+        (push text res))
       (setq obj (read (match-string 1 str)))
       (push obj res)
       (setq start (- (match-end 0)
                      (- (length (match-string 1 str))
                         (length (prin1-to-string obj))))))
-    (push (substring str start) res)
+    (when-let ((text (substring str start))
+               ((not (string-empty-p text))))
+      (push text res))
     (nreverse res)))
 
 (defun eli/tempel-temp-create (beg end)
   "Create a temporary tempel template."
   (interactive "r")
   (let* ((template (eli/tempel-temp-parse
-                    (buffer-substring-no-properties beg end)))
+                    (thread-last
+                      (buffer-substring-no-properties beg end)
+                      (replace-regexp-in-string
+                       "\\(\n[)}]\\)" "\\1~>")
+                      (replace-regexp-in-string
+                       "\n +" "~n>")
+                      (replace-regexp-in-string
+                       "\n" "~n"))))
          (name (read-minibuffer "Create template name: "))
          (existp (assq name (alist-get major-mode eli/tempel-temp-templates))))
     (if (and (assq name (tempel--templates))
@@ -217,13 +229,17 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
         (setf (alist-get name (alist-get major-mode eli/tempel-temp-templates))
               template)
         (delete-region beg end)
-        (tempel-insert name)))))
+        (tempel-insert name)))
+    (when current-prefix-arg
+      (eli/tempel-temp-save name))))
 
-(defun eli/tempel-temp-save ()
+(defun eli/tempel-temp-save (name)
   "Save the selected temporary template."
-  (interactive)
+  (interactive (list
+                (intern (completing-read
+                         "Select: "
+                         (alist-get major-mode eli/tempel-temp-templates)))))
   (let* ((templates (alist-get major-mode eli/tempel-temp-templates))
-         (name (intern (completing-read "Select: " templates)))
          (template (prin1-to-string (assoc name templates)))
          (major (symbol-name major-mode)))
     (with-current-buffer (find-file-noselect tempel-path)
@@ -239,10 +255,58 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
         (insert major)
         (insert "\n\n")
         (insert template)
-        (insert "\n\n")))))
+        (insert "\n\n"))
+      (save-buffer))))
 
 (defun eli/tempel-temp-templates ()
   (alist-get major-mode eli/tempel-temp-templates))
+
+;; (defun eli/tempel--placeholder (st &optional prompt name noinsert)
+;;   (setq prompt
+;;         (cond
+;;          ((and (stringp prompt) noinsert) (read-string prompt))
+;;          ((stringp prompt) (propertize prompt 'tempel--default t))
+;;          ;; TEMPEL EXTENSION: Evaluate prompt
+;;          (t (eval prompt (cdr st)))))
+;;   (if noinsert
+;;       (progn (setf (alist-get name (cdr st)) prompt) nil)
+;;     (setq prompt (or prompt (alist-get name (cdr st))))
+;;     (setf (alist-get name (cdr st)) prompt)
+;;     (tempel--form st name)))
+
+;; (defun eli/tempel--element (st region elt)
+;;   "Add template ELT to ST given the REGION."
+;;   (pcase elt
+;;     ('nil)
+;;     ('n (insert "\n"))
+;;     ;; `indent-according-to-mode' fails sometimes in Org. Ignore errors.
+;;     ('n> (insert "\n") (tempel--protect (indent-according-to-mode)))
+;;     ('> (tempel--protect (indent-according-to-mode)))
+;;     ((pred stringp) (insert elt))
+;;     ('& (unless (or (bolp) (save-excursion (re-search-backward "^\\s-*\\=" nil t)))
+;;           (insert "\n")))
+;;     ('% (unless (or (eolp) (save-excursion (re-search-forward "\\=\\s-*$" nil t)))
+;;           (insert "\n")))
+;;     ('o (unless (or (eolp) (save-excursion (re-search-forward "\\=\\s-*$" nil t)))
+;;           (open-line 1)))
+;;     (`(s ,name) (tempel--field st name))
+;;     (`(l . ,lst) (dolist (e lst) (tempel--element st region e)))
+;;     ((or 'p `(,(or 'p 'P) . ,rest)) (apply #'tempel--placeholder st rest))
+;;     ((or 'r 'r> `(,(or 'r 'r>) . ,rest))
+;;      (if (not region)
+;;          (when-let ((ov (apply #'tempel--placeholder st rest))
+;;                     ((not rest)))
+;;            (overlay-put ov 'tempel--enter #'tempel--done))
+;;        (goto-char (cdr region))
+;;        (when (eq (or (car-safe elt) elt) 'r>)
+;;          (indent-region (car region) (cdr region) nil))))
+;;     ;; TEMPEL EXTENSION: Quit template immediately
+;;     ('q (overlay-put (tempel--field st) 'tempel--enter #'tempel--done))
+;;     (`(f . ,rest) (apply #'eli/tempel--placeholder st rest))
+;;     (_ (if-let (ret (run-hook-with-args-until-success 'tempel-user-elements elt))
+;;            (tempel--element st region ret)
+;;          ;; TEMPEL EXTENSION: Evaluate forms
+;;          (tempel--form st elt)))))
 
 ;;;; provide
 (provide 'lib-tempel)
