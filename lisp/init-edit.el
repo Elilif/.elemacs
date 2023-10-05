@@ -224,6 +224,10 @@
     (electric-operator-add-rules-for-mode 'c++-mode
                                           (cons "&" nil))
     (electric-operator-add-rules-for-mode 'c++-mode
+                                          (cons "*" nil))
+    (electric-operator-add-rules-for-mode 'c-mode
+                                          (cons "&" nil))
+    (electric-operator-add-rules-for-mode 'c-mode
                                           (cons "*" nil))))
 
 ;;;; aggressive-indent
