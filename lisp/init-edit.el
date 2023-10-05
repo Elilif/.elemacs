@@ -163,10 +163,7 @@
    org-mode
    tex-mode)
   (:global
-   "C-=" puni-expand-region)
-  (:with-feature (elfeed-show org)
-    (:bind
-     "C-=" eli/expand-region))
+   "C-=" eli/expand-region)
   (:bind
    "<DEL>" eli/puni-hungry-backward-delete-char
    "C-M-a" beginning-of-defun

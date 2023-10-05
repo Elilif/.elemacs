@@ -50,8 +50,14 @@
     (when (or (looking-at symbol-regexp)
               (looking-back symbol-regexp (line-beginning-position)))
       (skip-syntax-forward "_w")
-      (set-mark (point))
-      (skip-syntax-backward "_w"))))
+      (if (eq (char-after (point)) 8203)
+          (save-excursion
+            (forward-char)
+            (set-mark (point)))
+        (set-mark (point)))
+      (skip-syntax-backward "_w")
+      (when (eq (char-before (point)) 8203)
+        (backward-char)))))
 
 ;;;###autoload
 (defun er/mark-sentence ()
@@ -87,7 +93,7 @@
         (cond
          ((derived-mode-p 'prog-mode)
           (puni-expand-region))
-         (t (if (< eli/expand-region-count 3)
+         (t (if (< eli/expand-region-count (length eli/expand-region-commands))
                 (funcall (nth eli/expand-region-count
                               eli/expand-region-commands))
               (puni-expand-region))))
