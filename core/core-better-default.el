@@ -365,6 +365,17 @@
    whitespace-display-mappings `((space-mark #x200b [?_])
                                  ,@whitespace-display-mappings)))
 
+(setup paren
+  (:when-loaded
+    (defun eli/show-paren-function (fn)
+      "Highlight enclosing parens."
+      (cond ((looking-at-p "\\s(") (funcall fn))
+            (t (save-excursion
+                 (ignore-errors (backward-up-list))
+                 (funcall fn))))))
+  (:advice
+   show-paren-function :around eli/show-paren-function))
+
 ;;;; midnight
 ;; (setup midnight
 ;;   (once (list :before 'eli/consult-buffer)
