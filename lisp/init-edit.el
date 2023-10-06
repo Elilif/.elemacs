@@ -208,7 +208,9 @@
    "TAB" smarter-tab-to-expand
    "M-]" tempel-expand)
   (:advice
-   tempel--exit :override eli/tempel--exit))
+   tempel-expand :override eli/tempel-expand
+   tempel--prefix-bounds :override eli/tempel--prefix-bounds
+   tempel--element :override eli/tempel--element))
 
 (setup yasnippet
   (:hooks

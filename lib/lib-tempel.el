@@ -46,32 +46,64 @@
   args)
 (advice-add 'define-abbrev :filter-args #'eli/abbrev--case-fixed)
 
-(defun eli/tempel-expand ()
+;;;###autoload
+(defun eli/tempel-auto-expand ()
   "Complete with CAPF."
   (let ((completion-at-point-functions (list #'tempel-expand))
         completion-cycle-threshold)
     (tempel--save)
     (completion-at-point)))
 
+;;;###autoload
 (defun tempel-setup-capf ()
-  ;; Add the Tempel Capf to `completion-at-point-functions'.
-  ;; `tempel-expand' only triggers on exact matches. Alternatively use
-  ;; `tempel-complete' if you want to see all matches, but then you
-  ;; should also configure `tempel-trigger-prefix', such that Tempel
-  ;; does not trigger too often when you don't expect it. NOTE: We add
-  ;; `tempel-expand' *before* the main programming mode Capf, such
-  ;; that it will be tried first.
   (setq-local completion-at-point-functions
-              (cons #'eli/tempel-expand
+              (cons #'eli/tempel-auto-expand
                     completion-at-point-functions)))
+
+(defun eli/tempel-expand (&optional interactive)
+  "Expand exactly matching template name at point.
+This completion-at-point-function (Capf) returns only the single
+exactly matching template name.  As a consequence the completion
+UI (e.g. Corfu) does not present the candidates for selection.
+If you want to select from a list of templates, use
+`tempel-complete' instead.  If INTERACTIVE is nil the function
+acts like a Capf, otherwise like an interactive completion
+command."
+  (interactive (list t))
+  (if interactive
+      (tempel--interactive #'tempel-expand)
+    (when-let* ((templates (tempel--templates))
+                (bounds (tempel--prefix-bounds))
+                (name (buffer-substring-no-properties
+                       (car bounds) (cdr bounds)))
+                (sym (intern name))
+                (template (cl-find-if
+                           (lambda (template)
+                             (let ((prefix (car template)))
+                               (cond
+                                ((stringp prefix)
+                                 (string-match
+                                  prefix name))
+                                ((symbolp prefix)
+                                 (eq prefix sym)))))
+                           templates)))
+      (setq templates (list (cons sym (cdr template))))
+      (list (car bounds) (cdr bounds)
+            (tempel--completion-table templates)
+            :exclusive 'no
+            :exit-function (apply-partially #'eli/tempel--exit (list template) nil)))))
+
+(defvar eli/tempel-match-string '())
 
 (defun eli/tempel--exit (templates region name status)
   "Exit function for completion for template NAME and STATUS.
 TEMPLATES is the list of templates.
 REGION are the current region bounds."
   (unless (eq status 'exact)
-    (when-let ((sym (intern-soft name))
-               (template (alist-get sym templates))
+    (when-let ((sym (intern name))
+               (template (if (stringp (caar templates))
+                             (cdar templates)
+                           (alist-get sym templates)))
                (plist template))
       (while (and plist (not (keywordp (car plist))))
         (pop plist))
@@ -81,7 +113,63 @@ REGION are the current region bounds."
         (tempel--delete-word name)
         (when tempel-trigger-prefix
           (tempel--delete-word tempel-trigger-prefix))
-        (tempel--insert template region)))))
+        (push (cons (caar templates) name) eli/tempel-match-string)
+        (tempel--insert template region)
+        (pop eli/tempel-match-string)))))
+
+(defun eli/tempel--var (st elt)
+  (let* ((str (alist-get elt (cdr st))))
+    (insert (or str ""))))
+
+(defun eli/tempel--element (st region elt)
+  "Add template ELT to ST given the REGION."
+  (when-let ((pair (car-safe eli/tempel-match-string))
+             ((not (alist-get 'match-string (cdr st)))))
+    (setf (alist-get 'match-string (cdr st)) pair)
+    (let ((orig-str (eval '(cdr match-string)
+                          (cdr st)))
+          (regexp (eval '(car match-string)
+                        (cdr st))))
+      (dotimes (count 10)
+        (let ((str (progn
+                     (string-match regexp orig-str)
+                     (match-string count orig-str))))
+          (setf (alist-get (read (format "\\%s" count)) (cdr st)) str)))))
+  (pcase elt
+    ('nil)
+    ('n (insert "\n"))
+    ;; `indent-according-to-mode' fails sometimes in Org. Ignore errors.
+    ('n> (insert "\n") (tempel--protect (indent-according-to-mode)))
+    ('> (tempel--protect (indent-according-to-mode)))
+    ((pred stringp) (insert elt))
+    ('& (unless (or (bolp) (save-excursion (re-search-backward "^\\s-*\\=" nil t)))
+          (insert "\n")))
+    ('% (unless (or (eolp) (save-excursion (re-search-forward "\\=\\s-*$" nil t)))
+          (insert "\n")))
+    ('o (unless (or (eolp) (save-excursion (re-search-forward "\\=\\s-*$" nil t)))
+          (open-line 1)))
+    (`(s ,name) (tempel--field st name))
+    (`(l . ,lst) (dolist (e lst) (tempel--element st region e)))
+    ((or 'p `(,(or 'p 'P) . ,rest)) (apply #'tempel--placeholder st rest))
+    ((or 'r 'r> `(,(or 'r 'r>) . ,rest))
+     (if (not region)
+         (when-let ((ov (apply #'tempel--placeholder st rest))
+                    ((not rest)))
+           (overlay-put ov 'tempel--enter #'tempel--done))
+       (goto-char (cdr region))
+       (when (eq (or (car-safe elt) elt) 'r>)
+         (indent-region (car region) (cdr region) nil))))
+    ;; TEMPEL EXTENSION: Quit template immediately
+    ('q (overlay-put (tempel--field st) 'tempel--enter #'tempel--done))
+    ;; (`(f . ,rest) (apply #'eli/tempel--placeholder st rest))
+    ((pred (lambda (elt)
+             (when (symbolp elt)
+               (string-match-p "[0-9]" (symbol-name elt)))))
+     (eli/tempel--var st elt))
+    (_ (if-let (ret (run-hook-with-args-until-success 'tempel-user-elements elt))
+           (tempel--element st region ret)
+         ;; TEMPEL EXTENSION: Evaluate forms
+         (tempel--form st elt)))))
 
 (defun eli/tempel--get-prefix-bounds ()
   (let* ((beg (save-excursion
@@ -90,7 +178,7 @@ REGION are the current region bounds."
          (beg (if beg (1+ beg) (line-beginning-position))))
     (cons beg (point))))
 
-(defun tempel--prefix-bounds ()
+(defun eli/tempel--prefix-bounds ()
   "Return prefix bounds."
   (if tempel-trigger-prefix
       (let ((end (point))
@@ -273,40 +361,6 @@ If all failed, try to complete the common part with `indent-for-tab-command'."
 ;;     (setq prompt (or prompt (alist-get name (cdr st))))
 ;;     (setf (alist-get name (cdr st)) prompt)
 ;;     (tempel--form st name)))
-
-;; (defun eli/tempel--element (st region elt)
-;;   "Add template ELT to ST given the REGION."
-;;   (pcase elt
-;;     ('nil)
-;;     ('n (insert "\n"))
-;;     ;; `indent-according-to-mode' fails sometimes in Org. Ignore errors.
-;;     ('n> (insert "\n") (tempel--protect (indent-according-to-mode)))
-;;     ('> (tempel--protect (indent-according-to-mode)))
-;;     ((pred stringp) (insert elt))
-;;     ('& (unless (or (bolp) (save-excursion (re-search-backward "^\\s-*\\=" nil t)))
-;;           (insert "\n")))
-;;     ('% (unless (or (eolp) (save-excursion (re-search-forward "\\=\\s-*$" nil t)))
-;;           (insert "\n")))
-;;     ('o (unless (or (eolp) (save-excursion (re-search-forward "\\=\\s-*$" nil t)))
-;;           (open-line 1)))
-;;     (`(s ,name) (tempel--field st name))
-;;     (`(l . ,lst) (dolist (e lst) (tempel--element st region e)))
-;;     ((or 'p `(,(or 'p 'P) . ,rest)) (apply #'tempel--placeholder st rest))
-;;     ((or 'r 'r> `(,(or 'r 'r>) . ,rest))
-;;      (if (not region)
-;;          (when-let ((ov (apply #'tempel--placeholder st rest))
-;;                     ((not rest)))
-;;            (overlay-put ov 'tempel--enter #'tempel--done))
-;;        (goto-char (cdr region))
-;;        (when (eq (or (car-safe elt) elt) 'r>)
-;;          (indent-region (car region) (cdr region) nil))))
-;;     ;; TEMPEL EXTENSION: Quit template immediately
-;;     ('q (overlay-put (tempel--field st) 'tempel--enter #'tempel--done))
-;;     (`(f . ,rest) (apply #'eli/tempel--placeholder st rest))
-;;     (_ (if-let (ret (run-hook-with-args-until-success 'tempel-user-elements elt))
-;;            (tempel--element st region ret)
-;;          ;; TEMPEL EXTENSION: Evaluate forms
-;;          (tempel--form st elt)))))
 
 ;;;; provide
 (provide 'lib-tempel)
