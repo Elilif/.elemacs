@@ -147,8 +147,9 @@
    (("s" scratch-buffer)
     ("i" consult-info)
     ("g" (let ((default-directory "~/.emacs.d/site-lisp/"))
-           (magit-status (read-directory-name "Select a package: ")))))
-   ))
+           (magit-status (read-directory-name "Select a package: "))))
+    ("p" eli/tabspaces-restore-session)
+    ("r" tabspaces-restore-session))))
 
 (pretty-hydra-define hydra-puni
   (:color amaranth :exit t
@@ -484,7 +485,10 @@
     ("m" eli/select-images "images"))
    "LaTeX"
    (("l" mathpix-screenshot "mathpix")
-    ("r" eli/org-ref-insert-ref-link "insert org ref"))))
+    ("r" eli/org-ref-insert-ref-link "insert org ref"))
+   "Snippets"
+   (("c" eli/tempel-temp-create)
+    ("y" eli/tempel-temp-save))))
 
 (pretty-hydra-define hydra-player
   (:color amaranth :exit t :quit-key "q"
