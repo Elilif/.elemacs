@@ -295,6 +295,7 @@
 (setup desktop
   (:option*
    desktop-dirname "~/.emacs.d/var/desktop/"
+   desktop-path '("~/.emacs.d/var/desktop/")
    desktop-save t))
 
 ;;;; tab-bar
@@ -354,10 +355,12 @@
    project
    lib-tab-bar)
   (:hook my--consult-tabspaces)
-  (:init
-   (setq tabspaces-keymap-prefix nil))
+  (:bind-into tabspaces-mode-map
+    "C-c TAB S" tabspaces-save-session)
   (:option*
-   tabspaces-session nil))
+   tabspaces-session t)
+  (:advice
+   tabspaces-restore-session :after eli/tabspaces-delete-empty-tab))
 
 (setup markdown-mode
   (:option*
