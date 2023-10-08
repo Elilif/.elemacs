@@ -140,9 +140,11 @@
     ("R" restart-emacs)
     ("c" (byte-recompile-directory "~/.emacs.d/lisp/") "recompile"))
    "Bookmark"
-   (("bs" bookmark-set "set bookmark")
-    ("bj" consult-bookmark "jump bookmark")
-    ("bd" bookmark-delete "delete bookmark"))
+   (("b" bookmark-set "set bookmark")
+    ("j" consult-bookmark "jump bookmark")
+    ("d" bookmark-delete "delete bookmark")
+    ("w" burly-bookmark-windows)
+    ("o" burly-open-bookmark))
    "basic"
    (("s" scratch-buffer)
     ("i" consult-info)
