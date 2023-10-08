@@ -464,8 +464,7 @@ create one."
                                             eli/gptel-conversations)
                                     eli/gptel-conversations)))
       (eli/gptel-make-posframe-maybe t)))
-  (select-frame-set-input-focus eli/gptel--posframe)
-  (goto-char (point-max)))
+  (select-frame-set-input-focus eli/gptel--posframe))
 
 ;;;###autoload
 (defun eli/gptel-exit (&optional arg)
