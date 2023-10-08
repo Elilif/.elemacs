@@ -41,6 +41,7 @@
   (require 'ledger-mode)
   (require 'lib-ledger-mode)
   (require 'lib-tab-bar)
+  (require 'lib-burly)
   (require 'elfeed-show)
   (require 'pdf-tools))
 
@@ -361,6 +362,21 @@
    tabspaces-session t)
   (:advice
    tabspaces-restore-session :after eli/tabspaces-delete-empty-tab))
+
+(setup burly
+  (:when-loaded
+    (require 'lib-burly))
+  (:once (list :before 'burly-open-bookmark 'consult-bookmark
+               'tabspaces-restore-session 'eli/tabspaces-restore-session)
+    (burly-tabs-mode))
+  (:option*
+   burly-bookmark-prefix nil)
+  (:hooks
+   org-agenda-finalize-hook (lambda ()
+                              (setq-local bookmark-make-record-function
+                                          #'eli/org-agenda-bookmark-make-record)))
+  (:advice
+   burly-bookmark-windows :after eli/burly-rename-tab))
 
 (setup markdown-mode
   (:option*

@@ -77,6 +77,10 @@
 	path = site-lisp/borg
 	url = git@github.com:emacscollective/borg.git
 	ignore = untracked
+[submodule "burly"]
+	path = site-lisp/burly
+	url = https://github.com/alphapapa/burly.el
+	ignore = untracked
 [submodule "cal-china-x"]
 	path = site-lisp/cal-china-x
 	url = https://github.com/xwl/cal-china-x

@@ -98,22 +98,28 @@
 
 ;;;###autoload
 (defun eli/tabspaces-restore-session ()
+  "Select one workspace and restore it."
   (interactive)
+  (require 'tabspaces)
+  (require 'burly)
   (load-file tabspaces-session-file)
   (let* ((name (completing-read "Select a session: " tabspaces--session-list))
          (session (assoc name tabspaces--session-list)))
     (tabspaces-switch-or-create-workspace (car session))
     (switch-to-buffer "*tabspaces--placeholder*")
     (mapc #'find-file (cadr session))
-    (window-state-put (cddr session))
+    (if (member (car session) (burly-bookmark-names))
+        (burly-open-bookmark (car session))
+      (window-state-put (cddr session)))
     (tabspaces-remove-selected-buffer "*tabspaces--placeholder*")
     (kill-buffer "*tabspaces--placeholder*")
     (eli/tabspaces-delete-empty-tab)))
 
 (defun eli/tabspaces-delete-empty-tab (&rest _args)
+  "Delete the first empty workspace."
   (let ((curr (tab-bar--current-tab-index)))
     (tab-bar-select-tab 1)
-    (when (eq (length (tabspaces--buffer-list)) 2)
+    (when (<= (length (tabspaces--buffer-list)) 2)
       (tab-bar-close-tab 1))
     (tab-bar-select-tab (+ curr 1))))
 
