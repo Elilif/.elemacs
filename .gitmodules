@@ -423,6 +423,11 @@
 	path = site-lisp/org-clock-convenience
 	url = https://github.com/dfeich/org-clock-convenience
 	ignore = untracked
+[submodule "org-contrib"]
+	path = site-lisp/org-contrib
+    load-path = lisp
+	url = git@github.com:emacsmirror/org-contrib.git
+	ignore = untracked
 [submodule "org-download"]
 	path = site-lisp/org-download
 	url = https://github.com/abo-abo/org-download
@@ -473,6 +478,10 @@
 [submodule "ox-pandoc"]
 	path = site-lisp/ox-pandoc
 	url = https://github.com/emacsorphanage/ox-pandoc
+	ignore = untracked
+[submodule "ox-rss"]
+	path = site-lisp/ox-rss
+	url = https://github.com/BenedictHW/ox-rss
 	ignore = untracked
 [submodule "package-lint"]
 	path = site-lisp/package-lint
