@@ -73,7 +73,7 @@
 
 (setup-define :silence
   (lambda (&rest body)
-    `(cl-letf (((symbol-function 'message) (lambda (&rest _args) nil)))
+    `(cl-letf (((symbol-function 'message) #'format))
        ,(macroexp-progn body)))
   :documentation "Evaluate BODY but keep the echo era clean."
   :debug '(setup))
