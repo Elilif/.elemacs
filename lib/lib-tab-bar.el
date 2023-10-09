@@ -97,7 +97,7 @@
     (tab-bar-close-tab)))
 
 ;;;###autoload
-(defun eli/tabspaces-restore-session ()
+(defun eli/tabspaces-restore-one-session ()
   "Select one workspace and restore it."
   (interactive)
   (require 'tabspaces)
@@ -117,11 +117,66 @@
 
 (defun eli/tabspaces-delete-empty-tab (&rest _args)
   "Delete the first empty workspace."
+  (when tab-bar-mode
+    (let ((curr (tab-bar--current-tab-index)))
+      (tab-bar-select-tab 1)
+      (when (<= (length (tabspaces--buffer-list)) 2)
+        (tab-bar-close-tab 1))
+      (tab-bar-select-tab (+ curr 1)))))
+
+;;;###autoload
+(defun eli/tabspaces-save-session ()
+  "Save tabspace name and buffers."
+  (interactive)
+  ;; Start from an empty list.
+  (setq tabspaces--session-list nil)
   (let ((curr (tab-bar--current-tab-index)))
-    (tab-bar-select-tab 1)
-    (when (<= (length (tabspaces--buffer-list)) 2)
-      (tab-bar-close-tab 1))
-    (tab-bar-select-tab (+ curr 1))))
+    ;; loop over tabs
+    (cl-loop for tab in (tabspaces--list-tabspaces)
+             do (progn
+                  (tab-bar-select-tab-by-name tab)
+                  (when-let ((files  (tabspaces--store-buffers (tabspaces--buffer-list))))
+                    (setq tabspaces--session-list
+                          (append tabspaces--session-list
+                                  (list (cons tab (cons
+                                                   files
+                                                   (window-state-get nil 'writable)))))))
+                  (when (and (featurep 'burly)
+                             (member tab (burly-bookmark-names)))
+                    (eli/burly-bookmark-windows tab))))
+    ;; As tab-bar-select-tab starts counting from 1, we need to add 1 to the index.
+    (tab-bar-select-tab (+ curr 1)))
+  ;; Write to file
+  (with-temp-file tabspaces-session-file
+    (point-min)
+    (insert ";; -*- mode: emacs-lisp; lexical-binding:t; coding: utf-8-emacs; -*-\n"
+            tabspaces-session-header
+            ";; Created " (current-time-string) "\n\n"
+            ";; Tabs and buffers:\n")
+    (insert "(setq tabspaces--session-list '" (format "%S" tabspaces--session-list) ")")))
+
+;;;###autoload
+(defun eli/tabspaces-restore-session (&optional session)
+  "Restore tabspaces session."
+  (interactive)
+  (load-file (or session
+                 tabspaces-session-file))
+  ;; Start looping through the session list, but ensure to start from a
+  ;; temporary buffer "*tabspaces--placeholder*" in order not to pollute the
+  ;; buffer list with the final buffer from the previous tab.
+  (cl-loop for elm in tabspaces--session-list do
+           (tabspaces-switch-or-create-workspace (car elm))
+           (switch-to-buffer "*tabspaces--placeholder*")
+           (mapc #'find-file (cadr elm))
+           (if (member (car elm) (burly-bookmark-names))
+               (burly-open-bookmark (car elm))
+             (window-state-put (cddr elm))))
+  ;; Once the session list is restored, remove the temporary buffer from the
+  ;; buffer list.
+  (cl-loop for _elm in tabspaces--session-list do
+           (tabspaces-remove-selected-buffer "*tabspaces--placeholder*"))
+  ;; Finally, kill the temporary buffer to clean up.
+  (kill-buffer "*tabspaces--placeholder*"))
 
 ;;;; provide
 (provide 'lib-tab-bar)

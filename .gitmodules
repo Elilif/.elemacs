@@ -303,7 +303,7 @@
 	ignore = untracked
 [submodule "leetcode"]
 	path = site-lisp/leetcode
-	url = https://github.com/Elilif/leetcode.el
+	url = https://github.com/kaiwk/leetcode.el
 	ignore = untracked
 [submodule "link-hint"]
 	path = site-lisp/link-hint

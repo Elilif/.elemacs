@@ -361,7 +361,9 @@
   (:option*
    tabspaces-session t)
   (:advice
-   tabspaces-restore-session :after eli/tabspaces-delete-empty-tab))
+   tabspaces-restore-session :after eli/tabspaces-delete-empty-tab
+   tabspaces-save-session :override eli/tabspaces-save-session
+   tabspaces-restore-session :override eli/tabspaces-restore-session))
 
 (setup burly
   (:when-loaded
@@ -376,7 +378,9 @@
                               (setq-local bookmark-make-record-function
                                           #'eli/org-agenda-bookmark-make-record)))
   (:advice
-   burly-bookmark-windows :after eli/burly-rename-tab))
+   burly-open-bookmark :after eli/tabspaces-delete-empty-tab
+   burly-bookmark-windows :after eli/burly-rename-tab
+   burly-bookmark-names :override eli/burly-bookmark-names))
 
 (setup markdown-mode
   (:option*
