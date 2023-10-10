@@ -189,6 +189,7 @@
                'citar-open
                :packages 'org)
     (require 'init-org)
+    (require 'init-blog)
     (require 'init-tex)
     (load "~/.emacs.d/custom.el")))
 
