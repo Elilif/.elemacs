@@ -8,17 +8,13 @@
 for org-agenda."
   (let* ((bookmark-name (buffer-name)))
     `(,bookmark-name
-      ,@(bookmark-make-record-default 'no-file)
       (handler . eli/org-agenda-bookmark-handler))))
 
-(defun eli/org-agenda-bookmark-handler (bmk)
+(defun eli/org-agenda-bookmark-handler (_bmk)
   "This implements the `handler' function interface for the record
 type returned by `eli/org-agenda-bookmark-make-record', which see."
   (require 'org)
-  (org-agenda nil "g")
-  (let* ((buf org-agenda-buffer-name))
-    (bookmark-default-handler
-     `("" (buffer . ,buf) . ,(bookmark-get-bookmark-record bmk)))))
+  (org-agenda nil "g"))
 
 (defun eli/burly-rename-tab (name)
   (tab-bar-rename-tab (burly-tabs--abbreviate-name name)))
