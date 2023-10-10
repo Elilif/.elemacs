@@ -67,21 +67,6 @@
   "s" #'embark-collect
   "b" #'eli/org-roam-backlinks-node-read)
 
-(defvar-keymap embark-consult-org-headline-map
-  "i" #'embark-insert
-  "b" #'consult-org-headline-insert-backlink
-  "r" #'consult-org-headline-insert-reference
-  "w" #'embark-copy-as-kill
-  "q" #'embark-toggle-quit
-  "E" #'embark-export
-  "S" #'embark-collect
-  "L" #'embark-live
-  "B" #'embark-become
-  "A" #'embark-act-all
-  "C-s" #'embark-isearch
-  "SPC" #'mark
-  "DEL" #'delete-region)
-
 ;;;###autoload
 (defun eli/embark-deselect ()
   "Deselect all selected candidates."

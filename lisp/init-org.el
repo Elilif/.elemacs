@@ -472,9 +472,11 @@
 		           (window-width . 0.4)
 		           (window-height . fit-window-to-buffer))))
   (:after embark
-	(add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map))
-	(add-to-list 'embark-keymap-alist
-				 '(consult-org-heading . embark-consult-org-headline-map))))
+	(add-to-list 'embark-keymap-alist '(org-roam-node . embark-org-roam-map)))
+  (:after embark-org
+    (:bind-into embark-org-heading-map
+      "r" eli/consult-org-headline-insert-backlink
+      "R" eli/consult-org-headline-insert-reference)))
 
 ;;;; org-roam-ui
 (setup org-roam-ui
