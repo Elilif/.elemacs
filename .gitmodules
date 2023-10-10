@@ -382,8 +382,11 @@
 [submodule "mu4e"]
 	path = site-lisp/mu4e
 	url = https://github.com/djcb/mu
+    build-step = make clean
 	build-step = ./autogen.sh && make
     load-path = build/mu4e
+    build-step = borg-byte-compile
+    build-step = borg-update-autoloads
 	ignore = untracked
 [submodule "mu4e-alert"]
 	path = site-lisp/mu4e-alert
