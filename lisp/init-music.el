@@ -53,7 +53,7 @@
    emms-browser-track-number :override eli/emms-browser-track-number
    emms-browser-clear :override eli/emms-browser-clear
    ;; disable original emms mode line message
-   ;; see `mood-line-segment-misc-info'
+   ;; show them in tab-bar.
    emms-playing-time-mode-line :override ignore
    emms-lyrics-mode-line :override ignore
    emms-lyrics-seek :after (lambda (&rest _args)

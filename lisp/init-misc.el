@@ -312,7 +312,10 @@
    tab-bar-tab-name-truncated-max 15
    tab-bar-border nil
    tab-bar-auto-width nil
-   tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right)
+   tab-bar-format '(tab-bar-format-tabs
+                    tab-bar-separator
+                    tab-bar-format-align-right
+                    eli/tab-bar-emms)
    tab-bar-tab-name-function #'tab-bar-tab-name-truncated
    tab-bar-tab-name-format-function (lambda (tab i)
                                       (concat
