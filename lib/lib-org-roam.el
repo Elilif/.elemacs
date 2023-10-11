@@ -142,8 +142,7 @@ direct title.
 
 (defun eli/consult-org-headline-insert-backlink (target)
   (let* ((marker (get-text-property 0 'org-marker target))
-         (headline-name (substring (org-no-properties target)
-                                   0 -1))
+         (headline-name (org-entry-get marker "ITEM"))
          (headline-id (save-excursion
                         (with-current-buffer
                             (marker-buffer marker)
@@ -153,14 +152,9 @@ direct title.
 	 nil (concat "id:" headline-id) headline-name)))
 
 (defun eli/consult-org-headline-insert-reference (target)
-  (let* ((headline (substring (org-no-properties target)
-                              0 -1))
-         (headline-name (car
-                         (last
-                          (split-string
-                           (replace-regexp-in-string "\\*+ " "" headline)
-                           "/")))))
-    (insert (format "[[%s]]" headline-name))))
+  (let* ((marker (get-text-property 0 'org-marker target))
+         (headline-name (org-entry-get marker "ITEM")))
+    (org-insert-link nil headline-name headline-name)))
 
 (defun eli/update-org-roam-db ()
   (while-no-input
