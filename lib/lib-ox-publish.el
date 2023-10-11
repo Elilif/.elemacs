@@ -108,7 +108,6 @@ project."
             preview
             (concat
              root
-             "/articles/"
              link))))
 
 (defun eli/publish-rss-papare (_project)
