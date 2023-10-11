@@ -264,6 +264,7 @@
    ;; gptel-proxy ""
    gptel-default-mode 'org-mode
    gptel-temperature 0.3
+   gptel--num-messages-to-send 5
    gptel-prompt-prefix-alist `((markdown-mode . "### ")
                                (org-mode . ,(concat (make-string 110 ?\-) "\n"))
                                (text-mode . "### "))
