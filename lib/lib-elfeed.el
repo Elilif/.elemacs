@@ -1,4 +1,4 @@
-;; lib-elfeed.el --- Initialize lib-elfeed configurations.	-*- lexical-binding: t; -*-
+;; lib-elfeed.el --- Initialize lib-elfeed configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -41,11 +41,11 @@
     (let ((elfeed-search-sort-function nil))
       (elfeed-search-set-filter
        (concat
-	    "="
-	    (replace-regexp-in-string
-	     (rx "?" (* not-newline) eos)
-	     ""
-	     (elfeed-feed-url (elfeed-entry-feed entry))))))))
+        "="
+        (replace-regexp-in-string
+         (rx "?" (* not-newline) eos)
+         ""
+         (elfeed-feed-url (elfeed-entry-feed entry))))))))
 
 
 ;;;###autoload
@@ -120,16 +120,16 @@ for confirmation when needed."
   (elfeed-db-save)
   (let (buf)
     (dolist (file rmh-elfeed-org-files)
-	  (when (and (setq buf (get-file-buffer file))
-				 (buffer-modified-p buf)
-				 (y-or-n-p (format "Save file %s? " file)))
+      (when (and (setq buf (get-file-buffer file))
+                 (buffer-modified-p buf)
+                 (y-or-n-p (format "Save file %s? " file)))
         (with-current-buffer buf (save-buffer))
-		(kill-buffer buf))))
+        (kill-buffer buf))))
   (kill-buffer "*elfeed-log*")
   (kill-buffer (current-buffer)))
 
 (defvar eli/elfeed-filters '("@7-days-ago +A"
-							 "@7-days-ago +B +TEP"))
+                             "@7-days-ago +B +TEP"))
 
 ;;;###autoload
 (defun eli/elfeed-search-set-filter ()
@@ -137,6 +137,22 @@ for confirmation when needed."
   (interactive)
   (elfeed-search-set-filter (completing-read "Filter: " eli/elfeed-filters)))
 
+
+;; SRC: https://github.com/skeeto/elfeed/issues/392
+(defun sk/elfeed-db-remove-entry (id)
+  "Removes the entry for ID"
+  (avl-tree-delete elfeed-db-index id)
+  (remhash id elfeed-db-entries))
+
+(defun sk/elfeed-search-remove-selected ()
+  "Remove selected entries from database"
+  (interactive)
+  (let* ((entries (elfeed-search-selected))
+         (count (length entries)))
+    (when (y-or-n-p (format "Delete %d entires?" count))
+      (cl-loop for entry in entries
+               do (sk/elfeed-db-remove-entry (elfeed-entry-id entry)))))
+  (elfeed-search-update--force))
 
 
 ;;;; provide
