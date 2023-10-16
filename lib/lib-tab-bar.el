@@ -30,6 +30,14 @@
 
 ;;; Code:
 
+(require 'tabspaces)
+(require 'burly)
+
+(defvar emms-playing-time-mode)
+(defvar emms-playing-time-string)
+(defvar emms-lyrics-display-on-modeline)
+(defvar emms-lyrics-mode-line-string)
+
 ;;;; tab-bar
 (defface tab-bar-hints
   '((default
@@ -51,6 +59,17 @@
   "Tab bar face for non-selected tab."
   :version "30.0.50"
   :group 'tab-bar-faces)
+
+(defun eli/tab-bar-emms ()
+  (concat
+   (when (and (boundp 'emms-lyrics-display-on-modeline)
+              emms-lyrics-display-on-modeline
+              (not (string-empty-p emms-lyrics-mode-line-string)))
+     (format-mode-line emms-lyrics-mode-line-string 'mood-line-unimportant))
+   (when (and (boundp 'emms-playing-time-mode)
+              emms-playing-time-mode
+              (not (string-empty-p emms-playing-time-string)))
+     (format-mode-line emms-playing-time-string 'mood-line-unimportant))))
 
 ;;;; tabspaces
 (defvar consult--source-workspace
@@ -100,8 +119,6 @@
 (defun eli/tabspaces-restore-one-session ()
   "Select one workspace and restore it."
   (interactive)
-  (require 'tabspaces)
-  (require 'burly)
   (load-file tabspaces-session-file)
   (let* ((name (completing-read "Select a session: " tabspaces--session-list))
          (session (assoc name tabspaces--session-list)))
