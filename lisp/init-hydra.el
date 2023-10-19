@@ -143,15 +143,15 @@
    (("b" bookmark-set "set bookmark")
     ("j" consult-bookmark "jump bookmark")
     ("d" bookmark-delete "delete bookmark")
-    ("w" burly-bookmark-windows)
+    ("w" eli/burly-bookmark-windows)
     ("o" burly-open-bookmark))
    "basic"
    (("s" scratch-buffer)
     ("i" consult-info)
     ("g" (let ((default-directory "~/.emacs.d/site-lisp/"))
            (magit-status (read-directory-name "Select a package: "))))
-    ("p" eli/tabspaces-restore-session)
-    ("r" tabspaces-restore-session))))
+    ("p" eli/tabspaces-restore-one-session)
+    ("r" eli/tabspaces-restore-session))))
 
 (pretty-hydra-define hydra-puni
   (:color amaranth :exit t
