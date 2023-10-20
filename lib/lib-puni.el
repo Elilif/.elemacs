@@ -92,7 +92,11 @@
       (progn
         (cond
          ((derived-mode-p 'prog-mode)
-          (puni-expand-region))
+          (if (and
+               (thing-at-point 'symbol)
+               (eq eli/expand-region-count 1))
+              (er/mark-symbol)
+            (puni-expand-region)))
          (t (if (< eli/expand-region-count (length eli/expand-region-commands))
                 (funcall (nth eli/expand-region-count
                               eli/expand-region-commands))
