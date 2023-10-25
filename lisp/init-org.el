@@ -575,19 +575,26 @@
   (:iload anki-helper)
   (:also-load
    lib-anki-helper)
+  (:hooks
+   org-mode-hook (lambda ()
+                   (add-hook 'before-save-hook #'anki-helper--save-sate nil t))
+   org-mode-hook anki-helper-restore-state)
   (:option*
    anki-helper-note-types '(("Basic" "Front" "Back")
                             ("Basic (and reversed card)" "Front" "Back")
                             ("Basic (with backlink)" "Front" "Back" "Source" "Location")
                             ("Basic (optional reversed card)" "Front" "Back")
+                            ("Basic-English" "Front" "Back")
                             ("Cloze" "Text" "Back Extra")
-                            ("Cloze (with backlink)" "Text" "Back Extra" "Source" "Location"))
+                            ("Cloze (with backlink)" "Text" "Back Extra" "Source" "Location")
+                            ("Poems" "Front" "Back"))
    anki-helper-fields-get-alist '(("Basic" . anki-helper-fields-get-default)
-                                  ("Cloze" . anki-helper-fields-get-cloze)
+                                  ("Cloze" . anki-helper-fields-get-cloze-dwim)
                                   ("Basic (with backlink)" . anki-helper-fields-get-with-backlink)
                                   ("Cloze (with backlink)" . anki-helper-cloze-fields-get-with-backlink))
    anki-helper-default-note-type "Basic (with backlink)"
-   anki-helper-cloze-use-verbatim t
+   anki-helper-cloze-use-emphasis 'bold
+   ;; anki-helper-default-match "+LEVEL=2"
    anki-helper-skip-function #'eli/anki-helper-skip))
 
 ;;;; LaTeX
