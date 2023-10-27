@@ -245,7 +245,7 @@ to disk."
 ;;;###autoload
 (defun anki-helper-region (beg end)
   "Create an inline note for selected region."
-  (interactive "r")
+  (interactive (anki-helper--get-region))
   (unless (get-text-property beg 'anki-helper--note)
     (let* ((string (buffer-substring-no-properties beg end))
            (note-type (if current-prefix-arg
@@ -282,15 +282,15 @@ to disk."
 (defun anki-helper--get-region ()
   (cond
    ((region-active-p)
-    (list (region-beginning) (region-end)))
+    (list (copy-marker (region-beginning)) (copy-marker (region-end))))
    ((get-text-property (point) 'anki-helper--note)
     (let* ((prop (save-excursion
                    (text-property-search-forward
                     'anki-helper--note t t)
                    (text-property-search-backward
                     'anki-helper--note t t))))
-      (list (prop-match-beginning prop)
-            (prop-match-end prop))))
+      (list (copy-marker (prop-match-beginning prop))
+            (copy-marker (prop-match-end prop)))))
    (t (user-error "No anki note found!"))))
 
 ;;;###autoload
