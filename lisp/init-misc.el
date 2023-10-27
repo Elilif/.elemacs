@@ -213,31 +213,24 @@
 (setup avy
   (:when-loaded
     (ace-pinyin-global-mode))
-  (:init
-   (defun avy-goto-char-near-point (char)
-     "Jump to the currently visible CHAR in the few lines near point."
-     (interactive (list (read-char "char: " t)))
-     (let ((avy-all-windows nil))
-       (avy-with avy-goto-char
-         (avy-process
-          (avy--regex-candidates
-           (regexp-quote (string char))
-           (save-excursion
-             (backward-paragraph)
-             (point))
-           (save-excursion
-             (forward-paragraph)
-             (point)))
-          (avy--style-fn avy-style))))))
+  (:after ace-pinyin
+    (defun ace-pinyin-jump-char-in-line (char)
+      "Ace-pinyn replacement of `avy-goto-char-in-line'."
+      (interactive (list (read-char "char: ")))
+      (avy-with avy-goto-char
+        (avy-jump
+         (ace-pinyin--build-regexp char nil)
+         :window-flip avy-all-windows
+         :beg (line-beginning-position)
+         :end (line-end-position)))))
   (:with-feature org
     (:bind
      "<remap> <org-cycle-agenda-files>" avy-goto-char-2))
   (:option*
    avy-all-windows nil)
   (:global
-   "C-:" avy-goto-char-in-line
-   "C-'" avy-goto-char-2
-   "C-\"" avy-goto-char-near-point))
+   "C-;" avy-goto-char-in-line
+   "C-'" avy-goto-char-2))
 
 ;;;; GPT
 (setup gptel
