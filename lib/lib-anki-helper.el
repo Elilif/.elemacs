@@ -258,7 +258,9 @@ to disk."
                                nil #'string=)))
            (hash (md5 string)))
       (anki-helper-request 'addNote
-                           (anki-helper-create-note contents
+                           (anki-helper-create-note (mapcar
+                                                     #'anki-helper--org2html
+                                                     contents)
                                                     :model note-type)
                            (list :command 'anki-helper-region
                                  :orig-info `(:pos ,(point-marker) :beg ,beg :end ,end)))
