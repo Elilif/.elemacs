@@ -49,13 +49,23 @@
 (setup vertico
   (:once (list :hooks 'pre-command-hook)
     (vertico-mode 1))
-  (:option* vertico-cycle t
-            vertico-count 8)
+  (:option*
+   vertico-cycle t
+   vertico-count 8)
   (:bind-into vertico-map
     "RET" vertico-directory-enter
     "DEL" vertico-directory-delete-char
-    "M-DEL" vertico-directory-delete-word)
-  (:hooks rfn-eshadow-update-overlay-hook vertico-directory-tidy))
+    "M-DEL" vertico-directory-delete-word
+    "C-r" vertico-repeat-select)
+  (:hooks
+   rfn-eshadow-update-overlay-hook vertico-directory-tidy)
+
+  ;; vertico-select
+  (:after vertico
+    (:hooks
+     minibuffer-setup-hook vertico-repeat-save)
+    (:after savehist
+      (add-to-list 'savehist-additional-variables 'vertico-repeat-history))))
 
 
 
