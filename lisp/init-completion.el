@@ -135,6 +135,7 @@
      consult--source-project-recent-file eli/consult-git-ripgrep eli/consult-org-roam-heading
      :preview-key "M-."))
   (:advice consult-ripgrep :around consult--with-orderless
+           consult-fd :around consult--with-orderless
            consult-imenu :around my/consult-imenu-around-advice
            ;; consult-org-heading :before consult--set-previous-point
            ;; consult-outline :before consult--set-previous-point

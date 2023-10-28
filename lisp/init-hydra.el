@@ -134,8 +134,8 @@
           :post (progn (setq which-key-inhibit nil) ))
   ("basic"
    (("E" eval-buffer)
-    ("f" (let ((default-directory "~/.emacs.d/lisp/"))
-           (call-interactively 'find-file)) "config files")
+    ("f" (let ((default-directory "~/.emacs.d/"))
+           (call-interactively 'consult-fd)) "config files")
     ("l" eli/setup-open-lib)
     ("R" restart-emacs)
     ("c" (byte-recompile-directory "~/.emacs.d/lisp/") "recompile"))
