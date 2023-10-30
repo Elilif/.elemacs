@@ -39,12 +39,12 @@
   (require 'svg-tag-mode)
   (require 'lib-svg-tag-mode)
   (require 'lib-ox)
-  (require 'lib-org-anki)
   (require 'org-media-note)
   (require 'lib-org-media-note)
   (require 'lib-appt)
   (require 'lib-org-roam)
   (require 'lib-org)
+  (require 'lib-anki-helper)
   (require 'lib-org-agenda)
   (require 'lib-org-capture))
 
@@ -582,17 +582,13 @@
   (:option*
    anki-helper-note-types '(("Basic" "Front" "Back")
                             ("Basic (and reversed card)" "Front" "Back")
-                            ("Basic (with backlink)" "Front" "Back" "Source" "Location")
                             ("Basic (optional reversed card)" "Front" "Back")
                             ("Basic-English" "Front" "Back")
                             ("Cloze" "Text" "Back Extra")
-                            ("Cloze (with backlink)" "Text" "Back Extra" "Source" "Location")
                             ("Poems" "Front" "Back"))
    anki-helper-fields-get-alist '(("Basic" . anki-helper-fields-get-default)
-                                  ("Cloze" . anki-helper-fields-get-cloze-dwim)
-                                  ("Basic (with backlink)" . anki-helper-fields-get-with-backlink)
-                                  ("Cloze (with backlink)" . anki-helper-cloze-fields-get-with-backlink))
-   anki-helper-default-note-type "Basic (with backlink)"
+                                  ("Cloze" . anki-helper-fields-get-cloze-dwim))
+   anki-helper-default-note-type "Basic"
    anki-helper-cloze-use-emphasis 'bold
    ;; anki-helper-default-match "+LEVEL=2"
    anki-helper-skip-function #'eli/anki-helper-skip))

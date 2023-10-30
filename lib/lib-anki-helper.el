@@ -9,17 +9,6 @@
 
 (defvar killed-rectangle)
 
-(defun anki-helper--entry-locate (_filename id)
-  "Locate the entry of current Anki card."
-  (org-id-goto id))
-
-(defun anki-helper-fields-get-with-backlink ()
-  "Get filed info of the current entry with backlink."
-  (let* ((front-and-back (anki-helper-fields-get-default))
-         (filename (file-name-nondirectory (buffer-file-name)))
-         (id (org-id-get-create)))
-    `(,@front-and-back ,filename ,id)))
-
 (defun anki-helper-fields-get-cloze-dwim ()
   "Default function for get filed info of the current entry for
 \"Cloze\" note-type."
@@ -46,13 +35,6 @@
                            (anki-helper--make-cloze text)
                          text))
     fields))
-
-(defun anki-helper-cloze-fields-get-with-backlink ()
-  "Get filed info of the current entry with backlink."
-  (let* ((front-and-back (anki-helper-fields-get-cloze-dwim))
-         (filename (file-name-nondirectory (buffer-file-name)))
-         (id (org-id-get-create)))
-    `(,@front-and-back ,filename ,id)))
 
 (defun eli/anki-helper-snyc-items (reg nums)
   "Snyc org itmes(e.g. plain lists and description lists).
