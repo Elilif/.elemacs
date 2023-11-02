@@ -88,7 +88,8 @@
          (file (buffer-file-name))
          (agenda (funcall (ad-get-orig-definition 'org-agenda-files)))
          (custom-file (expand-file-name "custom.el" user-emacs-directory)))
-    (unless (member file agenda)
+    (unless (or (member file agenda)
+                (not file))
 	  (if done
           (save-excursion
             (goto-char (point-min))
