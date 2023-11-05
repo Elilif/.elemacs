@@ -40,6 +40,7 @@
 									eli/consult-git-grep
                                     consult-ripgrep
                                     my-search-with-chrome
+                                    eli/silverdict-pop-posframe-toggle
                                     souyun-query-char)
   "Commands that need pre-insert candidate."
   :group 'elemacs-mcfly

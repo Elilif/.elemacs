@@ -431,9 +431,64 @@
   "Search word in goldendict"
   (interactive)
   (call-process-shell-command (concat "goldendict " (current-word) " &") nil 0))
+
+(defvar silverdict--frame nil)
+
+(defun eli/silverdict-pop-posframe-toggle (word)
+  "Toggle silverdict in child frame."
+  (interactive "sInput a word: ")
+  (unless (and silverdict--frame
+               (frame-live-p silverdict--frame))
+    (let ((width  (max 100 (round (* (frame-width) 0.62))))
+          (height (round (* (frame-height) 0.62))))
+      (eli/silverdict--query word)
+      (setq silverdict--frame
+            (posframe-show
+             "*silverdict*"
+             :poshandler #'posframe-poshandler-frame-center
+             :hidehandler nil
+             :left-fringe 8
+             :right-fringe 8
+             :width width
+             :height height
+             :min-width width
+             :min-height height
+             :border-width 2
+             :border-color "light gray"
+             :background-color (face-background 'tooltip nil t)
+             :override-parameters '((cursor-type . t))
+             :accept-focus t))
+
+      (with-current-buffer "*silverdict*"
+        (setq-local cursor-type 'box)
+        (read-only-mode)
+        (shrface-mode)
+        (keymap-local-set "s-p" #'posframe-hide-all))))
+  ;; Focus in child frame
+  (eli/silverdict--query word)
+  (select-frame-set-input-focus silverdict--frame))
+
+(defun eli/silverdict--query (word)
+  (let ((buffer (url-retrieve-synchronously
+                 (url-encode-url
+                  (concat
+                   "http://127.0.0.1:2628/api/query/"
+                   "Default Group"
+                   "/"
+                   word))
+                 t))
+        (inhibit-read-only t)
+        dom)
+    (with-current-buffer buffer
+      (goto-char (point-min))
+      (search-forward-regexp "^$")
+      (setq dom (libxml-parse-html-region (point))))
+    (with-current-buffer (get-buffer-create "*silverdict*")
+      (erase-buffer)
+      (shr-insert-document dom))))
 (setup simple
   (:global
-   "s-h" eli/goldendict-word-at-point))
+   "s-h" eli/silverdict-pop-posframe-toggle))
 
 (setup wordnut
   (:global
