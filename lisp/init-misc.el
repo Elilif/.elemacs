@@ -484,6 +484,17 @@
    immersive-translate-baidu-appid "20230720001751104"
    immersive-translate-chatgpt-host "api.openai-sb.com"))
 
+(setup shrface
+  (:once (list :packages 'eww 'nov
+               :before 'eli/silverdict-pop-posframe-toggle)
+    (require 'shrface)
+    (shrface-basic)
+    (shrface-trial)
+    (shrface-default-keybindings))
+  (:hook-into
+   eww-after-render-hook
+   nov-mode-hook))
+
 ;;;; beacon
 ;; (setup beacon
 ;;   (:once (list :before

@@ -583,6 +583,10 @@
 	path = site-lisp/shackle
 	url = https://depp.brause.cc/shackle.git
 	ignore = untracked
+[submodule "shrface"]
+	path = site-lisp/shrface
+	url = https://github.com/chenyanming/shrface
+	ignore = untracked
 [submodule "simple-httpd"]
 	path = site-lisp/simple-httpd
 	url = https://github.com/skeeto/emacs-web-server
