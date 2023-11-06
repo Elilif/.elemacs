@@ -124,8 +124,7 @@ see `match-string-no-properties' for details."
 
 (defun eli/org-headline-empty-p ()
   "Return non-nil if current headline is empty."
-  (not (or (org-element-property :robust-begin (org-element-at-point))
-           (org-element-property :contents-begin (org-element-at-point)))))
+  (not (org-element-property :robust-begin (org-element-at-point))))
 
 (defun eli/anki-helper-skip ()
   "Skip headlines with \"noanki\" property or with `org-anki-prop-note-id'.
