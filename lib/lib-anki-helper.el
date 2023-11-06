@@ -231,7 +231,7 @@ to disk."
     (let* ((string (buffer-substring-no-properties beg end))
            (note-type (if current-prefix-arg
                           (completing-read "Select a note type: " anki-helper-note-types)
-                        "Cloze (with backlink)"))
+                        "Cloze"))
            (contents (funcall (alist-get
                                note-type
                                anki-helper-fields-get-alist
