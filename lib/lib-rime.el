@@ -1,4 +1,4 @@
-;; lib-rime.el --- Initialize lib-rime configurations.	-*- lexical-binding: t; -*-
+;; lib-rime.el --- Initialize lib-rime configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -41,7 +41,7 @@
   "If the cursor is after a latin character.
 Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
   (and (> (point) (save-excursion (back-to-indentation) (point)))
-	   (let ((string (buffer-substring (point) (max (line-beginning-position)
+       (let ((string (buffer-substring (point) (max (line-beginning-position)
                                                     (- (point) 80)))))
          (and (string-match-p "\\cl$" string)
               (not (string-match-p " $" string))))))
@@ -52,46 +52,51 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 (defun eli/input-switch ()
   (interactive)
   (if (not eli/prefer-English)
-	  (progn
+      (progn
         (add-to-list 'rime-disable-predicates
                      'rime-predicate-space-after-ascii-p)
-		(add-to-list 'rime-disable-predicates
+        (add-to-list 'rime-disable-predicates
                      '+rime-predicate-punctuation-line-begin-p)
-	    (setq eli/prefer-English t))
+        (setq eli/prefer-English t))
     (progn
-	  (setq rime-disable-predicates
-	        (seq-difference rime-disable-predicates
+      (setq rime-disable-predicates
+            (seq-difference rime-disable-predicates
                             '(rime-predicate-space-after-ascii-p
-							  +rime-predicate-punctuation-line-begin-p)))
-	  (setq eli/prefer-English nil)
-	  )))
+                              +rime-predicate-punctuation-line-begin-p)))
+      (setq eli/prefer-English nil))))
+
+(defun +rime-predicate-cc-notes-p ()
+  (when (minibufferp)
+    (not (and (string= (buffer-substring (point-min) 5) "Note")
+              (with-minibuffer-selected-window
+                (string-match-p "\\cc" (buffer-name)))))))
 
 ;;;###autoload
 (defun +rime-convert-string-at-point (&optional _return-cregexp)
   "将光标前的字符串转换为中文."
   (interactive "P")
   (unless current-input-method
-	(toggle-input-method))
+    (toggle-input-method))
   (rime-force-enable)
   (let ((string (if mark-active
                     (buffer-substring-no-properties
-		             (region-beginning) (region-end))
+                     (region-beginning) (region-end))
                   (buffer-substring-no-properties
                    (point) (max (line-beginning-position) (- (point) 80)))))
         code
         length)
     (cond ((string-match "\\([a-z'-]+\\|[[:punct:]]\\) *$" string)
            (setq code (replace-regexp-in-string
-			           "^[-']" ""
-			           (match-string 0 string)))
+                       "^[-']" ""
+                       (match-string 0 string)))
            (setq length (length code))
            (setq code (replace-regexp-in-string " +" "" code))
            (if mark-active
-		       (delete-region (region-beginning) (region-end))
-	         (when (> length 0)
-		       (delete-char (- 0 length))))
+               (delete-region (region-beginning) (region-end))
+             (when (> length 0)
+               (delete-char (- 0 length))))
            (when (> length 0)
-	         (setq unread-command-events
+             (setq unread-command-events
                    (append (listify-key-sequence code)
                            unread-command-events))))
           (t (message "`+rime-convert-string-at-point' did nothing.")))))

@@ -195,12 +195,13 @@
    rime-disable-predicates '(rime-predicate-prog-in-code-p
                              rime-predicate-space-after-ascii-p
                              rime-predicate-after-ascii-char-p
-                             minibufferp
+                             rime-predicate-org-latex-mode-p
                              +rime-predicate-punctuation-line-begin-p
                              rime-predicate-org-in-src-block-p
                              rime-predicate-space-after-cc-p
                              rime-predicate-current-uppercase-letter-p
                              rime-predicate-hydra-p
+                             +rime-predicate-cc-notes-p
                              rime-predicate-after-latin-char-p)
    rime-show-candidate 'nil
    rime-inline-ascii-trigger 'shift-l
