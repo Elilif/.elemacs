@@ -44,7 +44,7 @@
   (:when-loaded
     (require 'lib-ox-publish))
   (:option*
-   eli/blog-base-dir "~/Dropbox/org/blog"
+   eli/blog-base-dir "~/Dropbox/org/blog/"
    eli/blog-publish-dir "~/Elilif.github.io"
    eli/blog-sitamap "index.org"
    org-publish-project-alist
