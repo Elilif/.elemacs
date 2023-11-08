@@ -31,7 +31,8 @@
 ;;; Code:
 
 (cl-eval-when (compile)
-  (require 'lyrics-fetcher))
+  (require 'lyrics-fetcher)
+  (require 'emms-history))
 
 (setup emms
   (:also-load
