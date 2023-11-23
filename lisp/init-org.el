@@ -253,8 +253,10 @@
 :indent t :link t :formula % :sort (3 . ?T)\n#+END:"
                            :empty-lines 0
                            :jump-to-captured t)
-                          ("d" "Digests" entry (file+olp+datetree org-agenda-file-notes)
-                           "* %a\n%?\n%(v-i-or-nothing)\n%U"
+                          ("d" "Digests" plain (file+olp org-agenda-file-inbox "Notes" "%a")
+                           "%(v-i-or-nothing)"
+                           :if-new t
+                           :immediate-finish t
                            :empty-lines 0)
                           ("w" "Words" checkitem (file+headline
                                                   org-agenda-file-te
