@@ -207,7 +207,8 @@
     ("aS" anki-helper-entry-sync-all "sync all")
     ("as" anki-helper-entry-sync "sync entry")
     ("aU" anki-helper-entry-update-all "update all")
-    ("au" anki-helper-entry-update "update entry"))
+    ("au" anki-helper-entry-update "update entry")
+    ("aj" anki-helper-find-notes "find notes"))
    ""
    (("ax" eli/anki-helper-snyc-checkbox "check boxes")
     ("al" eli/anki-helper-sync-description-lists "description lists")
