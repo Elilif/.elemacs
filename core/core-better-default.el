@@ -377,20 +377,22 @@
    show-paren-function :around eli/show-paren-function))
 
 ;;;; midnight
-;; (setup midnight
-;;   (once (list :before 'eli/consult-buffer)
-;;     (require 'midnight)
-;;     (advice-add 'clean-buffer-list :around #'suppress-messages)
-;;     (run-with-idle-timer 30 t #'clean-buffer-list))
-;;   (:when-loaded
-;;     (:option clean-buffer-list-delay-general 0.1
-;;              clean-buffer-list-delay-special 1800
-;;              clean-buffer-list-kill-buffer-names
-;;              (append clean-buffer-list-kill-buffer-names
-;;                      '("*elfeed-log*" "*Backtrace*"))
-;;              clean-buffer-list-kill-regexps
-;;              (append clean-buffer-list-kill-regexps
-;;                      '("\\*Outline.*\\*" "\\*.*Profiler-Report.*\\*")))))
+(setup midnight
+  ;; (once (list :before 'eli/consult-buffer)
+  ;;   (require 'midnight)
+  ;;   (advice-add 'clean-buffer-list :around #'suppress-messages)
+  ;;   (run-with-idle-timer 30 t #'clean-buffer-list))
+  ;; (:when-loaded
+  ;;   (:option clean-buffer-list-delay-general 0.1
+  ;;            clean-buffer-list-delay-special 1800
+  ;;            clean-buffer-list-kill-buffer-names
+  ;;            (append clean-buffer-list-kill-buffer-names
+  ;;                    '("*elfeed-log*" "*Backtrace*"))
+  ;;            clean-buffer-list-kill-regexps
+  ;;            (append clean-buffer-list-kill-regexps
+  ;;                    '("\\*Outline.*\\*" "\\*.*Profiler-Report.*\\*"))))
+  (:once (list :hooks 'pre-command-hook)
+    (midnight-mode)))
 
 (provide 'core-better-default)
 ;;; core-better-default.el ends here.

@@ -55,10 +55,11 @@
   (:hooks elfeed-show-mode-hook visual-fill-column-mode
           ;; elfeed-show-mode-hook hide-mode-line-mode
           elfeed-search-update-hook hide-mode-line-mode
-          elfeed-search-update-hook hl-line-mode)
+          elfeed-search-update-hook hl-line-mode
+          midnight-hook elfeed-update)
   (:option*
    shr-width 90
-   shr-inhibit-images t
+   shr-inhibit-images nil
    shr-use-colors t
 
    elfeed-curl-extra-arguments '("-x" "http://127.0.0.1:7890")
