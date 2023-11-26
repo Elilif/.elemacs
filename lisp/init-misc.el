@@ -461,15 +461,19 @@
              :accept-focus t))
 
       (with-current-buffer "*silverdict*"
-        (setq-local cursor-type 'box)
+        (setq-local cursor-type 'box
+                    line-spacing 10)
         (read-only-mode)
-        (shrface-mode)
-        (keymap-local-set "s-p" #'posframe-hide-all))))
+        (keymap-local-set "s-p" (lambda ()
+                                  (interactive)
+                                  (shrface-mode -1)
+                                  (posframe-hide-all))))))
   ;; Focus in child frame
   (eli/silverdict--query word)
   (select-frame-set-input-focus silverdict--frame))
 
 (defun eli/silverdict--query (word)
+  "Perform silverdict query for WORD."
   (let ((buffer (url-retrieve-synchronously
                  (url-encode-url
                   (concat
@@ -485,8 +489,11 @@
       (search-forward-regexp "^$")
       (setq dom (libxml-parse-html-region (point))))
     (with-current-buffer (get-buffer-create "*silverdict*")
+      (shrface-mode)
+      (shrface-default-keybindings)
       (erase-buffer)
-      (shr-insert-document dom))))
+      (save-excursion
+        (shr-insert-document dom)))))
 (setup simple
   (:global
    "s-h" eli/silverdict-pop-posframe-toggle))
