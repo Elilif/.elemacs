@@ -203,8 +203,10 @@ This uses the prompts in the variable
     (save-excursion
       (goto-char (point-min))
       (search-forward (alist-get gptel-default-mode gptel-prompt-prefix-alist))
-      (setq-local gptel--system-message (eli/gptel--get-sys-prompt
-                                         (match-beginning 0))))
+      (setq-local gptel--system-message (replace-regexp-in-string
+                                         "\n"  ""
+                                         (eli/gptel--get-sys-prompt
+                                          (match-beginning 0)))))
     (narrow-to-region beg end)))
 
 (defun eli/gptel-query-get-from-region ()
@@ -446,7 +448,8 @@ reading RSS."
                                  :accept-focus t))
       (with-selected-frame eli/gptel--posframe
         (set-frame-parameter eli/gptel--posframe 'line-spacing 10)
-        (setq cursor-type 'box)))))
+        (setq cursor-type 'box)
+        (goto-char (point-max))))))
 
 ;;;###autoload
 (defun eli/gptel-posframe-toggle (&optional arg)
