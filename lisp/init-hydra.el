@@ -83,7 +83,12 @@
     ("e" eli/gptel-program)
     ("p" eli/gptel-polish)
     ("w" eli/gptel-translate-word)
-    ("g" eli/gptel-grammar-correct))))
+    ("g" eli/gptel-grammar-correct))
+   "Immsersive Translation"
+   (("t" immersive-translate-buffer)
+    ("j" immersive-translate-paragraph)
+    ("DEL" immersive-translate-abort)
+    ("l" immersive-translate-clear))))
 
 (pretty-hydra-define hydra-edit
   (:color amaranth :exit t
