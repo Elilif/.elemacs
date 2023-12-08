@@ -81,7 +81,7 @@
    org-indirect-buffer-display 'current-window
    org-export-preserve-breaks nil
    org-adapt-indentation nil
-   org-hide-leading-stars nil
+   org-hide-leading-stars t
    org-blank-before-new-entry '((heading . nil)
                                 (plain-list-item . auto))
    org-fontify-quote-and-verse-blocks t
@@ -420,8 +420,7 @@
    ;; org-superstar-headline-bullets-list '("⦿" "⌾" "⊚" "𐰧" "►" "▻")
    org-superstar-headline-bullets-list '("⦿" "⌾" "⊚" "🞅" "▸" "▹")
    ;; org-superstar-headline-bullets-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ")
-   org-superstar-prettify-item-bullets nil
-   org-superstar-leading-bullet "​")
+   org-superstar-prettify-item-bullets nil)
   (:hook-into org-mode))
 
 ;;;; org-roam
