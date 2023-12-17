@@ -319,6 +319,8 @@
 	ignore = untracked
 [submodule "lsp-mode"]
 	path = site-lisp/lsp-mode
+    load-path = .
+    load-path = clients
 	url = https://github.com/emacs-lsp/lsp-mode
 	ignore = untracked
 [submodule "lsp-pyright"]
@@ -332,6 +334,10 @@
 [submodule "lyrics-fetcher"]
 	path = site-lisp/lyrics-fetcher
 	url = https://github.com/SqrtMinusOne/lyrics-fetcher.el
+	ignore = untracked
+[submodule "macrursors"]
+	path = site-lisp/macrursors
+	url = https://github.com/corytertel/macrursors
 	ignore = untracked
 [submodule "magit"]
 	path = site-lisp/magit
@@ -634,6 +640,10 @@
 [submodule "tempel"]
 	path = site-lisp/tempel
 	url = https://github.com/minad/tempel
+	ignore = untracked
+[submodule "tide"]
+	path = site-lisp/tide
+	url = https://github.com/ananthakumaran/tide
 	ignore = untracked
 [submodule "treepy"]
 	path = site-lisp/treepy

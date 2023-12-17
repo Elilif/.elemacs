@@ -83,24 +83,14 @@
               :hooks 'post-self-insert-hook)
     (global-hungry-delete-mode)))
 
-;;;; markmacro
-(setup markmacro
-  (:also-load lib-markmacro)
-  (:advice
-   kmacro-start-macro :before eli/speed-up-kmacro
-   markmacro-exit :after eli/speed-up-kmacro-recover)
+;;;; radiance
+(setup radiance
   (:global
-   "s-`" markmacro-apply-all
-   "s-\\" kmacro-start-macro
-   "s-w" markmacro-mark-words
-   "s-l" markmacro-mark-lines
-   "C-r" rectangle-mark-mode
-   "s-g" markmacro-secondary-region-set
-   "s-a" markmacro-secondary-region-mark-cursors
-   "s-s" markmacro-swap-region
-   "s-f" markmacro-mark-current-or-next-target
-   "s-b" markmacro-mark-current-or-previous-target
-   "s-u" markmacro-unmark-current-target))
+   "s-a" radiance-mark-strings
+   "s-l" radiance-mark-lines
+   "s-SPC" radiance-mark-region
+   "s-b" radiance-mark-symbols
+   "s-u" radiance-exit))
 
 ;; ;;;; electric pair
 ;; (setup elec-pair
