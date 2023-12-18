@@ -365,6 +365,10 @@
 	path = site-lisp/markmacro
 	url = https://github.com/Elilif/markmacro
 	ignore = untracked
+[submodule "mathpix"]
+	path = site-lisp/mathpix
+	url = https://github.com/jethrokuan/mathpix.el
+	ignore = untracked
 [submodule "mindre-theme"]
 	path = site-lisp/mindre-theme
 	url = https://github.com/Elilif/mindre-theme
