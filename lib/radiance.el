@@ -130,18 +130,23 @@ only."
 This command is applicable to both normal regions and
 `rectangle-mark-mode'. You can also mark multiple region at once."
   (interactive "r")
-  (let ((ov-adder (lambda (beg end)
-                    (let ((ov (make-overlay beg end nil nil t)))
-                      (overlay-put ov 'face 'radiance-region-face)
-                      (add-to-list 'radiance-regions ov t)))))
-    (cond
-     ((bound-and-true-p rectangle-mark-mode)
-      (let ((bounds (extract-rectangle-bounds beg end)))
-        (dolist (bound bounds)
-          (funcall ov-adder (car bound) (cdr bound)))))
-     (t
-      (funcall ov-adder beg end)))
-    (deactivate-mark)))
+  (if (cl-find-if (lambda (ov)
+                    (eq (overlay-get ov 'face)
+                        'radiance-region-face))
+                  (overlays-in (1- beg) (1+ end)))
+      (error "Regions overlapped!")
+    (let ((ov-adder (lambda (beg end)
+                      (let ((ov (make-overlay beg end nil nil t)))
+                        (overlay-put ov 'face 'radiance-region-face)
+                        (add-to-list 'radiance-regions ov t)))))
+      (cond
+       ((bound-and-true-p rectangle-mark-mode)
+        (let ((bounds (extract-rectangle-bounds beg end)))
+          (dolist (bound bounds)
+            (funcall ov-adder (car bound) (cdr bound)))))
+       (t
+        (funcall ov-adder beg end)))
+      (deactivate-mark))))
 
 ;;;###autoload
 (defun radiance-exit (arg)
