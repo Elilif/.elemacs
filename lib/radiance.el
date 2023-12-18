@@ -8,6 +8,9 @@
 ;; Keywords: keywords
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
+(require 'rect)
+(require 'cl-lib)
+
 (defgroup radiance nil
   "Keyboard macro for marked objects."
   :group 'radiance)
@@ -26,13 +29,16 @@
 (defvar-local radiance-regions nil)
 (defvar-local radiance-current-overlay nil)
 
+(defun radiance--get-current-mark-ov ()
+  (cl-find-if
+   (lambda (ov)
+     (eq (overlay-get ov 'face)
+         'radiance-mark-face))
+   (overlays-in (1- (point)) (1+ (point)))))
+
 (defun radiance--set-current-ov ()
   "Move the point to the beginning of the overlay."
-  (let ((ov-at-point (cl-find-if
-                      (lambda (ov)
-                        (eq (overlay-get ov 'face)
-                            'radiance-mark-face))
-                      (overlays-in (1- (point)) (1+ (point)))))
+  (let ((ov-at-point (radiance--get-current-mark-ov))
         (last-ov (car (last radiance-overlays))))
     (setq radiance-current-overlay (or ov-at-point last-ov))
     (goto-char (overlay-start radiance-current-overlay))))
@@ -75,6 +81,9 @@
   (declare (indent defun))
   `(progn
      (when (region-active-p) (deactivate-mark))
+     (when radiance-overlays
+       (end-kbd-macro)
+       (radiance-exit nil))
      ,@body
      (radiance--set-current-ov)
      (radiance-start)))
@@ -185,12 +194,28 @@ delete `radiance-overlays' only otherwise."
         (call-last-kbd-macro))))
   (radiance-exit arg))
 
+;;;###autoload
+(defun radiance-end-of-line ()
+  "Similar to `end-of-line' but respect the radiance region."
+  (interactive)
+  (let ((ov (radiance--get-current-mark-ov)))
+    (goto-char (overlay-end ov))))
+
+;;;###autoload
+(defun radiance-beginning-of-line ()
+  "Similar to `beginning-of-line' but respect the radiance retion."
+  (interactive)
+  (let ((ov (radiance--get-current-mark-ov)))
+    (goto-char (overlay-start ov))))
+
 (define-minor-mode radiance-mode
   "Minor mode for radiance."
   :keymap
   (let ((map (make-sparse-keymap)))
     (keymap-set map "s-`" #'radiance-finish)
     (keymap-set map "C-g" #'radiance-exit)
+    (keymap-set map "C-a" #'radiance-beginning-of-line)
+    (keymap-set map "C-e" #'radiance-end-of-line)
     map))
 
 (provide 'radiance)
