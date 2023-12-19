@@ -9,7 +9,8 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (defgroup pix2tex nil
-  "Convert screenshots to LaTeX equations.")
+  "Convert screenshots to LaTeX equations."
+  :group 'applications)
 
 
 ;; taken from https://github.com/jethrokuan/mathpix.el
@@ -37,13 +38,13 @@
           (function :tag "Custom function"))
   :group 'pix2tex)
 
-(defcustom pix2tex-screenshot-file
-  (expand-file-name "pix2tex.png" temporary-file-directory)
+(defcustom pix2tex-screenshot-file-basename
+  (expand-file-name "pix2tex" temporary-file-directory)
   "The file to capture pix2tex screenshots to."
   :type 'string
   :group 'pix2tex)
 
-(defvar pix2tex-pos nil)
+(defvar pix2tex--process-alist nil)
 
 (defun pix2tex--sentinel (process _status)
   "Process sentinel for pix2tex.
@@ -55,17 +56,21 @@ PROCESS and _STATUS are process parameters."
     (when (eq (process-status process) 'exit)
       (with-current-buffer proc-buf
         (goto-char (point-min))
-        (let* ((beg (search-forward (concat pix2tex-screenshot-file ": ") (pos-eol) t))
+        (let* ((info (alist-get process pix2tex--process-alist))
+               (file (car info))
+               (pos (cdr info))
+               (beg (search-forward (concat file ": ") (pos-eol) t))
                (end (re-search-forward "^$" nil t))
-               (result (buffer-substring-no-properties beg end)))
-          (with-current-buffer (marker-buffer pix2tex-pos)
+               (result (buffer-substring-no-properties beg (1- end))))
+          (with-current-buffer (marker-buffer pos)
             (save-excursion
-              (goto-char pix2tex-pos)
+              (goto-char pos)
               (insert result)))
-          (delete-file pix2tex-screenshot-file)
+          (delete-file file)
+          (setf (alist-get process pix2tex--process-alist nil 'remove) nil)
           (kill-buffer proc-buf))))))
 
-(defun pix2tex-request (file)
+(defun pix2tex-request (file pos)
   "Start a pix2tex process."
   (let* ((args `("file" ,file))
          (process (apply #'start-process
@@ -75,6 +80,7 @@ PROCESS and _STATUS are process parameters."
                          args)))
     (with-current-buffer (process-buffer process)
       (set-process-query-on-exit-flag process nil)
+      (setf (alist-get process pix2tex--process-alist) (cons file pos))
       (set-process-sentinel process #'pix2tex--sentinel))))
 
 ;;;###autoload
@@ -83,15 +89,18 @@ PROCESS and _STATUS are process parameters."
   (interactive)
   ;;; taken from https://github.com/jethrokuan/mathpix.el
   (let ((default-directory "~")
-        (orig-pos (point-marker)))
-    (make-directory (file-name-directory pix2tex-screenshot-file) t)
+        (orig-pos (point-marker))
+        (file-name (make-temp-file
+                    pix2tex-screenshot-file-basename
+                    nil ".png")))
+    (unless (file-exists-p (file-name-directory file-name))
+      (make-directory (file-name-directory file-name) t))
     (if (functionp pix2tex-screenshot-method)
-        (funcall pix2tex-screenshot-method pix2tex-screenshot-file)
+        (funcall pix2tex-screenshot-method file-name)
       (shell-command-to-string
-       (format pix2tex-screenshot-method pix2tex-screenshot-file)))
-    (when (file-exists-p pix2tex-screenshot-file)
-      (setq pix2tex-pos orig-pos)
-      (pix2tex-insert-result (expand-file-name pix2tex-screenshot-file)))))
+       (format pix2tex-screenshot-method file-name)))
+    (when (file-exists-p file-name)
+      (pix2tex-request (expand-file-name file-name) orig-pos))))
 
 (provide 'pix2tex)
 ;;; pix2tex.el ends here
