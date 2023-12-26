@@ -62,20 +62,18 @@
 
 (defun radiance-collect (reg)
   "Highlight all matching parts for REG."
-  (if (not reg)
-      (error "There is nothing.")
-    (cond
-     ((and radiance-regions
-           (cl-find-if #'overlay-buffer radiance-regions))
-      (dolist (region radiance-regions)
-        (let ((beg (overlay-start region))
-              (end (overlay-end region)))
-          (save-excursion
-            (save-restriction
-              (narrow-to-region beg end)
-              (radiance--collect-in-region beg end reg))))))
-     (t
-      (radiance--collect-in-region (point-min) (point-max) reg)))))
+  (cond
+   ((and radiance-regions
+         (cl-find-if #'overlay-buffer radiance-regions))
+    (dolist (region radiance-regions)
+      (let ((beg (overlay-start region))
+            (end (overlay-end region)))
+        (save-excursion
+          (save-restriction
+            (narrow-to-region beg end)
+            (radiance--collect-in-region beg end reg))))))
+   (t
+    (radiance--collect-in-region (point-min) (point-max) reg))))
 
 (defmacro radiance--perform (&rest body)
   (declare (indent defun))
@@ -99,7 +97,8 @@ use the word at point."
                        (buffer-substring-no-properties
                         (region-beginning)
                         (region-end)))
-                      (t (thing-at-point 'word)))))
+                      (t (or (thing-at-point 'word)
+                             (error "No word at point!"))))))
   (radiance--perform
     (radiance-collect string)))
 
@@ -109,7 +108,8 @@ use the word at point."
 
 If there are marked regions, mark all symbols in these regions
 only."
-  (interactive (list (thing-at-point 'symbol)))
+  (interactive (list (or (thing-at-point 'symbol)
+                         (error "No symbol at point!"))))
   (radiance--perform
     (radiance-collect (format "\\_<%s\\_>" symbol))))
 
