@@ -565,6 +565,10 @@
 	path = site-lisp/racket-mode
 	url = https://github.com/greghendershott/racket-mode
 	ignore = untracked
+[submodule "radiance"]
+	path = site-lisp/radiance
+	url = https://github.com/Elilif/radiance
+	ignore = untracked
 [submodule "rainbow-delimiters"]
 	path = site-lisp/rainbow-delimiters
 	url = https://github.com/Fanael/rainbow-delimiters
