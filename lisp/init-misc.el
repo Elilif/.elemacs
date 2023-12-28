@@ -307,31 +307,35 @@
    tab-bar-select-tab-modifiers '(super)
    tab-bar-tab-name-truncated-max 15
    tab-bar-border nil
-   tab-bar-auto-width nil
+   tab-bar-auto-width t
    tab-bar-format '(tab-bar-format-tabs
                     tab-bar-separator
                     tab-bar-format-align-right
                     eli/tab-bar-emms)
    tab-bar-tab-name-function #'tab-bar-tab-name-truncated
-   tab-bar-tab-name-format-function (lambda (tab i)
-                                      (concat
-                                       (propertize (if tab-bar-tab-hints (format "%d" i) "")
-                                                   'face 'tab-bar-hints)
-                                       (propertize (if tab-bar-tab-hints " " "")
-                                                   'face (funcall (lambda (tab)
-                                                                    (if (eq (car tab) 'current-tab)
-                                                                        'tab-bar-tab-space-active
-                                                                      'tab-bar-tab-space-inactive))
-                                                                  tab))
-                                       (propertize (alist-get 'name tab)
-                                                   'face (funcall tab-bar-tab-face-function tab)))))
+   tab-bar-auto-width-max '(150  15)
+   ;; tab-bar-tab-name-format-function (lambda (tab i)
+   ;;                                    (concat
+   ;;                                     (propertize (if tab-bar-tab-hints (format "%d" i) "")
+   ;;                                                 'face 'tab-bar-hints)
+   ;;                                     (propertize (if tab-bar-tab-hints " " "")
+   ;;                                                 'face (funcall (lambda (tab)
+   ;;                                                                  (if (eq (car tab) 'current-tab)
+   ;;                                                                      'tab-bar-tab-space-active
+   ;;                                                                    'tab-bar-tab-space-inactive))
+   ;;                                                                tab))
+   ;;                                     (propertize (alist-get 'name tab)
+   ;;                                                 'face (funcall tab-bar-tab-face-function tab))))
+   )
   (:global
    "s--" eli/tabspaces-kill-buffers-close-workspace
    "s-=" tab-bar-new-tab
    "s-<left>" tab-bar-move-tab-backward
    "s-<right>" tab-bar-move-tab)
   (:hook
-   tab-bar-history-mode))
+   tab-bar-history-mode)
+  (:advice
+   tab-bar-auto-width :override eli/tab-bar-auto-width))
 
 (setup project
   (:option*

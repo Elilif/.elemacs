@@ -71,6 +71,82 @@
               (not (string-empty-p emms-playing-time-string)))
      (format-mode-line emms-playing-time-string 'mood-line-unimportant))))
 
+(defun eli/tab-bar-auto-width (items)
+  "Return tab-bar items with resized tab names."
+  (unless tab-bar--auto-width-hash
+    (define-hash-table-test 'tab-bar--auto-width-hash-test
+                            #'equal-including-properties
+                            #'sxhash-equal-including-properties)
+    (setq tab-bar--auto-width-hash
+          (make-hash-table :test 'tab-bar--auto-width-hash-test)))
+  (let ((tabs nil)    ;; list of resizable tabs
+        (non-tabs "") ;; concatenated names of non-resizable tabs
+        (width 0))    ;; resize tab names to this width
+    (dolist (item items)
+      (when (and (eq (nth 1 item) 'menu-item) (stringp (nth 2 item)))
+        (if (memq (get-text-property 0 'face (nth 2 item))
+                  tab-bar-auto-width-faces)
+            (push item tabs)
+          (unless (eq (nth 0 item) 'align-right)
+            (setq non-tabs (concat non-tabs (nth 2 item)))))))
+    (when tabs
+      (add-face-text-property 0 (length non-tabs) 'tab-bar t non-tabs)
+      (setq width (/ (* (/ (frame-inner-width) 3) 2)  ;; fix tab width
+                     (length tabs)))
+      (when tab-bar-auto-width-min
+        (setq width (max width (if (window-system)
+                                   (nth 0 tab-bar-auto-width-min)
+                                 (nth 1 tab-bar-auto-width-min)))))
+      (when tab-bar-auto-width-max
+        (setq width (min width (if (window-system)
+                                   (nth 0 tab-bar-auto-width-max)
+                                 (nth 1 tab-bar-auto-width-max)))))
+      (dolist (item tabs)
+        (setf (nth 2 item)
+              (with-memoization (gethash (list (selected-frame)
+                                               width (nth 2 item))
+                                         tab-bar--auto-width-hash)
+                (let* ((name (nth 2 item))
+                       (len (length name))
+                       (close-p (get-text-property (1- len) 'close-tab name))
+                       (continue t)
+                       (prev-width (string-pixel-width name))
+                       curr-width)
+                  (cond
+                   ((< prev-width width)
+                    (let* ((space (apply 'propertize " "
+                                         (text-properties-at 0 name)))
+                           (ins-pos (- len (if close-p 1 0)))
+                           (prev-name name)
+                           ;; center the name
+                           (count 0))
+                      (while continue
+                        (if (eq (% count 2) 0)
+                            (setf (substring name ins-pos ins-pos) space)
+                          (setf (substring name 0 0) space)
+                          (setq ins-pos (1+ ins-pos)))
+                        (setq curr-width (string-pixel-width name))
+                        (if (and (< curr-width width)
+                                 (> curr-width prev-width))
+                            (setq prev-width curr-width
+                                  prev-name name
+                                  count (1+ count))
+                          ;; Set back a shorter name
+                          (setq name prev-name
+                                continue nil)))))
+                   ((> prev-width width)
+                    (let ((del-pos1 (if close-p -2 -1))
+                          (del-pos2 (if close-p -1 nil)))
+                      (while continue
+                        (setf (substring name del-pos1 del-pos2) "")
+                        (setq curr-width (string-pixel-width name))
+                        (if (and (> curr-width width)
+                                 (< curr-width prev-width))
+                            (setq prev-width curr-width)
+                          (setq continue nil))))))
+                  name)))))
+    items))
+
 ;;;; tabspaces
 (defvar consult--source-workspace
   (list :name     "Workspace Buffers"
