@@ -726,7 +726,7 @@
                                        :scale 0.75 :ascent center :crop-left nil :crop-right nil
                                        :collection "material" :font-family "Cascadia Mono"
                                        :font-size 11 :font-weight regular)
-   svg-tag-action-at-point 'echo
+   svg-tag-action-at-point 'edit
    svg-lib-icon-collections '(("bootstrap" .
                                "https://icons.getbootstrap.com/assets/icons/%s.svg")
                               ("simple" .

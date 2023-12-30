@@ -313,7 +313,7 @@
                     tab-bar-format-align-right
                     eli/tab-bar-emms)
    tab-bar-tab-name-function #'tab-bar-tab-name-truncated
-   tab-bar-auto-width-max '(150  15)
+   tab-bar-auto-width-max '(200  15)
    ;; tab-bar-tab-name-format-function (lambda (tab i)
    ;;                                    (concat
    ;;                                     (propertize (if tab-bar-tab-hints (format "%d" i) "")
@@ -354,6 +354,8 @@
 
 (setup tabspaces
   (:once (list :before 'tab-bar-new-tab)
+    (require 'svg-tag-mode)
+    (require 'lib-svg-tag-mode)
     (tabspaces-mode))
   (:also-load
    project

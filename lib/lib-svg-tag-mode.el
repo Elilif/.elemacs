@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'face-remap)
+
 (defun svg-lib-tag (label &optional style &rest args)
   "Create an image displaying LABEL in a rounded box using given STYLE
 and style elements ARGS."

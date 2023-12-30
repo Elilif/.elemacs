@@ -71,6 +71,22 @@
               (not (string-empty-p emms-playing-time-string)))
      (format-mode-line emms-playing-time-string 'mood-line-unimportant))))
 
+(defface tab-bar-svg-active
+  '((t (:foreground "#70797d")))
+  "Tab bar face for selected tab.")
+
+(defface tab-bar-svg-inactive
+  '((t (:foreground "#B0BEC5")))
+  "Tab bar face for inactive tabs.")
+
+(defun eli/tab-bar-svg-padding (width string)
+  (let* ((style svg-lib-style-default)
+         (margin      (plist-get style :margin))
+         (txt-char-width  (window-font-width nil 'fixed-pitch))
+         (tag-width (- width (* margin txt-char-width)))
+         (padding (- (/ tag-width txt-char-width) (length string))))
+    padding))
+
 (defun eli/tab-bar-auto-width (items)
   "Return tab-bar items with resized tab names."
   (unless tab-bar--auto-width-hash
@@ -111,29 +127,11 @@
                        (close-p (get-text-property (1- len) 'close-tab name))
                        (continue t)
                        (prev-width (string-pixel-width name))
-                       curr-width)
+                       curr-width
+                       (padding (plist-get svg-lib-style-default :padding)))
                   (cond
                    ((< prev-width width)
-                    (let* ((space (apply 'propertize " "
-                                         (text-properties-at 0 name)))
-                           (ins-pos (- len (if close-p 1 0)))
-                           (prev-name name)
-                           ;; center the name
-                           (count 0))
-                      (while continue
-                        (if (eq (% count 2) 0)
-                            (setf (substring name ins-pos ins-pos) space)
-                          (setf (substring name 0 0) space)
-                          (setq ins-pos (1+ ins-pos)))
-                        (setq curr-width (string-pixel-width name))
-                        (if (and (< curr-width width)
-                                 (> curr-width prev-width))
-                            (setq prev-width curr-width
-                                  prev-name name
-                                  count (1+ count))
-                          ;; Set back a shorter name
-                          (setq name prev-name
-                                continue nil)))))
+                    (setq padding (eli/tab-bar-svg-padding width name)))
                    ((> prev-width width)
                     (let ((del-pos1 (if close-p -2 -1))
                           (del-pos2 (if close-p -1 nil)))
@@ -144,7 +142,14 @@
                                  (< curr-width prev-width))
                             (setq prev-width curr-width)
                           (setq continue nil))))))
-                  name)))))
+                  (propertize name 'display
+                              (svg-tag-make
+                               name
+                               :face (if (eq (car item) 'current-tab)
+                                         'tab-bar-svg-active
+                                       'tab-bar-svg-inactive)
+                               :inverse t :margin 0 :radius 6 :padding padding
+                               :height 1.1 :ascent 16 :scale 1.0)))))))
     items))
 
 ;;;; tabspaces
