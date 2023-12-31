@@ -129,59 +129,59 @@
 ;;;; org-agenda
 (setup org-agenda
   (:once (list :before 'org-agenda
-			   :packages 'org-agenda)
-	(require 'lib-org-agenda))
+               :packages 'org-agenda)
+    (require 'lib-org-agenda))
   (:option* org-agenda-clock-consistency-checks '(:max-duration "10:00" :min-duration 0 :max-gap "0:00"
-																:gap-ok-around ("4:00") :default-face ((:background "DarkRed")
-																									   (:foreground "white"))
-																:overlap-face nil :gap-face nil
-																:no-end-time-face nil :long-face nil :short-face nil)
-			org-agenda-clockreport-parameter-plist '(:link t :maxlevel 2 :fileskip0 t
-														   :sort (3 . 84) :formula %)
-			org-agenda-clockreport-parameter-plist '(:link t :maxlevel 2 :fileskip0 t
-														   :sort (3 . 84) :formula %)
-			org-agenda-span 'day
-			org-agenda-show-inherited-tags nil
-			org-agenda-window-setup 'only-window
-			org-agenda-log-mode-items '(clock)
-			org-agenda-log-mode-add-notes t
-			org-agenda-files '("~/Dropbox/org/journal.org"
-							   "/home/eli/Dropbox/org/Français.org"
-							   "/home/eli/Dropbox/org/daily.org"
-							   "/home/eli/Dropbox/org/lists.org"
-							   "/home/eli/Dropbox/org/inbox.org"
-							   "/home/eli/Dropbox/org/words.org"
-							   "/home/eli/Dropbox/org/projects.org")
-			org-agenda-custom-commands '(("g" "GTD"
-										  ((agenda ""
-												   ((org-agenda-overriding-header
-													 (concat "Day-agenda (W"
-															 (format-time-string "%U" (current-time))
-															 ") "
-															 (eli/make-progress 50)))))
-										   (tags-todo  "/+TODO"
-													   ((org-agenda-overriding-header
-														 (propertize "Inbox" 'face 'mindre-faded))
-														(org-tags-match-list-sublevels t)
-														(org-agenda-skip-function
-														 '(org-agenda-skip-entry-if 'timestamp))))
-										   (tags-todo "/+NEXT"
-													  ((org-agenda-overriding-header "Next")))
-										   (tags-todo "PROJECT|INBOX/+STARTED"
-													  ((org-agenda-overriding-header "Started")))
-										   (tags-todo "/+PROJECT"
-													  ((org-agenda-overriding-header "Projects")))
-										   (tags-todo "/+WAITING"
-													  ((org-agenda-overriding-header "Waiting")))
-										   (tags-todo "/+SOMEDAY"
-													  ((org-agenda-overriding-header "Someday/Maybe")))))))
+                                                                :gap-ok-around ("4:00") :default-face ((:background "DarkRed")
+                                                                                                       (:foreground "white"))
+                                                                :overlap-face nil :gap-face nil
+                                                                :no-end-time-face nil :long-face nil :short-face nil)
+            org-agenda-clockreport-parameter-plist '(:link t :maxlevel 2 :fileskip0 t
+                                                           :sort (3 . 84) :formula %)
+            org-agenda-clockreport-parameter-plist '(:link t :maxlevel 2 :fileskip0 t
+                                                           :sort (3 . 84) :formula %)
+            org-agenda-span 'day
+            org-agenda-show-inherited-tags nil
+            org-agenda-window-setup 'only-window
+            org-agenda-log-mode-items '(clock)
+            org-agenda-log-mode-add-notes t
+            org-agenda-files '("~/Dropbox/org/journal.org"
+                               "/home/eli/Dropbox/org/Français.org"
+                               "/home/eli/Dropbox/org/daily.org"
+                               "/home/eli/Dropbox/org/lists.org"
+                               "/home/eli/Dropbox/org/inbox.org"
+                               "/home/eli/Dropbox/org/words.org"
+                               "/home/eli/Dropbox/org/projects.org")
+            org-agenda-custom-commands '(("g" "GTD"
+                                          ((agenda ""
+                                                   ((org-agenda-overriding-header
+                                                     (concat "Day-agenda (W"
+                                                             (format-time-string "%U" (current-time))
+                                                             ") "
+                                                             (eli/make-svg-progress)))))
+                                           (tags-todo  "/+TODO"
+                                                       ((org-agenda-overriding-header
+                                                         (propertize "Inbox" 'face 'mindre-faded))
+                                                        (org-tags-match-list-sublevels t)
+                                                        (org-agenda-skip-function
+                                                         '(org-agenda-skip-entry-if 'timestamp))))
+                                           (tags-todo "/+NEXT"
+                                                      ((org-agenda-overriding-header "Next")))
+                                           (tags-todo "PROJECT|INBOX/+STARTED"
+                                                      ((org-agenda-overriding-header "Started")))
+                                           (tags-todo "/+PROJECT"
+                                                      ((org-agenda-overriding-header "Projects")))
+                                           (tags-todo "/+WAITING"
+                                                      ((org-agenda-overriding-header "Waiting")))
+                                           (tags-todo "/+SOMEDAY"
+                                                      ((org-agenda-overriding-header "Someday/Maybe")))))))
   (:advice
    org-agenda-clock-goto :around eli/org-agenda-goto-started-task
    org-agenda-log-mode :after (lambda (&rest _arg) (goto-char (point-min)))
    org-agenda-redo-all :after (lambda (&rest _arg) (goto-char (point-min)))
    org-agenda-files :filter-return dynamic-agenda-files-advice)
   (:hooks org-agenda-finalize-hook eli/show-progress-color
-		  org-after-todo-state-change-hook update-dynamic-agenda-hook))
+          org-after-todo-state-change-hook update-dynamic-agenda-hook))
 
 ;;;; org-table
 (setup org-duration

@@ -58,6 +58,20 @@
      "]"
      (concat " " (number-to-string percent) "%"))))
 
+(defun eli/make-svg-progress ()
+  (let* ((today (time-to-day-in-year (current-time)))
+         (percent (/ today 365.0))
+         (image-scaling-factor 2.0))
+    (concat
+     (propertize
+      " "
+      'display
+      (svg-lib-progress-bar percent nil
+                            :margin 0 :stroke 2 :radius 3
+                            :padding 2 :width 18 :height 0.6
+                            :foreground "#B0BEC5"))
+     (concat " " (number-to-string (floor (* 100 percent))) "%"))))
+
 ;; change the progress color
 (defun eli/show-progress-color ()
   (save-excursion
@@ -72,7 +86,7 @@
           (setq percent-face 'mindre-keyword))
          ((< percent 90)
           (setq percent-face 'mindre-warning))
-         ((< percent 100)
+         ((<= percent 100)
           (setq percent-face 'mindre-critical)))
         (overlay-put (make-overlay
                       (match-beginning 0) (match-end 0))
