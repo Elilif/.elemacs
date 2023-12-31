@@ -72,11 +72,11 @@
      (format-mode-line emms-playing-time-string 'mood-line-unimportant))))
 
 (defface tab-bar-svg-active
-  '((t (:foreground "#70797d")))
+  '((t (:foreground "#a1aeb5")))
   "Tab bar face for selected tab.")
 
 (defface tab-bar-svg-inactive
-  '((t (:foreground "#B0BEC5")))
+  '((t (:foreground "#a1aeb5")))
   "Tab bar face for inactive tabs.")
 
 (defun eli/tab-bar-svg-padding (width string)
@@ -148,9 +148,43 @@
                                :face (if (eq (car item) 'current-tab)
                                          'tab-bar-svg-active
                                        'tab-bar-svg-inactive)
-                               :inverse t :margin 0 :radius 6 :padding padding
-                               :height 1.1 :ascent 16 :scale 1.0)))))))
+                               :inverse (eq (car item) 'current-tab)
+                               :margin 0 :radius 6 :padding padding
+                               :height 1.2 :ascent 16 :scale 1.0)))))))
     items))
+
+(defun eli/tab-bar-tab-name-with-svg (tab i)
+  (let* ((current-p (eq (car tab) 'current-tab))
+         (name (concat (if tab-bar-tab-hints (format "%d " i) "")
+                       (alist-get 'name tab)
+                       (or (and tab-bar-close-button-show
+                                (not (eq tab-bar-close-button-show
+                                         (if current-p 'non-selected 'selected)))
+                                tab-bar-close-button)
+                           "")))
+         (padding (plist-get svg-lib-style-default :padding))
+         (width)
+         (image-scaling-factor 1.0))
+    (when tab-bar-auto-width
+      (setq width (/ (* (/ (frame-inner-width) 3) 2)
+                     (length (funcall tab-bar-tabs-function))))
+      (when tab-bar-auto-width-min
+        (setq width (max width (if (window-system)
+                                   (nth 0 tab-bar-auto-width-min)
+                                 (nth 1 tab-bar-auto-width-min)))))
+      (when tab-bar-auto-width-max
+        (setq width (min width (if (window-system)
+                                   (nth 0 tab-bar-auto-width-max)
+                                 (nth 1 tab-bar-auto-width-max)))))
+      (setq padding (eli/tab-bar-svg-padding width name)))
+    (propertize
+     name
+     'display
+     (svg-tag-make
+      name
+      :face (if (eq (car tab) 'current-tab) 'tab-bar-svg-active 'tab-bar-svg-inactive)
+      :inverse (eq (car tab) 'current-tab) :margin 0 :radius 6 :padding padding
+      :height 1.3 :ascent 17 :scale 1.0))))
 
 ;;;; tabspaces
 (defvar consult--source-workspace

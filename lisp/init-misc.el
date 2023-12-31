@@ -313,20 +313,9 @@
                     tab-bar-format-align-right
                     eli/tab-bar-emms)
    tab-bar-tab-name-function #'tab-bar-tab-name-truncated
-   tab-bar-auto-width-max '(200  15)
-   ;; tab-bar-tab-name-format-function (lambda (tab i)
-   ;;                                    (concat
-   ;;                                     (propertize (if tab-bar-tab-hints (format "%d" i) "")
-   ;;                                                 'face 'tab-bar-hints)
-   ;;                                     (propertize (if tab-bar-tab-hints " " "")
-   ;;                                                 'face (funcall (lambda (tab)
-   ;;                                                                  (if (eq (car tab) 'current-tab)
-   ;;                                                                      'tab-bar-tab-space-active
-   ;;                                                                    'tab-bar-tab-space-inactive))
-   ;;                                                                tab))
-   ;;                                     (propertize (alist-get 'name tab)
-   ;;                                                 'face (funcall tab-bar-tab-face-function tab))))
-   )
+   ;; tab-bar-tab-name-format-function #'eli/tab-bar-tab-name-with-svg
+   tab-bar-tab-name-format-function #'tab-bar-tab-name-format-default
+   tab-bar-auto-width-max '(200  15))
   (:global
    "s--" eli/tabspaces-kill-buffers-close-workspace
    "s-=" tab-bar-new-tab
