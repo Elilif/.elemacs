@@ -142,8 +142,17 @@ and style elements ARGS."
       (pop keywords)
       (setq keyword (car keywords)))))
 
+(defvar eli/svg-tag-cache nil)
+
+(defun eli/svg-tag-with-cache (orig &rest args)
+  (unless eli/svg-tag-cache
+    (setq eli/svg-tag-cache (make-hash-table :test 'equal)))
+  (with-memoization (gethash args eli/svg-tag-cache)
+    (apply orig args)))
+
 (defun eli/svg-tag-todo-keywords-tag (tag face)
-  (let ((scale 1.0))
+  (let ((scale 1.0)
+        (tag (propertize tag 'face face)))
     (when (org-at-heading-p)
       (let* ((level (number-to-string (org-current-level)))
              (face (intern (concat "org-level-" level)))

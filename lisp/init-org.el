@@ -719,7 +719,8 @@
   (:also-load lib-svg-tag-mode)
   (:advice
    svg-tag-mode-on :around suppress-messages
-   svg-tag-mode-off :around suppress-messages)
+   svg-tag-mode-off :around suppress-messages
+   svg-tag-make :around eli/svg-tag-with-cache)
   (:option*
    svg-lib-style-default '(:background "#F5F5F5" :foreground "#37474f" :padding 0.5 :margin 0
                                        :stroke 2 :radius 5 :alignment 0.5 :width 20 :height 0.9
@@ -744,7 +745,7 @@
 
                   ;; Task priority
                   ("\\[#[A-Z]\\]" . ( (lambda (tag)
-                                        (svg-tag-make tag :face 'org-priority 
+                                        (svg-tag-make tag :face 'org-priority
                                                       :beg 2 :end -1 :margin 0
                                                       :height 1.1 :ascent 16))))
 
