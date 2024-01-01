@@ -313,8 +313,7 @@
                     tab-bar-format-align-right
                     eli/tab-bar-emms)
    tab-bar-tab-name-function #'tab-bar-tab-name-truncated
-   ;; tab-bar-tab-name-format-function #'eli/tab-bar-tab-name-with-svg
-   tab-bar-tab-name-format-function #'tab-bar-tab-name-format-default
+   tab-bar-tab-name-format-function #'eli/tab-bar-tab-name-with-svg
    tab-bar-auto-width-max '(200  15))
   (:global
    "s--" eli/tabspaces-kill-buffers-close-workspace
@@ -322,9 +321,7 @@
    "s-<left>" tab-bar-move-tab-backward
    "s-<right>" tab-bar-move-tab)
   (:hook
-   tab-bar-history-mode)
-  (:advice
-   tab-bar-auto-width :override eli/tab-bar-auto-width))
+   tab-bar-history-mode))
 
 (setup project
   (:option*

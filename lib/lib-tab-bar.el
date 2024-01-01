@@ -72,11 +72,17 @@
      (format-mode-line emms-playing-time-string 'mood-line-unimportant))))
 
 (defface tab-bar-svg-active
-  '((t (:foreground "#a1aeb5")))
+  '((t (:family "Cascadia Mono" :foreground "#a1aeb5"
+                :box (:line-width (4 . 5)
+                                  :color "#a1aeb5"
+                                  :style flat-button))))
   "Tab bar face for selected tab.")
 
-(defface tab-bar-svg-inactive
-  '((t (:foreground "#a1aeb5")))
+(defface tab-bar-svg-box
+  '((t (:family "Cascadia Mono" :background "#F5F5F5"
+                :box (:line-width (4 . 5)
+                                  :color "#F5F5F5"
+                                  :style flat-button))))
   "Tab bar face for inactive tabs.")
 
 (defun eli/tab-bar-svg-padding (width string)
@@ -87,74 +93,10 @@
          (padding (- (/ tag-width txt-char-width) (length string))))
     padding))
 
-(defun eli/tab-bar-auto-width (items)
-  "Return tab-bar items with resized tab names."
-  (unless tab-bar--auto-width-hash
-    (define-hash-table-test 'tab-bar--auto-width-hash-test
-                            #'equal-including-properties
-                            #'sxhash-equal-including-properties)
-    (setq tab-bar--auto-width-hash
-          (make-hash-table :test 'tab-bar--auto-width-hash-test)))
-  (let ((tabs nil)    ;; list of resizable tabs
-        (non-tabs "") ;; concatenated names of non-resizable tabs
-        (width 0))    ;; resize tab names to this width
-    (dolist (item items)
-      (when (and (eq (nth 1 item) 'menu-item) (stringp (nth 2 item)))
-        (if (memq (get-text-property 0 'face (nth 2 item))
-                  tab-bar-auto-width-faces)
-            (push item tabs)
-          (unless (eq (nth 0 item) 'align-right)
-            (setq non-tabs (concat non-tabs (nth 2 item)))))))
-    (when tabs
-      (add-face-text-property 0 (length non-tabs) 'tab-bar t non-tabs)
-      (setq width (/ (* (/ (frame-inner-width) 3) 2)  ;; fix tab width
-                     (length tabs)))
-      (when tab-bar-auto-width-min
-        (setq width (max width (if (window-system)
-                                   (nth 0 tab-bar-auto-width-min)
-                                 (nth 1 tab-bar-auto-width-min)))))
-      (when tab-bar-auto-width-max
-        (setq width (min width (if (window-system)
-                                   (nth 0 tab-bar-auto-width-max)
-                                 (nth 1 tab-bar-auto-width-max)))))
-      (dolist (item tabs)
-        (setf (nth 2 item)
-              (with-memoization (gethash (list (selected-frame)
-                                               width (nth 2 item))
-                                         tab-bar--auto-width-hash)
-                (let* ((name (nth 2 item))
-                       (len (length name))
-                       (close-p (get-text-property (1- len) 'close-tab name))
-                       (continue t)
-                       (prev-width (string-pixel-width name))
-                       curr-width
-                       (padding (plist-get svg-lib-style-default :padding)))
-                  (cond
-                   ((< prev-width width)
-                    (setq padding (eli/tab-bar-svg-padding width name)))
-                   ((> prev-width width)
-                    (let ((del-pos1 (if close-p -2 -1))
-                          (del-pos2 (if close-p -1 nil)))
-                      (while continue
-                        (setf (substring name del-pos1 del-pos2) "")
-                        (setq curr-width (string-pixel-width name))
-                        (if (and (> curr-width width)
-                                 (< curr-width prev-width))
-                            (setq prev-width curr-width)
-                          (setq continue nil))))))
-                  (propertize name 'display
-                              (svg-tag-make
-                               name
-                               :face (if (eq (car item) 'current-tab)
-                                         'tab-bar-svg-active
-                                       'tab-bar-svg-inactive)
-                               :inverse (eq (car item) 'current-tab)
-                               :margin 0 :radius 6 :padding padding
-                               :height 1.2 :ascent 16 :scale 1.0)))))))
-    items))
-
 (defun eli/tab-bar-tab-name-with-svg (tab i)
   (let* ((current-p (eq (car tab) 'current-tab))
+         (width (/ (* (/ (frame-inner-width) 3) 2)
+                   (length (funcall #'tab-bar-tabs))))
          (name (concat (if tab-bar-tab-hints (format "%d " i) "")
                        (alist-get 'name tab)
                        (or (and tab-bar-close-button-show
@@ -162,27 +104,36 @@
                                          (if current-p 'non-selected 'selected)))
                                 tab-bar-close-button)
                            "")))
-         (padding (plist-get svg-lib-style-default :padding))
-         (width)
-         (image-scaling-factor 1.0))
-    (when tab-bar-auto-width
-      (setq width (/ (* (/ (frame-inner-width) 3) 2)
-                     (length (funcall tab-bar-tabs-function))))
-      (when tab-bar-auto-width-min
-        (setq width (max width (if (window-system)
-                                   (nth 0 tab-bar-auto-width-min)
-                                 (nth 1 tab-bar-auto-width-min)))))
-      (when tab-bar-auto-width-max
-        (setq width (min width (if (window-system)
-                                   (nth 0 tab-bar-auto-width-max)
-                                 (nth 1 tab-bar-auto-width-max)))))
+         (continue t)
+         (prev-width (string-pixel-width name))
+         curr-width
+         (padding (plist-get svg-lib-style-default :padding)))
+    (when tab-bar-auto-width-min
+      (setq width (max width (if (window-system)
+                                 (nth 0 tab-bar-auto-width-min)
+                               (nth 1 tab-bar-auto-width-min)))))
+    (when tab-bar-auto-width-max
+      (setq width (min width (if (window-system)
+                                 (nth 0 tab-bar-auto-width-max)
+                               (nth 1 tab-bar-auto-width-max)))))
+    (cond
+     ((< prev-width width)
       (setq padding (eli/tab-bar-svg-padding width name)))
+     ((> prev-width width)
+      (while continue
+        (setf (substring name -1) "")
+        (setq curr-width (string-pixel-width name))
+        (if (and (> curr-width width)
+                 (< curr-width prev-width))
+            (setq prev-width curr-width)
+          (setq continue nil)))))
     (propertize
      name
+     'face 'tab-bar-svg-box
      'display
      (svg-tag-make
       name
-      :face (if (eq (car tab) 'current-tab) 'tab-bar-svg-active 'tab-bar-svg-inactive)
+      :face 'tab-bar-svg-active
       :inverse (eq (car tab) 'current-tab) :margin 0 :radius 6 :padding padding
       :height 1.3 :ascent 17 :scale 1.0))))
 
