@@ -78,13 +78,6 @@
                                   :style flat-button))))
   "Tab bar face for selected tab.")
 
-(defface tab-bar-svg-box
-  '((t (:family "Cascadia Mono" :background "#F5F5F5"
-                :box (:line-width (4 . 5)
-                                  :color "#F5F5F5"
-                                  :style flat-button))))
-  "Tab bar face for inactive tabs.")
-
 (defun eli/tab-bar-svg-padding (width string)
   (let* ((style svg-lib-style-default)
          (margin      (plist-get style :margin))
@@ -93,21 +86,29 @@
          (padding (- (/ tag-width txt-char-width) (length string))))
     padding))
 
+(defvar eli/tab-bar--svg-hash nil)
+
 (defun eli/tab-bar-tab-name-with-svg (tab i)
+  (unless eli/tab-bar--svg-hash
+    (define-hash-table-test 'eli/tab-bar--svg-hash-test
+                            #'equal-including-properties
+                            #'sxhash-equal-including-properties)
+    (setq eli/tab-bar--svg-hash (make-hash-table
+                                 :test 'eli/tab-bar--svg-hash-test)))
   (let* ((current-p (eq (car tab) 'current-tab))
          (width (/ (* (/ (frame-inner-width) 3) 2)
                    (length (funcall #'tab-bar-tabs))))
-         (name (concat (if tab-bar-tab-hints (format "%d " i) "")
-                       (alist-get 'name tab)
-                       (or (and tab-bar-close-button-show
-                                (not (eq tab-bar-close-button-show
-                                         (if current-p 'non-selected 'selected)))
-                                tab-bar-close-button)
-                           "")))
-         (continue t)
-         (prev-width (string-pixel-width name))
-         curr-width
-         (padding (plist-get svg-lib-style-default :padding)))
+         (name (propertize
+                (concat (if tab-bar-tab-hints (format "%d " i) "")
+                        (alist-get 'name tab)
+                        (or (and tab-bar-close-button-show
+                                 (not (eq tab-bar-close-button-show
+                                          (if current-p 'non-selected 'selected)))
+                                 tab-bar-close-button)
+                            ""))
+                'face (if (eq (car tab) 'current-tab)
+                          'tab-bar-tab
+                        'tab-bar-tab-inactive))))
     (when tab-bar-auto-width-min
       (setq width (max width (if (window-system)
                                  (nth 0 tab-bar-auto-width-min)
@@ -116,26 +117,31 @@
       (setq width (min width (if (window-system)
                                  (nth 0 tab-bar-auto-width-max)
                                (nth 1 tab-bar-auto-width-max)))))
-    (cond
-     ((< prev-width width)
-      (setq padding (eli/tab-bar-svg-padding width name)))
-     ((> prev-width width)
-      (while continue
-        (setf (substring name -1) "")
-        (setq curr-width (string-pixel-width name))
-        (if (and (> curr-width width)
-                 (< curr-width prev-width))
-            (setq prev-width curr-width)
-          (setq continue nil)))))
-    (propertize
-     name
-     'face 'tab-bar-svg-box
-     'display
-     (svg-tag-make
-      name
-      :face 'tab-bar-svg-active
-      :inverse (eq (car tab) 'current-tab) :margin 0 :radius 6 :padding padding
-      :height 1.3 :ascent 17 :scale 1.0))))
+    (with-memoization (gethash (list (selected-frame) width name)
+                               eli/tab-bar--svg-hash)
+      (let ((continue t)
+            (prev-width (string-pixel-width name))
+            (padding (plist-get svg-lib-style-default :padding))
+            curr-width)
+        (cond
+         ((< prev-width width)
+          (setq padding (eli/tab-bar-svg-padding width name)))
+         ((> prev-width width)
+          (while continue
+            (setf (substring name -1) "")
+            (setq curr-width (string-pixel-width name))
+            (if (and (> curr-width width)
+                     (< curr-width prev-width))
+                (setq prev-width curr-width)
+              (setq continue nil)))))
+        (propertize
+         name
+         'display
+         (svg-tag-make
+          name
+          :face 'tab-bar-svg-active
+          :inverse (eq (car tab) 'current-tab) :margin 0 :radius 6 :padding padding
+          :height 1.3 :ascent 17 :scale 1.0))))))
 
 ;;;; tabspaces
 (defvar consult--source-workspace
