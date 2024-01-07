@@ -57,8 +57,11 @@
 		   org-return :around eli/org-return-wrapper
 		   org-do-emphasis-faces :override eli/org-do-emphasis-faces
 		   org-element--parse-generic-emphasis :override eli/org-element--parse-generic-emphasis
-		   fill-move-to-break-point :before eli/adjust-line-break-point
+           org-insert-heading-respect-content :after eli/org-expand-all
+		   ;; fill-move-to-break-point :before eli/adjust-line-break-point
 		   org-fold--reveal-outline-maybe :around eli/org-fold--reveal-outline-maybe)
+  (:when-loaded
+	(add-to-list 'safe-local-variable-values '(org-latex-and-related-regexp . nil)))
   (:bind
    "C-<tab>" eli/org-expand-all
    "C-x n l" eli/org-narrow-to-item))
@@ -109,7 +112,8 @@
 		   (sequence "PROJECT(p)" "|" "DONE(d!)" "CANCELLED(c@/!)")
 		   (sequence "WAITING(w@/!)" "NEXT(n!/!)"
                      "SOMEDAY(S)" "|" "CANCELLED(c@/!)")))
-   org-ellipsis "▼")
+   org-ellipsis "▼"
+   org-image-actual-width nil)
   (:advice
    buffer-substring--filter :filter-return eli/unfill-string)
   (:hook
@@ -318,28 +322,30 @@
 ;;;; org-babel
 (setup org
   (:once (list :before 'org-insert-structure-template)
-	(:option*
-	 org-confirm-babel-evaluate nil
-	 org-babel-default-header-args '((:session . "none")
-									 (:results . "replace")
-									 (:exports . "code")
-									 (:cache . "no")
-									 (:noweb . "no")
-									 (:hlines . "no")
-									 (:tangle . "no"))
-	 org-babel-load-languages '((emacs-lisp . t)
-								(shell . t)
-								(C . t)
-								(latex . t)
-								(racket . t)
-								(jupyter . t)))
-	(org-babel-do-load-languages 'org-babel-load-languages
-								 '((emacs-lisp . t)
-								   (shell . t)
-								   (C . t)
-								   (latex . t)
-								   (racket . t)
-								   (jupyter . t)))))
+    (:option*
+     org-confirm-babel-evaluate nil
+     org-babel-default-header-args '((:session . "none")
+                                     (:results . "replace")
+                                     (:exports . "code")
+                                     (:cache . "no")
+                                     (:noweb . "no")
+                                     (:hlines . "no")
+                                     (:tangle . "no"))
+     org-babel-load-languages '((emacs-lisp . t)
+                                (shell . t)
+                                (C . t)
+                                (js . t)
+                                (latex . t)
+                                (racket . t)
+                                (jupyter . t)))
+    (org-babel-do-load-languages 'org-babel-load-languages
+                                 '((emacs-lisp . t)
+                                   (shell . t)
+                                   (C . t)
+                                   (js . t)
+                                   (latex . t)
+                                   (racket . t)
+                                   (jupyter . t)))))
 
 (setup org-src
   (:option*
@@ -520,10 +526,16 @@
 
 ;;;; org-appear-mode
 (setup org-appear
+  (:also-load
+   lib-org-appear)
   (:hook-into
    org-mode)
   (:option*
-   org-appear-delay 0.1))
+   org-appear-delay 0.1)
+  ;; (:advice
+  ;;  org-appear--post-cmd :override eli/org-appear--post-cmd
+  ;;  org-appear--parse-elem :override eli/org-appear--parse-elem)
+  )
 
 ;;;; org-download
 (setup org-download
@@ -538,7 +550,6 @@
    org-download-screenshot-method "~/.config/flameshot/org-flameshot.sh %s"
    org-download-image-org-width 800
    org-download-annotate-function (lambda (_link) "")
-   org-image-actual-width nil
    org-attach-method 'mv
    org-attach-auto-tag "attach"
    org-attach-store-link-p 't)
@@ -629,7 +640,7 @@
 												 :image-converter
 												 ("convert -density %D -trim -antialias %f -quality 100 %O")))
    org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n"
-   org-format-latex-options '(:foreground default :background default :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+   org-format-latex-options '(:foreground default :background "Transparent" :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
 										  ("begin" "$1" "$" "$$" "\\(" "\\["))
    org-latex-src-block-backend 'minted
    org-latex-minted-options '(("breaklines")

@@ -68,7 +68,7 @@
       'display
       (svg-lib-progress-bar percent nil
                             :margin 0 :stroke 2 :radius 3
-                            :padding 2 :width 18 :height 0.6
+                            :padding 1 :width 25 :height 0.5
                             :foreground "#B0BEC5"))
      (concat " " (number-to-string (floor (* 100 percent))) "%"))))
 
@@ -76,7 +76,7 @@
 (defun eli/show-progress-color ()
   (save-excursion
     (goto-char (point-min))
-    (when (re-search-forward "\\([0-9]\\{2,3\\}\\)%" nil t)
+    (when (re-search-forward "\\([0-9]\\{1,3\\}\\)%" nil t)
       (let* ((percent (string-to-number (match-string 1)))
              percent-face)
         (cond
