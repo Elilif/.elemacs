@@ -118,8 +118,11 @@
 (setq save-silently t)
 
 (setq custom-file null-device)
+(add-to-list 'exec-path "~/.local/bin/")
 
 (keymap-global-set "C-c C-k" #'kill-buffer-and-window)
+
+(setq disabled-command-function nil)
 
 ;; (setq scroll-conservatively 100)
 
