@@ -49,7 +49,9 @@
   (:option*
    pdf-view-use-scaling t
    pdf-view-use-imagemagick nil
-   pdf-annot-activate-created-annotations t)
+   pdf-annot-activate-created-annotations t
+   pdf-cache-image-limit 128
+   pdf-cache-prefetch-delay 0.5)
   (:bind-into pdf-view-mode-map
     "v" +pdf-keyboard-select-region
     "O" pdf-occur)
@@ -89,8 +91,8 @@
   (:iload nov)
   (:also-load
    lib-nov)
-  (:when-loaded
-    (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+  (:init
+   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
   (:option*
    nov-text-width 80)
   (:bind

@@ -212,12 +212,14 @@
 
 (setup reader
   (:iload init-pdf init-bib)
-  (:once (list :before 'hydra-bibtex/body)
+  (:once (list :before 'hydra-bibtex/body
+               :hooks 'find-file-hook)
     (require 'init-pdf)
     (require 'init-bib)))
 
 (setup init-music
   (:once (list :before 'hydra-player/body 'eli/pop-to-buffer)
+    (require 'emms-history)
     (require 'init-music)
     (emms-all)
     (emms-history-load)
