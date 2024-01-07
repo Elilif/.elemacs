@@ -59,6 +59,12 @@ current note."
   :group 'org-doc-noter
   :type 'string)
 
+(defcustom org-doc-noter-property-split-fraction "NOTER_SPLIT_FRACTION"
+  "Name of the property that specifies the fraction of the frame
+that the document window will occupy when split."
+  :group 'org-doc-noter
+  :type 'string)
+
 (defcustom org-doc-noter-notes-dir (expand-file-name "org-doc-noter/"
                                                      user-emacs-directory)
   "Default directory where notes are stored."
@@ -77,6 +83,13 @@ major mode. FUNCTION should be a function that takes one
 argument(a document file path) and returns the note file."
   :group 'org-doc-noter
   :type '(alist :key-type symbol :value-type function))
+
+(defcustom org-doc-noter-doc-split-fraction 0.5
+  "Fraction of the frame that the document window will occupy when split.
+
+This value is a number of the type HORIZONTAL-FRACTION."
+  :group 'org-doc-noter
+  :type '(number :tag "Horizontal fraction"))
 
 (defface org-doc-noter-midline
   '((t (:underline (:color "purple" :style line
@@ -127,7 +140,8 @@ doc window."
   current-notes    ;; notes in the current doc window
   after-notes      ;; notes after the current doc window
   level            ;; the level of the root note entry
-  (doc-loc 1)      ;; the location of the document
+  doc-loc          ;; the location of the document
+  split-fraction   ;; the fraction of the frame that the document window will occupy when split.
   modified-tick)   ;; the tick counter of the note buffer,see `buffer-modified-tick' for details.
 
 (defmacro org-doc-noter-with-note-buffer (&rest body)
@@ -159,7 +173,11 @@ doc window."
 
 (defsubst org-doc-noter--get-doc-file ()
   "Return name of file current buffer is visiting."
-  (if (eq major-mode 'Info-mode) Info-current-file (buffer-file-name)))
+  (if (eq major-mode 'Info-mode)
+      (if (Info-virtual-file-p Info-current-file)
+          (error "Info file is virtual!")
+        Info-current-file)
+    (buffer-file-name)))
 
 (defsubst org-doc-noter--parse-loc (location)
   "Return the cdr of LOCATION if it is a cons cell, or else itself."
@@ -285,17 +303,6 @@ Set prev-notes, current-notes and after notes in
     ('nov-mode
      (cons nov-documents-index (point)))))
 
-(defun org-doc-noter--get-doc-info ()
-  (let ((prop (org-entry-get nil org-doc-noter-property-doc-file t)))
-    (cond
-     ((file-exists-p prop)
-      (pcase (file-name-extension prop)
-        ("pdf"
-         (cons (if (fboundp 'pdf-view-mode) 'pdf-view-mode 'doc-view-mode)
-               prop))
-        ("epub" (cons 'nov-mode prop))))
-     (t (org-doc-noter--parse-property prop)))))
-
 (defun org-doc-noter-get-doc-info ()
   "Return the doc info.
 
@@ -304,19 +311,20 @@ The result is a vector: [BUFFER FILE MODE LOCATION]"
    ((eq major-mode 'org-mode)
     (when (org-before-first-heading-p)
       (user-error "You must be inside a heading!"))
-    (let* ((file-info (org-doc-noter--get-doc-info))
-           (doc-buffer (pcase-let ((`(,mode . ,path) file-info))
-                         (pcase mode
-                           ('Info-mode
-                            (let ((buffer (get-buffer-create "*info*")))
-                              (with-current-buffer buffer
-                                (info-setup path buffer))
-                              buffer))
-                           (_
-                            (find-file-noselect path)))))
+    (let* ((file-path (org-entry-get nil org-doc-noter-property-doc-file t))
+           (doc-buffer (if (member (file-name-directory file-path)
+                                   Info-directory-list)
+                           (let ((buffer (get-buffer-create "*info*")))
+                             (with-current-buffer buffer
+                               (info-setup file-path buffer))
+                             buffer)
+                         (find-file-noselect file-path)))
            (doc-loc (org-doc-noter--parse-property
                      (org-entry-get nil org-doc-noter-property-note-location t))))
-      (vector doc-buffer (cdr file-info) (car file-info) doc-loc)))
+      (vector doc-buffer
+              file-path
+              (buffer-local-value 'major-mode doc-buffer)
+              doc-loc)))
    (t
     (vector (current-buffer)
             (org-doc-noter--get-doc-file)
@@ -333,9 +341,6 @@ The result is a vector: [BUFFER AST MOD-TICK]"
              (current-buffer) (generate-new-buffer-name "Notes") t)
             (org-element-parse-buffer)
             (buffer-modified-tick)))
-   ((and (eq major-mode'Info-mode)
-         (string= Info-current-file "dir"))
-    (error "`dir' should not be created."))
    (t
     (let* ((doc-file (org-doc-noter--get-doc-file))
            (doc-mode major-mode)
@@ -364,13 +369,10 @@ The result is a vector: [BUFFER AST MOD-TICK]"
          (note-buffer (aref note-info 0))
          (note-ast (org-element-map (aref note-info 1) 'headline
                      (lambda (hl)
-                       (let* ((prop (org-element-property
-                                     (org-doc-noter--get-prop "doc-file") hl))
-                              (file-info (if (file-exists-p prop)
-                                             (cons doc-mode prop)
-                                           (org-doc-noter--parse-property prop))))
-                         (when (equal file-info (cons doc-mode doc-file))
-                           hl)))
+                       (when (string= (org-element-property
+                                       (org-doc-noter--get-prop "doc-file") hl)
+                                      doc-file)
+                         hl))
                      nil t 'headline)))
 
     (with-current-buffer note-buffer
@@ -390,6 +392,10 @@ The result is a vector: [BUFFER AST MOD-TICK]"
                        (org-element-property
                         (org-doc-noter--get-prop "note-location") note-ast)))
                 (aref doc-info 3))
+     :split-fraction (or (org-doc-noter--parse-property
+                          (org-element-property
+                           (org-doc-noter--get-prop "split-fraction") note-ast))
+                         org-doc-noter-doc-split-fraction)
      :modified-tick (aref note-info 2))))
 
 (defun org-doc-noter--setup-windows (session)
@@ -401,7 +407,10 @@ The result is a vector: [BUFFER AST MOD-TICK]"
     (set-window-buffer doc-window doc-buffer)
     (set-window-dedicated-p doc-window t)
 
-    (set-window-buffer (split-window-right) note-buffer)
+    (set-window-buffer (split-window-right
+                        (ceiling (* (org-doc-noter-session-split-fraction session)
+                                    (window-total-width))))
+                       note-buffer)
 
     (with-current-buffer doc-buffer
       (setq org-doc-noter-session session))
@@ -438,17 +447,16 @@ The result is a vector: [BUFFER AST MOD-TICK]"
     (push ov org-doc-noter-remarks)
     (prin1-to-string (cons beg end))))
 
-(defun org-doc-noter--note-overlays-clean (&optional all)
+(defun org-doc-noter--note-overlays-clean ()
   "Remove all highlights."
   (org-doc-noter-with-note-buffer
     (dolist (ov org-doc-noter-highlights)
       (delete-overlay ov))
     (setq org-doc-noter-highlights nil))
-  (when all
-    (org-doc-noter-with-doc-buffer
-      (dolist (ov org-doc-noter-remarks)
-        (delete-overlay ov))
-      (setq org-doc-noter-remarks nil))))
+  (org-doc-noter-with-doc-buffer
+    (dolist (ov org-doc-noter-remarks)
+      (delete-overlay ov))
+    (setq org-doc-noter-remarks nil)))
 
 (defun org-doc-noter--note-highlight (headline face)
   (let* ((beg (org-element-property :begin headline))
@@ -528,7 +536,7 @@ The result is a vector: [BUFFER AST MOD-TICK]"
 (defun org-doc-noter-info-handler ()
   (when-let* ((current-info Info-current-file)
               (orig-info (org-doc-noter-session-doc-path org-doc-noter-session)))
-    (unless (or (string= current-info "dir")
+    (unless (or (Info-virtual-file-p current-info)
                 (string= current-info orig-info))
       (org-doc-noter-kill-session)
       (org-doc-noter)))
@@ -599,8 +607,7 @@ The result is a vector: [BUFFER AST MOD-TICK]"
                   #'org-doc-noter--handler t))
     ('nov-mode
      (remove-hook 'post-command-hook
-                  #'org-doc-noter--handler t)))
-  (org-doc-noter--note-overlays-clean 'all))
+                  #'org-doc-noter--handler t))))
 
 ;;;###autoload
 (define-minor-mode org-doc-noter-doc-mode
@@ -645,6 +652,7 @@ The result is a vector: [BUFFER AST MOD-TICK]"
       (when (memq org-doc-noter-session org-doc-noter-sessions)
         (setq org-doc-noter-sessions (delq org-doc-noter-session org-doc-noter-sessions)))
       (org-doc-noter--save-place)
+      (org-doc-noter--note-overlays-clean)
       (kill-buffer note-buffer)
       (org-doc-noter-with-doc-buffer
         (delete-other-windows)
