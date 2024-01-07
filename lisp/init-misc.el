@@ -429,7 +429,16 @@
 
 (defun eli/silverdict-pop-posframe-toggle (word)
   "Toggle silverdict in child frame."
-  (interactive "sInput a word: ")
+  (interactive (if current-prefix-arg
+                   (list (read-string "Input a word: "))
+                 (cond
+                  ((region-active-p)
+                   (let ((word (buffer-substring-no-properties
+                                (region-beginning)
+                                (region-end))))
+                     (deactivate-mark)
+                     (list word)))
+                  (t (list (thing-at-point 'word))))))
   (unless (and silverdict--frame
                (frame-live-p silverdict--frame))
     (let ((width  (max 100 (round (* (frame-width) 0.62))))
@@ -456,10 +465,7 @@
         (setq-local cursor-type 'box
                     line-spacing 10)
         (read-only-mode)
-        (keymap-local-set "s-p" (lambda ()
-                                  (interactive)
-                                  (shrface-mode -1)
-                                  (posframe-hide-all))))))
+        (keymap-local-set "s-p" #'posframe-hide-all))))
   ;; Focus in child frame
   (eli/silverdict--query word)
   (select-frame-set-input-focus silverdict--frame))
@@ -481,8 +487,6 @@
       (search-forward-regexp "^$")
       (setq dom (libxml-parse-html-region (point))))
     (with-current-buffer (get-buffer-create "*silverdict*")
-      (shrface-mode)
-      (shrface-default-keybindings)
       (erase-buffer)
       (save-excursion
         (shr-insert-document dom)))))
@@ -538,17 +542,6 @@
    immersive-translate-backend 'chatgpt
    immersive-translate-baidu-appid "20230720001751104"
    immersive-translate-chatgpt-host "api.openai-sb.com"))
-
-(setup shrface
-  (:once (list :packages 'eww 'nov
-               :before 'eli/silverdict-pop-posframe-toggle)
-    (require 'shrface)
-    (shrface-basic)
-    (shrface-trial)
-    (shrface-default-keybindings))
-  (:hook-into
-   eww-after-render-hook
-   nov-mode-hook))
 
 ;;;; beacon
 ;; (setup beacon
