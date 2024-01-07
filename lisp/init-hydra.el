@@ -433,8 +433,7 @@
           :pre (progn (setq which-key-inhibit t)  )
           :post (progn (setq which-key-inhibit nil) ))
   ("Noter"
-   (("n" org-noter "noter")
-    ("c" org-noter-create-skeleton "create skeleton"))
+   (("n" org-doc-noter "noter"))
    "Media note"
    (("p" org-media-note-play-online-video "online video")
     ("e" org-media-note-hydra/body "media note"))
