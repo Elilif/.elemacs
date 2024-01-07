@@ -30,10 +30,14 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
+(declare-function doc-view-goto-page "doc-view")
+(declare-function doc-view-fit-width-to-window "doc-view")
+(declare-function pdf-view-goto-page "ext:pdf-view")
+
 
 ;;;; customiations
-
-(require 'cl-lib)
 
 (defgroup org-doc-noter nil
   "Highlight and annotate documents using Org mode."
@@ -66,7 +70,7 @@ current note."
     (pdf-view-mode . org-doc-noter-note-name-default)
     (doc-view-mode . org-doc-noter-note-name-default)
     (nov-mode . org-doc-noter-note-name-default))
-  "Alist of (MODE . FUNCTION) pairs parsed by `org-doc-noter--get-note-info'.
+  "Alist of (MODE . FUNCTION) pairs parsed by `org-doc-noter-get-note-info'.
 
 MODE should be a symbol indicating current document buffer's
 major mode. FUNCTION should be a function that takes one
@@ -126,9 +130,32 @@ doc window."
   (doc-loc 1)      ;; the location of the document
   modified-tick)   ;; the tick counter of the note buffer,see `buffer-modified-tick' for details.
 
+(defmacro org-doc-noter-with-note-buffer (&rest body)
+  (declare (indent defun) (debug t))
+  `(when org-doc-noter-session
+     (let ((note-buffer (org-doc-noter-session-note-buffer org-doc-noter-session)))
+       (with-selected-window (get-buffer-window note-buffer)
+         (with-current-buffer note-buffer
+           ,@body)))))
+
+(defmacro org-doc-noter-with-doc-buffer (&rest body)
+  (declare (indent defun) (debug t))
+  `(when org-doc-noter-session
+     (let ((doc-buffer (org-doc-noter-session-doc-buffer org-doc-noter-session)))
+       (with-selected-window (get-buffer-window doc-buffer)
+         (with-current-buffer doc-buffer
+           ,@body)))))
+
+(defmacro org-doc-noter--get-prop (prop)
+  "Return the symbol of PROP, which will be parsed by
+`org-element-property'."
+  (let ((sym (intern (concat "org-doc-noter-property-" prop))))
+    `(intern (concat ":" ,sym))))
+
 (defsubst org-doc-noter--parse-property (prop)
   "Read one Lisp expression which is represented as text by PROP."
-  (when prop (read prop)))
+  (when (and prop (not (string-empty-p prop)))
+    (read prop)))
 
 (defsubst org-doc-noter--get-doc-file ()
   "Return name of file current buffer is visiting."
@@ -137,12 +164,6 @@ doc window."
 (defsubst org-doc-noter--parse-loc (location)
   "Return the cdr of LOCATION if it is a cons cell, or else itself."
   (or (cdr-safe location) location))
-
-(defmacro org-doc-noter--get-prop (prop)
-  "Return the symbol of PROP, which will be parsed by
-`org-element-property'."
-  (let ((sym (intern (concat "org-doc-noter-property-" prop))))
-    `(intern (concat ":" ,sym))))
 
 (defun org-doc-noter-note-name-default (doc-path)
   "Return the note file for DOC-PATH."
@@ -159,31 +180,35 @@ doc window."
 
 LOC1 and LOC2 shoud be a cons ((LOCATION . POINT)) or a
 number (LOCATION)."
-  (let ((loc1p (org-doc-noter--parse-loc loc1))
-        (loc2p (org-doc-noter--parse-loc loc2))
-        (ws (window-start))
-        (we (window-end nil t)))
-    (pcase (org-doc-noter-session-doc-mode org-doc-noter-session)
-      ;; (PAGE . PAGE) or PAGE
-      ;;
-      ;; In `pdf-view-mode' or `doc-view-mode', LOC1 and LOC1 are equal if they
-      ;; are both in the same page.
-      ((or 'pdf-view-mode 'doc-view-mode)
-       (= (org-doc-noter--parse-loc loc1)
-          (org-doc-noter--parse-loc loc2)))
-      ;; (INDEX . POINT)
-      ;;
-      ;; In `nov-mode', LOC1 and LOC1 are equal if they are both in the
-      ;; currently rendered document and both in the current window.
-      ('nov-mode
+  (pcase (org-doc-noter-session-doc-mode org-doc-noter-session)
+    ;; (PAGE . PAGE) or PAGE
+    ;;
+    ;; In `pdf-view-mode' or `doc-view-mode', LOC1 and LOC1 are equal if they
+    ;; are both in the same page.
+    ((or 'pdf-view-mode 'doc-view-mode)
+     (= (org-doc-noter--parse-loc loc1)
+        (org-doc-noter--parse-loc loc2)))
+    ;; (INDEX . POINT)
+    ;;
+    ;; In `nov-mode', LOC1 and LOC1 are equal if they are both in the
+    ;; currently rendered document and both in the current window.
+    ('nov-mode
+     (let ((loc1p (org-doc-noter--parse-loc loc1))
+           (loc2p (org-doc-noter--parse-loc loc2))
+           (ws (window-start))
+           (we (window-end nil t)))
        (and (= (car loc1) (car loc2))
             (>= loc1p ws) (<= loc1p we)
-            (>= loc2p ws) (<= loc2p we)))
-      ;; (INFO NODE . POINT)
-      ;;
-      ;; In `Info-mode', LOC1 and LOC1 are equal if they are both in the
-      ;; same info node and both in the current window.
-      ('Info-mode
+            (>= loc2p ws) (<= loc2p we))))
+    ;; (INFO NODE . POINT)
+    ;;
+    ;; In `Info-mode', LOC1 and LOC1 are equal if they are both in the
+    ;; same info node and both in the current window.
+    ('Info-mode
+     (let ((loc1p (org-doc-noter--parse-loc loc1))
+           (loc2p (org-doc-noter--parse-loc loc2))
+           (ws (window-start))
+           (we (window-end nil t)))
        (and (string= (car loc1) (car loc2))
             (>= loc1p ws) (<= loc1p we)
             (>= loc2p ws) (<= loc2p we))))))
@@ -233,9 +258,6 @@ Set prev-notes, current-notes and after notes in
              ((org-doc-noter-location= loc current-loc) (push hl current))
              ((org-doc-noter-location< loc current-loc) (push hl previous))
              ((org-doc-noter-location> loc current-loc) (push hl after))))))
-      (setq eli-prev previous
-            eli-curr current
-            eli-after after)
       (setf (org-doc-noter-session-prev-notes org-doc-noter-session) previous
             (org-doc-noter-session-current-notes org-doc-noter-session) (reverse current)
             (org-doc-noter-session-after-notes org-doc-noter-session) (reverse after)))))
@@ -264,6 +286,17 @@ Set prev-notes, current-notes and after notes in
      (cons nov-documents-index (point)))))
 
 (defun org-doc-noter--get-doc-info ()
+  (let ((prop (org-entry-get nil org-doc-noter-property-doc-file t)))
+    (cond
+     ((file-exists-p prop)
+      (pcase (file-name-extension prop)
+        ("pdf"
+         (cons (if (fboundp 'pdf-view-mode) 'pdf-view-mode 'doc-view-mode)
+               prop))
+        ("epub" (cons 'nov-mode prop))))
+     (t (org-doc-noter--parse-property prop)))))
+
+(defun org-doc-noter-get-doc-info ()
   "Return the doc info.
 
 The result is a vector: [BUFFER FILE MODE LOCATION]"
@@ -271,19 +304,18 @@ The result is a vector: [BUFFER FILE MODE LOCATION]"
    ((eq major-mode 'org-mode)
     (when (org-before-first-heading-p)
       (user-error "You must be inside a heading!"))
-    (when-let* ((file-info (org-doc-noter--parse-property
-                            (org-entry-get nil org-doc-noter-property-doc-file t)))
-                (doc-buffer (pcase-let ((`(,mode . ,path) file-info))
-                              (pcase mode
-                                ('Info-mode
-                                 (let ((buffer "*info*"))
-                                   (with-current-buffer buffer
-                                     (info-setup path buffer))
-                                   buffer))
-                                (_
-                                 (find-file-noselect path)))))
-                (doc-loc (org-doc-noter--parse-property
-                          (org-entry-get nil org-doc-noter-property-note-location t))))
+    (let* ((file-info (org-doc-noter--get-doc-info))
+           (doc-buffer (pcase-let ((`(,mode . ,path) file-info))
+                         (pcase mode
+                           ('Info-mode
+                            (let ((buffer (get-buffer-create "*info*")))
+                              (with-current-buffer buffer
+                                (info-setup path buffer))
+                              buffer))
+                           (_
+                            (find-file-noselect path)))))
+           (doc-loc (org-doc-noter--parse-property
+                     (org-entry-get nil org-doc-noter-property-note-location t))))
       (vector doc-buffer (cdr file-info) (car file-info) doc-loc)))
    (t
     (vector (current-buffer)
@@ -291,7 +323,7 @@ The result is a vector: [BUFFER FILE MODE LOCATION]"
             major-mode
             (org-doc-noter--get-doc-location)))))
 
-(defun org-doc-noter--get-note-info ()
+(defun org-doc-noter-get-note-info ()
   "return the note info.
 
 The result is a vector: [BUFFER AST MOD-TICK]"
@@ -324,19 +356,21 @@ The result is a vector: [BUFFER AST MOD-TICK]"
 (defun org-doc-noter--create-session ()
   "Setup org-doc-noter session."
   (let* ((id (md5 (format "%s%s%s" (random) (float-time) (recent-keys))))
-         (doc-info (org-doc-noter--get-doc-info)) ;; [BUFFER FILE MODE LOCATION]
-         (note-info (org-doc-noter--get-note-info)) ;; [BUFFER AST MOD-TICK]
+         (doc-info (org-doc-noter-get-doc-info)) ;; [BUFFER FILE MODE LOCATION]
+         (note-info (org-doc-noter-get-note-info)) ;; [BUFFER AST MOD-TICK]
          (doc-buffer (aref doc-info 0))
          (doc-file (aref doc-info 1))
          (doc-mode (aref doc-info 2))
          (note-buffer (aref note-info 0))
          (note-ast (org-element-map (aref note-info 1) 'headline
                      (lambda (hl)
-                       (when (equal (org-doc-noter--parse-property
-                                     (org-element-property
-                                      (org-doc-noter--get-prop "doc-file") hl))
-                                    (cons doc-mode doc-file))
-                         hl))
+                       (let* ((prop (org-element-property
+                                     (org-doc-noter--get-prop "doc-file") hl))
+                              (file-info (if (file-exists-p prop)
+                                             (cons doc-mode prop)
+                                           (org-doc-noter--parse-property prop))))
+                         (when (equal file-info (cons doc-mode doc-file))
+                           hl)))
                      nil t 'headline)))
 
     (with-current-buffer note-buffer
@@ -374,22 +408,6 @@ The result is a vector: [BUFFER AST MOD-TICK]"
 
     (with-current-buffer note-buffer
       (setq org-doc-noter-session session))))
-
-(defmacro org-doc-noter-with-note-buffer (&rest body)
-  (declare (indent defun) (debug t))
-  `(when org-doc-noter-session
-     (let ((note-buffer (org-doc-noter-session-note-buffer org-doc-noter-session)))
-       (with-selected-window (get-buffer-window note-buffer)
-         (with-current-buffer note-buffer
-           ,@body)))))
-
-(defmacro org-doc-noter-with-doc-buffer (&rest body)
-  (declare (indent defun) (debug t))
-  `(when org-doc-noter-session
-     (let ((doc-buffer (org-doc-noter-session-doc-buffer org-doc-noter-session)))
-       (with-selected-window (get-buffer-window doc-buffer)
-         (with-current-buffer doc-buffer
-           ,@body)))))
 
 (defun org-doc-noter--note-init (doc-info)
   "Initialize the note buffer accroding to DOC-info."
@@ -477,21 +495,22 @@ The result is a vector: [BUFFER AST MOD-TICK]"
 
 (defun org-doc-noter-doc-locate (location)
   "Goto LOCATION in curtain mode."
-  (cond
-   ((not (listp location)) (pdf-view-goto-page location))
-   (t
-    (pcase major-mode
-      ('pdf-view-mode (pdf-view-goto-page (cdr location)))
-      ('doc-view-mode (doc-view-goto-page (cdr location)))
-      ('nov-mode
-       (setq nov-documents-index (car location))
-       (nov-render-document)
-       (goto-char (cdr location))
-       (recenter))
-      ('Info-mode
-       (Info-goto-node (car location))
-       (goto-char (cdr location))
-       (recenter)))))
+  (when location
+    (cond
+     ((not (listp location)) (pdf-view-goto-page location))
+     (t
+      (pcase major-mode
+        ('pdf-view-mode (pdf-view-goto-page (cdr location)))
+        ('doc-view-mode (doc-view-goto-page (cdr location)))
+        ('nov-mode
+         (setq nov-documents-index (car location))
+         (nov-render-document)
+         (goto-char (cdr location))
+         (recenter))
+        ('Info-mode
+         (Info-goto-node (car location))
+         (goto-char (cdr location))
+         (recenter))))))
   (unless org-doc-noter--window-end
     (setq org-doc-noter--window-end (window-end nil t)
           org-doc-noter--window-start (window-start)))
@@ -520,7 +539,7 @@ The result is a vector: [BUFFER AST MOD-TICK]"
   (org-doc-noter--set-window-info)
   (run-hooks 'org-doc-noter-nov-handler-hook))
 
-(defun org-doc-noter--handler (&rest args)
+(defun org-doc-noter--handler (&rest _args)
   (when org-doc-noter-doc-mode
     (setf (org-doc-noter-session-doc-loc org-doc-noter-session)
           (org-doc-noter--get-doc-location))
@@ -583,6 +602,7 @@ The result is a vector: [BUFFER AST MOD-TICK]"
                   #'org-doc-noter--handler t)))
   (org-doc-noter--note-overlays-clean 'all))
 
+;;;###autoload
 (define-minor-mode org-doc-noter-doc-mode
   "Minor mode for the document buffer."
   :global nil
@@ -602,6 +622,7 @@ The result is a vector: [BUFFER AST MOD-TICK]"
   (org-cycle-content (1+ (org-doc-noter-session-level
                           org-doc-noter-session))))
 
+;;;###autoload
 (define-minor-mode org-doc-noter-notes-mode
   "Minor mode for the notes buffer."
   :global nil
