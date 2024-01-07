@@ -1,4 +1,4 @@
-;; lib-org-noter.el --- Initialize lib-org-noter configurations.	-*- lexical-binding: t; -*-
+;; lib-org-noter.el --- Initialize lib-org-noter configurations.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -35,13 +35,13 @@
   "Capture screenshot and insert the image in the note."
   (interactive)
   (let ((org-download-image-org-width 500))
-	(org-noter-insert-note)
-	(goto-char (org-entry-end-position))
-	(org-download-screenshot))
+    (org-noter-insert-note)
+    (goto-char (org-entry-end-position))
+    (org-download-screenshot))
   (save-excursion
-	(goto-char (org-entry-beginning-position))
-	(org-fold-show-entry)
-	(org-cycle-hide-drawers 'fold))
+    (goto-char (org-entry-beginning-position))
+    (org-fold-show-entry)
+    (org-cycle-hide-drawers 'fold))
   (redisplay))
 
 (defun eli/org-noter-set-highlight (&rest _arg)
@@ -50,11 +50,11 @@
    (remove-overlays (point-min) (point-max) 'org-noter-current-hl t)
    (goto-char (org-entry-beginning-position))
    (let* ((hl (org-element-context))
-		  (hl-begin (1+ (plist-get  (plist-get hl 'headline) :begin)))
-		  (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
-		  (hl-ov (make-overlay hl-begin hl-end)))
-	 (overlay-put hl-ov 'face 'mindre-keyword)
-	 (overlay-put hl-ov 'org-noter-current-hl t))
+          (hl-begin (1+ (plist-get  (plist-get hl 'headline) :begin)))
+          (hl-end (1- (plist-get  (plist-get hl 'headline) :contents-begin)))
+          (hl-ov (make-overlay hl-begin hl-end)))
+     (overlay-put hl-ov 'face 'mindre-keyword)
+     (overlay-put hl-ov 'org-noter-current-hl t))
    (org-cycle-hide-drawers 'all)))
 
 (defun eli/org-noter-back-to-current-window (orig-fun)
@@ -92,7 +92,7 @@
 
 (defun eli/org-noter-kill-outline (&rest _arg)
   (when (buffer-live-p (get-buffer "*Outline Notes*"))
-	(kill-buffer "*Outline Notes*")))
+    (kill-buffer "*Outline Notes*")))
 
 ;; custom for org-anki
 (defun eli/org-noter--insert-heading (level title &optional newlines-number location)
