@@ -459,7 +459,7 @@
 	ignore = untracked
 [submodule "org-noter"]
 	path = site-lisp/org-noter
-	url = https://github.com/weirdNox/org-noter
+	url = https://github.com/org-noter/org-noter
 	ignore = untracked
 [submodule "org-pdftools"]
 	path = site-lisp/org-pdftools
