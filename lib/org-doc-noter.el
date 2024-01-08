@@ -73,7 +73,7 @@ that the document window will occupy when split."
   :type 'directory)
 
 (defcustom org-doc-noter-note-name-functions
-  '((Info-mode . org-doc-noter-note-name-default)
+  '((Info-mode . org-doc-noter-note-name-info)
     (pdf-view-mode . org-doc-noter-note-name-default)
     (doc-view-mode . org-doc-noter-note-name-default)
     (nov-mode . org-doc-noter-note-name-default))
@@ -176,7 +176,7 @@ doc window."
   "Return name of file current buffer is visiting."
   (if (eq major-mode 'Info-mode)
       (if (Info-virtual-file-p Info-current-file)
-          (error "Info file is virtual!")
+          (user-error "Info file is virtual!")
         Info-current-file)
     (buffer-file-name)))
 
@@ -190,6 +190,15 @@ doc window."
                                      (file-name-with-extension
                                       (file-name-base doc-path)
                                       ".org"))))
+    (unless (file-exists-p note-file)
+      (make-empty-file note-file))
+    note-file))
+
+(defun org-doc-noter-note-name-info (_doc-path)
+  "Return the info note file for DOC-PATH."
+  (let ((note-file (file-name-concat
+                    org-doc-noter-notes-dir
+                    (file-name-with-extension "info" ".org"))))
     (unless (file-exists-p note-file)
       (make-empty-file note-file))
     note-file))
@@ -344,14 +353,13 @@ The result is a vector: [BUFFER AST MOD-TICK]"
             (buffer-modified-tick)))
    (t
     (let* ((doc-file (org-doc-noter--get-doc-file))
-           (doc-mode major-mode)
            (note-file (funcall (alist-get major-mode
                                           org-doc-noter-note-name-functions)
                                doc-file))
            (buffer (find-file-noselect note-file))
            ast modified-tick)
       (with-current-buffer buffer
-        (org-doc-noter--note-init (cons doc-mode doc-file))
+        (org-doc-noter--note-init doc-file)
         (setq ast (org-element-parse-buffer)
               modified-tick (buffer-modified-tick)))
       (vector (make-indirect-buffer
@@ -419,24 +427,21 @@ The result is a vector: [BUFFER AST MOD-TICK]"
     (with-current-buffer note-buffer
       (setq org-doc-noter-session session))))
 
-(defun org-doc-noter--note-init (doc-info)
+(defun org-doc-noter--note-init (doc-path)
   "Initialize the note buffer accroding to DOC-info."
-  (let* ((doc-path (cdr doc-info))
-         (doc-name (file-name-base doc-path))
-         (doc-string-info (prin1-to-string doc-info))
+  (let* ((doc-name (file-name-base doc-path))
          (note-finder (lambda ()
                         (goto-char (point-min))
                         (re-search-forward
                          (org-re-property
                           org-doc-noter-property-doc-file
-                          t nil doc-string-info)
+                          t nil doc-path)
                          nil t))))
     (unless (funcall note-finder)
       (goto-char (point-max))
       (insert "\n")
       (insert (concat "* " doc-name "\n"))
-      (org-entry-put nil org-doc-noter-property-doc-file
-                     doc-string-info))))
+      (org-entry-put nil org-doc-noter-property-doc-file doc-path))))
 
 
 ;;;; highlights
@@ -512,8 +517,7 @@ The result is a vector: [BUFFER AST MOD-TICK]"
         ('pdf-view-mode (pdf-view-goto-page (cdr location)))
         ('doc-view-mode (doc-view-goto-page (cdr location)))
         ('nov-mode
-         (setq nov-documents-index (car location))
-         (nov-render-document)
+         (nov-goto-document (car location))
          (goto-char (cdr location))
          (recenter))
         ('Info-mode
@@ -582,7 +586,6 @@ The result is a vector: [BUFFER AST MOD-TICK]"
                  #'org-doc-noter--handler nil t))
       ('doc-view-mode
        (doc-view-fit-width-to-window)
-       (doc-view-goto-page loc)
        (advice-add 'doc-view-goto-page :after
                    #'org-doc-noter--handler))
       ('Info-mode
@@ -747,24 +750,26 @@ The result is a vector: [BUFFER AST MOD-TICK]"
 ;;;###autoload
 (defun org-doc-noter-sync-prev-page ()
   (interactive)
-  (when-let* ((prev-note (car (org-doc-noter-session-prev-notes
-                               org-doc-noter-session)))
-              (loc (org-doc-noter--parse-property
-                    (org-element-property
-                     (org-doc-noter--get-prop "note-location") prev-note))))
-    (org-doc-noter-with-doc-buffer
-      (org-doc-noter-doc-locate loc))))
+  (if-let* ((prev-note (car (org-doc-noter-session-prev-notes
+                             org-doc-noter-session)))
+            (loc (org-doc-noter--parse-property
+                  (org-element-property
+                   (org-doc-noter--get-prop "note-location") prev-note))))
+      (org-doc-noter-with-doc-buffer
+        (org-doc-noter-doc-locate loc))
+    (user-error "There are no more previous pages with notes!")))
 
 ;;;###autoload
 (defun org-doc-noter-sync-next-page ()
   (interactive)
-  (when-let* ((next-note (car (org-doc-noter-session-after-notes
-                               org-doc-noter-session)))
-              (loc (org-doc-noter--parse-property
-                    (org-element-property
-                     (org-doc-noter--get-prop "note-location") next-note))))
-    (org-doc-noter-with-doc-buffer
-      (org-doc-noter-doc-locate loc))))
+  (if-let* ((next-note (car (org-doc-noter-session-after-notes
+                             org-doc-noter-session)))
+            (loc (org-doc-noter--parse-property
+                  (org-element-property
+                   (org-doc-noter--get-prop "note-location") next-note))))
+      (org-doc-noter-with-doc-buffer
+        (org-doc-noter-doc-locate loc))
+    (user-error "There are no more following pages with notes!")))
 
 ;;;###autoload
 (defun org-doc-noter ()
