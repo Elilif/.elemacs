@@ -35,6 +35,7 @@
 (declare-function doc-view-goto-page "doc-view")
 (declare-function doc-view-fit-width-to-window "doc-view")
 (declare-function pdf-view-goto-page "ext:pdf-view")
+(declare-function pdf-view-fit-width-to-window "ext:pdf-view")
 
 
 ;;;; customiations
@@ -670,8 +671,6 @@ The result is a vector: [BUFFER AST MOD-TICK]"
                         (org-doc-noter-session-note-ast
                          org-doc-noter-session)))
          (loc (org-doc-noter-session-doc-loc org-doc-noter-session))
-         (remark (when (region-active-p)
-                   (org-doc-noter-remark-make (region-beginning) (region-end))))
          (pos 0)
          (append? nil)
          (collection (org-element-map current-notes 'headline
@@ -680,7 +679,15 @@ The result is a vector: [BUFFER AST MOD-TICK]"
                            (setq pos (max pos end))
                            (cons (org-element-property :raw-value hl)
                                  end)))))
-         (heading (completing-read "Note: " collection)))
+         (heading (completing-read "Note: " collection))
+         remark-prop selected-text)
+
+    (when (region-active-p)
+      (let* ((beg (region-beginning))
+             (end (region-end)))
+        (setq remark-prop (org-doc-noter-remark-make beg end))
+        (setq selected-text (buffer-substring-no-properties beg end))))
+
     (select-window (get-buffer-window (org-doc-noter-session-note-buffer
                                        org-doc-noter-session)))
     (cond
@@ -704,6 +711,10 @@ The result is a vector: [BUFFER AST MOD-TICK]"
           (org-fold-show-set-visibility 'minimal))
       (org-insert-heading nil t)
       (insert heading)
+
+      (org-end-of-subtree)
+      (unless (bolp) (insert "\n"))
+
       (let* ((root-level (org-doc-noter-session-level org-doc-noter-session))
              (current-level (org-current-level))
              (diff (- (1+ root-level) current-level))
@@ -711,8 +722,13 @@ The result is a vector: [BUFFER AST MOD-TICK]"
         (dotimes (_ (abs diff)) (funcall changer)))
       (org-entry-put nil org-doc-noter-property-note-location
                      (prin1-to-string loc)))
-    (when remark
-      (org-entry-put nil org-doc-noter-property-note-remark remark))
+
+    (when (and remark-prop
+               selected-text)
+      (org-entry-put nil org-doc-noter-property-note-remark remark-prop)
+      (save-excursion
+        (insert "\n#+BEGIN_QUOTE\n" selected-text "\n#+END_QUOTE")))
+
     (outline-show-entry)
     (org-cycle-hide-drawers 'all))
   (save-excursion
@@ -724,8 +740,9 @@ The result is a vector: [BUFFER AST MOD-TICK]"
   (interactive)
   (when-let ((loc (org-doc-noter--parse-property
                    (org-entry-get nil org-doc-noter-property-note-location))))
-    (org-doc-noter-with-doc-buffer
-      (org-doc-noter-doc-locate loc))))
+    (save-excursion
+      (org-doc-noter-with-doc-buffer
+        (org-doc-noter-doc-locate loc)))))
 
 ;;;###autoload
 (defun org-doc-noter-sync-prev-page ()
