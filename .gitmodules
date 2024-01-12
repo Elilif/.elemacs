@@ -441,6 +441,10 @@
     load-path = lisp
 	url = git@github.com:emacsmirror/org-contrib.git
 	ignore = untracked
+[submodule "org-doc-noter"]
+	path = site-lisp/org-doc-noter
+	url = git@github.com:Elilif/org-doc-noter.git
+	ignore = untracked
 [submodule "org-download"]
 	path = site-lisp/org-download
 	url = https://github.com/abo-abo/org-download
@@ -460,6 +464,8 @@
 [submodule "org-noter"]
 	path = site-lisp/org-noter
 	url = https://github.com/org-noter/org-noter
+    no-byte-compile = org-noter-test-utils.el
+    no-byte-compile = emacs-devel.el
 	ignore = untracked
 [submodule "org-pdftools"]
 	path = site-lisp/org-pdftools
