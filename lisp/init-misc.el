@@ -250,26 +250,32 @@
   (:once (list :before 'eli/gptel-posframe-toggle)
     (eli/gptel-restore-conversations))
   (:option*
-   gptel-model "gpt-3.5-turbo-0613"
+   gptel-model "gpt-3.5-turbo-16k"
    gptel-crowdsourced-prompts-file "~/.emacs.d/etc/gptel/gptel-crowdsourced-prompts.csv"
    gptel-stream t
-   ;; gptel-host "api.openai.com"
-   gptel-host "api.openai-sb.com"
-   gptel-proxy "socks://127.0.0.1:7891"
-   ;; gptel-proxy ""
+   gptel-backend (gptel-make-openai "opai-sb"
+                                    :protocol "https"
+                                    :host "api.openai-sb.com"
+                                    :stream t
+                                    :key 'gptel-api-key
+                                    :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+                                    :models '("gpt-3.5-turbo-16k" "gpt-4"))
+   ;; gptel-proxy "socks://127.0.0.1:7891"
    gptel-default-mode 'org-mode
    gptel-temperature 0.3
-   gptel--num-messages-to-send 5
    gptel-prompt-prefix-alist `((markdown-mode . "### ")
                                (org-mode . ,(concat (make-string 110 ?\-) "\n"))
                                (text-mode . "### "))
+   gptel-response-prefix-alist `((markdown-mode . "")
+                                 (org-mode . ,(concat (make-string 55 ?\-) "\n"))
+                                 (text-mode . ""))
    gptel-directives '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
                       (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
                       (emacs . "You are an expert in Emacs.")))
   (:hook visual-fill-column-mode
          visual-line-mode)
-  (:advice gptel--create-prompt :override eli/gptel--create-prompt
-           gptel-send :override eli/gptel-send)
+  (:advice
+   gptel--create-prompt :around eli/gptel--create-prompt)
   (:bind
    "s-p" eli/gptel-close
    "s-i" eli/gptel-read-crowdsourced-prompt
