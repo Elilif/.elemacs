@@ -249,6 +249,10 @@
 	path = site-lisp/graphql
 	url = https://github.com/vermiculus/graphql.el
 	ignore = untracked
+[submodule "hackernews"]
+	path = site-lisp/hackernews
+	url = https://github.com/clarete/hackernews.el
+	ignore = untracked
 [submodule "helpful"]
 	path = site-lisp/helpful
 	url = https://github.com/Wilfred/helpful
