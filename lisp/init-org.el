@@ -61,7 +61,11 @@
 		   ;; fill-move-to-break-point :before eli/adjust-line-break-point
 		   org-fold--reveal-outline-maybe :around eli/org-fold--reveal-outline-maybe)
   (:when-loaded
-	(add-to-list 'safe-local-variable-values '(org-latex-and-related-regexp . nil)))
+	(add-to-list 'safe-local-variable-values '(org-latex-and-related-regexp . nil))
+    (add-to-list 'display-buffer-alist
+                 '("\\*Org Links\\*"
+                   (display-buffer-no-window)
+                   (allow-no-window . t))))
   (:bind
    "C-<tab>" eli/org-expand-all
    "C-x n l" eli/org-narrow-to-item))
