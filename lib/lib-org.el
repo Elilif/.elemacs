@@ -480,6 +480,17 @@ Throw an error when not in a list."
     (when (eq command org-log-note-this-command)
       (setq this-command org-log-note-this-command))))
 
+;;;###autoload
+(defun eli/org-babel-toggle-expansion ()
+  "Toggle expanding the current source code block."
+  (interactive)
+  (if buffer-read-only
+      (progn
+        (org-edit-src-exit)
+        (org-edit-src-code))
+    (org-edit-src-exit)
+    (call-interactively #'org-babel-expand-src-block)))
+
 ;;;; provide
 (provide 'lib-org)
 ;;; lib-org.el ends here.

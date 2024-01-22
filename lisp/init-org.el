@@ -325,8 +325,12 @@
 
 ;;;; org-babel
 (setup org
-  (:once (list :before 'org-insert-structure-template)
+  (:once (list :before '(org-insert-structure-template
+                         org-ctrl-c-ctrl-c
+                         org-edit-special
+                         org-babel-expand-src-block))
     (:option*
+     org-src-window-setup 'split-window-below
      org-confirm-babel-evaluate nil
      org-babel-default-header-args '((:session . "none")
                                      (:results . "replace")
@@ -341,6 +345,7 @@
                                 (js . t)
                                 (latex . t)
                                 (racket . t)
+                                (python . t)
                                 (jupyter . t)))
     (org-babel-do-load-languages 'org-babel-load-languages
                                  '((emacs-lisp . t)
@@ -349,7 +354,10 @@
                                    (js . t)
                                    (latex . t)
                                    (racket . t)
-                                   (jupyter . t)))))
+                                   (python . t)
+                                   (jupyter . t))))
+  (:bind-into org-src-mode-map
+    "C-c ;" eli/org-babel-toggle-expansion))
 
 (setup org-src
   (:option*
