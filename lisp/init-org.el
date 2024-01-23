@@ -324,13 +324,14 @@
    org-persist-directory "~/.emacs.d/.cache/org-persist/"))
 
 ;;;; org-babel
-(setup org
-  (:once (list :before '(org-insert-structure-template
-                         org-ctrl-c-ctrl-c
-                         org-edit-special
-                         org-babel-expand-src-block))
+(setup ob
+  (:also-load
+   lib-ob)
+  (:once (list :before 'org-insert-structure-template 'org-ctrl-c-ctrl-c
+               'org-edit-special 'org-babel-expand-src-block
+               'eli/org-babel-expand-src-block-and-edit)
     (:option*
-     org-src-window-setup 'split-window-below
+     org-src-window-setup 'current-window
      org-confirm-babel-evaluate nil
      org-babel-default-header-args '((:session . "none")
                                      (:results . "replace")
@@ -356,8 +357,16 @@
                                    (racket . t)
                                    (python . t)
                                    (jupyter . t))))
-  (:bind-into org-src-mode-map
-    "C-c ;" eli/org-babel-toggle-expansion))
+  ;; (:bind-into org-src-mode-map
+  ;;   "C-c ;" eli/org-babel-toggle-expansion)
+  (:bind-into org-mode-map
+    "C-c ;" eli/org-babel-expand-src-block-and-edit)
+  (:advice
+   org-edit-src-exit :before eli/org-src-clean
+   org-edit-src-save :before eli/org-src-clean
+   org-babel-expand-noweb-references :override eli/org-babel-expand-noweb-references)
+  (:hooks
+   org-src-mode-hook eli/org-src-add-overlays))
 
 (setup org-src
   (:option*
