@@ -4,8 +4,15 @@
 ;; Url: https://github.com/Elilif/.elemacs
 
 (defface org-src-read-only
-  '((t (:background "#e8e8e8")))
+  '((t (:background "#e8e8e8" :extend t)))
   "Face for read only text in `org-src-mode'")
+
+(defvar eli/org-src-map
+  (let ((map (make-sparse-keymap)))
+    (keymap-set map "s-d" #'eli/org-src-delete)
+    map)
+  "Keymap automatically activated inside overlays.
+You can re-bind the commands to any keys you prefer.")
 
 
 (defun eli/org-babel-expand-noweb-references (&optional info parent-buffer)
@@ -148,54 +155,51 @@ Add some text properties to expaned noweb references"
                                   (mapconcat #'identity
                                              (split-string expansion "[\n\r]")
                                              (concat "\n" prefix))
-                                expansion))
-                      (length (length result)))
-                 (setq result (propertize result
-                                          'noweb (concat
-                                                  org-babel-noweb-wrap-start
-                                                  id
-                                                  org-babel-noweb-wrap-end)
-                                          'read-only t
-                                          'cursor-intangible t))
-                 (put-text-property
-                  (1- length) length 'rear-nonsticky t result)
-                 result)))))
+                                expansion)))
+                 (propertize result
+                             'noweb (concat
+                                     org-babel-noweb-wrap-start
+                                     id
+                                     org-babel-noweb-wrap-end)))))))
        body t t 2))))
 
 (defun eli/org-src-add-overlays ()
   "Highlight expaned text."
-  (goto-char (point-min))
   (read-only-mode -1)
   (setq-local org-src--allow-write-back
               (lambda ()
                 (org-escape-code-in-region (point-min) (point-max))))
-  (with-silent-modifications
-    (let ((inhibit-read-only t))
-      (indent-region (point-min) (point-max)))
-    (when-let* ((orig (text-property-search-forward 'orig))
-                (pmin (point-min))
-                (pmax (point-max))
-                (beg (max pmin (prop-match-beginning orig)))
-                (end (min pmax (prop-match-end orig)))
-                (prop t))
-      (goto-char beg)
-      (unless (bolp) (setq beg (1- beg)))
-      (goto-char end)
-      (unless (bolp) (setq end (1+ end)))
-      (dolist (prop '(expanded read-only cursor-intangible))
-        (put-text-property pmin beg prop t)
-        (put-text-property end pmax prop t))
-      (put-text-property (1- beg) beg 'rear-nonsticky t)
-      (put-text-property (1- pmax) pmax 'rear-nonsticky t)
-
+  (save-excursion
+    (with-silent-modifications
+      (indent-region (point-min) (point-max))
       (goto-char (point-min))
+      (save-excursion
+        (when-let* ((orig (text-property-search-forward 'orig))
+                    (beg (prop-match-beginning orig))
+                    (end (prop-match-end orig)))
+          ;; (goto-char beg)
+          ;; (unless (bolp)
+          ;;   (setq beg (1- beg)))
+          (goto-char end)
+          (when (eolp)
+            (setq end (1+ end)))
+          (put-text-property (point-min) beg 'expanded t)
+          (put-text-property end (point-max) 'expanded t)))
+
       (dolist (target '(expanded noweb))
-        (save-excursion
-          (while (setq prop (text-property-search-forward target))
-            (let ((ov (make-overlay (prop-match-beginning prop)
-                                    (prop-match-end prop))))
-              (overlay-put ov 'face 'org-src-read-only)))))))
-  (cursor-intangible-mode 1))
+        (let (prop)
+          (save-excursion
+            (while (setq prop (text-property-search-forward target))
+              (let* ((beg (prop-match-beginning prop))
+                     (end (prop-match-end prop))
+                     (ov (make-overlay beg end)))
+                (overlay-put ov 'face 'org-src-read-only)
+                (overlay-put ov 'evaporate t)
+                (overlay-put ov 'keymap eli/org-src-map)
+                (dolist (prop '(read-only))
+                  (put-text-property beg end prop t))
+                (put-text-property (max (point-min) (1- beg)) beg 'rear-nonsticky t)
+                (put-text-property (1- end) end 'rear-nonsticky t)))))))))
 
 (defun eli/org-src-clean (&rest _args)
   "Remove expaned text."
@@ -242,6 +246,35 @@ Add some text properties to expaned noweb references"
     (with-current-buffer buffer
       (when-let ((prop (text-property-search-forward 'orig)))
         (goto-char (prop-match-beginning prop))))))
+
+;;;###autoload
+(defun eli/org-src-noweb-expand ()
+  "Expand noweb reference before point."
+  (interactive)
+  (let* ((beg (line-beginning-position))
+         (end (point))
+         (ref (buffer-substring-no-properties beg end))
+         (parent-buffer (overlay-buffer org-src--overlay))
+         (result))
+    (setf (nth 1 org-src--babel-info) ref)
+    (setq result (eli/org-babel-expand-noweb-references
+                  org-src--babel-info parent-buffer))
+    (save-window-excursion
+      (save-restriction
+        (narrow-to-region beg end)
+        (delete-region beg end)
+        (insert result)
+        (eli/org-src-add-overlays)))))
+
+;;;###autoload
+(defun eli/org-src-delete ()
+  "Delete noweb reference under point."
+  (interactive)
+  (let* ((ov (cl-find-if (lambda (ov)
+                           (overlay-get ov 'evaporate))
+                         (overlays-at (point))))
+         (inhibit-read-only t))
+    (delete-region (overlay-start ov) (overlay-end ov))))
 
 (provide 'lib-ob)
 ;;; lib-ob.el ends here

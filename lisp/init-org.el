@@ -357,8 +357,8 @@
                                    (racket . t)
                                    (python . t)
                                    (jupyter . t))))
-  ;; (:bind-into org-src-mode-map
-  ;;   "C-c ;" eli/org-babel-toggle-expansion)
+  (:bind-into org-src-mode-map
+    "C-c ;" eli/org-src-noweb-expand)
   (:bind-into org-mode-map
     "C-c ;" eli/org-babel-expand-src-block-and-edit)
   (:advice
