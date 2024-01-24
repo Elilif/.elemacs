@@ -1,4 +1,4 @@
-;; lib-org-simple-ref.el --- Initialize lib-org-simple-ref configurations.	-*- lexical-binding: t; -*-
+;; lib-org-simple-ref.el --- Initialize lib-org-simple-ref configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -24,7 +24,7 @@
 ;;
 
 ;;; Commentary:
-;;
+;; Code in this file is mainly taken from `org-ref'
 ;;
 ;;
 
@@ -47,8 +47,8 @@
    (concat "\\\\label{" org-ref-label-re "}")
    ;; A target, code copied from org-target-regexp and group 1 numbered.
    (let ((border "[^<>\n\r \t]"))
-     (format "<<\\(?1:%s\\|%s[^<>\n\r]*%s\\)>>"
-	         border border border))
+     (format "<<<\\(?1:%s\\|%s[^<>\n\r]*%s\\)>>>"
+             border border border))
    ;; A label link
    (concat "label:" org-ref-label-re "\\_>")
    "\\\\lstset{.*label=\\(?1:.*?\\),.*}")
@@ -77,11 +77,18 @@ The label should always be in group 1.")
 (defun eli/org-ref-insert-ref-link ()
   "Completion function for a ref link."
   (interactive)
-  (let* ((completion-extra-properties '(:annotation-function
-                                        eli/org-ref-label-annotation))
-         (label (completing-read "Choose: " (org-ref-get-labels)))
-         (label-trim (string-trim label))
-         (plist (alist-get label org-ref-label-cache nil nil #'string=))
+  (let* ((label-trim)
+         (plist-getter (lambda ()
+                         (let* ((completion-extra-properties '(:annotation-function
+                                                               eli/org-ref-label-annotation))
+                                (label (completing-read "Choose: " (org-ref-get-labels))))
+                           (setq label-trim (string-trim label))
+                           (alist-get label org-ref-label-cache nil nil #'string=))))
+         (plist (cond
+                 (org-src-mode
+                  (with-current-buffer (overlay-buffer org-src--overlay)
+                    (funcall plist-getter)))
+                 (t (funcall plist-getter))))
          (result  (pcase (plist-get plist :type)
                     ("ID"
                      (cons (concat "id:" label-trim)
@@ -91,8 +98,16 @@ The label should always be in group 1.")
                            (plist-get plist :title)))
                     ("latex-environment"
                      (cons label-trim
-                           label-trim)))))
-    (insert (format "[[%s][%s]]" (car result) (cdr result)))))
+                           label-trim))
+                    ("src-block"
+                     (cons label-trim
+                           label-trim))))
+         (link (cond
+                ((or org-src-mode (get-text-property (point) 'src-block))
+                 (format "<<%s>>" (car result)))
+                (t
+                 (format "[[%s][%s]]" (car result) (cdr result))))))
+    (insert link)))
 
 (defun org-ref-get-labels ()
   "Return a list of referenceable labels in the document.
@@ -117,21 +132,21 @@ font-lock."
        ;; this with the buffer-chars-modified-tick which keeps track of changes.
        ;; If this hasn't changed, no chars have been modified.
        (/= (buffer-chars-modified-tick)
-	       org-ref-buffer-chars-modified-tick))
+           org-ref-buffer-chars-modified-tick))
       ;; We need to search for all the labels either because we don't have them,
       ;; or the buffer has changed since we looked last time.
       (let ((case-fold-search t)
-	        (rx (string-join org-ref-ref-label-regexps "\\|"))
-	        (labels '())
-	        oe ;; org-element
-	        data
+            (rx (string-join org-ref-ref-label-regexps "\\|"))
+            (labels '())
+            oe ;; org-element
+            data
             id)
-	    (save-excursion
-	      (org-with-wide-buffer
-	       (goto-char (point-min))
-	       (while (re-search-forward rx nil t)
-	         (save-match-data
-	           (setq oe (org-element-context)
+        (save-excursion
+          (org-with-wide-buffer
+           (goto-char (point-min))
+           (while (re-search-forward rx nil t)
+             (save-match-data
+               (setq oe (org-element-context)
                      id (match-string-no-properties 1)
                      data (list
                            :title (if (equal (car oe) 'latex-environment)
@@ -140,12 +155,12 @@ font-lock."
                                         (file-name-base (buffer-file-name))))
                            :type (or (org-element-property :key oe)
                                      (symbol-name (car oe))))))
-	         (cl-pushnew (cons (truncate-string-to-width id 70 nil 32) data) labels))))
+             (cl-pushnew (cons (truncate-string-to-width id 70 nil 32) data) labels))))
 
-	    ;; reverse so they are in the order we find them.
-	    (setq
-	     org-ref-buffer-chars-modified-tick (buffer-chars-modified-tick)
-	     org-ref-label-cache (delete-dups (reverse labels)))))
+        ;; reverse so they are in the order we find them.
+        (setq
+         org-ref-buffer-chars-modified-tick (buffer-chars-modified-tick)
+         org-ref-label-cache (delete-dups (reverse labels)))))
   ;; retrieve the cached data
   (setq org-ref-label-annot-cache org-ref-label-cache))
 
