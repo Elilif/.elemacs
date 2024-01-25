@@ -51,6 +51,8 @@
              border border border))
    ;; A label link
    (concat "label:" org-ref-label-re "\\_>")
+   ;; code ref
+   "(\\(?2:ref\\):\\(?1:.*?\\))"
    "\\\\lstset{.*label=\\(?1:.*?\\),.*}")
   "List of regular expressions to labels.
 The label should always be in group 1.")
@@ -64,7 +66,15 @@ The label should always be in group 1.")
 
  used by `eli/org-ref-label-annotation'.")
 
+(defvar org-simple-ref-narrow '((?c . "coderef")
+                                (?s . "src-block")
+                                (?h . "ID"))
+  "Used by `consult--read' in `org-simple-ref-read'.
+
+See `consult--read' for details.")
+
 (defun eli/org-ref-label-annotation (candidate)
+  "Used by `completing-read'."
   (let ((plist (alist-get candidate org-ref-label-annot-cache nil nil #'string=)))
     (concat (truncate-string-to-width (propertize (plist-get plist :title)
                                                   'face 'mindre-keyword)
@@ -79,15 +89,18 @@ The label should always be in group 1.")
   (interactive)
   (let* ((label-trim)
          (plist-getter (lambda ()
-                         (let* ((completion-extra-properties '(:annotation-function
-                                                               eli/org-ref-label-annotation))
-                                (label (completing-read "Choose: " (org-ref-get-labels))))
+                         (let* ((label (org-simple-ref-read (org-ref-get-labels)))
+                                ;; or use `completing-read':
+                                ;; (completion-extra-properties '(:annotation-function
+                                ;;                                eli/org-ref-label-annotation))
+                                ;; (label (completing-read (org-ref-get-labels)))
+                                )
                            (setq label-trim (string-trim label))
                            (alist-get label org-ref-label-cache nil nil #'string=))))
          (plist (cond
-                 (org-src-mode
-                  (with-current-buffer (overlay-buffer org-src--overlay)
-                    (funcall plist-getter)))
+                 ((org-src-edit-buffer-p)
+                  (org-src-do-at-code-block
+                   (funcall plist-getter)))
                  (t (funcall plist-getter))))
          (result  (pcase (plist-get plist :type)
                     ("ID"
@@ -101,9 +114,12 @@ The label should always be in group 1.")
                            label-trim))
                     ("src-block"
                      (cons label-trim
+                           label-trim))
+                    ("coderef"
+                     (cons (format "(%s)" label-trim)
                            label-trim))))
          (link (cond
-                ((or org-src-mode (get-text-property (point) 'src-block))
+                ((or (org-src-edit-buffer-p) (get-text-property (point) 'src-block))
                  (format "<<%s>>" (car result)))
                 (t
                  (format "[[%s][%s]]" (car result) (cdr result))))))
@@ -151,11 +167,13 @@ font-lock."
                      data (list
                            :title (if (equal (car oe) 'latex-environment)
                                       ""
-                                    (or (org-element-property :raw-value (org-element-lineage oe '(headline)))
+                                    (or (org-element-property :name oe)
+                                        (org-element-property :raw-value (org-element-lineage oe '(headline)))
                                         (file-name-base (buffer-file-name))))
-                           :type (or (org-element-property :key oe)
+                           :type (or (and (match-string-no-properties 2) "coderef")
+                                     (org-element-property :key oe)
                                      (symbol-name (car oe))))))
-             (cl-pushnew (cons (truncate-string-to-width id 70 nil 32) data) labels))))
+             (cl-pushnew (cons id data) labels))))
 
         ;; reverse so they are in the order we find them.
         (setq
@@ -163,6 +181,43 @@ font-lock."
          org-ref-label-cache (delete-dups (reverse labels)))))
   ;; retrieve the cached data
   (setq org-ref-label-annot-cache org-ref-label-cache))
+
+(defun org-simple-ref-read (collection)
+  "Select an item from COLLECTION returned by `org-ref-get-labels'."
+
+  ;; add some metadata (text properties) to candidates.
+  (mapc
+   (lambda (cand)
+     (let* ((string (car cand))
+            (data (cdr cand)))
+       (setf (car cand)
+             (propertize
+              (truncate-string-to-width string 70 nil 32)
+              'org-simple-ref--type
+              (or (car-safe (rassoc (plist-get data :type) org-simple-ref-narrow))
+                  ;; 0 is a placeholder
+                  0)))))
+   collection)
+  (consult--read collection
+                 :prompt "Select: "
+                 :group
+                 (lambda (cand transform)
+                   (let* ((plist (alist-get cand collection nil nil #'string=))
+                          (type (plist-get plist :type)))
+                     (if transform cand type)))
+                 :annotate
+                 (lambda (cand)
+                   (let* ((plist (alist-get cand collection nil nil #'string=))
+                          (title (plist-get plist :title)))
+                     title))
+                 :narrow
+                 org-simple-ref-narrow
+                 :predicate
+                 (lambda (cand)
+                   (let ((key (get-text-property 0 'org-simple-ref--type (car cand))))
+                     (if consult--narrow
+                         (= key consult--narrow)
+                       (/= key ?g))))))
 
 
 ;;;; provide
