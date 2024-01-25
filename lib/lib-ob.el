@@ -165,7 +165,6 @@ Add some text properties to expaned noweb references"
 
 (defun eli/org-src-add-overlays ()
   "Highlight expaned text."
-  (read-only-mode -1)
   (setq-local org-src--allow-write-back
               (lambda ()
                 (org-escape-code-in-region (point-min) (point-max))))
@@ -201,6 +200,8 @@ Add some text properties to expaned noweb references"
                 (put-text-property (max (point-min) (1- beg)) beg 'rear-nonsticky t)
                 (put-text-property (1- end) end 'rear-nonsticky t)))))))))
 
+(add-hook 'org-src-mode-hook #'eli/org-src-add-overlays -100)
+
 (defun eli/org-src-clean (&rest _args)
   "Remove expaned text."
   (save-excursion
@@ -230,7 +231,7 @@ Add some text properties to expaned noweb references"
                        (org-babel-expand-noweb-references info)
                      (nth 1 info)))
          (body (setf (nth 1 info)
-                     (propertize (if (string-empty-p contents) "\n" contents)
+                     (propertize (if (string-empty-p contents) " " contents)
                                  'orig t)))
          (expand-cmd (intern (concat "org-babel-expand-body:" lang)))
          (assignments-cmd (intern (concat "org-babel-variable-assignments:"
@@ -254,11 +255,10 @@ Add some text properties to expaned noweb references"
   (let* ((beg (line-beginning-position))
          (end (point))
          (ref (buffer-substring-no-properties beg end))
-         (parent-buffer (overlay-buffer org-src--overlay))
          (result))
     (setf (nth 1 org-src--babel-info) ref)
     (setq result (eli/org-babel-expand-noweb-references
-                  org-src--babel-info parent-buffer))
+                  org-src--babel-info (org-src-source-buffer)))
     (save-window-excursion
       (save-restriction
         (narrow-to-region beg end)
@@ -275,6 +275,12 @@ Add some text properties to expaned noweb references"
                          (overlays-at (point))))
          (inhibit-read-only t))
     (delete-region (overlay-start ov) (overlay-end ov))))
+
+;;;; coderef
+(defun eli/org-src-set-coderef-label-format ()
+  (setq-local org-coderef-label-format
+              (concat (comment-padright comment-start comment-add)
+                      org-coderef-label-format)))
 
 (provide 'lib-ob)
 ;;; lib-ob.el ends here

@@ -337,7 +337,7 @@
                                      (:results . "replace")
                                      (:exports . "code")
                                      (:cache . "no")
-                                     (:noweb . "no")
+                                     (:noweb . "yes")
                                      (:hlines . "no")
                                      (:tangle . "no"))
      org-babel-load-languages '((emacs-lisp . t)
@@ -364,9 +364,13 @@
   (:advice
    org-edit-src-exit :before eli/org-src-clean
    org-edit-src-save :before eli/org-src-clean
-   org-babel-expand-noweb-references :override eli/org-babel-expand-noweb-references)
+   org-babel-expand-noweb-references :override eli/org-babel-expand-noweb-references
+   org-src-coderef-format :around (lambda (orig &rest args)
+                                    (if (org-src-edit-buffer-p)
+                                        org-coderef-label-format
+                                      (apply orig args))))
   (:hooks
-   org-src-mode-hook eli/org-src-add-overlays))
+   org-src-mode-hook eli/org-src-set-coderef-label-format))
 
 (setup org-src
   (:option*
