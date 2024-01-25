@@ -267,8 +267,7 @@ Add some text properties to expaned noweb references"
          (buffer (org-src--construct-edit-buffer-name (buffer-name) lang)))
     (org-edit-src-code expanded buffer)
     (with-current-buffer buffer
-      (when-let ((prop (text-property-search-forward 'orig)))
-        (goto-char (prop-match-beginning prop))))))
+      (goto-char (1+ (text-property-any (point-min) (point-max) 'read-only nil))))))
 
 ;;;###autoload
 (defun eli/org-src-noweb-expand ()
