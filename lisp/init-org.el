@@ -358,9 +358,12 @@
                                    (python . t)
                                    (jupyter . t))))
   (:bind-into org-src-mode-map
-    "C-c ;" eli/org-src-noweb-expand)
+    "C-c ;" eli/org-src-noweb-expand
+    "s-." eli/org-src-noweb-jump
+    "s-," eli/org-src-noweb-back)
   (:bind-into org-mode-map
-    "C-c ;" eli/org-babel-expand-src-block-and-edit)
+    "C-c ;" eli/org-babel-expand-src-block-and-edit
+    "s-," eli/org-src-noweb-back)
   (:advice
    org-edit-src-exit :before eli/org-src-clean
    org-edit-src-save :before eli/org-src-clean

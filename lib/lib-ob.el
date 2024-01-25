@@ -14,6 +14,22 @@
   "Keymap automatically activated inside overlays.
 You can re-bind the commands to any keys you prefer.")
 
+(defmacro eli/org-src-ref-expand (&rest body)
+  `(let* ((split-file (match-string 1 id))
+          (split-ref (match-string 2 id))
+          (regexp (org-babel-named-src-block-regexp-for-name split-ref)))
+     (save-window-excursion
+       (find-file split-file)
+       (org-with-wide-buffer
+        (goto-char (point-min))
+        (if (re-search-forward regexp nil t)
+            (unless (org-in-commented-heading-p)
+              (let ((e (org-element-at-point)))
+                (when (equal (org-element-property :name e) split-ref)
+                  (goto-char
+                   (org-element-property :post-affiliated e))
+                  ,@body)))
+          "")))))
 
 (defun eli/org-babel-expand-noweb-references (&optional info parent-buffer)
   "Advice for `org-babel-expand-noweb-references'.
@@ -35,11 +51,11 @@ Add some text properties to expaned noweb references"
                          (with-current-buffer parent-buffer
                            (buffer-chars-modified-tick)))
                    org-babel-expand-noweb-references--cache-buffer)
-      (setq org-babel-expand-noweb-references--cache nil
-            org-babel-expand-noweb-references--cache-buffer
-            (cons parent-buffer
-                  (with-current-buffer parent-buffer
-                    (buffer-chars-modified-tick)))))
+      (setq-local org-babel-expand-noweb-references--cache nil
+                  org-babel-expand-noweb-references--cache-buffer
+                  (cons parent-buffer
+                        (with-current-buffer parent-buffer
+                          (buffer-chars-modified-tick)))))
     (cl-macrolet ((c-wrap
                     (s)
                     ;; Comment string S, according to LANG mode.  Return new
@@ -101,11 +117,11 @@ Add some text properties to expaned noweb references"
                          (unless (equal org-babel-expand-noweb-references--cache-buffer
                                         (cons parent-buffer
                                               (buffer-chars-modified-tick)))
-                           (setq org-babel-expand-noweb-references--cache nil
-                                 org-babel-expand-noweb-references--cache-buffer
-                                 (cons parent-buffer
-                                       (with-current-buffer parent-buffer
-                                         (buffer-chars-modified-tick)))))))
+                           (setq-local org-babel-expand-noweb-references--cache nil
+                                       org-babel-expand-noweb-references--cache-buffer
+                                       (cons parent-buffer
+                                             (with-current-buffer parent-buffer
+                                               (buffer-chars-modified-tick)))))))
                       ;; Already cached.
                       ((and (hash-table-p org-babel-expand-noweb-references--cache)
                             (gethash id org-babel-expand-noweb-references--cache))
@@ -122,7 +138,7 @@ Add some text properties to expaned noweb references"
                                 (not (org-in-commented-heading-p))
                                 (let ((info (org-babel-get-src-block-info t)))
                                   (unless (hash-table-p org-babel-expand-noweb-references--cache)
-                                    (setq org-babel-expand-noweb-references--cache (make-hash-table :test #'equal)))
+                                    (setq-local org-babel-expand-noweb-references--cache (make-hash-table :test #'equal)))
                                   (push info (gethash id  org-babel-expand-noweb-references--cache))
                                   (expand-body info))))))
                       ;; Retrieve from the Library of Babel.
@@ -134,13 +150,16 @@ Add some text properties to expaned noweb references"
                       ((and (hash-table-p org-babel-expand-noweb-references--cache)
                             (gethash 'buffer-processed org-babel-expand-noweb-references--cache))
                        (expand-references id))
+                      ((string-match "^\\(.+\\):\\(.+\\)$" id)
+                       (eli/org-src-ref-expand
+                        (eli/org-babel-expand-noweb-references)))
                       ;; Though luck.  We go into the long process of
                       ;; checking each source block and expand those
                       ;; with a matching Noweb reference.  Since we're
                       ;; going to visit all source blocks in the
                       ;; document, cache information about them as well.
                       (t
-                       (setq org-babel-expand-noweb-references--cache (make-hash-table :test #'equal))
+                       (setq-local org-babel-expand-noweb-references--cache (make-hash-table :test #'equal))
                        (org-with-wide-buffer
                         (org-babel-map-src-blocks nil
                           (if (org-in-commented-heading-p)
@@ -155,12 +174,12 @@ Add some text properties to expaned noweb references"
                                   (mapconcat #'identity
                                              (split-string expansion "[\n\r]")
                                              (concat "\n" prefix))
-                                expansion)))
-                 (propertize result
-                             'noweb (concat
-                                     org-babel-noweb-wrap-start
-                                     id
-                                     org-babel-noweb-wrap-end)))))))
+                                expansion))
+                      (name (if (string-match "\\(.*?\\)(.*?)" id)
+                                (match-string 1 id)
+                              id)))
+                 (font-lock-prepend-text-property 0 (length result) 'cnoweb name result)
+                 (propertize result 'noweb id))))))
        body t t 2))))
 
 (defun eli/org-src-add-overlays ()
@@ -214,7 +233,10 @@ Add some text properties to expaned noweb references"
       (while (setq prop (text-property-search-forward 'noweb))
         (delete-region (prop-match-beginning prop)
                        (prop-match-end prop))
-        (insert (prop-match-value prop)))
+        (insert (concat
+                 org-babel-noweb-wrap-start
+                 (prop-match-value prop)
+                 org-babel-noweb-wrap-end)))
       (indent-region (point-min) (point-max)))))
 
 ;;;###autoload
@@ -275,6 +297,44 @@ Add some text properties to expaned noweb references"
                          (overlays-at (point))))
          (inhibit-read-only t))
     (delete-region (overlay-start ov) (overlay-end ov))))
+
+(defvar eli/org-src-noweb-history nil)
+
+;;;###autoload
+(defun eli/org-src-noweb-jump ()
+  "Edit current noweb under point."
+  (interactive)
+  (when org-src-mode
+    (let* ((ref? (lambda (target) (string-match "^\\(.+\\):\\(.+\\)$" target)))
+           (nowebs (get-text-property (point) 'cnoweb))
+           (other-file? (cl-find-if ref? nowebs))
+           (file (and other-file? (match-string 1 other-file?)))
+           (last (car (last nowebs))))
+      (when-let* ((id (if (and file
+                               (not (funcall ref? last)))
+                          (concat file ":" last)
+                        last))
+                  (pos (or (nth 5 (car-safe (gethash id  (org-src-do-at-code-block
+                                                          org-babel-expand-noweb-references--cache))))
+                           (and (funcall ref? id)
+                                (eli/org-src-ref-expand
+                                 (copy-marker (point)))))))
+        (org-edit-src-exit)
+        (push (copy-marker (point)) eli/org-src-noweb-history)
+        (when (markerp pos)
+          (switch-to-buffer (marker-buffer pos)))
+        (goto-char pos)
+        (eli/org-babel-expand-src-block-and-edit)))))
+
+;;;###autoload
+(defun eli/org-src-noweb-back ()
+  (interactive)
+  (when org-src-mode
+    (org-edit-src-exit))
+  (when-let ((marker (pop eli/org-src-noweb-history)))
+    (switch-to-buffer (marker-buffer marker))
+    (goto-char marker)
+    (eli/org-babel-expand-src-block-and-edit)))
 
 ;;;; coderef
 (defun eli/org-src-set-coderef-label-format ()
