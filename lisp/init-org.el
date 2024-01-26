@@ -358,7 +358,7 @@
                                    (python . t)
                                    (jupyter . t))))
   (:bind-into org-src-mode-map
-    "C-c ;" eli/org-src-noweb-expand
+    "s-<tab>" eli/org-src-noweb-expand
     "s-." eli/org-src-noweb-jump
     "s-," eli/org-src-noweb-back)
   (:bind-into org-mode-map
@@ -366,7 +366,7 @@
     "s-," eli/org-src-noweb-back)
   (:advice
    org-edit-src-exit :before eli/org-src-clean
-   org-edit-src-save :before eli/org-src-clean
+   org-edit-src-save :around eli/org-src-save-around
    org-babel-expand-noweb-references :override eli/org-babel-expand-noweb-references
    org-src-coderef-format :around (lambda (orig &rest args)
                                     (if (org-src-edit-buffer-p)

@@ -199,7 +199,8 @@ Add some text properties to expaned noweb references"
           ;; (unless (bolp)
           ;;   (setq beg (1- beg)))
           (goto-char end)
-          (when (eolp)
+          (when (and (eolp)
+                     (not (eobp)))
             (setq end (1+ end)))
           (put-text-property (point-min) beg 'expanded t)
           (put-text-property end (point-max) 'expanded t)))
@@ -239,12 +240,28 @@ Add some text properties to expaned noweb references"
                  org-babel-noweb-wrap-end)))
       (indent-region (point-min) (point-max)))))
 
-;;;###autoload
-(defun eli/org-babel-expand-src-block-and-edit (&optional _arg info params)
-  "Expand the current source code block."
-  (interactive)
-  (let* ((info (or info (org-babel-get-src-block-info)))
-         (lang (nth 0 info))
+(defun eli/org-src-save-around (orig)
+  (let* ((orig-pos (point))
+         (inhibit-read-only t)
+         (beg (progn
+                (goto-char (point-min))
+                (prop-match-beginning (text-property-search-forward 'orig))))
+         (expanded (text-property-search-forward 'expanded))
+         (end (or (and expanded (prop-match-beginning expanded))
+                  (point-max)))
+         string)
+    (put-text-property beg end 'orig t)
+    (setq string (buffer-substring (point-min) (point-max)))
+    (eli/org-src-clean)
+    (funcall orig)
+    (delete-region (point-min) (point-max))
+    (insert string)
+    (eli/org-src-add-overlays)
+    (set-buffer-modified-p nil)
+    (goto-char orig-pos)))
+
+(defun eli/org-babel-expand-src-block (info &optional params)
+  (let* ((lang (nth 0 info))
          (params (setf (nth 2 info)
                        (sort (org-babel-merge-params (nth 2 info) params)
                              (lambda (el1 el2) (string< (symbol-name (car el1))
@@ -257,27 +274,38 @@ Add some text properties to expaned noweb references"
                                  'orig t)))
          (expand-cmd (intern (concat "org-babel-expand-body:" lang)))
          (assignments-cmd (intern (concat "org-babel-variable-assignments:"
-                                          lang)))
-         (expanded
-          (if (fboundp expand-cmd)
-              (funcall expand-cmd body params)
-            (org-babel-expand-body:generic
-             body params (and (fboundp assignments-cmd)
-                              (funcall assignments-cmd params)))))
+                                          lang))))
+    (if (fboundp expand-cmd)
+        (funcall expand-cmd body params)
+      (org-babel-expand-body:generic
+       body params (and (fboundp assignments-cmd)
+                        (funcall assignments-cmd params))))))
+
+;;;###autoload
+(defun eli/org-babel-expand-src-block-and-edit (&optional info params)
+  "Expand the current source code block."
+  (interactive)
+  (let* ((info (or info (org-babel-get-src-block-info)))
+         (lang (nth 0 info))
+         (expanded (eli/org-babel-expand-src-block info params))
          (buffer (org-src--construct-edit-buffer-name (buffer-name) lang)))
     (org-edit-src-code expanded buffer)
     (with-current-buffer buffer
-      (goto-char (1+ (text-property-any (point-min) (point-max) 'read-only nil))))))
+      (if-let ((eob (point-max))
+               (pos (text-property-any (point-min) (point-max) 'read-only nil)))
+          (goto-char (min (1+ pos) eob))
+        (goto-char eob)))))
 
 ;;;###autoload
-(defun eli/org-src-noweb-expand ()
+(defun eli/org-src-noweb-expand (&optional string)
   "Expand noweb reference before point."
   (interactive)
-  (let* ((beg (line-beginning-position))
+  (let* ((info (seq-copy org-src--babel-info))
+         (beg (line-beginning-position))
          (end (point))
-         (ref (buffer-substring-no-properties beg end))
+         (string (or string (buffer-substring-no-properties beg end)))
          (result))
-    (setf (nth 1 org-src--babel-info) ref)
+    (setf (nth 1 info) string)
     (setq result (eli/org-babel-expand-noweb-references
                   org-src--babel-info (org-src-source-buffer)))
     (save-window-excursion
@@ -323,7 +351,8 @@ Add some text properties to expaned noweb references"
         (when (markerp pos)
           (switch-to-buffer (marker-buffer pos)))
         (goto-char pos)
-        (eli/org-babel-expand-src-block-and-edit)))))
+        (eli/org-babel-expand-src-block-and-edit)
+        (run-with-timer 0.1 nil (lambda () (lsp)))))))
 
 ;;;###autoload
 (defun eli/org-src-noweb-back ()
@@ -333,7 +362,8 @@ Add some text properties to expaned noweb references"
   (when-let ((marker (pop eli/org-src-noweb-history)))
     (switch-to-buffer (marker-buffer marker))
     (goto-char marker)
-    (eli/org-babel-expand-src-block-and-edit)))
+    (eli/org-babel-expand-src-block-and-edit)
+    (run-with-timer 0.1 nil (lambda () (lsp)))))
 
 ;;;; coderef
 (defun eli/org-src-set-coderef-label-format ()
