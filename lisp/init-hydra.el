@@ -480,22 +480,23 @@
           :pre (progn (setq which-key-inhibit t))
           :post (progn (setq which-key-inhibit nil)))
   ("Input"
-   (("s" eli/input-switch "switch input")
+   (("h" eli/input-switch "switch input")
     ("k" eli/insert-key-sequence "insert key sequence")
-    ("w" whisper-run)
     ("t" org-matable-create "matrices"))
-   "Yank"
-   (("p" consult-yank-pop "Clipboard"))
    "Emoji & Pic"
    (("i" emoji-insert)
     ("f" emoji-search)
     ("m" eli/select-images "images"))
    "LaTeX"
-   (("l" mathpix-screenshot "mathpix")
+   (("p" mathpix-screenshot "mathpix")
     ("r" eli/org-ref-insert-ref-link "insert org ref"))
    "Snippets"
    (("c" eli/tempel-temp-create)
-    ("y" eli/tempel-temp-save))))
+    ("y" eli/tempel-temp-save))
+   "radiance"
+   (("s" radiance-mark-strings)
+    ("b" radiance-mark-symbols)
+    ("l" radiance-mark-lines))))
 
 (pretty-hydra-define hydra-player
   (:color amaranth :exit t :quit-key "q"
