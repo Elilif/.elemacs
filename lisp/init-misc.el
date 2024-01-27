@@ -201,6 +201,7 @@
                              rime-predicate-space-after-cc-p
                              rime-predicate-current-uppercase-letter-p
                              rime-predicate-hydra-p
+                             eli/rime-predicate-org-in-verbatim-emphasis-p
                              +rime-predicate-cc-notes-p
                              rime-predicate-after-latin-char-p)
    rime-show-candidate 'nil

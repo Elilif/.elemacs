@@ -67,9 +67,12 @@ Can be used in `rime-disable-predicates' and `rime-inline-predicates'."
 
 (defun +rime-predicate-cc-notes-p ()
   (when (minibufferp)
-    (not (and (string= (buffer-substring (point-min) 5) "Note")
-              (with-minibuffer-selected-window
-                (string-match-p "\\cc" (buffer-name)))))))
+    (not (string= (buffer-substring (point-min) 5) "Note"))))
+
+(defun eli/rime-predicate-org-in-verbatim-emphasis-p ()
+  (and (derived-mode-p 'org-mode)
+       (or (org-in-verbatim-emphasis)
+           (eq (char-after) ?=))))
 
 ;;;###autoload
 (defun +rime-convert-string-at-point (&optional _return-cregexp)
