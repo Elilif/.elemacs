@@ -372,6 +372,16 @@ Add some text properties to expanded noweb references"
     (eli/org-babel-expand-src-block-and-edit)
     (run-with-timer 0.1 nil (lambda () (lsp)))))
 
+;;;###autoload
+(defun eli/org-babel-goto-src-block-end ()
+  "Go to the end of the current code block."
+  (interactive)
+  (let ((element (org-element-at-point)))
+    (when (eq (org-element-type element) 'src-block)
+      (let ((end (org-element-property :end element)))
+        (org-babel-goto-src-block-head)
+        (re-search-forward org-babel-src-block-regexp end t)))))
+
 ;;;; coderef
 (defun eli/org-src-set-coderef-label-format ()
   (setq-local org-coderef-label-format
