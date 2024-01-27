@@ -234,12 +234,13 @@
          :end (line-end-position)))))
   (:with-feature org
     (:bind
-     "<remap> <org-cycle-agenda-files>" avy-goto-char-2))
+     "<remap> <org-cycle-agenda-files>" avy-goto-char-timer))
   (:option*
-   avy-all-windows nil)
+   avy-all-windows t
+   avy-timeout-seconds 0.5)
   (:global
    "C-;" avy-goto-char-in-line
-   "C-'" avy-goto-char-2))
+   "C-'" avy-goto-char-timer))
 
 ;;;; GPT
 (setup gptel
