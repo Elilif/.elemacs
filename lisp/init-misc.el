@@ -155,7 +155,13 @@
 ;;;; ace-window
 (setup ace-window
   (:global
-   "M-o" ace-window)
+   "M-o" ace-window
+   "s-j" previous-window-any-frame
+   "s-k" next-window-any-frame
+   "s-b" (lambda () (interactive) (windmove-left 1))
+   "s-f" (lambda () (interactive) (windmove-right 1))
+   "s-n" (lambda () (interactive) (windmove-down 1))
+   "s-p" (lambda () (interactive) (windmove-up 1)))
   (:option*
    aw-scope 'frame
    aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
