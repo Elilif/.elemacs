@@ -29,6 +29,8 @@
 ;;
 
 ;;; Code:
+(require 'consult)
+(require 'embark)
 
 ;;; cross-reference in org-mode
 (defvar org-ref-label-re
@@ -42,7 +44,7 @@
    ;; CUSTOM_ID in a heading
    (concat ":CUSTOM_ID:\\s-+" org-ref-label-re "\\_>")
    ;; #+name
-   (concat "^\\s-*#\\+name:\\s-+" org-ref-label-re "\\_>")
+   (concat "^\\s-*#\\+name:\\s-+" org-ref-label-re)
    ;; labels in latex
    (concat "\\\\label{" org-ref-label-re "}")
    ;; A target, code copied from org-target-regexp and group 1 numbered.
@@ -52,7 +54,7 @@
    ;; A label link
    (concat "label:" org-ref-label-re "\\_>")
    ;; code ref
-   "(\\(?2:ref\\):\\(?1:.*?\\))"
+   "[ 	]*(\\(?2:ref\\):\\(?1:[-a-zA-Z0-9_][-a-zA-Z0-9_ ]*\\))[ 	]*$"
    "\\\\lstset{.*label=\\(?1:.*?\\),.*}")
   "List of regular expressions to labels.
 The label should always be in group 1.")
@@ -68,7 +70,9 @@ The label should always be in group 1.")
 
 (defvar org-simple-ref-narrow '((?c . "coderef")
                                 (?s . "src-block")
-                                (?h . "ID"))
+                                (?i . "ID")
+                                (?r . "radio-target")
+                                (?h . "cureent-hd"))
   "Used by `consult--read' in `org-simple-ref-read'.
 
 See `consult--read' for details.")
@@ -109,16 +113,15 @@ See `consult--read' for details.")
                     ("CUSTOM_ID"
                      (cons (concat "#" label-trim)
                            (plist-get plist :title)))
-                    ("latex-environment"
-                     (cons label-trim
-                           label-trim))
-                    ("src-block"
-                     (cons label-trim
-                           label-trim))
                     ("coderef"
                      (cons (format "(%s)" label-trim)
+                           label-trim))
+                    (_
+                     (cons label-trim
                            label-trim))))
          (link (cond
+                ((string= (plist-get plist :type) "radio-target")
+                 label-trim)
                 ((or (org-src-edit-buffer-p) (get-text-property (point) 'src-block))
                  (format "<<%s>>" (car result)))
                 (t
@@ -163,14 +166,17 @@ font-lock."
            (while (re-search-forward rx nil t)
              (save-match-data
                (setq oe (org-element-context)
-                     id (match-string-no-properties 1)
+                     id (propertize (match-string-no-properties 1)
+                                    'org-simple-ref--location
+                                    (match-beginning 1))
                      data (list
                            :title (if (equal (car oe) 'latex-environment)
                                       ""
-                                    (or (org-element-property :name oe)
+                                    (or (and (not (string= (org-element-property :name oe) id))
+                                             (org-element-property :name oe))
                                         (org-element-property :raw-value (org-element-lineage oe '(headline)))
                                         (file-name-base (buffer-file-name))))
-                           :type (or (and (match-string-no-properties 2) "coderef")
+                           :type (or (and (string= (match-string-no-properties 2) "ref") "coderef")
                                      (org-element-property :key oe)
                                      (symbol-name (car oe))))))
              (cl-pushnew (cons id data) labels))))
@@ -198,26 +204,51 @@ font-lock."
                   ;; 0 is a placeholder
                   0)))))
    collection)
-  (consult--read collection
-                 :prompt "Select: "
-                 :group
-                 (lambda (cand transform)
-                   (let* ((plist (alist-get cand collection nil nil #'string=))
-                          (type (plist-get plist :type)))
-                     (if transform cand type)))
-                 :annotate
-                 (lambda (cand)
-                   (let* ((plist (alist-get cand collection nil nil #'string=))
-                          (title (plist-get plist :title)))
-                     title))
-                 :narrow
-                 org-simple-ref-narrow
-                 :predicate
-                 (lambda (cand)
-                   (let ((key (get-text-property 0 'org-simple-ref--type (car cand))))
-                     (if consult--narrow
-                         (= key consult--narrow)
-                       (/= key ?g))))))
+  (let* ((hd (save-excursion
+               (org-back-to-heading-or-point-min t)
+               (org-element-at-point)))
+         (beg (org-element-property :begin hd))
+         (end (org-element-property :end hd)))
+    (consult--read collection
+                   :prompt "Select: "
+                   :group
+                   (lambda (cand transform)
+                     (let* ((plist (alist-get cand collection nil nil #'string=))
+                            (type (plist-get plist :type)))
+                       (if transform cand type)))
+                   :annotate
+                   (lambda (cand)
+                     (let* ((plist (alist-get cand collection nil nil #'string=))
+                            (title (plist-get plist :title)))
+                       title))
+                   :category 'org-simple-ref
+                   :narrow
+                   org-simple-ref-narrow
+                   :predicate
+                   (lambda (cand)
+                     (let* ((cand (car cand))
+                            (key (get-text-property 0 'org-simple-ref--type cand))
+                            (pos (get-text-property 0 'org-simple-ref--location cand)))
+                       (if consult--narrow
+                           (cond
+                            ((= consult--narrow ?h)
+                             (and (> pos beg)
+                                  (< pos end)))
+                            (t
+                             (= key consult--narrow)))
+                         (/= key ?g)))))))
+
+(defun embark-org-simple-ref-goto-location (target)
+  "Jump to org simple reference location TARGET."
+  (consult--jump (get-text-property 0 'org-simple-ref--location target))
+  (pulse-momentary-highlight-one-line (point)))
+
+(defvar-keymap embark-org-simple-ref-map
+  :doc "Keymap for actions on org simple reference."
+  :parent embark-general-map
+  "g" #'embark-org-simple-ref-goto-location)
+
+(add-to-list 'embark-keymap-alist '(org-simple-ref . embark-org-simple-ref-map))
 
 
 ;;;; provide
