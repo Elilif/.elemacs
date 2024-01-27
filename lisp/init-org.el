@@ -52,16 +52,20 @@
 (setup org
   (:also-load lib-org)
   (:hooks org-cycle-hook org-cycle-hide-drawers
-		  org-after-todo-statistics-hook eli/org-summary-todo)
+          org-after-todo-statistics-hook eli/org-summary-todo)
   (:advice org-cycle-hide-drawers :override elemacs/org-cycle-hide-drawers
-		   org-return :around eli/org-return-wrapper
-		   org-do-emphasis-faces :override eli/org-do-emphasis-faces
-		   org-element--parse-generic-emphasis :override eli/org-element--parse-generic-emphasis
+           org-return :around eli/org-return-wrapper
+           org-do-emphasis-faces :override eli/org-do-emphasis-faces
+           org-element--parse-generic-emphasis :override eli/org-element--parse-generic-emphasis
            org-insert-heading-respect-content :after eli/org-expand-all
-		   ;; fill-move-to-break-point :before eli/adjust-line-break-point
-		   org-fold--reveal-outline-maybe :around eli/org-fold--reveal-outline-maybe)
+           ;; fill-move-to-break-point :before eli/adjust-line-break-point
+           org-fold--reveal-outline-maybe :around eli/org-fold--reveal-outline-maybe
+           org-fold-show-entry :after (lambda (&rest _args)
+                                        (save-excursion
+                                          (org-back-to-heading-or-point-min t)
+                                          (org-cycle-hide-drawers 'children))))
   (:when-loaded
-	(add-to-list 'safe-local-variable-values '(org-latex-and-related-regexp . nil))
+    (add-to-list 'safe-local-variable-values '(org-latex-and-related-regexp . nil))
     (add-to-list 'display-buffer-alist
                  '("\\*Org Links\\*"
                    (display-buffer-no-window)
