@@ -34,7 +34,7 @@ You can re-bind the commands to any keys you prefer.")
 (defun eli/org-babel-expand-noweb-references (&optional info parent-buffer)
   "Advice for `org-babel-expand-noweb-references'.
 
-Add some text properties to expaned noweb references"
+Add some text properties to expanded noweb references"
   (let* ((parent-buffer (or parent-buffer (current-buffer)))
          (info (or info (org-babel-get-src-block-info 'no-eval)))
          (lang (nth 0 info))
@@ -183,7 +183,8 @@ Add some text properties to expaned noweb references"
        body t t 2))))
 
 (defun eli/org-src-add-overlays ()
-  "Highlight expaned text."
+  "Highlight expanded text."
+  (remove-hook 'org-src-mode-hook #'eli/org-src-add-overlays)
   (setq-local org-src--allow-write-back
               (lambda ()
                 (org-escape-code-in-region (point-min) (point-max))))
@@ -192,18 +193,21 @@ Add some text properties to expaned noweb references"
       (indent-region (point-min) (point-max))
       (goto-char (point-min))
       (save-excursion
-        (when-let* ((orig (text-property-search-forward 'orig))
-                    (beg (prop-match-beginning orig))
-                    (end (prop-match-end orig)))
-          ;; (goto-char beg)
-          ;; (unless (bolp)
-          ;;   (setq beg (1- beg)))
-          (goto-char end)
-          (when (and (eolp)
-                     (not (eobp)))
-            (setq end (1+ end)))
-          (put-text-property (point-min) beg 'expanded t)
-          (put-text-property end (point-max) 'expanded t)))
+        (if-let* ((orig (text-property-search-forward 'orig))
+                  (beg (prop-match-beginning orig))
+                  (end (prop-match-end orig)))
+            ;; (goto-char beg)
+            ;; (unless (bolp)
+            ;;   (setq beg (1- beg)))
+            (progn
+              (goto-char end)
+              (when (and (eolp)
+                         (not (eobp)))
+                (setq end (1+ end)))
+              (put-text-property (point-min) beg 'expanded t)
+              (put-text-property end (point-max) 'expanded t))
+          (unless (buffer-narrowed-p)
+            (put-text-property (point-min) (point-max) 'expanded t))))
 
       (dolist (target '(expanded noweb))
         (let (prop)
@@ -220,45 +224,47 @@ Add some text properties to expaned noweb references"
                 (put-text-property (max (point-min) (1- beg)) beg 'rear-nonsticky t)
                 (put-text-property (1- end) end 'rear-nonsticky t)))))))))
 
-(add-hook 'org-src-mode-hook #'eli/org-src-add-overlays -100)
-
 (defun eli/org-src-clean (&rest _args)
-  "Remove expaned text."
-  (save-excursion
+  "Remove expanded text."
+  (goto-char (point-min))
+  (let* ((inhibit-read-only t)
+         prop)
+    (while (setq prop (text-property-search-forward 'expanded))
+      (delete-region (prop-match-beginning prop) (prop-match-end prop)))
     (goto-char (point-min))
-    (let* ((inhibit-read-only t)
-           prop)
-      (while (setq prop (text-property-search-forward 'expanded))
-        (delete-region (prop-match-beginning prop) (prop-match-end prop)))
-      (goto-char (point-min))
-      (while (setq prop (text-property-search-forward 'noweb))
-        (delete-region (prop-match-beginning prop)
-                       (prop-match-end prop))
-        (insert (concat
-                 org-babel-noweb-wrap-start
-                 (prop-match-value prop)
-                 org-babel-noweb-wrap-end)))
-      (indent-region (point-min) (point-max)))))
+    (while (setq prop (text-property-search-forward 'noweb))
+      (delete-region (prop-match-beginning prop)
+                     (prop-match-end prop))
+      (insert (concat
+               org-babel-noweb-wrap-start
+               (prop-match-value prop)
+               org-babel-noweb-wrap-end)))
+    (indent-region (point-min) (point-max))))
 
-(defun eli/org-src-save-around (orig)
-  (let* ((orig-pos (point))
-         (inhibit-read-only t)
-         (beg (progn
-                (goto-char (point-min))
-                (prop-match-beginning (text-property-search-forward 'orig))))
-         (expanded (text-property-search-forward 'expanded))
-         (end (or (and expanded (prop-match-beginning expanded))
-                  (point-max)))
-         string)
-    (put-text-property beg end 'orig t)
-    (setq string (buffer-substring (point-min) (point-max)))
-    (eli/org-src-clean)
-    (funcall orig)
-    (delete-region (point-min) (point-max))
-    (insert string)
-    (eli/org-src-add-overlays)
-    (set-buffer-modified-p nil)
-    (goto-char orig-pos)))
+(defun eli/org-src-save-around (orig-fun)
+  (if (or (text-property-any (point-min) (point-max) 'expanded t)
+          (text-property-any (point-min) (point-max) 'orig t))
+      (let* ((orig-pos (point))
+             (inhibit-read-only t)
+             (beg 1)
+             string expanded)
+        (goto-char (point-min))
+        (while (setq expanded (text-property-search-forward 'expanded))
+          (let* ((prop-beg (prop-match-beginning expanded))
+                 (prop-end (prop-match-end expanded)))
+            (unless (<= prop-beg beg)
+              (put-text-property beg prop-beg 'orig t))
+            (setq beg prop-end)))
+        (put-text-property (point) (point-max) 'orig t)
+        (setq string (buffer-substring (point-min) (point-max)))
+        (eli/org-src-clean)
+        (funcall orig-fun)
+        (delete-region (point-min) (point-max))
+        (insert string)
+        (eli/org-src-add-overlays)
+        (set-buffer-modified-p nil)
+        (goto-char orig-pos))
+    (funcall orig-fun)))
 
 (defun eli/org-babel-expand-src-block (info &optional params)
   (let* ((lang (nth 0 info))
@@ -270,8 +276,7 @@ Add some text properties to expaned noweb references"
                        (org-babel-expand-noweb-references info)
                      (nth 1 info)))
          (body (setf (nth 1 info)
-                     (propertize (if (string-empty-p contents) " " contents)
-                                 'orig t)))
+                     (propertize contents 'orig t)))
          (expand-cmd (intern (concat "org-babel-expand-body:" lang)))
          (assignments-cmd (intern (concat "org-babel-variable-assignments:"
                                           lang))))
@@ -285,16 +290,19 @@ Add some text properties to expaned noweb references"
 (defun eli/org-babel-expand-src-block-and-edit (&optional info params)
   "Expand the current source code block."
   (interactive)
-  (let* ((info (or info (org-babel-get-src-block-info)))
-         (lang (nth 0 info))
-         (expanded (eli/org-babel-expand-src-block info params))
-         (buffer (org-src--construct-edit-buffer-name (buffer-name) lang)))
-    (org-edit-src-code expanded buffer)
-    (with-current-buffer buffer
-      (if-let ((eob (point-max))
-               (pos (text-property-any (point-min) (point-max) 'read-only nil)))
-          (goto-char (min (1+ pos) eob))
-        (goto-char eob)))))
+  (if (eq (org-element-type (org-element-at-point)) 'src-block)
+      (let* ((info (or info (org-babel-get-src-block-info)))
+             (name (nth 4 info))
+             (expanded (eli/org-babel-expand-src-block info params))
+             (buffer (org-src--construct-edit-buffer-name (buffer-name) name)))
+        (add-hook 'org-src-mode-hook #'eli/org-src-add-overlays -100)
+        (org-edit-src-code expanded buffer)
+        (with-current-buffer buffer
+          (if-let ((eob (point-max))
+                   (pos (text-property-any (point-min) (point-max) 'read-only nil)))
+              (goto-char (min (1+ pos) eob))
+            (goto-char eob))))
+    (user-error "No src block to edit here")))
 
 ;;;###autoload
 (defun eli/org-src-noweb-expand (&optional string)
@@ -307,13 +315,12 @@ Add some text properties to expaned noweb references"
          (result))
     (setf (nth 1 info) string)
     (setq result (eli/org-babel-expand-noweb-references
-                  org-src--babel-info (org-src-source-buffer)))
-    (save-window-excursion
-      (save-restriction
-        (narrow-to-region beg end)
-        (delete-region beg end)
-        (insert result)
-        (eli/org-src-add-overlays)))))
+                  info (org-src-source-buffer)))
+    (save-restriction
+      (narrow-to-region beg end)
+      (delete-region beg end)
+      (insert result)
+      (eli/org-src-add-overlays))))
 
 ;;;###autoload
 (defun eli/org-src-delete ()
@@ -341,11 +348,11 @@ Add some text properties to expaned noweb references"
                                (not (funcall ref? last)))
                           (concat file ":" last)
                         last))
-                  (pos (or (nth 5 (car-safe (gethash id  (org-src-do-at-code-block
-                                                          org-babel-expand-noweb-references--cache))))
-                           (and (funcall ref? id)
+                  (pos (or (and (funcall ref? id)
                                 (eli/org-src-ref-expand
-                                 (copy-marker (point)))))))
+                                 (copy-marker (point))))
+                           (nth 5 (car-safe (gethash id  (org-src-do-at-code-block
+                                                          org-babel-expand-noweb-references--cache)))))))
         (org-edit-src-exit)
         (push (copy-marker (point)) eli/org-src-noweb-history)
         (when (markerp pos)
