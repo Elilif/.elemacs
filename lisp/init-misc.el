@@ -381,10 +381,13 @@
   (:hooks
    org-agenda-finalize-hook (lambda ()
                               (setq-local bookmark-make-record-function
-                                          #'eli/org-agenda-bookmark-make-record)))
+                                          #'eli/org-agenda-bookmark-make-record))
+   org-doc-noter-doc-mode-hook (lambda ()
+                                 (setq-local bookmark-make-record-function
+                                             #'eli/org-doc-noter-bookmark-make-record)))
   (:advice
    burly-open-bookmark :after eli/tabspaces-delete-empty-tab
-   burly-bookmark-windows :after eli/burly-rename-tab
+   eli/burly-bookmark-windows :after eli/burly-rename-tab
    burly-bookmark-names :override eli/burly-bookmark-names))
 
 (setup markdown-mode
