@@ -368,10 +368,12 @@
   (:bind-into org-mode-map
     "C-c ;" eli/org-babel-expand-src-block-and-edit
     "s-," eli/org-src-noweb-back)
-  (:bind-into embark-org-src-block-map
-    "e" eli/org-babel-goto-src-block-end
-    "a" org-babel-goto-src-block-head
-    "i" org-babel-view-src-block-info)
+  (:after embark
+    (:bind-into embark-org-src-block-map
+      "e" eli/org-babel-goto-src-block-end
+      "a" org-babel-goto-src-block-head
+      "i" org-babel-view-src-block-info
+      "f" eli/org-babel-fold))
   (:advice
    org-edit-src-exit :before eli/org-src-clean
    org-edit-src-save :around eli/org-src-save-around
