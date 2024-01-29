@@ -55,6 +55,8 @@
    (concat "label:" org-ref-label-re "\\_>")
    ;; code ref
    "[ 	]*(\\(?2:ref\\):\\(?1:[-a-zA-Z0-9_][-a-zA-Z0-9_ ]*\\))[ 	]*$"
+   ;; noweb ref
+   ":noweb-ref\\s-+\\(?1:.*?\\)\\s-"
    "\\\\lstset{.*label=\\(?1:.*?\\),.*}")
   "List of regular expressions to labels.
 The label should always be in group 1.")
