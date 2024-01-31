@@ -22,18 +22,6 @@
 	path = site-lisp/alert
 	url = https://github.com/jwiegley/alert
 	ignore = untracked
-[submodule "all-the-icons"]
-	path = site-lisp/all-the-icons
-	url = https://github.com/domtronn/all-the-icons.el
-	ignore = untracked
-[submodule "all-the-icons-dired"]
-	path = site-lisp/all-the-icons-dired
-	url = https://github.com/wyuenho/all-the-icons-dired
-	ignore = untracked
-[submodule "all-the-icons-ibuffer"]
-	path = site-lisp/all-the-icons-ibuffer
-	url = https://github.com/seagle0128/all-the-icons-ibuffer
-	ignore = untracked
 [submodule "anki-helper"]
 	path = site-lisp/anki-helper
 	url = git@github.com:Elilif/emacs-anki-helper.git
@@ -45,7 +33,8 @@
 [submodule "auctex"]
 	path = site-lisp/auctex
 	url = git@github.com:emacsmirror/auctex.git
-	info-path = doc  
+	info-path = doc
+    build-step = make clean
 	build-step = ./autogen.sh
 	build-step = ./configure
 	build-step = make
@@ -196,6 +185,7 @@
 [submodule "emms"]
 	path = site-lisp/emms
 	url = git@github.com:emacsmirror/emms.git
+    build-step = make clean
     build-step = make
     build-step = make emms-print-metadata
     build-step = sudo make install
@@ -409,6 +399,21 @@
 [submodule "mwim"]
 	path = site-lisp/mwim
 	url = https://github.com/alezost/mwim.el
+	ignore = untracked
+[submodule "nerd-icons"]
+	path = site-lisp/nerd-icons
+	url = https://github.com/rainstormstudio/nerd-icons.el
+[submodule "nerd-icons-corfu"]
+	path = site-lisp/nerd-icons-corfu
+	url = https://github.com/LuigiPiucco/nerd-icons-corfu/
+	ignore = untracked
+[submodule "nerd-icons-dired"]
+	path = site-lisp/nerd-icons-dired
+	url = https://github.com/rainstormstudio/nerd-icons-dired
+	ignore = untracked
+[submodule "nerd-icons-ibuffer"]
+	path = site-lisp/nerd-icons-ibuffer
+	url = https://github.com/seagle0128/nerd-icons-ibuffer
 	ignore = untracked
 [submodule "nov"]
 	path = site-lisp/nov
@@ -681,7 +686,7 @@
 	path = site-lisp/vterm
 	url = https://github.com/akermu/emacs-libvterm
 	build-step = mkdir -p build
-	build-step = cd build && cmake .. && make
+	build-step = cd build && make clean && cmake .. && make
 	build-step = borg-byte-compile
     build-step = borg-update-autoloads
 	ignore = untracked

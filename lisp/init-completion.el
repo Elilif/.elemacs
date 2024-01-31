@@ -181,7 +181,6 @@
 ;;;; corfu
 (setup corfu
   (:also-load
-   lib-kind-all-the-icons
    lib-corfu)
   (:once (list :hooks 'prog-mode-hook 'org-mode-hook)
     (global-corfu-mode))
@@ -192,8 +191,9 @@
             corfu-auto-prefix 3
             corfu-excluded-modes nil
             corfu-auto-delay 0.1
-            corfu-on-exact-match 'insert
-            corfu-margin-formatters '(kind-all-the-icons-margin-formatter))
+            corfu-on-exact-match 'quit
+            corfu-preselect nil
+            corfu-margin-formatters '(nerd-icons-corfu-formatter))
   (:with-map corfu-map
     (:bind
      "C-n" corfu-complete-common-or-next))
