@@ -543,6 +543,19 @@
    immersive-translate-baidu-appid "20230720001751104"
    immersive-translate-chatgpt-host "api.openai-sb.com"))
 
+(setup mini-echo
+  (:once (list :hooks 'pre-command-hook)
+    (require 'lib-mini-echo)
+    (mini-echo-mode 1))
+  (:advice
+   window-divider-mode :override ignore
+   mini-echo-hide-modeline :override ignore)
+  (:option*
+   mini-echo-update-interval nil
+   mini-echo-right-padding 3
+   mini-echo-default-segments '(:long ("org-clock" "org-todo")
+                                      :short nil)))
+
 ;;;; beacon
 ;; (setup beacon
 ;;   (:once (list :before

@@ -367,6 +367,10 @@
 	path = site-lisp/mindre-theme
 	url = https://github.com/Elilif/mindre-theme
 	ignore = untracked
+[submodule "mini-echo"]
+	path = site-lisp/mini-echo
+	url = git@github.com:liuyinz/mini-echo.el.git
+	ignore = untracked
 [submodule "mixed-pitch"]
 	path = site-lisp/mixed-pitch
 	url = https://gitlab.com/jabranham/mixed-pitch
