@@ -551,6 +551,7 @@
    window-divider-mode :override ignore
    mini-echo-hide-modeline :override ignore)
   (:option*
+   mini-echo-short-style-predicate #'eli/mini-echo-use-short-style-p
    mini-echo-update-interval nil
    mini-echo-right-padding 3
    mini-echo-default-segments '(:long ("org-clock" "org-todo")

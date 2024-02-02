@@ -6,6 +6,9 @@
 (defvar eli/org-agenda-todo-statistics-icons '("" "󰮱" ""))
 (defvar eli/mini-echo-org-todo-statistics "")
 
+(defun eli/mini-echo-use-short-style-p ()
+  (< (mini-echo-minibuffer-width) 100))
+
 ;;;###autoload
 (defun eli/org-agenda-todo-statistics ()
   "Return the number of TODOs in each agenda block."
