@@ -83,6 +83,8 @@
 
     (set-fontset-font nil ?ㄓ (font-spec :family "Sarasa Term SC Nerd" :size 12))
     (set-fontset-font nil ?⎙ "PragmataPro Liga")
+    (dolist (char '(?󰮱 ? ?))
+      (set-fontset-font nil char "Symbols Nerd Font Mono"))
 
     (setq face-font-rescale-alist '(("-cdac$" . 1.3)
                                     ("Sarasa" . 1.2)
