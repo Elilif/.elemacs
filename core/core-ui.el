@@ -39,7 +39,10 @@
 (setup mood-line
   (:hook-into after-init-hook)
   (:option*
-   mood-line-glyph-alist  mood-line-glyphs-fira-code))
+   mood-line-glyph-alist  mood-line-glyphs-fira-code
+   mode-line-misc-info '((which-function-mode
+                          (which-func-mode
+                           ("" which-func-format " "))))))
 
 
 ;;;; font
