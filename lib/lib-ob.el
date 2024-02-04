@@ -274,7 +274,7 @@ Add some text properties to expanded noweb references"
             (unless (<= beg prop-beg)
               (put-text-property beg prop-beg 'orig t))
             (setq beg prop-end)))
-        (when (> (point) beg)
+        (when (>= (point) beg)
           (put-text-property (point) (point-max) 'orig t))
         (setq string (buffer-substring (point-min) (point-max)))
         (eli/org-src-clean)
