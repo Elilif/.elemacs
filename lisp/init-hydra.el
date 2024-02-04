@@ -36,7 +36,6 @@
 (keymap-global-set "C-c b" #'hydra-bibtex/body)
 (keymap-global-set "C-c s" #'hydra-search/body)
 (keymap-global-set "C-c m" #'hydra-player/body)
-(keymap-global-set "C-c e" #'hydra-edit/body)
 (keymap-global-set "C-c r" #'hydra-reader/body)
 (keymap-global-set "C-c d" #'hydra-develop/body)
 (keymap-global-set "C-c q" #'hydra-emacs/body)
@@ -89,22 +88,6 @@
     ("j" immersive-translate-paragraph)
     ("DEL" immersive-translate-abort)
     ("l" immersive-translate-clear))))
-
-(pretty-hydra-define hydra-edit
-  (:color amaranth :exit t
-          :pre (progn (setq which-key-inhibit t))
-          :post (progn (setq which-key-inhibit nil)))
-  ("Format"
-   (("f" smart-align "align"))
-   "Beacon"
-   (("w" markmacro-mark-words "mark words")
-    ("l" markmacro-mark-lines "mark lines")
-    ("k" rectangle-mark-mode "mark rectangle"))
-   ""
-   (("g" markmacro-secondary-region-set)
-    ("j" markmacro-secondary-region-mark-cursors)
-    ("s" markmacro-swap-region))
-   ))
 
 (pretty-hydra-define hydra-roam
   (:color amaranth :exit t :quit-key "q"
