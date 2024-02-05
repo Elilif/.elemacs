@@ -131,7 +131,32 @@
   (:hook
    racket-xp-mode))
 
-(setup emacs-ob-racket)
+(setup ob-racket
+  (:option*
+   org-babel-default-header-args:racket '((:session . "none")
+                                          (:results . "output"))
+   ob-racket-custom-code-templates `((value-program . (prolog
+                                                       "\n" "(write (let ()"
+                                                       "\n" define-vars
+                                                       "\n" :body "))"
+                                                       "\n" epilogue))
+                                     (output-program . (prolog
+                                                        "\n" define-vars
+                                                        "\n" :body
+                                                        "\n" epilogue))
+                                     (prolog . (lang-line
+                                                "\n" requires
+                                                "\n" prologue))
+                                     (prologue . nil)
+                                     (requires . ,(lambda (_env params)
+                                                    (let* ((req (assq :require params))
+                                                           (lang (or (cdr (assq :lang params))
+                                                                     ob-racket-default-lang))
+                                                           (req-string (if (string= lang "racket")
+                                                                           "require"
+                                                                         "#%require")))
+                                                      (when req
+                                                        `(parens (spaced ,req-string ,(cdr req))))))))))
 ;;;; python
 (setup lsp-pyright
   (:iload lsp-pyright))
