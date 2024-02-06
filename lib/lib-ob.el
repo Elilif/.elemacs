@@ -153,8 +153,8 @@ Add some text properties to expanded noweb references"
                       ;; Retrieve from the Library of Babel.
                       ((nth 2 (assoc-string id org-babel-library-of-babel)))
                       ((string-match "^\\(.+\\):\\(.+\\)$" id)
-                       (setq eli-test (eli/org-src-ref-expand
-                                       (eli/org-babel-expand-noweb-references))))
+                       (eli/org-src-ref-expand
+                        (eli/org-babel-expand-noweb-references)))
                       ;; All Noweb references were cached in a previous
                       ;; run.  Yet, ID is not in cache (see the above
                       ;; condition).  Process missing reference in
@@ -180,19 +180,21 @@ Add some text properties to expanded noweb references"
                        (expand-references id)))))
                ;; Interpose PREFIX between every line.
                (let* ((result (if noweb-prefix
-                                  (mapconcat #'identity
-                                             (split-string expansion "[\n\r]")
-                                             (concat "\n" prefix))
+                                  (string-trim-right
+                                   (mapconcat #'identity
+                                              (mapcar (lambda (string)
+                                                        (let ((prop (get-text-property (1- (length string)) 'cnoweb string)))
+                                                          (concat string
+                                                                  (propertize (concat "\n" prefix)
+                                                                              'cnoweb
+                                                                              prop))))
+                                                      (split-string expansion "[\n\r]" t)))
+                                   (concat "\n" prefix))
                                 expansion))
                       (name (if (string-match "\\(.*?\\)(.*?)" id)
                                 (match-string 1 id)
-                              id))
-                      ref)
-                 (when org-babel-expand-noweb-references--cache
-                   (setq ref (gethash name org-babel-expand-noweb-references--cache)))
-                 (unless (or (assq :noweb-ref (nth 2 (car-safe ref)))
-                             (assq :noweb-ref (nth 2 ref)))
-                   (font-lock-prepend-text-property 0 (length result) 'cnoweb name result))
+                              id)))
+                 (font-lock-prepend-text-property 0 (length result) 'cnoweb name result)
                  (propertize result 'noweb id))))))
        body t t 2))))
 
@@ -445,18 +447,6 @@ Add some text properties to expanded noweb references"
 
 (defvar eli/org-src-noweb-history nil)
 
-(defun eli/org-babel-count-noweb (noweb)
-  (save-excursion
-    (let ((count 0)
-          (pos (point))
-          prop)
-      (goto-char (point-min))
-      (while (and (setq prop (text-property-search-forward 'cnoweb noweb (lambda (value pvalue)
-                                                                           (equal value pvalue))))
-                  (<= (prop-match-beginning prop) pos))
-        (setq count (+ 1 count)))
-      count)))
-
 ;;;###autoload
 (defun eli/org-src-noweb-jump ()
   "Edit current noweb under point."
@@ -466,7 +456,6 @@ Add some text properties to expanded noweb references"
                    (string-match "^\\(.+\\):\\(.+\\)$"
                                  (or (car-safe target) target))))
            (nowebs (get-text-property (point) 'cnoweb))
-           (count (eli/org-babel-count-noweb nowebs))
            (other-file? (cl-find-if ref? nowebs))
            (file (and other-file? (match-string 1 other-file?)))
            (last-noweb (car (last nowebs)))
@@ -494,14 +483,13 @@ Add some text properties to expanded noweb references"
                   (diff (- (point) (or (previous-single-property-change (point) 'cnoweb) 1))))
         (org-edit-src-exit)
         (push (list (copy-marker (point))
-                    nowebs
-                    count)
+                    nowebs)
               eli/org-src-noweb-history)
         (when (markerp pos)
           (switch-to-buffer (marker-buffer pos)))
         (goto-char pos)
         (eli/org-babel-expand-src-block-and-edit)
-        (goto-char (+ (point) diff))
+        (forward-char diff)
         (run-with-timer 0.1 nil (lambda () (lsp)))))))
 
 ;;;###autoload
@@ -513,15 +501,12 @@ Add some text properties to expanded noweb references"
       (org-edit-src-exit))
     (when-let* ((previous (pop eli/org-src-noweb-history))
                 (marker (nth 0 previous))
-                (noweb (nth 1 previous))
-                (count (nth 2 previous)))
+                (noweb (nth 1 previous)))
       (switch-to-buffer (marker-buffer marker))
       (goto-char marker)
       (eli/org-babel-expand-src-block-and-edit)
-      (dotimes (_ count)
-        (setq prop (text-property-search-forward 'cnoweb noweb (lambda (value pvalue)
-                                                                 (or (equal value pvalue)
-                                                                     (cl-subsetp value pvalue :test #'equal))))))
+      (setq prop (text-property-search-forward 'cnoweb noweb (lambda (value pvalue)
+                                                               (cl-subsetp value pvalue :test #'equal))))
       (when prop
         (goto-char (prop-match-beginning prop))
         (goto-char (+ (point) diff)))
