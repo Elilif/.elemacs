@@ -91,25 +91,32 @@ Add some text properties to expanded noweb references"
                        result))
                   (expand-references
                     (ref)
-                    `(pcase (gethash ,ref org-babel-expand-noweb-references--cache)
-                       (`(,last . ,previous)
-                        ;; Ignore separator for last block.
-                        (let ((strings (list (expand-body last))))
-                          (dolist (i previous)
-                            (let ((parameters (nth 2 i)))
-                              ;; Since we're operating in reverse order, first
-                              ;; push separator, then body.
-                              (push (or (cdr (assq :noweb-sep parameters)) "\n")
-                                    strings)
-                              (push (expand-body i) strings)))
-                          (mapconcat #'identity strings "")))
-                       ;; Raise an error about missing reference, or return the
-                       ;; empty string.
-                       ((guard (or org-babel-noweb-error-all-langs
-                                   (member lang org-babel-noweb-error-langs)))
-                        (error "Cannot resolve %s (see `org-babel-noweb-error-langs')"
-                               (org-babel-noweb-wrap ,ref)))
-                       (_ ""))))
+                    `(let ((exclude-current-ref (assq :noweb-ref-exclude (nth 2 info)))
+                           (refs (gethash ,ref org-babel-expand-noweb-references--cache)))
+                       (when exclude-current-ref
+                         (setq refs (cl-remove-if (lambda (ref)
+                                                    (= (nth 5 ref)
+                                                       (nth 5 info)))
+                                                  refs)))
+                       (pcase refs
+                         (`(,last . ,previous)
+                          ;; Ignore separator for last block.
+                          (let ((strings (list (expand-body last))))
+                            (dolist (i previous)
+                              (let ((parameters (nth 2 i)))
+                                ;; Since we're operating in reverse order, first
+                                ;; push separator, then body.
+                                (push (or (cdr (assq :noweb-sep parameters)) "\n")
+                                      strings)
+                                (push (expand-body i) strings)))
+                            (mapconcat #'identity strings "")))
+                         ;; Raise an error about missing reference, or return the
+                         ;; empty string.
+                         ((guard (or org-babel-noweb-error-all-langs
+                                     (member lang org-babel-noweb-error-langs)))
+                          (error "Cannot resolve %s (see `org-babel-noweb-error-langs')"
+                                 (org-babel-noweb-wrap ,ref)))
+                         (_ "")))))
       (replace-regexp-in-string
        noweb-re
        (lambda (m)
@@ -218,6 +225,11 @@ Add some text properties to expanded noweb references"
   (save-excursion
     (with-silent-modifications
       (goto-char (point-min))
+      (save-excursion
+        (when-let* ((orig (text-property-search-forward 'expanded))
+                    (beg (prop-match-beginning orig))
+                    (end (prop-match-end orig)))
+          (remove-text-properties beg end '(orig))))
       (save-excursion
         (if-let* ((orig (text-property-search-forward 'orig))
                   (beg (prop-match-beginning orig))
@@ -396,9 +408,20 @@ Add some text properties to expanded noweb references"
       (let* ((info (or info (org-babel-get-src-block-info)))
              (name (nth 4 info))
              (current-noweb (eli/org-src-get-noweb-at-point))
-             (src-string (nth 1 info)))
+             (src-string (nth 1 info))
+             (refs ""))
         (when-let ((new-string (eli/org-babel-add-location)))
           (setf (nth 1 info) new-string))
+        (when-let ((id (cdr-safe (assq :noweb-ref (nth 2 info)))))
+          (let* ((ref (format (org-babel-noweb-wrap "%s") id))
+                 (new-info (seq-copy info)))
+            (setf (nth 1 new-info) ref)
+            (setf (alist-get :noweb-ref-exclude (nth 2 new-info))
+                  t)
+            (setq refs (propertize
+                        (concat (eli/org-babel-expand-noweb-references new-info) "\n")
+                        'expanded t))))
+        (setf (nth 1 info) (concat refs (nth 1 info)))
         (let* ((expanded (eli/org-babel-expand-src-block info params))
                (buffer (org-src--construct-edit-buffer-name (buffer-name) name)))
           (org-edit-src-code expanded buffer)
@@ -406,7 +429,7 @@ Add some text properties to expanded noweb references"
             (let ((eob (point-max))
                   (pos (or (text-property-any (point-min) (point-max) 'orig-location t)
                            (save-excursion
-                             (let ((p (text-property-any (point-min) (point-max) 'read-only nil)))
+                             (when-let ((p (text-property-any (point-min) (point-max) 'read-only nil)))
                                (goto-char p)
                                (if (eolp) (1+ p) p))))))
               (cond
@@ -524,6 +547,7 @@ Add some text properties to expanded noweb references"
       (switch-to-buffer (marker-buffer marker))
       (goto-char marker)
       (eli/org-babel-expand-src-block-and-edit)
+      (goto-char (point-min))
       (setq prop (text-property-search-forward 'cnoweb noweb (lambda (value pvalue)
                                                                (cl-subsetp value pvalue :test #'equal))))
       (when prop
