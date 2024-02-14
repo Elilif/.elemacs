@@ -16,6 +16,9 @@
   "Keymap automatically activated inside overlays.
 You can re-bind the commands to any keys you prefer.")
 
+(dolist (prop '(cnoweb noweb evaporate orig))
+  (add-to-list 'yank-excluded-properties prop))
+
 (defmacro eli/org-src-ref-expand (&rest body)
   (declare (debug t))
   `(let* ((split-file (match-string 1 id))
