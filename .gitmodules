@@ -279,10 +279,6 @@
 	path = site-lisp/js2-mode
 	url = https://github.com/mooz/js2-mode
 	ignore = untracked
-[submodule "jupyter"]
-	path = site-lisp/jupyter
-	url = https://github.com/nnicandro/emacs-jupyter
-	ignore = untracked
 [submodule "keycast"]
 	path = site-lisp/keycast
 	url = https://github.com/tarsius/keycast
