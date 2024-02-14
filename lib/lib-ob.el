@@ -467,7 +467,11 @@ Add some text properties to expanded noweb references"
            (other-file? (cl-find-if ref? nowebs))
            (file (and other-file? (match-string 1 other-file?)))
            (last-noweb (car (last nowebs)))
-           (ref (or (car-safe last-noweb) last-noweb)))
+           (ref (or (car-safe last-noweb) last-noweb))
+           (use-lsp? nil))
+      (when lsp-mode
+        (lsp-disconnect)
+        (setq use-lsp? t))
       (when-let* ((id (if (and file
                                (not (funcall ref? ref)))
                           (concat file ":" ref)
@@ -498,13 +502,17 @@ Add some text properties to expanded noweb references"
         (goto-char pos)
         (eli/org-babel-expand-src-block-and-edit)
         (forward-char diff)
-        (run-with-timer 0.1 nil (lambda () (lsp)))))))
+        (when use-lsp?
+          (lsp))))))
 
 ;;;###autoload
 (defun eli/org-src-noweb-back ()
   (interactive)
-  (let (diff prop)
+  (let (diff prop use-lsp?)
     (when org-src-mode
+      (when lsp-mode
+        (lsp-disconnect)
+        (setq use-lsp? t))
       (setq diff (- (point) (or (previous-single-property-change (point) 'orig) 1)))
       (org-edit-src-exit))
     (when-let* ((previous (pop eli/org-src-noweb-history))
@@ -518,7 +526,8 @@ Add some text properties to expanded noweb references"
       (when prop
         (goto-char (prop-match-beginning prop))
         (goto-char (+ (point) diff)))
-      (run-with-timer 0.1 nil (lambda () (lsp))))))
+      (when use-lsp?
+        (lsp)))))
 
 ;;;###autoload
 (defun eli/org-babel-goto-src-block-end ()
