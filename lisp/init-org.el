@@ -63,7 +63,10 @@
            org-fold-show-entry :after (lambda (&rest _args)
                                         (save-excursion
                                           (org-back-to-heading-or-point-min t)
-                                          (org-cycle-hide-drawers 'children))))
+                                          (org-cycle-hide-drawers 'children)))
+           org-N-empty-lines-before-current :after (lambda (&rest _args)
+                                                     (when (= (current-column) 0)
+                                                       (beginning-of-line))))
   (:when-loaded
     (add-to-list 'safe-local-variable-values '(org-latex-and-related-regexp . nil))
     (add-to-list 'display-buffer-alist
