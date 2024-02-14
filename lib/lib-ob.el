@@ -32,7 +32,7 @@ You can re-bind the commands to any keys you prefer.")
                   (goto-char
                    (org-element-property :post-affiliated e))
                   ,@body)))
-          "")))))
+          ,@body)))))
 
 (defun eli/org-babel-expand-noweb-references (&optional info parent-buffer)
   "Advice for `org-babel-expand-noweb-references'.
@@ -153,8 +153,12 @@ Add some text properties to expanded noweb references"
                       ;; Retrieve from the Library of Babel.
                       ((nth 2 (assoc-string id org-babel-library-of-babel)))
                       ((string-match "^\\(.+\\):\\(.+\\)$" id)
-                       (eli/org-src-ref-expand
-                        (eli/org-babel-expand-noweb-references)))
+                       (let ((new-info (seq-copy info)))
+                         (setf (nth 1 new-info)
+                               (format (org-babel-noweb-wrap "%s")
+                                       (match-string 2 id)))
+                         (eli/org-src-ref-expand
+                          (eli/org-babel-expand-noweb-references new-info))))
                       ;; All Noweb references were cached in a previous
                       ;; run.  Yet, ID is not in cache (see the above
                       ;; condition).  Process missing reference in
@@ -180,16 +184,20 @@ Add some text properties to expanded noweb references"
                        (expand-references id)))))
                ;; Interpose PREFIX between every line.
                (let* ((result (if noweb-prefix
-                                  (string-trim-right
-                                   (mapconcat #'identity
-                                              (mapcar (lambda (string)
-                                                        (let ((prop (get-text-property (1- (length string)) 'cnoweb string)))
-                                                          (concat string
-                                                                  (propertize (concat "\n" prefix)
-                                                                              'cnoweb
-                                                                              prop))))
-                                                      (split-string expansion "[\n\r]" t)))
-                                   (concat "\n" prefix))
+                                  (let (last-prop)
+                                    (string-trim-right
+                                     (mapconcat #'identity
+                                                (mapcar (lambda (string)
+                                                          (let ((prop (if (string-empty-p string)
+                                                                          last-prop
+                                                                        (get-text-property (1- (length string)) 'cnoweb string))))
+                                                            (setq last-prop prop)
+                                                            (concat string
+                                                                    (propertize (concat "\n" prefix)
+                                                                                'cnoweb
+                                                                                prop))))
+                                                        (split-string expansion "[\n\r]")))
+                                     (concat "\n" prefix)))
                                 expansion))
                       (name (if (string-match "\\(.*?\\)(.*?)" id)
                                 (match-string 1 id)
