@@ -264,7 +264,8 @@
                       (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
                       (emacs . "You are an expert in Emacs.")))
   (:hook visual-fill-column-mode
-         visual-line-mode)
+         visual-line-mode
+         gptel-posframe-mode)
   (:advice
    gptel--create-prompt :around eli/gptel--create-prompt)
   (:bind
@@ -280,7 +281,7 @@
     (:bind
      "<mouse-8>" eli/gptel-translate))
   (:global
-   "s-p" eli/gptel-posframe-toggle
+   "s-i" eli/gptel-posframe-toggle
    "C-c DEL" gptel-abort
    "s-;" gptel-send
    "s-\]" eli/gptel-toggle-last-posframe))
