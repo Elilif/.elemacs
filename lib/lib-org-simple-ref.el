@@ -177,7 +177,7 @@ font-lock."
                                     (or (and (not (string= (org-element-property :name oe) id))
                                              (org-element-property :name oe))
                                         (org-element-property :raw-value (org-element-lineage oe '(headline)))
-                                        (file-name-base (buffer-file-name))))
+                                        (file-name-base (buffer-file-name (buffer-base-buffer)))))
                            :type (or (and (string= (match-string-no-properties 2) "ref") "coderef")
                                      (org-element-property :key oe)
                                      (symbol-name (car oe))))))
