@@ -309,8 +309,6 @@
 	ignore = untracked
 [submodule "lsp-mode"]
 	path = site-lisp/lsp-mode
-    load-path = .
-    load-path = clients
 	url = https://github.com/emacs-lsp/lsp-mode
 	ignore = untracked
 [submodule "lsp-pyright"]
@@ -667,6 +665,10 @@
 [submodule "tide"]
 	path = site-lisp/tide
 	url = https://github.com/ananthakumaran/tide
+	ignore = untracked
+[submodule "transient"]
+	path = site-lisp/transient
+	url = https://github.com/magit/transient
 	ignore = untracked
 [submodule "treepy"]
 	path = site-lisp/treepy
