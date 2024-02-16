@@ -80,35 +80,23 @@ see `match-string-no-properties' for details."
   (interactive "r")
   (let* ((anki-helper-default-deck "Poems")
          (anki-helper-default-note-type "Poems")
-         (back (buffer-substring-no-properties beg end)))
-    (if (string= (elfeed-entry-feed-id elfeed-show-entry)
-                 "https://rsshub.app/gushiwen/recommend/")
-        (let* ((link (elfeed-entry-link elfeed-show-entry))
-               (title (elfeed-entry-title elfeed-show-entry))
-               (meta (elfeed-entry-meta elfeed-show-entry))
-               (author (car (alist-get :email (plist-get meta :authors))))
-               (anki-helper-default-tags
-                (progn
-                  (string-match "\\(.*?\\)〔\\(.*?\\)〕" author)
-                  (list (match-string 1 author)
-                        (match-string 2 author)))))
-          (anki-helper-request 'addNote (anki-helper-create-note
-                                         (list (format "<a href=%s>%s</a>"
-                                                       link title)
-                                               (concat author "\n\n" back)))))
-      (let ((anki-helper-default-tags
-             (progn
-               (string-match "\\[\\(.*?\\)\\] *\\(.*?\\)\n" back)
-               (list (match-string 1 back)
-                     (match-string 2 back)))))
-        (anki-helper-make-two-sided-card
-         beg end
-         (lambda (text)
-           (format
-            "<a href=https://so.gushiwen.cn/search.aspx?value=%s&valuej=%s>%s</a>"
-            (url-encode-url text)
-            (url-encode-url (substring text 0 1))
-            text)))))))
+         (back (replace-regexp-in-string
+                "\\(\n\\).+" "<br>"
+                (buffer-substring-no-properties beg end)
+                nil nil 1)))
+    (let* ((link (elfeed-entry-link elfeed-show-entry))
+           (title (elfeed-entry-title elfeed-show-entry))
+           (meta (elfeed-entry-meta elfeed-show-entry))
+           (author (car (alist-get :email (plist-get meta :authors))))
+           (anki-helper-default-tags
+            (progn
+              (string-match "\\(.*?\\)〔\\(.*?\\)〕" author)
+              (list (match-string 1 author)
+                    (match-string 2 author)))))
+      (anki-helper-request 'addNote (anki-helper-create-note
+                                     (list (format "<a href=%s>%s</a>"
+                                                   link title)
+                                           (concat author "<br>" back)))))))
 
 ;;;###autoload
 (defun eli/anki-helper-snyc-pingshuiyun ()
