@@ -309,6 +309,8 @@
 	ignore = untracked
 [submodule "lsp-mode"]
 	path = site-lisp/lsp-mode
+    load-path = .
+    load-path = clients
 	url = https://github.com/emacs-lsp/lsp-mode
 	ignore = untracked
 [submodule "lsp-pyright"]
