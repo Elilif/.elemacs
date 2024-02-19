@@ -581,5 +581,42 @@ Add some text properties to expanded noweb references"
               (concat (comment-padright comment-start comment-add)
                       org-coderef-label-format)))
 
+
+;;;; CC
+
+;; SRC: https://github.com/cxa/ob-C-stdin/
+(defun org-babel-C-execute/filter-args (args)
+  (when-let* ((params (cadr args))
+              (stdin (cdr (assoc :stdin params)))
+              (res (org-babel-ref-resolve stdin))
+              (stdin (org-babel-temp-file "c-stdin-")))
+    (with-temp-file stdin (insert res))
+    (let* ((cmdline (assoc :cmdline params))
+           (cmdline-val (or (cdr cmdline) "")))
+      (when cmdline (setq params (delq cmdline params)))
+      (setq params
+            (cons (cons :cmdline (concat cmdline-val " <" stdin))
+                  params))
+      (setf (cadr args) params)))
+  args)
+
+(defun eli/org-babel-C-ensure-main-wrap (body)
+  "Wrap BODY in a \"main\" function call if none exists."
+  (if (not current-prefix-arg)
+      (let* ((info (org-babel-get-src-block-info))
+             (lang (car info)))
+        (if (string-match "^[ \t]*[intvod]+[ \t\n\r]*main[ \t]*(.*)" body)
+            body
+          (if (member lang '("C++" "cpp"))
+              (format "int main(int argc, char *argv[]) {\n%s\nreturn 0;\n}\n" body)
+            (format "int main() {\n%s\nreturn 0;\n}\n" body))))
+    body))
+
+(with-eval-after-load 'ob-C
+  (advice-add 'org-babel-C-execute :filter-args
+              #'org-babel-C-execute/filter-args)
+  (advice-add 'org-babel-C-ensure-main-wrap :override
+              #'eli/org-babel-C-ensure-main-wrap))
+
 (provide 'lib-ob)
 ;;; lib-ob.el ends here
