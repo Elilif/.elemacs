@@ -33,11 +33,11 @@
 (setup ox-html
   (:option*
    org-html-head-include-default-style nil
-   org-html-htmlize-output-type 'css
+   org-html-htmlize-output-type nil
    org-html-validation-link nil
-   org-html-link-home "https://elilif.github.io/index.html"
-   org-html-link-up "https://elilif.github.io/rss.xml"
-   org-html-home/up-format "<div id=\"org-div-home-and-up\">\n <a accesskey=\"h\" href=\"%s\"> RSS </a>\n |\n <a accesskey=\"H\" href=\"%s\"> HOME </a>\n</div>"
+   org-html-prefer-user-labels t
+   org-html-link-home ""
+   org-html-link-up ""
    org-html-postamble nil))
 
 (setup ox-publish
@@ -47,68 +47,93 @@
    eli/blog-base-dir "~/Dropbox/org/blog/"
    eli/blog-publish-dir "~/Elilif.github.io"
    eli/blog-sitamap "index.org"
+   eli/blog-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/style.css\" />
+                  <script src=\"/scripts/script.js\"></script>
+<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css\">
+<script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js\"></script>
+<script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/lisp.min.js\"></script>
+
+<script>hljs.highlightAll();</script>"
+   eli/blog-preamble '(("en" "<nav class=\"nav\">
+  <a href=\"/index.html\" class=\"button\">Home</a>
+  <a href=\"/rss.xml\" class=\"button\">RSS</a>
+  <a href=\"/config.html\" class=\"button\">Literate Emacs Config</a>
+</nav>
+<hr>"))
+   eli/blog-postamble '(("en" "<hr class=\"Solid\">
+<div class=\"info\">
+  <span class=\"author\">Author: %a (%e)</span>
+  <span class=\"date\">Create Date: %d</span>
+  <span class=\"date\">Last modified: %C</span>
+  <span>Creator: %c</span>
+</div>"))
    org-publish-project-alist
-   `(("eli's blog"
+   `(("blog articles"
       :base-directory ,eli/blog-base-dir
       :publishing-directory ,(expand-file-name "articles" eli/blog-publish-dir)
       :base-extension "org"
       :recursive nil
       :htmlized-source t
-      :publishing-function org-html-publish-to-html
+      :publishing-function eli/org-blog-publish-to-html
       :exclude "rss.org"
 
       :auto-sitemap t
+      :preparation-function eli/kill-sitemap-buffer
+      :completion-function eli/blog-publish-completion
       :sitemap-filename ,eli/blog-sitamap
       :sitemap-title "Eli's Blog"
       :sitemap-sort-files anti-chronologically
       :sitemap-function eli/org-publish-sitemap
       :sitemap-format-entry eli/sitemap-dated-entry-format
-      :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/style.css\"/>"
-      :html-preamble "<div><hr class=\"Solid\"></div>"
-      :html-postamble "<hr class=\"Solid\">
-<p class=\"author\">Author: %a (%e)</p>
-<p class=\"date\">Create Date: %d</p>
-<p class=\"date\">Last modified: %C</p>
-<p>Creator: %c</p>
 
-<p style=\"text-align:center;\">
-  <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">
-    <img alt=\"知识共享许可协议\" style=\"border-width:0\" src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\"/>
-  </a><br />
-  本作品采用
-  <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">
-    知识共享署名 4.0 国际许可协议
-  </a>
-  进行许可。
-</p>"
-      :with-creator nil
-      ;; :completion-function eli/push-to-gitpage
-      :completion-function eli/blog-publish-completion
-      )
-     ("eli's blog rss"
-      :preparation-function eli/publish-rss-papare
+      :html-head ,eli/blog-head
+      :html-preamble t
+      :html-preamble-format ,eli/blog-preamble
+      :html-postamble t
+      :html-postamble-format ,eli/blog-postamble
+      :with-creator nil)
+     ("blog rss"
+      :preparation-function eli/kill-sitemap-buffer
       :publishing-directory ,eli/blog-publish-dir
       :base-directory ,eli/blog-base-dir
-      :base-extension "org"
-      :include ("rss.org")
-      :exclude "index.org"
-      :publishing-function eli/org-publish-rss-feed
       :rss-extension "xml"
+      :base-extension "org"
       :html-link-home "https://elilif.github.io/"
       :html-link-use-abs-url t
       :html-link-org-files-as-html t
+      :include ("rss.org")
+      :exclude "index.org"
+
+      :publishing-function eli/org-publish-rss-feed
       :auto-sitemap t
       :sitemap-function eli/org-publish-rss-sitemap
       :sitemap-title "Eli's Blog"
       :sitemap-filename "rss.org"
       :sitemap-sort-files anti-chronologically
-      :sitemap-format-entry eli/org-publish-rss-entry)))
+      :sitemap-format-entry eli/org-publish-rss-entry)
+     ("Eli's blog"
+      :components ("blog articles" "blog rss"))
+     ("Emacs config"
+      :publishing-directory ,eli/blog-publish-dir
+      :base-directory ,user-emacs-directory
+      :include ("config.org")
+      :publishing-function eli/org-blog-publish-to-html
+      :html-head ,eli/blog-head
+      :html-preamble t
+      :html-preamble-format ,eli/blog-preamble
+      :html-postamble t
+      :html-postamble-format ,eli/blog-postamble)))
   (:after ox
     (add-to-list 'org-export-global-macros
                  '("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
+  (:after ox-html
+    (org-export-define-derived-backend 'blog 'html
+      :translate-alist '((src-block . eli/org-blog-src-block))))
   (:advice
    org-html--format-image :around eli/filter-org-html--format-image
-   org-publish :before (lambda (&rest _args) (org-publish-reset-cache))))
+   org-publish :before (lambda (&rest _args) (org-publish-reset-cache)))
+  (:hooks
+   org-export-before-processing-functions eli/org-export-src-babel-duplicate))
 
 
 (provide 'init-blog)
