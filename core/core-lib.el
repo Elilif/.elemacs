@@ -190,10 +190,14 @@ the _value_ of the choice, not the selected choice. "
               (delete-overlay ov)))
           ovs)))
 
-(defun eli/overlay-image-scale (arg)
+(defun eli/overlay-image-scale ()
   "Displaying buffer images(overlay property) in a larger/smaller size."
-  (when org-inline-image-overlays
-    (dolist (ov org-inline-image-overlays)
+  (let* ((latex-ovs (cl-remove-if-not
+                     (lambda (o) (or (eq (overlay-get o 'org-overlay-type) 'org-latex-overlay)
+                                     (eq (overlay-get o 'category) 'preview-overlay)))
+                     (overlays-in (point-min) (point-max))))
+         (ovs (append org-inline-image-overlays latex-ovs)))
+    (dolist (ov ovs)
       (let* ((img (overlay-get ov 'display))
              (width (image-property img :width))
              (original-width (or (image-property img :original-width)
@@ -209,11 +213,9 @@ the _value_ of the choice, not the selected choice. "
                              :scale
                              (* original-scale
                                 (expt eli/image-scale-mode-step
-                                      text-scale-mode-amount)))))
-    (when (< arg 0)
-      (eli/delete-image-scale-factor-overlay))))
+                                      text-scale-mode-amount)))))))
 
-(defun eli/property-image-scale (arg)
+(defun eli/property-image-scale ()
   "Displaying buffer images(text property) in a larger/smaller size."
   (save-excursion
     (goto-char (point-min))
@@ -231,9 +233,15 @@ the _value_ of the choice, not the selected choice. "
                                    eli/image-scale-mode-step
                                    text-scale-mode-amount)))))
       (goto-char (next-single-property-change (point)
-                                              'display nil (point-max))))
-    (when (< arg 0)
-      (eli/delete-image-scale-factor-overlay))))
+                                              'display nil (point-max))))))
+
+(defun eli/image-scale (arg)
+  "Displaying buffer images in a larger/smaller size."
+  (eli/overlay-image-scale)
+  (eli/property-image-scale)
+  (when (< arg 0)
+    (eli/delete-image-scale-factor-overlay)))
+
 
 (provide 'core-lib)
 ;;; core-lib.el ends here.

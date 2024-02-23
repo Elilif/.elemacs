@@ -353,8 +353,7 @@
 
 (setup face-remap
   (:advice
-   text-scale-mode :after #'eli/property-image-scale
-   text-scale-mode :after #'eli/overlay-image-scale))
+   text-scale-mode :after #'eli/image-scale))
 
 ;;;; whitespace
 (setup whitespace
