@@ -33,7 +33,7 @@
 (setup ox-html
   (:option*
    org-html-head-include-default-style nil
-   org-html-htmlize-output-type nil
+   org-html-htmlize-output-type 'css
    org-html-validation-link nil
    org-html-prefer-user-labels t
    org-html-link-home ""
@@ -47,17 +47,14 @@
    eli/blog-base-dir "~/Dropbox/org/blog/"
    eli/blog-publish-dir "~/Elilif.github.io"
    eli/blog-sitamap "index.org"
-   eli/blog-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/style.css\" />
+   eli/blog-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/styles.css\" />
                   <script src=\"/scripts/script.js\"></script>
-<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css\">
-<script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js\"></script>
-<script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/lisp.min.js\"></script>
-
-<script>hljs.highlightAll();</script>"
+                  <script src=\"/scripts/toc.js\"></script>
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>"
    eli/blog-preamble '(("en" "<nav class=\"nav\">
   <a href=\"/index.html\" class=\"button\">Home</a>
-  <a href=\"/rss.xml\" class=\"button\">RSS</a>
   <a href=\"/config.html\" class=\"button\">Literate Emacs Config</a>
+  <a href=\"/rss.xml\" class=\"button\">RSS</a>
 </nav>
 <hr>"))
    eli/blog-postamble '(("en" "<hr class=\"Solid\">
@@ -74,6 +71,7 @@
       :base-extension "org"
       :recursive nil
       :htmlized-source t
+      :headline-levels 4
       :publishing-function eli/org-blog-publish-to-html
       :exclude "rss.org"
 
@@ -128,12 +126,16 @@
                  '("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
   (:after ox-html
     (org-export-define-derived-backend 'blog 'html
-      :translate-alist '((src-block . eli/org-blog-src-block))))
+      :translate-alist '((src-block . eli/org-blog-src-block)
+                         (footnote-reference . eli/org-blog-footnote-reference))))
   (:advice
    org-html--format-image :around eli/filter-org-html--format-image
    org-publish :before (lambda (&rest _args) (org-publish-reset-cache)))
   (:hooks
-   org-export-before-processing-functions eli/org-export-src-babel-duplicate))
+   org-export-before-processing-functions eli/org-export-src-babel-duplicate
+   org-export-before-processing-functions eli/org-export-add-custom-id
+   org-export-filter-src-block-functions eli/org-blog-add-noweb-ref
+   org-export-filter-final-output-functions eli/org-blog-id-filter))
 
 
 (provide 'init-blog)
