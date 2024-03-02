@@ -581,10 +581,26 @@ Add some text properties to expanded noweb references"
       (org-fold-hide-block-toggle t))))
 
 ;;;; coderef
-(defun eli/org-src-set-coderef-label-format ()
-  (setq-local org-coderef-label-format
-              (concat (comment-padright comment-start comment-add)
-                      org-coderef-label-format)))
+(defvar eli/lang-comment-alist '((emacs-lisp-mode . ";; ")
+                                 (racket-mode . ";; ")
+                                 (js . "// ")
+                                 (c++-mode . "// ")
+                                 (c-mode . "// ")
+                                 (python-mode . "# ")))
+
+(defun eli/org-element-src-block-parser (result)
+  (let* ((plist (cadr result))
+         (lang (plist-get plist :language))
+         (label-fmg (concat
+                     (alist-get (org-src-get-lang-mode lang)
+                                eli/lang-comment-alist
+                                "")
+                     (default-value 'org-coderef-label-format))))
+    (unless (plist-get plist :switches)
+      (plist-put plist :switches (format "-n -r -l \"%s\"" label-fmg))
+      (plist-put plist :label-fmt label-fmg)
+      (setf (cadr result) plist))
+    (setq eli-test result)))
 
 
 ;;;; CC

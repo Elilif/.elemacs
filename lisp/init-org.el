@@ -381,12 +381,11 @@
    org-edit-src-exit :before eli/org-src-clean
    org-edit-src-save :around eli/org-src-save-around
    org-babel-expand-noweb-references :override eli/org-babel-expand-noweb-references
+   org-element-src-block-parser :filter-return eli/org-element-src-block-parser
    org-src-coderef-format :around (lambda (orig &rest args)
                                     (if (org-src-edit-buffer-p)
                                         org-coderef-label-format
-                                      (apply orig args))))
-  (:hooks
-   org-src-mode-hook eli/org-src-set-coderef-label-format))
+                                      (apply orig args)))))
 
 (setup org-src
   (:option*
