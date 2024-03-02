@@ -192,6 +192,11 @@ Add some text properties to expanded noweb references"
                               (push info (gethash ref org-babel-expand-noweb-references--cache))))))
                        (puthash 'buffer-processed t org-babel-expand-noweb-references--cache)
                        (expand-references id)))))
+               (let ((coderef (nth 6 info)))
+                 (when coderef
+                   (setq expansion
+                         (replace-regexp-in-string
+                          (org-src-coderef-regexp coderef) "" expansion nil nil 1))))
                ;; Interpose PREFIX between every line.
                (let* ((result (if noweb-prefix
                                   (let (last-prop)
