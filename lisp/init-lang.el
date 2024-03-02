@@ -164,17 +164,61 @@
 ;;;; Web
 (setup web-mode
   (:init
-   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))))
+   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+  (:option*
+   web-mode-enable-auto-quoting nil
+   web-mode-enable-auto-expanding t
+   web-mode-markup-indent-offset 2
+   web-mode-css-indent-offset 2))
+
+(setup impatient-mode
+  (:hook-into
+   web-mode-hook
+   js2-mode
+   css-mode)
+  (:hook
+   httpd-start))
+
+(setup css-mode
+  (:option*
+   css-indent-offset 2
+   css-fontify-colors nil))
+
+(setup js
+  (:option*
+   js-indent-level 2))
+
+(setup js2-mode
+  (:init
+   (add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))))
 
 ;;;; lsp
 (setup lsp-mode
   (:iload lsp-mode)
   (:when-loaded
     (require 'lib-lsp)
-    (setenv "LSP_USE_PLISTS" "true"))
+    (setenv "LSP_USE_PLISTS" "true")
+    (keymap-unset lsp-mode-map "s-l" lsp-command-map)
+
+    ;; (defconst ccls-args nil)
+    ;; (defconst clangd-args '("-j=2"
+    ;;                         "--malloc-trim"
+    ;;                         "--background-index"
+    ;;                         "--clang-tidy"
+    ;;                         "--completion-style=bundled"
+    ;;                         "--pch-storage=disk"
+    ;;                         "--header-insertion=iwyu"
+    ;;                         "--header-insertion-decorators"
+    ;;                         "--include-cleaner-stdlib"))
+    ;; (cond ((executable-find "clangd") (setq lsp-clients-clangd-executable "clangd"
+    ;;                                         lsp-clients-clangd-args clangd-args))
+    ;;       ((executable-find "ccls") (setq lsp-clients-clangd-executable "ccls"
+    ;;                                       lsp-clients-clangd-args ccls-args)))
+    )
   (:option*
    lsp-session-file "/home/eli/.emacs.d/var/.lsp-session-v1"
    lsp-warn-no-matched-clients nil
+   ;; lsp-disabled-clients '(ccls)
    lsp-keymap-prefix nil
    read-process-output-max (* 1024 1024)
    lsp-completion-provider :none

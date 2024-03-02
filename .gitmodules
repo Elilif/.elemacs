@@ -271,6 +271,10 @@
 	path = site-lisp/hydra
 	url = https://github.com/abo-abo/hydra
 	ignore = untracked
+[submodule "impatient-mode"]
+	path = site-lisp/impatient-mode
+	url = https://github.com/skeeto/impatient-mode
+	ignore = untracked
 [submodule "info-colors"]
 	path = site-lisp/info-colors
 	url = https://github.com/ubolonton/info-colors
