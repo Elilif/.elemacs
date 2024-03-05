@@ -73,6 +73,7 @@ The label should always be in group 1.")
 (defvar org-simple-ref-narrow '((?c . "coderef")
                                 (?s . "src-block")
                                 (?i . "ID")
+                                (?i . "CUSTOM_ID")
                                 (?r . "radio-target")
                                 (?h . "cureent-hd"))
   "Used by `consult--read' in `org-simple-ref-read'.
@@ -117,7 +118,7 @@ See `consult--read' for details.")
                            (plist-get plist :title)))
                     ("coderef"
                      (cons (format "(%s)" label-trim)
-                           label-trim))
+                           (format "(%s)" label-trim)))
                     (_
                      (cons label-trim
                            label-trim))))
