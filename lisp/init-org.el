@@ -490,7 +490,7 @@
    org-roam-mode-sections (list #'org-roam-backlinks-section
 								#'org-roam-reflinks-section
 								#'org-roam-unlinked-references-section)
-   org-roam-completion-everywhere t
+   org-roam-completion-everywhere nil
    org-roam-dailies-capture-templates '(("d" "default" entry
 										 "* %?"
 										 :target (file+datetree "~/Dropbox/org/roam/daily/dailies.org" day)))
