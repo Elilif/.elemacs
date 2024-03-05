@@ -124,7 +124,7 @@
 		   (sequence "WAITING(w@/!)" "NEXT(n!/!)"
                      "SOMEDAY(S)" "|" "CANCELLED(c@/!)")))
    org-ellipsis "▼"
-   org-image-actual-width nil)
+   org-image-actual-width '(500))
   (:advice
    buffer-substring--filter :filter-return eli/unfill-string)
   (:hook
