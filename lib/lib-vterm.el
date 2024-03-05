@@ -46,50 +46,50 @@
   "Toggle shell in child frame."
   (interactive)
   (let ((dir (shell-quote-argument
-			  (expand-file-name default-directory))))
-	;; Shell pop in child frame
-	(unless (and shell-pop--frame
-				 (frame-live-p shell-pop--frame))
-	  (let ((width  (max 100 (round (* (frame-width) 0.62))))
-			(height (round (* (frame-height) 0.62)))
-			(buffer (vterm--internal (lambda (_arg) t))))
-		(setq shell-pop--frame
-			  (posframe-show
-			   buffer
-			   :poshandler #'posframe-poshandler-frame-center
-			   :hidehandler nil
-			   :left-fringe 8
-			   :right-fringe 8
-			   :width width
-			   :height height
-			   :min-width width
-			   :min-height height
-			   :border-width 2
-			   :border-color "light gray"
-			   :background-color (face-background 'tooltip nil t)
-			   :override-parameters '((cursor-type . t))
-			   :accept-focus t))
+              (expand-file-name default-directory))))
+    ;; Shell pop in child frame
+    (unless (and shell-pop--frame
+                 (frame-live-p shell-pop--frame))
+      (let ((width  (max 100 (round (* (frame-width) 0.62))))
+            (height (round (* (frame-height) 0.62)))
+            (buffer (vterm--internal (lambda (_arg) t))))
+        (setq shell-pop--frame
+              (posframe-show
+               buffer
+               :poshandler #'posframe-poshandler-frame-center
+               :hidehandler nil
+               :left-fringe 8
+               :right-fringe 8
+               :width width
+               :height height
+               :min-width width
+               :min-height height
+               :border-width 2
+               :border-color "light gray"
+               :background-color (face-background 'tooltip nil t)
+               :override-parameters '((cursor-type . t))
+               :accept-focus t))
 
-		(with-current-buffer buffer
-		  (set-process-query-on-exit-flag (get-process "vterm") nil)
-		  (setq-local cursor-type 'box) ; blink cursor
-		  (goto-char (point-max))
-		  (when (fboundp 'vterm-reset-cursor-point)
-			(vterm-reset-cursor-point)))))
-	;; Focus in child frame
-	(select-frame-set-input-focus shell-pop--frame)
-	(unless (string= dir (shell-quote-argument
-						  (expand-file-name default-directory)))
-	  (vterm-send-string (concat "cd " dir))
-	  (vterm-send-return))))
+        (with-current-buffer buffer
+          (set-process-query-on-exit-flag (get-process "vterm") nil)
+          (setq-local cursor-type 'box) ; blink cursor
+          (goto-char (point-max))
+          (when (fboundp 'vterm-reset-cursor-point)
+            (vterm-reset-cursor-point)))))
+    ;; Focus in child frame
+    (select-frame-set-input-focus shell-pop--frame)
+    (unless (string= dir (shell-quote-argument
+                          (expand-file-name default-directory)))
+      (vterm-send-string (concat "cd " dir))
+      (vterm-send-return))))
 
 ;;;###autoload
 (defun eli/vterm-quit ()
   (interactive)
   (let ((frame (selected-frame)))
-	(if (frame-parameter frame 'posframe-buffer)
-		(posframe--make-frame-invisible frame)
-	  (keyboard-quit))))
+    (if (frame-parameter frame 'posframe-buffer)
+        (posframe--make-frame-invisible frame)
+      (keyboard-quit))))
 
 
 ;;;; provide
