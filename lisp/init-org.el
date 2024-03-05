@@ -369,7 +369,7 @@
   (:bind-into org-mode-map
     "C-c ;" eli/org-babel-expand-src-block-and-edit
     "s-," eli/org-src-noweb-back)
-  (:after embark
+  (:after embark-org
     (:bind-into embark-org-src-block-map
       "e" eli/org-babel-goto-src-block-end
       "a" org-babel-goto-src-block-head
