@@ -654,7 +654,7 @@
 ;;;; LaTeX
 (setup ox-latex
   (:once (list :before 'org-self-insert-command)
-	(require 'ox-latex))
+    (require 'ox-latex))
   (:option*
    ;; org-mode expanding "\ " as $\backslash$, so use "\ws" instead
    org-entities-user '(("ws" "\\ " nil " " " " " " " "))
@@ -662,85 +662,108 @@
    org-startup-with-latex-preview nil
    org-preview-latex-default-process 'dvisvgm
    org-preview-latex-process-alist'((dvisvgm :programs
-											 ("xelatex" "dvisvgm")
-											 :description "xdv > svg"
-											 :message "you need to install the programs: xelatex and dvisvgm."
-											 :use-xcolor t
-											 :image-input-type "xdv"
-											 :image-output-type "svg"
-											 :image-size-adjust (1.7 . 1.5)
-											 :latex-compiler
-											 ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
-											 :image-converter
-											 ("dvisvgm %f -e -n -b min -c %S -o %O"))
-									(imagemagick :programs
-												 ("xelatex" "convert")
-												 :description "pdf > png"
-												 :message "you need to install the programs: xelatex and imagemagick."
-												 :use-xcolor t
-												 :image-input-type "pdf"
-												 :image-output-type "png"
-												 :image-size-adjust (1.0 . 1.0)
-												 :latex-compiler
-												 ("xelatex -interaction nonstopmode -output-directory %o %f")
-												 :image-converter
-												 ("convert -density %D -trim -antialias %f -quality 100 %O")))
+                                             ("xelatex" "dvisvgm")
+                                             :description "xdv > svg"
+                                             :message "you need to install the programs: xelatex and dvisvgm."
+                                             :use-xcolor t
+                                             :image-input-type "xdv"
+                                             :image-output-type "svg"
+                                             :image-size-adjust (1.7 . 1.5)
+                                             :latex-compiler
+                                             ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
+                                             :image-converter
+                                             ("dvisvgm %f -e -n -b min -c %S -o %O"))
+                                    (imagemagick :programs
+                                                 ("xelatex" "convert")
+                                                 :description "pdf > png"
+                                                 :message "you need to install the programs: xelatex and imagemagick."
+                                                 :use-xcolor t
+                                                 :image-input-type "pdf"
+                                                 :image-output-type "png"
+                                                 :image-size-adjust (1.0 . 1.0)
+                                                 :latex-compiler
+                                                 ("xelatex -interaction nonstopmode -output-directory %o %f")
+                                                 :image-converter
+                                                 ("convert -density %D -trim -antialias %f -quality 100 %O")))
    org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L},\n colorlinks=true,\n linkcolor=black}\n"
    org-format-latex-options '(:foreground default :background "Transparent" :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
-										  ("begin" "$1" "$" "$$" "\\(" "\\["))
+                                          ("begin" "$1" "$" "$$" "\\(" "\\["))
    org-latex-src-block-backend 'minted
    org-latex-minted-options '(("breaklines")
                               ("bgcolor" "bg"))
    org-latex-compiler "xelatex"
    org-latex-packages-alist '(("" "amsthm")
-							  ("" "amsfonts")
-							  ("" "bm")
-							  ("" "tikz")
-							  ("" "xcolor" t)
-							  ("cache=false" "minted" t))
-   org-latex-pdf-process '("xelatex -8bit --shell-escape -interaction nonstopmode -output-directory=%o %f"
-						   "biber %b"
-						   "xelatex -8bit --shell-escape -interaction nonstopmode -output-directory=%o %f"
-						   "xelatex -8bit --shell-escape -interaction nonstopmode -output-directory=%o %f"
-						   "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl auto"
-						   )
+                              ("" "amsfonts")
+                              ("" "bm")
+                              ("" "tikz")
+                              ("" "xcolor" t)
+                              ("cache=false" "minted" t))
+   org-latex-pdf-process '("latexmk -f -xelatex -shell-escape -output-directory=%o %F")
    org-latex-classes '(("Notes" "\\documentclass{ctexart}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n\\usepackage{/home/eli/.emacs.d/private/NotesTeXV3}"
-						("\\part{%s}" . "\\part*{%s}")
-						("\\section{%s}" . "\\section*{%s}")
-						("\\subsection{%s}" . "\\subsection*{%s}")
-						("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-						("\\paragraph{%s}" . "\\paragraph*{%s}")
-						("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-					   ("article_cn" "\\documentclass[11pt]{ctexart}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n[EXTRA]\n\\definecolor{bg}{rgb}{0.95,0.95,0.95}"
-						("\\section{%s}" . "\\section*{%s}")
-						("\\subsection{%s}" . "\\subsection*{%s}")
-						("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-						("\\paragraph{%s}" . "\\paragraph*{%s}")
-						("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-					   ("beamer" "\\documentclass[ignorenonframetext,presentation]{beamer}"
-						("\\section{%s}" . "\\section*{%s}")
-						("\\subsection{%s}" . "\\subsection*{%s}"))
-					   ("article" "\\documentclass[11pt]{article}"
-						("\\section{%s}" . "\\section*{%s}")
-						("\\subsection{%s}" . "\\subsection*{%s}")
-						("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-						("\\paragraph{%s}" . "\\paragraph*{%s}")
-						("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-					   ("report" "\\documentclass[11pt]{report}"
-						("\\part{%s}" . "\\part*{%s}")
-						("\\chapter{%s}" . "\\chapter*{%s}")
-						("\\section{%s}" . "\\section*{%s}")
-						("\\subsection{%s}" . "\\subsection*{%s}")
-						("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
-					   ("book" "\\documentclass[11pt]{book}"
-						("\\part{%s}" . "\\part*{%s}")
-						("\\chapter{%s}" . "\\chapter*{%s}")
-						("\\section{%s}" . "\\section*{%s}")
-						("\\subsection{%s}" . "\\subsection*{%s}")
-						("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+                        ("\\part{%s}" . "\\part*{%s}")
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}")
+                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                       ("article_cn" "\\documentclass[11pt]{ctexart}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n[EXTRA]\n\\definecolor{bg}{rgb}{0.95,0.95,0.95}"
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}")
+                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                       ("beamer" "\\documentclass[ignorenonframetext,presentation]{beamer}"
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}"))
+                       ("article" "\\documentclass[11pt]{article}"
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}")
+                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+                       ("report" "\\documentclass[11pt]{report}"
+                        ("\\part{%s}" . "\\part*{%s}")
+                        ("\\chapter{%s}" . "\\chapter*{%s}")
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}")
+                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+                       ("book" "\\documentclass[11pt]{book}"
+                        ("\\part{%s}" . "\\part*{%s}")
+                        ("\\chapter{%s}" . "\\chapter*{%s}")
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}")
+                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
   (:hook turn-on-org-cdlatex)
   (:advice
    org--make-preview-overlay :around eli/org-preview-show-label))
+
+(setup ob-latex
+  (:option*
+   org-babel-latex-preamble
+   (lambda (_)
+     "\\documentclass{standalone}")
+   org-babel-latex-pdf-svg-process
+   "inkscape \
+-n 1 \
+--pdf-poppler \
+--export-area-drawing \
+--export-text-to-path \
+--export-plain-svg \
+--export-filename=%O \
+%f"
+   org-babel-default-header-args:latex
+   '((:results . "file raw")
+     (:exports . "results")
+     (:eval . "never-export")
+     (:file . (lambda ()
+                (let* ((elt (org-element-at-point))
+                       (name (org-element-property :name elt))
+                       (cap (org-export-get-caption elt))
+                       (sha (concat (sha1 (org-element-property :value elt)))))
+                  (concat (or name cap )
+                          ".svg"))))))
+  (:hooks
+   org-babel-after-execute-hook org-redisplay-inline-images))
 
 ;;;; org simple ref
 (setup org
