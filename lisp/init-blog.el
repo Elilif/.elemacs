@@ -30,12 +30,38 @@
 
 ;;; Code:
 
+(setup ox
+  (:option*
+   org-export-with-priority t
+   org-export-with-toc 3
+   org-export-with-section-numbers t
+   org-export-with-planning t))
+
 (setup ox-html
   (:option*
+   org-html-metadata-timestamp-format "%Y-%m-%d"
    org-html-head-include-default-style nil
    org-html-htmlize-output-type 'css
    org-html-validation-link nil
    org-html-prefer-user-labels t
+   org-html-head-include-scripts t
+   org-html-wrap-src-lines nil
+   org-html-checkbox-type 'html
+   org-html-checkbox-types '((unicode
+                              (on . "&#x2611;")
+                              (off . "&#x2610;")
+                              (trans . "&#x2610;"))
+                             (ascii
+                              (on . "<code>[X]</code>")
+                              (off . "<code>[&#xa0;]</code>")
+                              (trans . "<code>[-]</code>"))
+                             (html
+                              (on . "<input type='checkbox' checked='checked'
+onclick=\"return false;\"/>")
+                              (off . "<input type='checkbox'
+onclick=\"return false;\"/>")
+                              (trans . "<input type='checkbox'
+onclick=\"return false;\"/>")))
    org-html-link-home ""
    org-html-link-up ""
    org-html-postamble nil))
@@ -44,10 +70,12 @@
   (:when-loaded
     (require 'lib-ox-publish))
   (:option*
-   eli/blog-base-dir "~/Dropbox/org/blog/"
+   eli/blog-base-dir "~/Elilif.github.io/orgs"
    eli/blog-publish-dir "~/Elilif.github.io"
    eli/blog-sitamap "index.org"
-   eli/blog-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/styles.css\" />
+   eli/blog-head "<link rel=\"icon\" href=\"/static/favion.png\">
+<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/styles.css\"/>
+<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/htmlize.css\" />
                   <script src=\"/scripts/script.js\"></script>
                   <script src=\"/scripts/toc.js\"></script>
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>"
@@ -59,7 +87,8 @@
 <hr>"))
    eli/blog-postamble '(("en" "<hr class=\"Solid\">
 <div class=\"info\">
-  <span class=\"author\">Author: %a (%e)</span>
+  <span class=\"author\">Author: %a</span>
+  <span class=\"author\">Email: %e</span>
   <span class=\"date\">Create Date: %d</span>
   <span class=\"date\">Last modified: %C</span>
   <span>Creator: %c</span>
@@ -115,6 +144,7 @@
       :publishing-directory ,eli/blog-publish-dir
       :base-directory ,user-emacs-directory
       :include ("config.org")
+      :exclude "README.org"
       :publishing-function eli/org-blog-publish-to-html
       :html-head ,eli/blog-head
       :html-preamble t
@@ -123,14 +153,17 @@
       :html-postamble-format ,eli/blog-postamble)))
   (:after ox
     (add-to-list 'org-export-global-macros
-                 '("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
+                 '("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@"))
+    (add-to-list 'org-export-global-macros
+                 '("kbd" . "@@html:<kbd>$1</kbd>@@")))
   (:after ox-html
     (org-export-define-derived-backend 'blog 'html
       :translate-alist '((src-block . eli/org-blog-src-block)
-                         (footnote-reference . eli/org-blog-footnote-reference))))
+                         (footnote-reference . eli/org-blog-footnote-reference)
+                         (template . eli/org-blog-template))))
   (:advice
-   org-html--format-image :around eli/filter-org-html--format-image
-   org-publish :before (lambda (&rest _args) (org-publish-reset-cache)))
+   ;; org-html--format-image :around eli/filter-org-html--format-image
+   org-publish-find-date :override eli/org-publish-find-date)
   (:hooks
    org-export-before-processing-functions eli/org-export-src-babel-duplicate
    org-export-before-processing-functions eli/org-export-add-custom-id
