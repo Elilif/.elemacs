@@ -69,6 +69,7 @@ onclick=\"return false;\"/>")))
 (setup ox-publish
   (:when-loaded
     (require 'lib-ox-publish))
+  (:also-load ob)
   (:option*
    eli/blog-base-dir "~/Elilif.github.io/orgs"
    eli/blog-publish-dir "~/Elilif.github.io"
@@ -144,7 +145,7 @@ onclick=\"return false;\"/>")))
       :publishing-directory ,eli/blog-publish-dir
       :base-directory ,user-emacs-directory
       :include ("config.org")
-      :exclude "README.org"
+      :exclude ".*.org"
       :publishing-function eli/org-blog-publish-to-html
       :html-head ,eli/blog-head
       :html-preamble t
