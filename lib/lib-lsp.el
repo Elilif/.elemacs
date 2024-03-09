@@ -1,4 +1,4 @@
-;; lib-lsp.el --- Initialize lib-lsp configurations.	-*- lexical-binding: t; -*-
+;; lib-lsp.el --- Initialize lib-lsp configurations.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023-2023 by Eli
 
@@ -35,6 +35,13 @@
         '(orderless)))
 
 (setq eli/selected-lsp 'lsp-mode)
+(defvar eli/org-babel-lang-extension
+  '(("cpp" . "cpp")
+    ("C++" . "cpp")
+    ("C" . "c")
+    ("python" . "py")
+    ("shell" . "sh")
+    ("racket" . "rkt")))
 ;; Enable LSP in org babel
 ;; need to add `:file test.xx' in the header
 ;; https://github.com/emacs-lsp/lsp-mode/issues/377
@@ -44,28 +51,36 @@
   (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
          (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
     `(progn
-	   (defun ,intern-pre (info)
+       (defun ,intern-pre (info)
          (setq buffer-file-name (or (->> info caddr (alist-get :file))
-                                    (make-temp-file "babel-lsp-" nil
-                                                    (concat
-                                                     "."
-                                                     (car info)))))
+                                    (file-name-concat
+                                     default-directory
+                                     (concat
+                                      "org-src-babel"
+                                      ;; (when eli/org-src-noweb-history
+                                      ;;   (format "-%s"
+                                      ;;           (length eli/org-src-noweb-history)))
+                                      "."
+                                      (cdr
+                                       (assoc-string
+                                        (car info)
+                                        eli/org-babel-lang-extension))))))
          (pcase eli/selected-lsp
            ('eglot
             (when (fboundp 'eglot-ensure)
-		      (eglot-ensure)))
+              (eglot-ensure)))
            ('lsp-mode
             (when (fboundp 'lsp-deferred)
-		      ;; Avoid headerline conflicts
-		      (setq-local lsp-headerline-breadcrumb-enable nil)
-		      (lsp-deferred)))
+              ;; Avoid headerline conflicts
+              (setq-local lsp-headerline-breadcrumb-enable nil)
+              (lsp-deferred)))
            (_
             (user-error "LSP:: invalid `eli/selected-lsp' type"))))
-	   (put ',intern-pre 'function-documentation
+       (put ',intern-pre 'function-documentation
             (format "Enable `%s' in the buffer of org source block (%s)."
                     eli/selected-lsp (upcase ,lang)))
 
-	   (if (fboundp ',edit-pre)
+       (if (fboundp ',edit-pre)
            (advice-add ',edit-pre :after ',intern-pre)
          (progn
            (defun ,edit-pre (info)
@@ -75,15 +90,22 @@
                         (upcase ,lang))))))))
 
 (defvar org-babel-lang-list
-  '("python" "ipython" "c" "cpp" "c++" "shell"))
-;; (add-to-list 'org-babel-lang-list (if emacs/>=26p "shell" "sh"))
+  '("python" "ipython" "C" "cpp" "C++" "shell" "racket"))
 (dolist (lang org-babel-lang-list)
   (eval `(lsp-org-babel-enable ,lang)))
 
 (defun eli/lsp-ui-doc--hide-frame (orig-fun &rest args)
   (when (and lsp-ui-doc-mode
-			 (not (frame-parameter (selected-frame) 'posframe-buffer)))
-	(apply orig-fun args)))
+             (not (frame-parameter (selected-frame) 'posframe-buffer)))
+    (apply orig-fun args)))
+
+
+;; change lsp client priority
+(defun eli/lsp-set-priority (server priority)
+  (setf (lsp--client-priority (gethash server lsp-clients)) priority))
+
+(defun eli/lsp-priority (server)
+  (lsp--client-priority (gethash server lsp-clients)))
 
 ;;;; provide
 (provide 'lib-lsp)
