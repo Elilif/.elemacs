@@ -60,8 +60,9 @@
   (:iload leetcode)
   (:when-loaded
     (require 'lib-leetcode))
-  (:option* leetcode-prefer-language "cpp"
-            leetcode-save-solutions t)
+  (:option*
+   leetcode-prefer-language "cpp"
+   leetcode-save-solutions t)
   (:bind-into leetcode--problems-mode-map
     "Q" leetcode-quit
     "D" leetcode-daily)
@@ -84,7 +85,6 @@
     "{" nil
     "C-c C-o" ff-find-other-file)
   (:when-loaded
-    (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
     (add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))))
 
 (setup ccls
@@ -99,14 +99,22 @@
     (when file-name
       (setq file-name (file-name-nondirectory file-name))
       (let ((out-file (concat (file-name-sans-extension file-name) exec-suffix)))
-        (setq-local compile-command (format "g++ -std=c++11 -g %s -o %s" file-name out-file))))))
+        (setq-local compile-command (pcase major-mode
+                                      ('c++-mode
+                                       (format "g++ -std=c++11 -g %s -o %s"
+                                               file-name out-file))
+                                      ('c-mode
+                                       (format "gcc -std=c89 -g %s -o %s"
+                                               file-name out-file))))))))
 ;;;; gdb
 (setup gdb-mi
   (:also-load
    lib-gdb)
   (:option*
    gdb-show-main t
-   gdb-many-windows t)
+   gdb-many-windows t
+   gdb-debuginfod-enable nil
+   gdb-debuginfod-enable-setting nil)
   (:advice
    gud-query-cmdline :before eli/reset-gud-gdb-history))
 
@@ -237,7 +245,8 @@
    lsp-enable-indentation nil
    lsp-enable-on-type-formatting nil
    lsp-lens-enable nil
-   lsp-idle-delay 0.5)
+   lsp-idle-delay 0.5
+   lsp-auto-touch-files nil)
   (:hooks prog-mode-hook (lambda ()
                            (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode
                                                    'snippet-mode)
