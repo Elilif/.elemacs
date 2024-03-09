@@ -157,6 +157,8 @@ onclick=\"return false;\"/>")))
     (add-to-list 'org-export-global-macros
                  '("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@"))
     (add-to-list 'org-export-global-macros
+                 '("tags" . "@@html:<span class=\"tags\" data-tags=\"$1\"></span>@@"))
+    (add-to-list 'org-export-global-macros
                  '("kbd" . "@@html:<kbd>$1</kbd>@@")))
   (:after ox-html
     (org-export-define-derived-backend 'blog 'html

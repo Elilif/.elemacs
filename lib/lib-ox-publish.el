@@ -54,6 +54,7 @@
   (when (looking-at " +") (replace-match ""))
   (goto-char (point-min)))
 
+(defvar eli/blog-tags nil)
 (defun eli/sitemap-dated-entry-format (entry _style project)
   "Sitemap PROJECT ENTRY STYLE format that includes date."
   (let* ((file (org-publish--expand-file-name entry project))
@@ -62,14 +63,22 @@
           (if parsed-title
               (org-no-properties
                (org-element-interpret-data parsed-title))
-            (file-name-nondirectory (file-name-sans-extension file)))))
+            (file-name-nondirectory (file-name-sans-extension file))))
+         (tags (org-publish-find-property file :filetags project))
+         (tags-string (mapconcat
+                       (lambda (tag)
+                         (concat "#" tag))
+                       tags " ")))
+    (dolist (tag tags)
+      (cl-pushnew tag eli/blog-tags :test #'string=))
     (org-publish-cache-set-file-property file :title title)
     (if (= (length title) 0)
         (format "*%s*" entry)
-      (format "{{{timestamp(%s)}}}   [[file:%s][%s]]"
+      (format "{{{timestamp(%s)}}}   [[file:%s][%s]] {{{tags(%s)}}}"
               (car (org-publish-find-property file :date project))
               (concat "articles/" entry)
-              title))))
+              title
+              tags-string))))
 
 (defun eli/org-publish-find-date (file project)
   "Find the date of FILE in PROJECT.
@@ -137,7 +146,9 @@ time in `current-time' format."
 
 (defun eli/blog-publish-completion (project)
   (eli/blog-move-sitemap project)
-  (eli/blog-generate-sitemap))
+  (eli/blog-generate-sitemap)
+  (setq org-html-head-extra ""
+        eli/blog-tags nil))
 
 (defun eli/org-publish-rss-sitemap (title list)
   "Generate a sitemap of posts that is exported as a RSS feed.
@@ -206,10 +217,35 @@ DIR is the location of the output."
 
 (defun eli/org-publish-sitemap (title list)
   "Generate the sitemap with title."
+  (setq org-html-head-extra
+        (format "<style>\n%s\n%s\n</style>"
+                ".content:has([value=\"all\"]:checked) li{display: list-item;}\n"
+                (mapconcat
+                 (lambda (tag)
+                   (format ".content:has([value=\"%s\"]:checked)
+ li:has([data-tags~=\"%s\"]){display: list-item;}"
+                           tag (concat "#" tag)))
+                 eli/blog-tags "\n")))
   (concat "#+TITLE: " title
           "\n"
           "#+DATE: 2023-10-10"
-          "\n\n"
+          "\n"
+          (format "#+BEGIN_EXPORT html
+<section class=\"filter\">\n%s\n%s</section>
+#+END_EXPORT"
+                  "<label class=\"category\">
+<input type=\"radio\" name=\"tag\" value=\"all\" checked/>
+<span>All</span>
+</label>"
+                  (mapconcat
+                   (lambda (tag)
+                     (format "<label class=\"category\">
+<input type=\"radio\" name=\"tag\" value=\"%s\"/>
+<span>%s</span>
+</label>"
+                             tag tag))
+                   eli/blog-tags "\n"))
+          "\n"
           (org-list-to-org list)))
 
 (defun eli/org-export-footnote-duplicate (backend)
@@ -364,7 +400,6 @@ contextual information."
   "Return complete document string after HTML conversion.
 CONTENTS is the transcoded contents string.  INFO is a plist
 holding export options."
-  (setq eli-test info)
   (concat
    (when (and (not (org-html-html5-p info)) (org-html-xhtml-p info))
      (let* ((xml-declaration (plist-get info :html-xml-declaration))
