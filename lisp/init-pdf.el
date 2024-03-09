@@ -104,6 +104,11 @@
   (:advice
    nov-content-unique-identifier :override my-nov-content-unique-identifier))
 
+(setup eww
+  (:option*
+   eww-retrieve-command '("readable")
+   shr-use-xwidgets-for-media t))
+
 
 ;;;; provide
 (provide 'init-pdf)
