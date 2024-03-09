@@ -3,6 +3,9 @@
 ;; Author: Eli Qian <eli.q.qian@gmail.com>
 ;; Url: https://github.com/Elilif/.elemacs
 
+(cl-eval-when (compile)
+  (require 'ox-rss))
+
 ;; (defun eli/filter-org-html--format-image (orig source attributes info)
 ;;   "Use base64 string instead of url to display images.
 
@@ -28,16 +31,7 @@
 ;;     image-html))
 
 (defun eli/org-html-htmlize-generate-font-lock-css ()
-  "Create the CSS for all font definitions in the current Emacs session.
-Use this to create face definitions in your CSS style file that can then
-be used by code snippets transformed by htmlize.
-This command just produces a buffer that contains class definitions for all
-faces used in the current Emacs session.  You can copy and paste the ones you
-need into your CSS file.
-
-If you then set `org-html-htmlize-output-type' to `css', calls
-to the function `org-html-htmlize-region-for-paste' will
-produce code that uses these same face definitions."
+  "Create the CSS for all font-lock definitions in the current Emacs session."
   (interactive)
   (unless (require 'htmlize nil t)
     (error "htmlize library missing.  Aborting"))
@@ -110,7 +104,29 @@ time in `current-time' format."
   (start-process-shell-command "*publish*" nil "~/.emacs.d/private/shell.sh")
   (message "blogs deployed successfully!"))
 
-(defun eli/blog-publish-completion (project)
+(defun eli/blog-generate-sitemap (&optional _project)
+  "Generate a sitemap.xml file for PROJTCT."
+  (let* ((sitemap-path (file-name-concat eli/blog-publish-dir "sitemap.xml"))
+         (base-url "https://elilif.github.io/")
+         (files (directory-files-recursively eli/blog-publish-dir  ".html"))
+         (sitemap-buffer (generate-new-buffer "*sitemap*")))
+    (with-current-buffer sitemap-buffer
+      (insert "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">
+")
+      (dolist (file files)
+        (insert
+         (format "<url>\n<loc>%s</loc>\n<lastmod>%s</lastmod>\n</url>\n"
+                 (concat base-url (file-relative-name file eli/blog-publish-dir))
+                 (format-time-string "%Y-%m-%dT%H:%M:%S+08:00"
+                                     (file-attribute-modification-time
+                                      (file-attributes file))))))
+      (insert "</urlset>")
+
+      (write-region (point-min) (point-max) sitemap-path nil 3)
+      (kill-buffer sitemap-buffer))))
+
+(defun eli/blog-move-sitemap (project)
   (let* ((publishing-directory (plist-get project :publishing-directory))
          (sitamap (file-name-with-extension eli/blog-sitamap "html"))
          (orig-file (expand-file-name sitamap publishing-directory))
@@ -118,6 +134,10 @@ time in `current-time' format."
                        sitamap
                        (file-name-directory publishing-directory))))
     (rename-file orig-file target-file t)))
+
+(defun eli/blog-publish-completion (project)
+  (eli/blog-move-sitemap project)
+  (eli/blog-generate-sitemap))
 
 (defun eli/org-publish-rss-sitemap (title list)
   "Generate a sitemap of posts that is exported as a RSS feed.
@@ -309,7 +329,7 @@ contextual information."
 
 (defun eli/blog-build-article-status (info)
   (let ((input-file (file-name-nondirectory (plist-get info :input-file))))
-    (unless (string-equal input-file "index.org")
+    (unless (string-equal input-file eli/blog-sitamap)
       (let ((spec (org-html-format-spec info))
             (history-url (concat eli/blog-history-base-url input-file)))
         (concat
@@ -318,6 +338,27 @@ contextual information."
          (format "<span><i class='bx bx-history'></i><span><a href=\"%s\">history</a></span></span>"
                  history-url)
          "</div>")))))
+
+(defvar eli/blog-giscus-script "<script src=\"https://giscus.app/client.js\"
+          data-repo=\"Elilif/Elilif.github.io\"
+          data-repo-id=\"MDEwOlJlcG9zaXRvcnkyOTgxNjM5ODg=\"
+          data-category=\"Announcements\"
+          data-category-id=\"DIC_kwDOEcWfFM4Cdz5V\"
+          data-mapping=\"pathname\"
+          data-strict=\"0\"
+          data-reactions-enabled=\"1\"
+          data-emit-metadata=\"0\"
+          data-input-position=\"top\"
+          data-theme=\"light\"
+          data-lang=\"zh-CN\"
+          crossorigin=\"anonymous\"
+          async>
+  </script>")
+
+(defun eli/blog-build-giscus (info)
+  (let ((input-file (file-name-nondirectory (plist-get info :input-file))))
+    (unless (string-equal input-file eli/blog-sitamap)
+      eli/blog-giscus-script)))
 
 (defun eli/org-blog-template (contents info)
   "Return complete document string after HTML conversion.
@@ -393,6 +434,8 @@ holding export options."
    (eli/blog-build-article-status info)
    contents
    (format "</%s>\n" (nth 1 (assq 'content (plist-get info :html-divs))))
+   ;; gisus
+   (eli/blog-build-giscus info)
    ;; Postamble.
    (org-html--build-pre/postamble 'postamble info)
    ;; Possibly use the Klipse library live code blocks.
@@ -421,7 +464,8 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                           ""
                         ".100"))))
      (format
-      (concat (plist-get info :html-footnote-format) "<input id=\"%s\" class=\"footref-toggle\" type=\"checkbox\">")
+      (concat (plist-get info :html-footnote-format)
+              "<input id=\"%s\" class=\"footref-toggle\" type=\"checkbox\">")
       (format "<label for=\"%s\" class=\"footref\">%s</label>"
               id n)
       id))))
@@ -431,11 +475,13 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 (defun eli/blog-replace-img-path ()
   "Copy all images included in current file into `eli/blog-static-dir'."
   (save-excursion
+    (org-element-cache-reset)
     (let ((img-dir (file-name-as-directory
                     (file-name-concat eli/blog-static-dir
                                       (file-name-base
                                        (buffer-file-name)))))
-          (datum (org-element-parse-buffer)))
+          (datum (org-element-parse-buffer))
+          links)
       (unless (file-exists-p img-dir)
         (make-directory img-dir t))
       (org-element-map datum 'link
@@ -450,17 +496,25 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                              ".."
                              (file-relative-name
                               img-dir
-                              "~/Elilif.github.io/")
+                              eli/blog-publish-dir)
                              (file-name-nondirectory old-img)))
                    (new-link (org-link-make-string
                               (replace-regexp-in-string old-img new-img raw-link))))
               (unless (file-exists-p new-img)
-                (copy-file old-img new-img)
-                (goto-char beg)
-                (delete-region beg end)
-                (insert new-link))))))
+                (copy-file old-img new-img))
+              (push (list (copy-marker beg)
+                          (copy-marker end)
+                          new-link)
+                    links)))))
       (when (directory-empty-p img-dir)
-        (delete-directory img-dir)))
+        (delete-directory img-dir))
+      (dolist (link links)
+        (let ((beg (nth 0 link))
+              (end (nth 1 link))
+              (new-link (nth 2 link)))
+          (goto-char beg)
+          (delete-region beg end)
+          (insert new-link))))
     (save-buffer)))
 
 ;;;###autoload

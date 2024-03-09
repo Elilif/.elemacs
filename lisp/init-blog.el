@@ -33,9 +33,10 @@
 (setup ox
   (:option*
    org-export-with-priority t
-   org-export-with-toc 3
+   org-export-with-toc 4
    org-export-with-section-numbers t
-   org-export-with-planning t))
+   org-export-with-planning t
+   org-export-with-special-strings nil))
 
 (setup ox-html
   (:option*
@@ -130,7 +131,7 @@ onclick=\"return false;\"/>")))
       :html-link-use-abs-url t
       :html-link-org-files-as-html t
       :include ("rss.org")
-      :exclude "index.org"
+      :exclude ,eli/blog-sitamap
 
       :publishing-function eli/org-publish-rss-feed
       :auto-sitemap t
