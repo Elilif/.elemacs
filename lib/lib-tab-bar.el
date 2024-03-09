@@ -60,6 +60,18 @@
   :version "30.0.50"
   :group 'tab-bar-faces)
 
+(defface tar-bar-icons
+  '((default
+     :height 1.3 :inherit mindre-keyword))
+  "Tab bar face for non-selected tab."
+  :version "30.0.50"
+  :group 'tab-bar-faces)
+
+(defun eli/tab-bar-icon ()
+  "Show `' in tab-bar."
+  (propertize ""
+              'face 'tar-bar-icons))
+
 (defun eli/tab-bar-emms ()
   (concat
    (when (and (boundp 'emms-lyrics-display-on-modeline)

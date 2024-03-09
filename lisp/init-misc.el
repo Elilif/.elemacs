@@ -305,8 +305,9 @@
    tab-bar-select-tab-modifiers '(super)
    tab-bar-tab-name-truncated-max 15
    tab-bar-border nil
-   tab-bar-auto-width t
-   tab-bar-format '(tab-bar-format-tabs
+   tab-bar-auto-width nil
+   tab-bar-format '(;; eli/tab-bar-icon
+                    tab-bar-format-tabs
                     tab-bar-separator
                     tab-bar-format-align-right
                     eli/tab-bar-emms)
