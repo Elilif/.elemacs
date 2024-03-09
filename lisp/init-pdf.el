@@ -89,7 +89,14 @@
 
 (setup org-doc-noter
   (:option*
-   org-doc-noter-doc-split-fraction 0.55))
+   org-doc-noter-doc-split-fraction 0.55)
+  (:hooks
+   org-doc-noter-insert-heading-hook (lambda(arg)
+                                       (when arg
+                                         (org-entry-put nil "NOANKI" "t"))))
+  (:bind-into org-doc-noter-doc-mode-map
+    "e" eli/org-doc-noter-insert-exercise
+    "a" eli/org-doc-noter-insert-anki))
 
 (setup nov
   (:iload nov)
