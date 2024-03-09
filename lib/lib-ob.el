@@ -580,6 +580,25 @@ Add some text properties to expanded noweb references"
       (org-babel-goto-src-block-head)
       (org-fold-hide-block-toggle t))))
 
+;;;###autoload
+(defun eli/org-babel-collect-noweb-ref (reference)
+  "Collect all src babels wtih noweg-ref REFERENCE."
+  ;; be compatible with lib-org-simple-ref.el
+  (setq reference (string-trim reference))
+  (let (datum names)
+    (if (org-src-edit-buffer-p)
+        (org-src-do-at-code-block
+         (setq datum (org-element-parse-buffer)))
+      (setq datum (org-element-parse-buffer)))
+    (org-element-map datum 'src-block
+      (lambda (block)
+        (let* ((info (org-babel-get-src-block-info t block))
+               (ref (cdr (assq :noweb-ref (nth 2 info)))))
+          (when (string= reference ref)
+            (push (nth 4 info) names)))))
+    (dolist (name names)
+      (insert (format "<<%s>>\n\n" name)))))
+
 ;;;; coderef
 (defvar eli/lang-comment-alist '((emacs-lisp-mode . ";; ")
                                  (racket-mode . ";; ")

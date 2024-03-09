@@ -249,7 +249,8 @@ font-lock."
 (defvar-keymap embark-org-simple-ref-map
   :doc "Keymap for actions on org simple reference."
   :parent embark-general-map
-  "g" #'embark-org-simple-ref-goto-location)
+  "g" #'embark-org-simple-ref-goto-location
+  "r" #'eli/org-babel-collect-noweb-ref)
 
 (add-to-list 'embark-keymap-alist '(org-simple-ref . embark-org-simple-ref-map))
 
