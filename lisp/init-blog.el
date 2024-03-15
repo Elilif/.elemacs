@@ -34,7 +34,7 @@
   (:option*
    org-export-with-priority t
    org-export-with-toc 4
-   org-export-with-section-numbers t
+   org-export-with-section-numbers nil
    org-export-with-planning t
    org-export-with-special-strings nil))
 
@@ -164,7 +164,8 @@ onclick=\"return false;\"/>")))
     (org-export-define-derived-backend 'blog 'html
       :translate-alist '((src-block . eli/org-blog-src-block)
                          (footnote-reference . eli/org-blog-footnote-reference)
-                         (template . eli/org-blog-template))))
+                         (template . eli/org-blog-template)
+                         (link . eli/org-blog-link))))
   (:advice
    ;; org-html--format-image :around eli/filter-org-html--format-image
    org-publish-find-date :override eli/org-publish-find-date)
