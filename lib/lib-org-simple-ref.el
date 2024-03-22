@@ -49,7 +49,7 @@
    (concat "\\\\label{" org-ref-label-re "}")
    ;; A target, code copied from org-target-regexp and group 1 numbered.
    (let ((border "[^<>\n\r \t]"))
-     (format "<<<\\(?1:%s\\|%s[^<>\n\r]*%s\\)>>>"
+     (format "<<\\(?1:%s\\|%s[^<>\n\r]*%s\\)>>"
              border border border))
    ;; A label link
    (concat "label:" org-ref-label-re "\\_>")
