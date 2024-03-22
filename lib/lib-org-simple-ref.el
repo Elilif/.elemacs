@@ -33,26 +33,26 @@
 (require 'embark)
 
 ;;; cross-reference in org-mode
-(defvar org-ref-label-re
+(defvar org-simple-ref-label-re
   (rx-to-string
    '(group-n 1 (one-or-more (any word "-.:?!`'/*@+|(){}<>&_^$#%~"))))
   "Regexp for labels.")
 
-(defvar org-ref-ref-label-regexps
+(defvar org-simple-ref-ref-label-regexps
   (list
-   (concat ":ID:\\s-+" org-ref-label-re "\\_>")
+   (concat ":ID:\\s-+" org-simple-ref-label-re "\\_>")
    ;; CUSTOM_ID in a heading
-   (concat ":CUSTOM_ID:\\s-+" org-ref-label-re "\\_>")
+   (concat ":CUSTOM_ID:\\s-+" org-simple-ref-label-re "\\_>")
    ;; #+name
-   (concat "^\\s-*#\\+name:\\s-+" org-ref-label-re)
+   (concat "^\\s-*#\\+name:\\s-+" org-simple-ref-label-re)
    ;; labels in latex
-   (concat "\\\\label{" org-ref-label-re "}")
+   (concat "\\\\label{" org-simple-ref-label-re "}")
    ;; A target, code copied from org-target-regexp and group 1 numbered.
    (let ((border "[^<>\n\r \t]"))
      (format "<<\\(?1:%s\\|%s[^<>\n\r]*%s\\)>>"
              border border border))
    ;; A label link
-   (concat "label:" org-ref-label-re "\\_>")
+   (concat "label:" org-simple-ref-label-re "\\_>")
    ;; code ref
    "[ 	]*(\\(?2:ref\\):\\(?1:[-a-zA-Z0-9_][-a-zA-Z0-9_ ]*\\))[ 	]*$"
    ;; noweb ref
@@ -61,28 +61,29 @@
   "List of regular expressions to labels.
 The label should always be in group 1.")
 
-(defvar-local org-ref-label-cache nil
+(defvar-local org-simple-ref-label-cache nil
   "Buffer-local cache variable for labels.")
-(defvar-local org-ref-buffer-chars-modified-tick nil
+(defvar-local org-simple-ref-buffer-chars-modified-tick nil
   "Buffer-local variable to hold `buffer-chars-modified-tick'.")
-(defvar org-ref-label-annot-cache nil
-  "Store the value of `org-ref-label-cache'.
+(defvar org-simple-ref-label-annot-cache nil
+  "Store the value of `org-simple-ref-label-cache'.
 
- used by `eli/org-ref-label-annotation'.")
+ used by `org-simple-ref-label-annotation'.")
 
 (defvar org-simple-ref-narrow '((?c . "coderef")
                                 (?s . "src-block")
                                 (?i . "ID")
                                 (?i . "CUSTOM_ID")
-                                (?r . "radio-target")
+                                (?t . "radio-target")
+                                (?t . "target")
                                 (?h . "cureent-hd"))
   "Used by `consult--read' in `org-simple-ref-read'.
 
 See `consult--read' for details.")
 
-(defun eli/org-ref-label-annotation (candidate)
+(defun org-simple-ref-label-annotation (candidate)
   "Used by `completing-read'."
-  (let ((plist (alist-get candidate org-ref-label-annot-cache nil nil #'string=)))
+  (let ((plist (alist-get candidate org-simple-ref-label-annot-cache nil nil #'string=)))
     (concat (truncate-string-to-width (propertize (plist-get plist :title)
                                                   'face 'mindre-keyword)
                                       70 nil 32)
@@ -91,19 +92,19 @@ See `consult--read' for details.")
                                       70 nil 32))))
 
 ;;;###autoload
-(defun eli/org-ref-insert-ref-link ()
+(defun org-simple-ref-insert-ref-link ()
   "Completion function for a ref link."
   (interactive)
   (let* ((label-trim)
          (plist-getter (lambda ()
-                         (let* ((label (org-simple-ref-read (org-ref-get-labels)))
+                         (let* ((label (org-simple-ref-read (org-simple-ref-get-labels)))
                                 ;; or use `completing-read':
                                 ;; (completion-extra-properties '(:annotation-function
-                                ;;                                eli/org-ref-label-annotation))
-                                ;; (label (completing-read (org-ref-get-labels)))
+                                ;;                                org-simple-ref-label-annotation))
+                                ;; (label (completing-read (org-simple-ref-get-labels)))
                                 )
-                           (setq label-trim (string-trim label))
-                           (alist-get label org-ref-label-cache nil nil #'string=))))
+                           (setq label-trim (substring (string-trim label) 0 -1))
+                           (alist-get label org-simple-ref-label-cache nil nil #'string=))))
          (plist (cond
                  ((org-src-edit-buffer-p)
                   (org-src-do-at-code-block
@@ -119,19 +120,25 @@ See `consult--read' for details.")
                     ("coderef"
                      (cons (format "(%s)" label-trim)
                            (format "(%s)" label-trim)))
+                    ("paragraph"
+                     (cons label-trim nil))
+                    ("radio-target"
+                     label-trim)
                     (_
                      (cons label-trim
                            label-trim))))
          (link (cond
-                ((string= (plist-get plist :type) "radio-target")
-                 label-trim)
+                ((not (listp result))
+                 result)
                 ((or (org-src-edit-buffer-p) (get-text-property (point) 'src-block))
                  (format "<<%s>>" (car result)))
+                ((not (cdr result))
+                 (format "[[%s]]" (car result)))
                 (t
                  (format "[[%s][%s]]" (car result) (cdr result))))))
     (insert link)))
 
-(defun org-ref-get-labels ()
+(defun org-simple-ref-get-labels ()
   "Return a list of referenceable labels in the document.
 You can reference:
 A NAME keyword
@@ -141,7 +148,7 @@ A target.
 A label link
 A setting in lstset
 
-See `org-ref-ref-label-regexps' for the patterns that find these.
+See `org-simple-ref-ref-label-regexps' for the patterns that find these.
 
 Returns a list of cons cells (label . context).
 
@@ -149,16 +156,16 @@ It is important for this function to be fast, since we use it in
 font-lock."
   (if (or
        ;; if we have not checked we have to check
-       (null org-ref-buffer-chars-modified-tick)
+       (null org-simple-ref-buffer-chars-modified-tick)
        ;; Now check if buffer has changed since last time we looked. We check
        ;; this with the buffer-chars-modified-tick which keeps track of changes.
        ;; If this hasn't changed, no chars have been modified.
        (/= (buffer-chars-modified-tick)
-           org-ref-buffer-chars-modified-tick))
+           org-simple-ref-buffer-chars-modified-tick))
       ;; We need to search for all the labels either because we don't have them,
       ;; or the buffer has changed since we looked last time.
       (let ((case-fold-search t)
-            (rx (string-join org-ref-ref-label-regexps "\\|"))
+            (rx (string-join org-simple-ref-ref-label-regexps "\\|"))
             (labels '())
             oe ;; org-element
             data
@@ -186,27 +193,29 @@ font-lock."
 
         ;; reverse so they are in the order we find them.
         (setq
-         org-ref-buffer-chars-modified-tick (buffer-chars-modified-tick)
-         org-ref-label-cache (delete-dups (reverse labels)))))
+         org-simple-ref-buffer-chars-modified-tick (buffer-chars-modified-tick)
+         org-simple-ref-label-cache (delete-dups (reverse labels)))))
   ;; retrieve the cached data
-  (setq org-ref-label-annot-cache org-ref-label-cache))
+  (setq org-simple-ref-label-annot-cache org-simple-ref-label-cache))
 
 (defun org-simple-ref-read (collection)
-  "Select an item from COLLECTION returned by `org-ref-get-labels'."
+  "Select an item from COLLECTION returned by `org-simple-ref-get-labels'."
 
   ;; add some metadata (text properties) to candidates.
-  (mapc
-   (lambda (cand)
-     (let* ((string (car cand))
-            (data (cdr cand)))
-       (setf (car cand)
-             (propertize
-              (truncate-string-to-width string 70 nil 32)
-              'org-simple-ref--type
-              (or (car-safe (rassoc (plist-get data :type) org-simple-ref-narrow))
-                  ;; 0 is a placeholder
-                  0)))))
-   collection)
+  (let ((idx 0))
+    (mapc
+     (lambda (cand)
+       (let* ((string (concat (car cand) (consult--tofu-encode idx)))
+              (data (cdr cand)))
+         (setf (car cand)
+               (propertize
+                (truncate-string-to-width string 70 nil 32)
+                'org-simple-ref--type
+                (or (car-safe (rassoc (plist-get data :type) org-simple-ref-narrow))
+                    ;; 0 is a placeholder
+                    0)))
+         (cl-incf idx)))
+     collection))
   (let* ((hd (save-excursion
                (org-back-to-heading-or-point-min t)
                (org-element-at-point)))

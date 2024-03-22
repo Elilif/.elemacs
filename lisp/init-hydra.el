@@ -208,10 +208,11 @@
     ("s" eli/org-show-empty-headline "show empty headline"))
    "blog"
    (("bp" org-publish)
-    ("ba" (org-publish "eli's blog" t) "publish all blogs")
-    ("bu" (progn
-            (org-publish "eli's blog")
-            (org-publish "eli's blog rss")) "update rss and blog")
+    ("ba" (progn
+            (org-publish "blog articles" t)
+            (org-publish "blog rss" t)
+            (org-publish "Emacs config" t))
+     "publish all blogs")
     ("bg" eli/push-to-gitpage)
     ("bt" org-timeline-export-to-html "export timeline"))
    ))
@@ -472,7 +473,7 @@
     ("m" eli/select-images "images"))
    "LaTeX"
    (("p" mathpix-screenshot "mathpix")
-    ("r" eli/org-ref-insert-ref-link "insert org ref"))
+    ("r" org-simple-ref-insert-ref-link "insert org ref"))
    "Snippets"
    (("c" eli/tempel-temp-create)
     ("y" eli/tempel-temp-save))
@@ -551,9 +552,7 @@
     ("d" leetcode))))
 
 (pretty-hydra-define hydra-rectangle
-  (:color amaranth :exit t
-          :pre (progn (setq which-key-inhibit t))
-          :post (progn (setq which-key-inhibit nil)))
+  (:color amaranth :exit t)
   ("rectangle"
    (("k" kill-rectangle)
     ("w" copy-rectangle-as-kill)
