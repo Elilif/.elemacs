@@ -38,6 +38,8 @@
   (and (get-buffer "*html*") (kill-buffer "*html*"))
   (with-temp-buffer
     (let ((fl (face-list))
+          (htmlize-css-name-prefix "org-")
+          (htmlize-output-type 'css)
           f)
       (while (setq f (pop fl))
         (when (and (symbolp f)
@@ -294,21 +296,56 @@ add \":noweb yes\" to duplicated src babels."
         (let* ((end (copy-marker (match-end 0)))
                (string (match-string 0))
                (block (org-element-at-point))
-               (code (org-element-property :value block)))
-          (goto-char (org-element-property :begin block))
-          (insert "#+begin_multilang")
-          (insert "\n")
-          (goto-char end)
-          (insert "\n")
-          (when (string-match-p (org-babel-noweb-wrap) code)
-            (insert string)
-            (save-excursion
-              (goto-char (1+ end))
-              (end-of-line)
-              (insert " :noweb yes"))
-            (insert "\n"))
-          (insert "#+end_multilang")
-          (insert "\n"))))))
+               (code (org-element-property :value block))
+               (params (org-element-property :parameters block)))
+          (when (eq (org-element-type block) 'src-block)
+            (goto-char (org-element-property :begin block))
+            (insert "#+begin_multilang")
+            (insert "\n")
+            (goto-char end)
+            (insert "\n")
+            (when (and (string-match-p (org-babel-noweb-wrap) code)
+                       (not (string-match-p ":noweb" params)))
+              (insert string)
+              (save-excursion
+                (goto-char (1+ end))
+                (end-of-line)
+                (insert " :noweb yes"))
+              (insert "\n"))
+            (insert "#+end_multilang")
+            (insert "\n")))))))
+
+(defvar eli/blog-details-pair '("SUMMARY_BEG" . "SUMMARY_END"))
+
+(defun eli/org-export-summary-convert (backend)
+  ""
+  (when (eq backend 'blog)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((details-regexp "^[ 	]*#\\+\\(%s\\):[ 	]*\\(%s\\)$"))
+        (while (re-search-forward
+                (format details-regexp
+                        (car eli/blog-details-pair)
+                        ".*")
+                nil t)
+          (when-let* ((summary (match-string 2))
+                      (end (save-excursion
+                             (re-search-forward
+                              (format details-regexp
+                                      (cdr eli/blog-details-pair)
+                                      (regexp-quote summary))
+                              nil t))))
+            (setq end (copy-marker (match-beginning 0)))
+            (insert "\n")
+            (insert "#+begin_details\n")
+            (insert "#+begin_summary\n")
+            (insert summary)
+            (insert "\n")
+            (insert "#+end_summary\n")
+            (insert "#+begin_detail")
+            (goto-char end)
+            (insert "#+end_detail\n")
+            (insert "#+end_details\n")))))))
 
 (defun eli/org-export-add-custom-id (backend)
   "Add CUSTOM-ID to headlines which dosen't have it."
@@ -343,8 +380,11 @@ contextual information."
                     (let ((listing-number
                            (format
                             "<span class=\"listing-number\">%s </span>"
-                            "Listing: ")))
-                      (format "<div class=\"org-src-name\">%s%s</div>"
+                            (format
+                             (org-html--translate "Listing %d:" info)
+                             (org-export-get-ordinal
+                              src-block info nil #'org-html--has-caption-p)))))
+                      (format "<label class=\"org-src-name\">%s%s</label>"
                               listing-number
                               (org-trim (org-export-data caption info))))))
                 ;; Contents.
@@ -586,7 +626,7 @@ INFO is a plist holding contextual information.  See
         (concat
          "<div class=\"post-status\">"
          (format-spec eli/blog-status-format spec)
-         (format "<span><i class='bx bx-history'></i><span><a href=\"%s\">history</a></span></span>"
+         (format "<span><i class='bx bx-history'></i><span><a href=\"%s\">History</a></span></span>"
                  history-url)
          (format "<span><i class='bx bxs-hourglass'></i>%s 字</span>" (eli/org-publish-get-wordcount info))
          "</div>")))))
@@ -723,42 +763,44 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 
 (defvar eli/blog-static-dir "~/Elilif.github.io/static/post-img/")
 
-(defun eli/blog-replace-img-path ()
-  "Copy all images included in current file into `eli/blog-static-dir'."
+(defun eli/blog-replace-static-path ()
+  "Copy all static file links included in current file into
+`eli/blog-static-dir'."
   (save-excursion
     (org-element-cache-reset)
-    (let ((img-dir (file-name-as-directory
-                    (file-name-concat eli/blog-static-dir
-                                      (file-name-base
-                                       (buffer-file-name)))))
+    (let ((static-dir (file-name-as-directory
+                       (file-name-concat eli/blog-static-dir
+                                         (file-name-base
+                                          (buffer-file-name)))))
           (datum (org-element-parse-buffer))
           links)
-      (unless (file-exists-p img-dir)
-        (make-directory img-dir t))
+      (unless (file-exists-p static-dir)
+        (make-directory static-dir t))
       (org-element-map datum 'link
         (lambda (link)
-          (when (and (string-equal (org-element-property :type link) "file")
-                     (org-file-image-p (org-element-property :path link)))
+          (when (or (and (string= (org-element-property :type link) "file")
+                         (org-file-image-p (org-element-property :path link)))
+                    (string= (org-element-property :type link) "video"))
             (let* ((beg (org-element-property :begin link))
                    (end (org-element-property :end link))
-                   (old-img (org-element-property :path link))
+                   (old-file (org-element-property :path link))
                    (raw-link (org-element-property :raw-link link))
-                   (new-img (file-name-concat
-                             ".."
-                             (file-relative-name
-                              img-dir
-                              eli/blog-publish-dir)
-                             (file-name-nondirectory old-img)))
+                   (new-file (file-name-concat
+                              ".."
+                              (file-relative-name
+                               static-dir
+                               eli/blog-publish-dir)
+                              (file-name-nondirectory old-file)))
                    (new-link (org-link-make-string
-                              (replace-regexp-in-string old-img new-img raw-link))))
-              (unless (file-exists-p new-img)
-                (copy-file old-img new-img)
+                              (replace-regexp-in-string old-file new-file raw-link))))
+              (unless (file-exists-p new-file)
+                (copy-file old-file new-file)
                 (push (list (copy-marker beg)
                             (copy-marker end)
                             new-link)
                       links))))))
-      (when (directory-empty-p img-dir)
-        (delete-directory img-dir))
+      (when (directory-empty-p static-dir)
+        (delete-directory static-dir))
       (dolist (link links)
         (let ((beg (nth 0 link))
               (end (nth 1 link))
@@ -779,13 +821,28 @@ publishing directory.
 Return output file name."
   (with-current-buffer (or (find-buffer-visiting filename)
                            (find-file-noselect filename))
-    (eli/blog-replace-img-path))
+    (eli/blog-replace-static-path))
   (org-publish-org-to 'blog filename
                       (concat (when (> (length org-html-extension) 0) ".")
                               (or (plist-get plist :html-extension)
                                   org-html-extension
                                   "html"))
                       plist pub-dir))
+
+(defun org-video-link-export (path _desc backend)
+  (let ((ext (file-name-extension path))
+        (file-name (file-name-base path)))
+    (cond
+     ((org-export-derived-backend-p backend 'html)
+      (format "<video preload='metadata' controls='controls'>
+<source type='video/%s' src='%s' />
+<a href='%s'>[VIDEO: %s]</a>
+</video>" ext path path file-name))
+     ;; fall-through case for everything else
+     (t
+      path))))
+
+(org-link-set-parameters "video" :export 'org-video-link-export)
 
 (provide 'lib-ox-publish)
 ;;; lib-ox-publish.el ends here
